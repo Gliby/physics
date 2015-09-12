@@ -21,14 +21,14 @@ import net.minecraft.world.World;
 /**
  *
  */
-public class JBulletBlockCollision implements VoxelPhysicsWorld {
+public class JavaBlockCollision implements VoxelPhysicsWorld {
 
 	private World world;
-	private JBulletPhysicsWorld physicsWorld;
+	private JavaPhysicsWorld physicsWorld;
 
 	private Map<IBlockState, CollisionShape> collisionShapeCache = new HashMap<IBlockState, CollisionShape>();
 
-	public JBulletBlockCollision(JBulletPhysicsWorld physicsWorld, World world) {
+	public JavaBlockCollision(JavaPhysicsWorld physicsWorld, World world) {
 		this.world = world;
 		this.physicsWorld = physicsWorld;
 	}

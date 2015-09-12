@@ -13,7 +13,7 @@ import net.gliby.physics.common.physics.ICollisionObject;
 import net.gliby.physics.common.physics.ICollisionShape;
 import net.gliby.physics.common.physics.IRigidBody;
 import net.gliby.physics.common.physics.IVector3;
-import net.gliby.physics.common.physics.swig.BulletPhysicsWorld;
+import net.gliby.physics.common.physics.nativebullet.NativePhysicsWorld;
 import net.gliby.physics.common.physics.transform.IQuaternion;
 import net.minecraft.entity.Entity;
 
@@ -24,7 +24,7 @@ import com.bulletphysics.linearmath.Transform;
 /**
  *
  */
-class JBulletRigidBody extends JBulletCollisionObject implements IRigidBody {
+class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
 
 	private RigidBody rigidBody;
 	private Entity owner;
@@ -33,16 +33,16 @@ class JBulletRigidBody extends JBulletCollisionObject implements IRigidBody {
 
 	private Map<String, Object> properties;
 
-	public JBulletRigidBody(RigidBody body, Entity owner) {
+	public JavaRigidBody(RigidBody body, Entity owner) {
 		super(body);
 		this.rigidBody = body;
 		this.owner = owner;
-		this.collisionShape = new JBulletCollisionShape(body.getCollisionShape());
+		this.collisionShape = new JavaCollisionShape(body.getCollisionShape());
 		this.properties = new HashMap<String, Object>();
 		this.quatRotation = new Quat4f();
-		this.rotation = new JBulletQuaternion(quatRotation);
+		this.rotation = new JavaQuaternion(quatRotation);
 		this.worldTransform = new Transform();
-		this.position = new JBulletVector3(worldTransform.origin);
+		this.position = new JavaVector3(worldTransform.origin);
 	}
 
 	@Override
@@ -166,7 +166,7 @@ class JBulletRigidBody extends JBulletCollisionObject implements IRigidBody {
 	}
 
 	private Quat4f quatRotation;
-	private JBulletQuaternion rotation;
+	private JavaQuaternion rotation;
 
 	@Override
 	public IQuaternion getRotation() {
@@ -174,7 +174,7 @@ class JBulletRigidBody extends JBulletCollisionObject implements IRigidBody {
 	}
 
 	private Transform worldTransform;
-	private JBulletVector3 position;
+	private JavaVector3 position;
 
 	@Override
 	public IVector3 getPosition() {

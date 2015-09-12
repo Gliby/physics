@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015, Mine Fortress.
  */
-package net.gliby.physics.common.physics.swig;
+package net.gliby.physics.common.physics.nativebullet;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +24,7 @@ import net.minecraft.entity.Entity;
 /**
  *
  */
-class BulletRigidBody extends BulletCollisionObject implements IRigidBody {
+class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 
 	private Entity entity;
 	private btRigidBody rigidBody;
@@ -32,15 +32,15 @@ class BulletRigidBody extends BulletCollisionObject implements IRigidBody {
 	private ICollisionShape collisionShape;
 	private Map<String, Object> properties;
 
-	public BulletRigidBody(btRigidBody rigidBody, Entity entity) {
+	public NativeRigidBody(btRigidBody rigidBody, Entity entity) {
 		super(rigidBody);
 		this.rigidBody = rigidBody;
 		this.entity = entity;
-		this.collisionShape = new BulletCollisionShape(rigidBody.getCollisionShape());
+		this.collisionShape = new NativeCollisionShape(rigidBody.getCollisionShape());
 		this.properties = new HashMap<String, Object>();
-		this.rotation = new BulletQuaternion(rigidBody.getOrientation());
+		this.rotation = new NativeQuaternion(rigidBody.getOrientation());
 		this.vectorPosition = new Vector3();
-		this.position = new BulletVector3(vectorPosition);
+		this.position = new NativeVector3(vectorPosition);
 	}
 
 	@Override
@@ -92,17 +92,17 @@ class BulletRigidBody extends BulletCollisionObject implements IRigidBody {
 	@Override
 	public Transform getWorldTransform(Transform transform) {
 		Matrix4 worldMatrix4 = rigidBody.getWorldTransform();
-		transform.set(BulletPhysicsWorld.toMatrix4f(worldMatrix4));
+		transform.set(NativePhysicsWorld.toMatrix4f(worldMatrix4));
 		return transform;
 	}
 
 	public void setWorldTransform(Transform transform) {
-		rigidBody.setWorldTransform(BulletPhysicsWorld.fromTransformToMatrix4(transform));
+		rigidBody.setWorldTransform(NativePhysicsWorld.fromTransformToMatrix4(transform));
 	}
 
 	@Override
 	public void setGravity(Vector3f acceleration) {
-		rigidBody.setGravity(BulletPhysicsWorld.toVector3(acceleration));
+		rigidBody.setGravity(NativePhysicsWorld.toVector3(acceleration));
 	}
 
 	@Override
@@ -112,17 +112,17 @@ class BulletRigidBody extends BulletCollisionObject implements IRigidBody {
 
 	@Override
 	public void setLinearVelocity(Vector3f linearVelocity) {
-		rigidBody.setLinearVelocity(BulletPhysicsWorld.toVector3(linearVelocity));
+		rigidBody.setLinearVelocity(NativePhysicsWorld.toVector3(linearVelocity));
 	}
 
 	@Override
 	public void setAngularVelocity(Vector3f angularVelocity) {
-		rigidBody.setAngularVelocity(BulletPhysicsWorld.toVector3(angularVelocity));
+		rigidBody.setAngularVelocity(NativePhysicsWorld.toVector3(angularVelocity));
 	}
 
 	@Override
 	public void applyCentralImpulse(Vector3f direction) {
-		rigidBody.applyCentralImpulse(BulletPhysicsWorld.toVector3(direction));
+		rigidBody.applyCentralImpulse(NativePhysicsWorld.toVector3(direction));
 	}
 
 	@Override
@@ -144,13 +144,13 @@ class BulletRigidBody extends BulletCollisionObject implements IRigidBody {
 	public void getAabb(Vector3f aabbMin, Vector3f aabbMax) {
 		Vector3 min = new Vector3(), max = new Vector3();
 		rigidBody.getAabb(min, max);
-		aabbMin.set(BulletPhysicsWorld.toVector3f(min));
-		aabbMin.set(BulletPhysicsWorld.toVector3f(max));
+		aabbMin.set(NativePhysicsWorld.toVector3f(min));
+		aabbMin.set(NativePhysicsWorld.toVector3f(max));
 	}
 
 	@Override
 	public Transform getCenterOfMassTransform(Transform transform) {
-		transform.set(BulletPhysicsWorld.toMatrix4f(rigidBody.getCenterOfMassTransform()));
+		transform.set(NativePhysicsWorld.toMatrix4f(rigidBody.getCenterOfMassTransform()));
 		return transform;
 	}
 
@@ -161,12 +161,12 @@ class BulletRigidBody extends BulletCollisionObject implements IRigidBody {
 
 	@Override
 	public void applyCentralForce(Vector3f force) {
-		rigidBody.applyCentralForce(BulletPhysicsWorld.toVector3(force));
+		rigidBody.applyCentralForce(NativePhysicsWorld.toVector3(force));
 	}
 
 	@Override
 	public Vector3f getGravity(Vector3f vector3f) {
-		vector3f.set(BulletPhysicsWorld.toVector3f(rigidBody.getGravity()));
+		vector3f.set(NativePhysicsWorld.toVector3f(rigidBody.getGravity()));
 		return vector3f;
 	}
 
@@ -177,17 +177,17 @@ class BulletRigidBody extends BulletCollisionObject implements IRigidBody {
 		if (centerOfMass == null)
 			centerOfMass = new Vector3();
 		centerOfMass.set(rigidBody.getCenterOfMassPosition());
-		return BulletPhysicsWorld.toStaticVector3f(centerOfMass);
+		return NativePhysicsWorld.toStaticVector3f(centerOfMass);
 	}
 
-	private BulletQuaternion rotation;
+	private NativeQuaternion rotation;
 
 	@Override
 	public IQuaternion getRotation() {
 		return rotation.set(rigidBody.getOrientation());
 	}
 
-	private BulletVector3 position;
+	private NativeVector3 position;
 	private Vector3 vectorPosition;
 
 	@Override

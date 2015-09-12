@@ -63,7 +63,7 @@ import net.minecraft.world.World;
 /**
  *
  */
-public abstract class JBulletPhysicsWorld extends PhysicsWorld {
+public abstract class JavaPhysicsWorld extends PhysicsWorld {
 
 	private List<IRigidBody> rigidBodies;
 	private List<IConstraint> constraints;
@@ -72,7 +72,7 @@ public abstract class JBulletPhysicsWorld extends PhysicsWorld {
 	/**
 	 * @param ticksPerSecond
 	 */
-	public JBulletPhysicsWorld(World world, int ticksPerSecond, Vector3f gravity) {
+	public JavaPhysicsWorld(World world, int ticksPerSecond, Vector3f gravity) {
 		super(world, ticksPerSecond, gravity);
 	}
 
@@ -114,7 +114,7 @@ public abstract class JBulletPhysicsWorld extends PhysicsWorld {
 
 		// Create block collision connection to bullet.
 		JBulletVoxelWorldShape blockCollisionHandler = new JBulletVoxelWorldShape(
-				new JBulletBlockCollision(this, world));
+				new JavaBlockCollision(this, world));
 		blockCollisionHandler.calculateLocalInertia(0, new Vector3f());
 		RigidBodyConstructionInfo blockConsInf = new RigidBodyConstructionInfo(0,
 				new DefaultMotionState(identityTransform), blockCollisionHandler, new Vector3f());
@@ -256,17 +256,17 @@ public abstract class JBulletPhysicsWorld extends PhysicsWorld {
 		RigidBodyConstructionInfo constructionInfo = new RigidBodyConstructionInfo(mass, motionState,
 				(CollisionShape) shape.getCollisionShape(), localInertia);
 		RigidBody body = new RigidBody(constructionInfo);
-		return new JBulletRigidBody(body, owner);
+		return new JavaRigidBody(body, owner);
 	}
 
 	@Override
 	public ICollisionShape createBoxShape(final Vector3f extents) {
-		return new net.gliby.physics.common.physics.jbullet.JBulletCollisionShape(new BoxShape(extents));
+		return new net.gliby.physics.common.physics.jbullet.JavaCollisionShape(new BoxShape(extents));
 	}
 
 	@Override
 	public IRayResult createClosestRayResultCallback(final Vector3f rayFromWorld, final Vector3f rayToWorld) {
-		return new JBulletClosestRayResultCallback(
+		return new JavaClosestRayResultCallback(
 				new CollisionWorld.ClosestRayResultCallback(rayFromWorld, rayToWorld));
 	}
 
@@ -292,17 +292,17 @@ public abstract class JBulletPhysicsWorld extends PhysicsWorld {
 				compoundShape.addChildShape(transform, new BoxShape(extents));
 			}
 			if (!compoundShape.getChildList().isEmpty())
-				return new JBulletCollisionShape(compoundShape);
+				return new JavaCollisionShape(compoundShape);
 		}
 		Vector3f blockPosition = new Vector3f((float) blockState.getBlock().getBlockBoundsMaxX(),
 				(float) blockState.getBlock().getBlockBoundsMaxY(), (float) blockState.getBlock().getBlockBoundsMaxZ());
 		blockPosition.scale(0.5f);
-		return new JBulletCollisionShape(new BoxShape(blockPosition));
+		return new JavaCollisionShape(new BoxShape(blockPosition));
 	}
 
 	@Override
 	public IGhostObject createPairCachingGhostObject() {
-		return new JBulletPairCachingGhostObject(new PairCachingGhostObject());
+		return new JavaPairCachingGhostObject(new PairCachingGhostObject());
 	}
 
 	@Override
@@ -319,7 +319,7 @@ public abstract class JBulletPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public IConstraintPoint2Point createPoint2PointConstraint(IRigidBody rigidBody, Vector3f relativePivot) {
-		return new JBulletConstraintPoint2Point(
+		return new JavaConstraintPoint2Point(
 				new Point2PointConstraint((RigidBody) rigidBody.getBody(), relativePivot));
 	}
 
@@ -370,7 +370,7 @@ public abstract class JBulletPhysicsWorld extends PhysicsWorld {
 			CollisionPart part = (CollisionPart) collisionParts.get(i);
 			shape.addChildShape(part.transform, new BoxShape(part.extent));
 		}
-		return new JBulletCollisionShape(shape);
+		return new JavaCollisionShape(shape);
 	}
 
 	@Override
@@ -381,13 +381,13 @@ public abstract class JBulletPhysicsWorld extends PhysicsWorld {
 	@Override
 	public IConstraintGeneric6Dof createGeneric6DofConstraint(IRigidBody rbA, IRigidBody rbB, Transform frameInA,
 			Transform frameInB, boolean useLinearReferenceFrameA) {
-		return new JBulletConstraintGeneric6Dof(new Generic6DofConstraint((RigidBody) rbA.getBody(),
+		return new JavaConstraintGeneric6Dof(new Generic6DofConstraint((RigidBody) rbA.getBody(),
 				(RigidBody) rbB.getBody(), frameInA, frameInB, useLinearReferenceFrameA));
 	}
 
 	@Override
 	public IRope createRope(Vector3f startPos, Vector3f endPos, int detail) {
-		return new JBulletRope(startPos, endPos, detail);
+		return new JavaRope(startPos, endPos, detail);
 	}
 
 	@Override
@@ -416,7 +416,7 @@ public abstract class JBulletPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public ICollisionShape createSphereShape(float radius) {
-		return new JBulletCollisionShape(new SphereShape(radius));
+		return new JavaCollisionShape(new SphereShape(radius));
 	}
 
 	@Override
@@ -426,13 +426,13 @@ public abstract class JBulletPhysicsWorld extends PhysicsWorld {
 		RigidBodyConstructionInfo constructionInfo = new RigidBodyConstructionInfo(mass, motionState,
 				(CollisionShape) shape.getCollisionShape());
 		RigidBody body = new RigidBody(constructionInfo);
-		return new JBulletRigidBody(body, owner);
+		return new JavaRigidBody(body, owner);
 	}
 
 	@Override
 	public IConstraintSlider createSliderConstraint(IRigidBody rbA, IRigidBody rbB, Transform frameInA,
 			Transform frameInB, boolean useLinearReferenceFrameA) {
-		return new JBulletConstraintSlider(new SliderConstraint((RigidBody) rbA.getBody(), (RigidBody) rbB.getBody(),
+		return new JavaConstraintSlider(new SliderConstraint((RigidBody) rbA.getBody(), (RigidBody) rbB.getBody(),
 				frameInA, frameInB, useLinearReferenceFrameA));
 	}
 }

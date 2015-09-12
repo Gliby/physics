@@ -12,14 +12,14 @@ import net.gliby.physics.common.physics.IRayResult;
 /**
  *
  */
-class JBulletClosestRayResultCallback implements IRayResult {
+class JavaClosestRayResultCallback implements IRayResult {
 
 	private CollisionWorld.ClosestRayResultCallback rayCallback;
 
 	/**
 	 * 
 	 */
-	JBulletClosestRayResultCallback(CollisionWorld.ClosestRayResultCallback rayCallback) {
+	JavaClosestRayResultCallback(CollisionWorld.ClosestRayResultCallback rayCallback) {
 		this.rayCallback = rayCallback;
 	}
 

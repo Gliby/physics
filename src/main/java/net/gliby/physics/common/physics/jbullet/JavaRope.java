@@ -16,9 +16,9 @@ import net.gliby.physics.common.physics.IRigidBody;
 import net.gliby.physics.common.physics.IRope;
 import net.gliby.physics.common.physics.PhysicsWorld;
 
-public class JBulletRope implements IRope {
+public class JavaRope implements IRope {
 
-	JBulletRope(Vector3f startPos, Vector3f endPos, int detail) {
+	JavaRope(Vector3f startPos, Vector3f endPos, int detail) {
 		this.startPos = startPos;
 		this.endPos = endPos;
 		this.detail = detail;

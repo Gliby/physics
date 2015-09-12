@@ -13,11 +13,11 @@ import net.gliby.physics.common.physics.ICollisionShape;
 /**
  *
  */
-public class JBulletCollisionObject implements ICollisionObject {
+public class JavaCollisionObject implements ICollisionObject {
 
 	private CollisionObject object;
 
-	JBulletCollisionObject(CollisionObject object) {
+	JavaCollisionObject(CollisionObject object) {
 		this.object = object;
 	}
 

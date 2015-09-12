@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015, Mine Fortress.
  */
-package net.gliby.physics.common.physics.swig;
+package net.gliby.physics.common.physics.nativebullet;
 
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
@@ -13,11 +13,11 @@ import net.gliby.physics.common.physics.ICollisionShape;
 /**
  *
  */
-class BulletCollisionObject implements ICollisionObject {
+class NativeCollisionObject implements ICollisionObject {
 
 	private btCollisionObject object;
 
-	BulletCollisionObject(btCollisionObject object) {
+	NativeCollisionObject(btCollisionObject object) {
 		this.object = object;
 	}
 
@@ -28,7 +28,7 @@ class BulletCollisionObject implements ICollisionObject {
 
 	@Override
 	public void setWorldTransform(Transform transform) {
-		object.setWorldTransform(BulletPhysicsWorld.fromTransformToMatrix4(transform));
+		object.setWorldTransform(NativePhysicsWorld.fromTransformToMatrix4(transform));
 	}
 
 	@Override
@@ -43,7 +43,7 @@ class BulletCollisionObject implements ICollisionObject {
 
 	@Override
 	public void setInterpolationWorldTransform(Transform transform) {
-		object.setInterpolationWorldTransform(BulletPhysicsWorld.fromTransformToMatrix4(transform));
+		object.setInterpolationWorldTransform(NativePhysicsWorld.fromTransformToMatrix4(transform));
 	}
 
 }

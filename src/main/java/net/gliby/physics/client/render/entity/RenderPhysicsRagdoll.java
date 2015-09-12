@@ -23,8 +23,8 @@ import javax.vecmath.Vector3f;
 
 import net.gliby.physics.client.render.RenderUtilities;
 import net.gliby.physics.common.entity.EntityPhysicsBase;
-import net.gliby.physics.common.physics.jbullet.AttachementPoint;
-import net.gliby.physics.common.physics.jbullet.ModelPart;
+import net.gliby.physics.common.physics.AttachementPoint;
+import net.gliby.physics.common.physics.ModelPart;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBox;

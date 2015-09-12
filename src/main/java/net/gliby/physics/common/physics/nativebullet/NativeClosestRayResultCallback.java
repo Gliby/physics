@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015, Mine Fortress.
  */
-package net.gliby.physics.common.physics.swig;
+package net.gliby.physics.common.physics.nativebullet;
 
 import javax.vecmath.Vector3f;
 
@@ -13,14 +13,14 @@ import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
 /**
  *
  */
-class BulletClosestRayResultCallback implements IRayResult {
+class NativeClosestRayResultCallback implements IRayResult {
 
 	private ClosestRayResultCallback callback;
 
 	/**
 	 * @param callback
 	 */
-	BulletClosestRayResultCallback(ClosestRayResultCallback callback) {
+	NativeClosestRayResultCallback(ClosestRayResultCallback callback) {
 		this.callback = callback;
 	}
 
@@ -43,14 +43,14 @@ class BulletClosestRayResultCallback implements IRayResult {
 	public Vector3f getHitPointWorld() {
 		Vector3 vec = new Vector3();
 		callback.getHitPointWorld(vec);
-		return BulletPhysicsWorld.toVector3f(vec);
+		return NativePhysicsWorld.toVector3f(vec);
 	}
 
 	@Override
 	public Vector3f getHitPointNormal() {
 		Vector3 vector = new Vector3();
 		callback.getHitNormalWorld(vector);
-		return BulletPhysicsWorld.toVector3f(vector);
+		return NativePhysicsWorld.toVector3f(vector);
 	}
 
 }

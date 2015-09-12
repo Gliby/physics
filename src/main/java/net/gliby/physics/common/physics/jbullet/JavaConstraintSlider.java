@@ -5,11 +5,11 @@ import com.bulletphysics.dynamics.constraintsolver.SliderConstraint;
 
 import net.gliby.physics.common.physics.IConstraintSlider;
 
-public class JBulletConstraintSlider implements IConstraintSlider {
+public class JavaConstraintSlider implements IConstraintSlider {
 
 	private SliderConstraint constraint;
 
-	JBulletConstraintSlider(SliderConstraint sliderConstraint) {
+	JavaConstraintSlider(SliderConstraint sliderConstraint) {
 		this.constraint = sliderConstraint;
 	}
 

@@ -1,14 +1,14 @@
-package net.gliby.physics.common.physics.swig;
+package net.gliby.physics.common.physics.nativebullet;
 
 import com.badlogic.gdx.math.Quaternion;
 
 import net.gliby.physics.common.physics.transform.IQuaternion;
 
-public class BulletQuaternion implements IQuaternion {
+public class NativeQuaternion implements IQuaternion {
 
 	private Quaternion quaternion;
 
-	public BulletQuaternion(Quaternion quaternion) {
+	public NativeQuaternion(Quaternion quaternion) {
 		this.quaternion = quaternion;
 	}
 	

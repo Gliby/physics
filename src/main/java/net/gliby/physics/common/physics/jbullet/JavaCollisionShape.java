@@ -21,11 +21,11 @@ import com.bulletphysics.linearmath.Transform;
 /**
  *
  */
-public class JBulletCollisionShape implements ICollisionShape {
+public class JavaCollisionShape implements ICollisionShape {
 
 	private CollisionShape shape;
 
-	JBulletCollisionShape(CollisionShape shape) {
+	JavaCollisionShape(CollisionShape shape) {
 		this.shape = shape;
 	}
 
@@ -73,7 +73,7 @@ public class JBulletCollisionShape implements ICollisionShape {
 
 				@Override
 				public ICollisionShape getCollisionShape() {
-					return new JBulletCollisionShape(child.childShape);
+					return new JavaCollisionShape(child.childShape);
 				}
 			});
 		}

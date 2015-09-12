@@ -1,4 +1,4 @@
-package net.gliby.physics.common.physics.swig;
+package net.gliby.physics.common.physics.nativebullet;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,12 +14,12 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
-class BulletVoxelProvider extends btVoxelContentProvider {
+class NativeVoxelProvider extends btVoxelContentProvider {
 
 	private World world;
 	private PhysicsWorld physicsWorld;
 
-	BulletVoxelProvider(World world, PhysicsWorld physicsWorld) {
+	NativeVoxelProvider(World world, PhysicsWorld physicsWorld) {
 		this.world = world;
 		this.physicsWorld = physicsWorld;
 	}

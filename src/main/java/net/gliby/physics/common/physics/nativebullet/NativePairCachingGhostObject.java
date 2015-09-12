@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015, Mine Fortress.
  */
-package net.gliby.physics.common.physics.swig;
+package net.gliby.physics.common.physics.nativebullet;
 
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btPairCachingGhostObject;
@@ -13,11 +13,11 @@ import net.gliby.physics.common.physics.IGhostObject;
 /**
  *
  */
-class BulletPairCachingGhostObject implements IGhostObject {
+class NativePairCachingGhostObject implements IGhostObject {
 
 	private btPairCachingGhostObject ghostObject;
 
-	BulletPairCachingGhostObject(btPairCachingGhostObject object) {
+	NativePairCachingGhostObject(btPairCachingGhostObject object) {
 		this.ghostObject = object;
 	}
 
@@ -33,7 +33,7 @@ class BulletPairCachingGhostObject implements IGhostObject {
 
 	@Override
 	public void setWorldTransform(Transform entityTransform) {
-		ghostObject.setWorldTransform(BulletPhysicsWorld.fromTransformToMatrix4(entityTransform));
+		ghostObject.setWorldTransform(NativePhysicsWorld.fromTransformToMatrix4(entityTransform));
 	}
 
 	@Override
@@ -49,7 +49,7 @@ class BulletPairCachingGhostObject implements IGhostObject {
 
 	@Override
 	public void setInterpolationWorldTransform(Transform entityTransform) {
-		ghostObject.setInterpolationWorldTransform(BulletPhysicsWorld.fromTransformToMatrix4(entityTransform));
+		ghostObject.setInterpolationWorldTransform(NativePhysicsWorld.fromTransformToMatrix4(entityTransform));
 	}
 
 }

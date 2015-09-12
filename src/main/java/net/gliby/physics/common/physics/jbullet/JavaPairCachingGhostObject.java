@@ -13,11 +13,11 @@ import net.gliby.physics.common.physics.IGhostObject;
 /**
  *
  */
-public class JBulletPairCachingGhostObject implements IGhostObject {
+public class JavaPairCachingGhostObject implements IGhostObject {
 
 	private PairCachingGhostObject object;
 
-	JBulletPairCachingGhostObject(PairCachingGhostObject object) {
+	JavaPairCachingGhostObject(PairCachingGhostObject object) {
 		this.object = object;
 	}
 
