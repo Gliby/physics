@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015, Mine Fortress.
  */
-package net.gliby.physics.common.physics.swig;
+package net.gliby.physics.common.physics.nativebullet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,12 +20,12 @@ import com.bulletphysics.linearmath.Transform;
 /**
  *
  */
-class BulletCollisionShape implements ICollisionShape {
+class NativeCollisionShape implements ICollisionShape {
 	private static final int BOX_SHAPE = 0;
 
 	private btCollisionShape shape;
 
-	BulletCollisionShape(btCollisionShape shape) {
+	NativeCollisionShape(btCollisionShape shape) {
 		this.shape = shape;
 	}
 
@@ -56,7 +56,7 @@ class BulletCollisionShape implements ICollisionShape {
 
 	@Override
 	public void getHalfExtentsWithMargin(Vector3f halfExtent) {
-		halfExtent.set(BulletPhysicsWorld.toVector3f(((btBoxShape) shape).getHalfExtentsWithMargin()));
+		halfExtent.set(NativePhysicsWorld.toVector3f(((btBoxShape) shape).getHalfExtentsWithMargin()));
 	}
 
 	@Override
@@ -67,7 +67,7 @@ class BulletCollisionShape implements ICollisionShape {
 			final int index = i;
 			final Transform transform = new Transform();
 			transform.setIdentity();
-			transform.set(BulletPhysicsWorld.toMatrix4f(compoundShape.getChildTransform(index)));
+			transform.set(NativePhysicsWorld.toMatrix4f(compoundShape.getChildTransform(index)));
 			shapeList.add(new ICollisionShapeChildren() {
 				@Override
 				public Transform getTransform() {
@@ -76,7 +76,7 @@ class BulletCollisionShape implements ICollisionShape {
 
 				@Override
 				public ICollisionShape getCollisionShape() {
-					return new BulletCollisionShape(compoundShape.getChildShape(index));
+					return new NativeCollisionShape(compoundShape.getChildShape(index));
 				}
 			});
 		}

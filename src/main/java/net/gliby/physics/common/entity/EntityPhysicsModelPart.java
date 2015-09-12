@@ -12,7 +12,7 @@ import net.gliby.physics.common.entity.datawatcher.DataWatchableQuat4f;
 import net.gliby.physics.common.entity.datawatcher.DataWatchableVector3f;
 import net.gliby.physics.common.physics.IRigidBody;
 import net.gliby.physics.common.physics.PhysicsWorld;
-import net.gliby.physics.common.physics.jbullet.JBulletCollisionObject;
+import net.gliby.physics.common.physics.jbullet.JavaCollisionObject;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;

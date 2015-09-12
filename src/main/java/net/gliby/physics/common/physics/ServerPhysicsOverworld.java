@@ -20,8 +20,8 @@ import net.gliby.physics.MetadataLoader;
 import net.gliby.physics.Physics;
 import net.gliby.physics.common.entity.EntityPhysicsBlock;
 import net.gliby.physics.common.physics.block.PhysicsBlockMetadata;
-import net.gliby.physics.common.physics.jbullet.JBulletPhysicsWorld;
-import net.gliby.physics.common.physics.swig.BulletPhysicsWorld;
+import net.gliby.physics.common.physics.jbullet.JavaPhysicsWorld;
+import net.gliby.physics.common.physics.nativebullet.NativePhysicsWorld;
 import net.gliby.physics.common.physics.worldmechanics.EntityCollisionResponseMechanic;
 import net.gliby.physics.common.physics.worldmechanics.gravitymagnets.GravityModifierMechanic;
 import net.gliby.physics.common.physics.worldmechanics.physicsgun.PickUpMechanic;
@@ -101,15 +101,16 @@ public class ServerPhysicsOverworld extends PhysicsOverworld {
 		// TODO Settings.
 		int tps = 30;
 		Vector3f gravity = new Vector3f(0, -9.8F, 0);
-		boolean forceJava = Physics.getInstance().getSettings().getBooleanSetting("PhysicsEngine.UseJavaPhysics").getBooleanValue();
+		boolean forceJava = Physics.getInstance().getSettings().getBooleanSetting("PhysicsEngine.UseJavaPhysics")
+				.getBooleanValue();
 		PhysicsWorld worldStepSimulator = OSUtil.getOSType() == OSUtil.EnumOS.WINDOWS && !forceJava
-				? new BulletPhysicsWorld(world, tps, gravity) {
+				? new NativePhysicsWorld(world, tps, gravity) {
 
 					@Override
 					public boolean shouldSimulate() {
 						return true;
 					}
-				} : new JBulletPhysicsWorld(world, tps, gravity) {
+				} : new JavaPhysicsWorld(world, tps, gravity) {
 
 					@Override
 					public boolean shouldSimulate() {
@@ -120,8 +121,9 @@ public class ServerPhysicsOverworld extends PhysicsOverworld {
 		worldStepSimulator.getMechanics().put("PickUp", new PickUpMechanic(worldStepSimulator, true, 20));
 		worldStepSimulator.getMechanics().put("GravityMagnet",
 				new GravityModifierMechanic(worldStepSimulator, false, 20));
-		worldStepSimulator.getMechanics().put("EntityCollision",
-				new EntityCollisionResponseMechanic(world, worldStepSimulator, true, 20));
+		// worldStepSimulator.getMechanics().put("EntityCollision",
+		// new EntityCollisionResponseMechanic(world, worldStepSimulator, true,
+		// 20));
 		worldStepSimulator.create();
 		return worldStepSimulator;
 	}

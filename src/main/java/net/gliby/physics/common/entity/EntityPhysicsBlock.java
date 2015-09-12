@@ -285,6 +285,8 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 		}
 	}
 
+	// FIXME Causing java.util.ConcurrentModificationException
+	// TODO Probable causes: Saving, dupe entities.
 	@Override
 	public void writeSpawnData(ByteBuf buffer) {
 		super.writeSpawnData(buffer);

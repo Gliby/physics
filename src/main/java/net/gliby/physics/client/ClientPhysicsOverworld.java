@@ -6,25 +6,18 @@ package net.gliby.physics.client;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.vecmath.Vector3f;
 
 import com.bulletphysics.linearmath.Transform;
 
 import net.gliby.physics.Physics;
-import net.gliby.physics.common.EntityUtility;
-import net.gliby.physics.common.entity.EntityPhysicsBlock;
-import net.gliby.physics.common.physics.IConstraintGeneric6Dof;
+import net.gliby.physics.common.physics.AttachementPoint;
 import net.gliby.physics.common.physics.IRigidBody;
-import net.gliby.physics.common.physics.IRope;
+import net.gliby.physics.common.physics.ModelPart;
 import net.gliby.physics.common.physics.PhysicsOverworld;
 import net.gliby.physics.common.physics.PhysicsWorld;
-import net.gliby.physics.common.physics.jbullet.AttachementPoint;
-import net.gliby.physics.common.physics.jbullet.JBulletPhysicsWorld;
-import net.gliby.physics.common.physics.jbullet.JBulletRope;
-import net.gliby.physics.common.physics.jbullet.ModelPart;
-import net.gliby.physics.common.physics.worldmechanics.EntityCollisionResponseMechanic;
+import net.gliby.physics.common.physics.nativebullet.NativePhysicsWorld;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
@@ -45,26 +38,29 @@ public class ClientPhysicsOverworld extends PhysicsOverworld {
 	@SubscribeEvent
 	public void onLoad(WorldEvent.Load event) {
 		World world = event.world;
+		PhysicsWorld worldStepSimulator;
+		if ((worldStepSimulator = getPhysicsWorldMap().get(event.world)) == null) {
+			worldStepSimulator = new NativePhysicsWorld(world, 60, new Vector3f(0, -9.8F, 0)) {
 
-		PhysicsWorld worldStepSimulator = new JBulletPhysicsWorld(world, 60, new Vector3f(0, -9.8F, 0)) {
+				@Override
+				public boolean shouldSimulate() {
+					Minecraft mc = Minecraft.getMinecraft();
+					return !mc.isGamePaused();
+				}
+			};
 
-			@Override
-			public boolean shouldSimulate() {
-				Minecraft mc = Minecraft.getMinecraft();
-				return !mc.isGamePaused();
-			}
-		};
+			// TODO Re-enable.
+			// worldStepSimulator.getMechanics().put("EntityCollision",
+			// new EntityCollisionResponseMechanic(world, worldStepSimulator,
+			// false, 20));
+			worldStepSimulator.create();
 
-		worldStepSimulator.getMechanics().put("EntityCollision",
-				new EntityCollisionResponseMechanic(world, worldStepSimulator, false, 20));
-		worldStepSimulator.create();
-
-		Thread thread = new Thread(worldStepSimulator,
-				event.world.getWorldInfo().getWorldName() + " Physics Simulator");
-		thread.start();
-		getPhysicsWorldMap().put(event.world, worldStepSimulator);
-		Physics.getLogger().info("Started running " + thread.getName() + ".");
-
+			Thread thread = new Thread(worldStepSimulator,
+					event.world.getWorldInfo().getWorldName() + " Physics Simulator");
+			thread.start();
+			getPhysicsWorldMap().put(event.world, worldStepSimulator);
+			Physics.getLogger().info("Started running " + thread.getName() + ".");
+		}
 	}
 
 	@SubscribeEvent
@@ -94,6 +90,8 @@ public class ClientPhysicsOverworld extends PhysicsOverworld {
 
 	public void debugSpawn(World world) {
 
+		PhysicsWorld physicsWorld = getPhysicsByWorld(world);
+		Minecraft mc = Minecraft.getMinecraft();
 		/*
 		 * PhysicsWorld physicsWorld = getPhysicsByWorld(world); Minecraft mc =
 		 * Minecraft.getMinecraft(); Vector3f basePos =
@@ -123,42 +121,48 @@ public class ClientPhysicsOverworld extends PhysicsOverworld {
 		 * 
 		 * } this.lastBody = body; }
 		 */
+		double posX = mc.thePlayer.posX;
+		double posY = mc.thePlayer.posY;
+		double posZ = mc.thePlayer.posZ;
+
+		ModelBiped modelBiped = new ModelBiped();
+		ArrayList<ModelPart> models = generateModelProxies(modelBiped);
+		ArrayList<AttachementPoint> points = generateAttachementPoints(modelBiped);
+		IRigidBody[] rigidBodies = new IRigidBody[models.size()];
+		HashMap<ModelBox, IRigidBody> rigidBodyMap = new HashMap<ModelBox, IRigidBody>();
+
+		for (int i = 0; i < rigidBodies.length; i++) {
+			ModelPart model = models.get(i);
+			Transform transform = new Transform();
+			transform.setIdentity();
+			transform.origin.add(new Vector3f(model.getModelBox().posX1 + model.getModelBox().posX2,
+					model.getModelBox().posY1 + model.getModelBox().posY2,
+					model.getModelBox().posZ1 + model.getModelBox().posZ2));
+			transform.origin.scale(0.5f);
+			transform.origin.add(model.getPosition());
+			transform.origin.scale(-0.0625f); // Place in world.
+			transform.origin.add(new Vector3f((float) posX, (float) posY, (float) posZ));
+			Vector3f extent = new Vector3f(model.getModelBox().posX2 - model.getModelBox().posX1,
+					model.getModelBox().posY2 - model.getModelBox().posY1,
+					model.getModelBox().posZ2 - model.getModelBox().posZ1); // Adjust
+																			// to
+																			// minecraft's
+																			// scale.
+			extent.scale(0.0625f);
+			extent.scale(0.5f);
+
+			IRigidBody body = physicsWorld.createRigidBody(null, transform, 1, physicsWorld.createBoxShape(extent));
+			physicsWorld.addRigidBody(body);
+
+			rigidBodyMap.put(model.getModelBox(), body);
+			physicsWorld.addRigidBody(body);
+			rigidBodies[i] = body;
+		}
 
 		/*
-		 * double posX = mc.thePlayer.posX; double posY = mc.thePlayer.posY;
-		 * double posZ = mc.thePlayer.posZ;
-		 * 
-		 * ModelBiped modelBiped = new ModelBiped(); ArrayList<ModelPart> models
-		 * = generateModelProxies(modelBiped); ArrayList<AttachementPoint>
-		 * points = generateAttachementPoints(modelBiped); IRigidBody[]
-		 * rigidBodies = new IRigidBody[models.size()]; HashMap<ModelBox,
-		 * IRigidBody> rigidBodyMap = new HashMap<ModelBox, IRigidBody>();
-		 * 
-		 * for (int i = 0; i < rigidBodies.length; i++) { ModelPart model =
-		 * models.get(i); Transform transform = new Transform();
-		 * transform.setIdentity(); transform.origin.add(new
-		 * Vector3f(model.getModelBox().posX1 + model.getModelBox().posX2,
-		 * model.getModelBox().posY1 + model.getModelBox().posY2,
-		 * model.getModelBox().posZ1 + model.getModelBox().posZ2));
-		 * transform.origin.scale(0.5f);
-		 * transform.origin.add(model.getPosition());
-		 * transform.origin.scale(-0.0625f); // Place in world.
-		 * transform.origin.add(new Vector3f((float) posX, (float) posY, (float)
-		 * posZ)); Vector3f extent = new Vector3f(model.getModelBox().posX2 -
-		 * model.getModelBox().posX1, model.getModelBox().posY2 -
-		 * model.getModelBox().posY1, model.getModelBox().posZ2 -
-		 * model.getModelBox().posZ1); // Adjust to minecraft's scale.
-		 * extent.scale(0.0625f); extent.scale(0.5f);
-		 * 
-		 * IRigidBody body = physicsWorld.createRigidBody(null, transform, 1,
-		 * physicsWorld.createBoxShape(extent));
-		 * physicsWorld.addRigidBody(body);
-		 * 
-		 * rigidBodyMap.put(model.getModelBox(), body);
-		 * physicsWorld.addRigidBody(body); rigidBodies[i] = body; }
 		 * System.out.println("Body count: " + rigidBodies.length); // Attach
-		 * joints for (AttachementPoint point : points) { if (point.getBodyA()
-		 * != null && point.getBodyB() != null) { IRigidBody bodyA =
+		 * for (AttachementPoint point : points) { if (point.getBodyA() != null
+		 * && point.getBodyB() != null) { IRigidBody bodyA =
 		 * rigidBodyMap.get(point.getBodyA().getModelBox()); IRigidBody bodyB =
 		 * rigidBodyMap.get(point.getBodyB().getModelBox()); System.out.println(
 		 * "Created: " + bodyA + ", " + bodyB); Transform transformA = new

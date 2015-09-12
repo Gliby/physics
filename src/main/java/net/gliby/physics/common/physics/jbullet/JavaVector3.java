@@ -4,11 +4,11 @@ import javax.vecmath.Vector3f;
 
 import net.gliby.physics.common.physics.IVector3;
 
-public class JBulletVector3 implements IVector3 {
+public class JavaVector3 implements IVector3 {
 
 	private Vector3f vector3;
 
-	public JBulletVector3(Vector3f vector3f) {
+	public JavaVector3(Vector3f vector3f) {
 		this.vector3 = vector3f;
 	}
 
@@ -27,7 +27,7 @@ public class JBulletVector3 implements IVector3 {
 		return vector3.z;
 	}
 
-	public JBulletVector3 set(Vector3f vec3) {
+	public JavaVector3 set(Vector3f vec3) {
 		this.vector3.x = vec3.x;
 		this.vector3.y = vec3.y;
 		this.vector3.z = vec3.z;

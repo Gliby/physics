@@ -1,10 +1,10 @@
-package net.gliby.physics.common.physics.swig;
+package net.gliby.physics.common.physics.nativebullet;
 
 import com.badlogic.gdx.math.Vector3;
 
 import net.gliby.physics.common.physics.IVector3;
 
-public class BulletVector3 implements IVector3 {
+public class NativeVector3 implements IVector3 {
 
 	@Override
 	public float getX() {
@@ -30,7 +30,7 @@ public class BulletVector3 implements IVector3 {
 
 	Vector3 vector3;
 
-	public BulletVector3(Vector3 vector3) {
+	public NativeVector3(Vector3 vector3) {
 		this.vector3 = vector3;
 	}
 }

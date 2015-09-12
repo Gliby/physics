@@ -1,13 +1,11 @@
 /**
  * Copyright (c) 2015, Mine Fortress.
  */
-package net.gliby.physics.common.physics.swig;
+package net.gliby.physics.common.physics.jbullet;
 
 import javax.vecmath.Vector3f;
 
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.dynamics.btPoint2PointConstraint;
-import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
+import com.bulletphysics.dynamics.constraintsolver.Point2PointConstraint;
 
 import net.gliby.physics.common.physics.IConstraint;
 import net.gliby.physics.common.physics.IConstraintPoint2Point;
@@ -15,27 +13,30 @@ import net.gliby.physics.common.physics.IConstraintPoint2Point;
 /**
  *
  */
-class BulletPoint2PointConstraint implements IConstraintPoint2Point {
+public class JavaConstraintPoint2Point implements IConstraintPoint2Point {
 
-	private btPoint2PointConstraint constraint;
+	private Point2PointConstraint constraint;
 
-	BulletPoint2PointConstraint(btPoint2PointConstraint constraint) {
+	/**
+	 * @param point2PointConstraint
+	 */
+	JavaConstraintPoint2Point(Point2PointConstraint constraint) {
 		this.constraint = constraint;
 	}
 
 	@Override
 	public void setImpulseClamp(float f) {
-		constraint.getSetting().setImpulseClamp(f);
+		constraint.setting.impulseClamp = f;
 	}
 
 	@Override
 	public void setTau(float f) {
-		constraint.getSetting().setTau(f);
+		constraint.setting.tau = f;
 	}
 
 	@Override
 	public void setPivotB(Vector3f newPos) {
-		constraint.setPivotB(BulletPhysicsWorld.toVector3(newPos));
+		constraint.setPivotB(newPos);
 	}
 
 	@Override
@@ -50,14 +51,12 @@ class BulletPoint2PointConstraint implements IConstraintPoint2Point {
 
 	@Override
 	public Vector3f getPivotInA(Vector3f out) {
-		out.set(BulletPhysicsWorld.toVector3f(constraint.getPivotInA()));
-		return out;
+		return constraint.getPivotInA(out);
 	}
 
 	@Override
 	public Vector3f getPivotInB(Vector3f out) {
-		out.set(BulletPhysicsWorld.toVector3f(constraint.getPivotInB()));
-		return out;
+		return constraint.getPivotInB(out);
 	}
 
 	@Override

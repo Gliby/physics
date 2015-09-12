@@ -1,9 +1,11 @@
 /**
  * Copyright (c) 2015, Mine Fortress.
  */
-package net.gliby.physics.common.physics.swig;
+package net.gliby.physics.common.physics.jbullet;
 
-import com.badlogic.gdx.physics.bullet.dynamics.btGeneric6DofConstraint;
+import javax.vecmath.Vector3f;
+
+import com.bulletphysics.dynamics.constraintsolver.Generic6DofConstraint;
 import com.bulletphysics.linearmath.Transform;
 
 import net.gliby.physics.common.physics.IConstraintGeneric6Dof;
@@ -11,13 +13,14 @@ import net.gliby.physics.common.physics.IConstraintGeneric6Dof;
 /**
  *
  */
-class BulletConstraintGeneric6Dof implements IConstraintGeneric6Dof {
+public class JavaConstraintGeneric6Dof implements IConstraintGeneric6Dof {
 
-	private btGeneric6DofConstraint constraint;
-	BulletConstraintGeneric6Dof(btGeneric6DofConstraint constraint) {
+	private Generic6DofConstraint constraint;
+
+	JavaConstraintGeneric6Dof(Generic6DofConstraint constraint) {
 		this.constraint = constraint;
 	}
-	
+
 	@Override
 	public Object getConstraint() {
 		return constraint;
@@ -35,14 +38,12 @@ class BulletConstraintGeneric6Dof implements IConstraintGeneric6Dof {
 
 	@Override
 	public Transform getGlobalFrameOffsetA(Transform transform) {
-		transform.set(BulletPhysicsWorld.toMatrix4f(constraint.getCalculatedTransformA()));
-		return transform;
+		return constraint.getCalculatedTransformA(transform);
 	}
 
 	@Override
 	public Transform getGlobalFrameOffsetB(Transform transform) {
-		transform.set(BulletPhysicsWorld.toMatrix4f(constraint.getCalculatedTransformB()));
-		return transform;
+		return constraint.getCalculatedTransformB(transform);
 	}
 
 	@Override

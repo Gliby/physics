@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2015, Mine Fortress.
  */
-package net.gliby.physics.common.physics.swig;
+package net.gliby.physics.common.physics.nativebullet;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -62,7 +62,11 @@ import net.minecraft.world.World;
 /**
  *
  */
-public abstract class BulletPhysicsWorld extends PhysicsWorld {
+public abstract class NativePhysicsWorld extends PhysicsWorld {
+
+	static {
+		Bullet.init();
+	}
 
 	private btDiscreteDynamicsWorld dynamicsWorld;
 
@@ -75,7 +79,7 @@ public abstract class BulletPhysicsWorld extends PhysicsWorld {
 	 * @param ticksPerSecond
 	 * @param gravity
 	 */
-	public BulletPhysicsWorld(World world, int ticksPerSecond, Vector3f gravity) {
+	public NativePhysicsWorld(World world, int ticksPerSecond, Vector3f gravity) {
 		super(world, ticksPerSecond, gravity);
 	}
 
@@ -101,10 +105,6 @@ public abstract class BulletPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public void create() {
-		if (launch) {
-			Bullet.init();
-			launch = false;
-		}
 		rigidBodies = new ArrayList<IRigidBody>();
 		constraints = new ArrayList<IConstraint>();
 		btDbvtBroadphase broadphase = new btDbvtBroadphase();
@@ -113,15 +113,13 @@ public abstract class BulletPhysicsWorld extends PhysicsWorld {
 		this.dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase,
 				new btSequentialImpulseConstraintSolver(), collisionConfiguration);
 		this.dynamicsWorld.setGravity(toVector3(gravity));
-		Matrix4 transform = new Matrix4();
-		btVoxelShape voxelHandler = new btVoxelShape(new BulletVoxelProvider(world, this),
+		btVoxelShape voxelHandler = new btVoxelShape(new NativeVoxelProvider(world, this),
 				new Vector3(-Integer.MAX_VALUE, -Integer.MAX_VALUE, -Integer.MAX_VALUE),
 				new Vector3(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE));
-		btRigidBodyConstructionInfo info = new btRigidBodyConstructionInfo(0, new btDefaultMotionState(transform),
-				voxelHandler, new Vector3());
-		btRigidBody body = new btRigidBody(info);
+		btCollisionObject body = new btCollisionObject();
+		body.setCollisionShape(voxelHandler);
 		body.setCollisionFlags(btCollisionObject.CollisionFlags.CF_STATIC_OBJECT | body.getCollisionFlags());
-		this.dynamicsWorld.addRigidBody(body);
+		this.dynamicsWorld.addCollisionObject(body);
 		super.create();
 	}
 
@@ -145,17 +143,17 @@ public abstract class BulletPhysicsWorld extends PhysicsWorld {
 		btDefaultMotionState motionState = new btDefaultMotionState(fromTransformToMatrix4(transform));
 		btRigidBodyConstructionInfo constructionInfo = new btRigidBodyConstructionInfo(mass, motionState,
 				(btCollisionShape) shape.getCollisionShape(), localInertia);
-		return new BulletRigidBody(new btRigidBody(constructionInfo), owner);
+		return new NativeRigidBody(new btRigidBody(constructionInfo), owner);
 	}
 
 	@Override
 	public ICollisionShape createBoxShape(Vector3f extents) {
-		return new BulletCollisionShape(new btBoxShape(toVector3(extents)));
+		return new NativeCollisionShape(new btBoxShape(toVector3(extents)));
 	}
 
 	@Override
 	public IRayResult createClosestRayResultCallback(Vector3f rayFromWorld, Vector3f rayToWorld) {
-		return new BulletClosestRayResultCallback(
+		return new NativeClosestRayResultCallback(
 				new ClosestRayResultCallback(toVector3(rayFromWorld), toVector3(rayToWorld)));
 	}
 
@@ -282,12 +280,12 @@ public abstract class BulletPhysicsWorld extends PhysicsWorld {
 				compoundShape.addChildShape(fromTransformToMatrix4(transform), new btBoxShape(toVector3(extents)));
 			}
 			if (compoundShape.getNumChildShapes() > 0)
-				return new BulletCollisionShape(compoundShape);
+				return new NativeCollisionShape(compoundShape);
 		}
 		Vector3f blockPosition = new Vector3f((float) blockState.getBlock().getBlockBoundsMaxX(),
 				(float) blockState.getBlock().getBlockBoundsMaxY(), (float) blockState.getBlock().getBlockBoundsMaxZ());
 		blockPosition.scale(0.5f);
-		return new BulletCollisionShape(new btBoxShape(toVector3(blockPosition)));
+		return new NativeCollisionShape(new btBoxShape(toVector3(blockPosition)));
 	}
 
 	private long lastFrame;
@@ -357,7 +355,7 @@ public abstract class BulletPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public IGhostObject createPairCachingGhostObject() {
-		return new BulletPairCachingGhostObject(new btPairCachingGhostObject());
+		return new NativePairCachingGhostObject(new btPairCachingGhostObject());
 	}
 
 	@Override
@@ -374,7 +372,7 @@ public abstract class BulletPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public IConstraintPoint2Point createPoint2PointConstraint(IRigidBody rigidBody, Vector3f relativePivot) {
-		return new BulletPoint2PointConstraint(
+		return new NativePoint2PointConstraint(
 				new btPoint2PointConstraint((btRigidBody) rigidBody.getBody(), toVector3(relativePivot)));
 	}
 
@@ -404,7 +402,7 @@ public abstract class BulletPhysicsWorld extends PhysicsWorld {
 	@Override
 	public IConstraintGeneric6Dof createGeneric6DofConstraint(IRigidBody rbA, IRigidBody rbB, Transform frameInA,
 			Transform frameInB, boolean useLinearReferenceFrameA) {
-		return new BulletConstraintGeneric6Dof(new btGeneric6DofConstraint((btRigidBody) rbA.getBody(),
+		return new NativeConstraintGeneric6Dof(new btGeneric6DofConstraint((btRigidBody) rbA.getBody(),
 				(btRigidBody) rbB.getBody(), this.fromTransformToMatrix4(frameInA),
 				this.fromTransformToMatrix4(frameInB), useLinearReferenceFrameA));
 	}
@@ -439,7 +437,7 @@ public abstract class BulletPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public ICollisionShape createSphereShape(float radius) {
-		return new BulletCollisionShape(new btSphereShape(radius));
+		return new NativeCollisionShape(new btSphereShape(radius));
 	}
 
 	@Override
@@ -448,7 +446,7 @@ public abstract class BulletPhysicsWorld extends PhysicsWorld {
 		btDefaultMotionState motionState = new btDefaultMotionState(fromTransformToMatrix4(transform));
 		btRigidBodyConstructionInfo constructionInfo = new btRigidBodyConstructionInfo(mass, motionState,
 				(btCollisionShape) shape.getCollisionShape());
-		return new BulletRigidBody(new btRigidBody(constructionInfo), owner);
+		return new NativeRigidBody(new btRigidBody(constructionInfo), owner);
 	}
 
 	// TODO Add slider constraint

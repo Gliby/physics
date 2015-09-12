@@ -4,11 +4,11 @@ import javax.vecmath.Quat4f;
 
 import net.gliby.physics.common.physics.transform.IQuaternion;
 
-public class JBulletQuaternion implements IQuaternion {
+public class JavaQuaternion implements IQuaternion {
 
 	private Quat4f quaternion;
 
-	public JBulletQuaternion(Quat4f quaternion) {
+	public JavaQuaternion(Quat4f quaternion) {
 		this.quaternion = quaternion;
 	}
 
