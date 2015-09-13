@@ -11,16 +11,16 @@ import javax.vecmath.Vector3f;
 import com.google.gson.Gson;
 
 import io.netty.buffer.ByteBuf;
+import net.gliby.gman.DataWatchableVector3f;
 import net.gliby.physics.Physics;
-import net.gliby.physics.common.entity.datawatcher.DataWatchableVector3f;
-import net.gliby.physics.common.items.ItemPhysicsGun;
-import net.gliby.physics.common.physics.IRigidBody;
+import net.gliby.physics.common.entity.mechanics.RigidBodyMechanic;
+import net.gliby.physics.common.game.items.ItemPhysicsGun;
 import net.gliby.physics.common.physics.PhysicsOverworld;
 import net.gliby.physics.common.physics.PhysicsWorld;
 import net.gliby.physics.common.physics.ServerPhysicsOverworld;
-import net.gliby.physics.common.physics.entitymechanics.RigidBodyMechanic;
-import net.gliby.physics.common.physics.worldmechanics.physicsgun.OwnedPickedObject;
-import net.gliby.physics.common.physics.worldmechanics.physicsgun.PickUpMechanic;
+import net.gliby.physics.common.physics.engine.IRigidBody;
+import net.gliby.physics.common.physics.mechanics.physicsgun.OwnedPickedObject;
+import net.gliby.physics.common.physics.mechanics.physicsgun.PickUpMechanic;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -103,10 +103,11 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 		this.mechanics.clear();
 
 		if (!worldObj.isRemote) {
-			Vector3f minBB = new Vector3f(), maxBB = new Vector3f();
-			if (doesPhysicsObjectExist())
+			if (doesPhysicsObjectExist()) {
+				Vector3f minBB = new Vector3f(), maxBB = new Vector3f();
 				this.getRigidBody().getAabb(minBB, maxBB);
-			physicsWorld.awakenArea(minBB, maxBB);
+				physicsWorld.awakenArea(minBB, maxBB);
+			}
 			this.dispose();
 		}
 		super.setDead();
@@ -155,17 +156,17 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 	@Override
 	public void readEntityFromNBT(NBTTagCompound tagCompound) {
 		if (!worldObj.isRemote) {
-			Gson gson = new Gson();
 			mechanics.clear();
 			ServerPhysicsOverworld overworld = Physics.getInstance().getCommonProxy().getPhysicsOverworld();
-			this.physicsWorld = overworld.getPhysicsByWorld(this.worldObj);
-			createPhysicsObject(physicsWorld);
-			ArrayList<String> mechanicsByNames = gson.fromJson(tagCompound.getString("mechanics"), ArrayList.class);
-			for (int i = 0; i < mechanicsByNames.size(); i++) {
-				String mechanicString = mechanicsByNames.get(i);
-				RigidBodyMechanic mechanic = overworld.getMechanicFromName(mechanicString);
-				if (mechanic != null)
-					mechanics.add(overworld.getMechanicFromName(mechanicString));
+			ArrayList<String> mechanicsByNames = new Gson().fromJson(tagCompound.getString("Mechanics"),
+					ArrayList.class);
+			if (mechanicsByNames != null) {
+				for (int i = 0; i < mechanicsByNames.size(); i++) {
+					String mechanicString = mechanicsByNames.get(i);
+					RigidBodyMechanic mechanic = overworld.getMechanicFromName(mechanicString);
+					if (mechanic != null)
+						mechanics.add(overworld.getMechanicFromName(mechanicString));
+				}
 			}
 		}
 	}
@@ -178,6 +179,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 	}
 
 	protected abstract void createPhysicsObject(PhysicsWorld physicsWorld);
+	protected abstract void updatePhysicsObject(PhysicsWorld physicsWorld);
 
 	/**
 	 * @return
@@ -185,13 +187,12 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 	public abstract IRigidBody getRigidBody();
 
 	public void writeEntityToNBT(NBTTagCompound tagCompound) {
-		Gson gson = new Gson();
 		ArrayList<String> mechanicsByNames = new ArrayList<String>();
 		for (int i = 0; i < mechanics.size(); i++) {
 			mechanicsByNames.add(Physics.getInstance().getCommonProxy().getPhysicsOverworld().getMechanicsMap()
 					.inverse().get(mechanics.get(i)));
 		}
-		tagCompound.setString("mechanics", gson.toJson(mechanicsByNames));
+		tagCompound.setString("Mechanics", new Gson().toJson(mechanicsByNames));
 	}
 
 	@Override
@@ -251,7 +252,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 			}
 
 			if (getRigidBody() != null) {
-				if (getRigidBody().getProperties().containsKey("dead")) {
+				if (getRigidBody().getProperties().containsKey("Dead")) {
 					this.setDead();
 				}
 				if (getRigidBody().isActive())
@@ -286,7 +287,6 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 			}
 		}
 
-
 		PhysicsOverworld overworld = Physics.getInstance().getCommonProxy().getPhysicsOverworld();
 
 		buffer.writeInt(clientMechanics.size());
@@ -303,10 +303,11 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 	@Override
 	public void readSpawnData(ByteBuf buffer) {
 		int size = buffer.readInt();
-
 		PhysicsOverworld overworld = Physics.getInstance().getClientProxy().getPhysicsOverWorld();
 		for (int i = 0; i < size; i++) {
-			mechanics.add(overworld.getMechanicFromName(ByteBufUtils.readUTF8String(buffer)));
+			String mechanicName = ByteBufUtils.readUTF8String(buffer);
+			RigidBodyMechanic mechanic = overworld.getMechanicFromName(mechanicName);
+			mechanics.add(mechanic);
 		}
 
 		this.pickerEntity = (EntityPlayer) this.worldObj.getEntityByID(buffer.readInt());

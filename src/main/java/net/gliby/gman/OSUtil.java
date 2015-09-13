@@ -1,11 +1,6 @@
 package net.gliby.gman;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
 public class OSUtil {
-
-	private static final String __OBFID = "CL_00001633";
 
 	public static OSUtil.EnumOS getOSType() {
 		String s = System.getProperty("os.name").toLowerCase();
@@ -25,8 +20,6 @@ public class OSUtil {
 	}
 
 	public static enum EnumOS {
-		LINUX, SOLARIS, WINDOWS, OSX, UNKNOWN;
-
-		private static final String __OBFID = "CL_00001660";
+		LINUX, SOLARIS, WINDOWS, OSX, UNKNOWN
 	}
 }

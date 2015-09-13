@@ -3,9 +3,7 @@
  */
 package net.gliby.physics;
 
-import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -14,19 +12,12 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 
+import net.gliby.physics.common.entity.mechanics.RigidBodyMechanic;
 import net.gliby.physics.common.physics.ServerPhysicsOverworld;
 import net.gliby.physics.common.physics.block.PhysicsBlockMetadata;
-import net.gliby.physics.common.physics.entitymechanics.RigidBodyMechanic;
 import net.minecraft.block.Block;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
 
@@ -44,6 +35,8 @@ public abstract class MetadataLoader {
 
 	BlockingQueue<Callable> blockLoadQueue = new LinkedBlockingQueue<Callable>();
 
+	int loaded;
+
 	private Runnable loadQueue() {
 		return new Runnable() {
 
@@ -54,6 +47,7 @@ public abstract class MetadataLoader {
 					if (c != null) {
 						try {
 							c.call();
+							loaded++;
 						} catch (Exception e) {
 							if (!(e instanceof NullPointerException))
 								e.printStackTrace();
@@ -61,6 +55,7 @@ public abstract class MetadataLoader {
 						}
 					}
 				}
+				Physics.getLogger().info("Loaded " + loaded + " physics blocks.");
 			}
 
 		};
@@ -93,36 +88,36 @@ public abstract class MetadataLoader {
 						/*
 						 * Gson gson = new
 						 * GsonBuilder().setPrettyPrinting().create();
-						 * 
+						 *
 						 * JsonObject writable = new JsonObject();
-						 * 
+						 *
 						 * float hardness = block.getBlockHardness(null, null);
 						 * writable.addProperty("mass",
 						 * MathHelper.clamp_float(hardness * 20, 1,
 						 * Float.MAX_VALUE)); writable.addProperty("friction",
 						 * (1 - block.slipperiness) * 5);
-						 * 
+						 *
 						 * if (block.getCollisionBoundingBox(null, new
 						 * BlockPos(0, 0, 0), null) == null) {
 						 * writable.addProperty("collisionEnabled", false); }
-						 * 
+						 *
 						 * if (block.getBlockState().getBaseState().
 						 * getPropertyNames().contains("explode") || hardness <
 						 * 0) { writable.addProperty("shouldSpawnInExplosion",
 						 * false); }
-						 * 
+						 *
 						 * JsonArray mechanics = new JsonArray();
 						 * mechanics.add(new
 						 * JsonPrimitive("EnvironmentGravity"));
 						 * mechanics.add(new
 						 * JsonPrimitive("EnvironmentResponse"));
-						 * 
+						 *
 						 * if (hasMethod(block.getClass(),
 						 * "onEntityCollidedWithBlock")) { System.out.println(
 						 * "Has special method!"); mechanics.add(new
 						 * JsonPrimitive("BlockInheritance")); mechanics.add(new
 						 * JsonPrimitive("ClientBlockInheritance")); }
-						 * 
+						 *
 						 * writable.add("mechanics", mechanics); String fileName
 						 * = "C:/GenGSON/" + blockID + ".json"; try { FileWriter
 						 * writer = new FileWriter(fileName);
@@ -141,15 +136,6 @@ public abstract class MetadataLoader {
 
 	}
 
-	private boolean hasMethod(Class clazz, String methodName) {
-		for (int i = 0; i < clazz.getDeclaredMethods().length; i++) {
-			Method method = clazz.getDeclaredMethods()[i];
-			if (method.getName().equals(methodName))
-				return true;
-		}
-		return false;
-	}
-
 	// TODO Add domains + don't load if already exists.
 
 	private PhysicsBlockMetadata getMetadata(String name, Map<String, Object> json) {
@@ -164,7 +150,7 @@ public abstract class MetadataLoader {
 			if (json.containsKey("shouldSpawnInExplosion"))
 				metadata.shouldSpawnInExplosion = (Boolean) json.get("shouldSpawnInExplosion");
 			if (json.containsKey("overrideCollisionShape"))
-				metadata.overrideCollisionShape = (Boolean) json.get("overrideCollisionShape");
+				metadata.defaultCollisionShape = (Boolean) json.get("overrideCollisionShape");
 			if (json.containsKey("restitution"))
 				metadata.restitution = new Float((Double) json.get("restitution")).floatValue();
 			if (json.containsKey("collisionEnabled")) {

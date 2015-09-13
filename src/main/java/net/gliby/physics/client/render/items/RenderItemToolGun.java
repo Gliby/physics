@@ -3,24 +3,11 @@
  */
 package net.gliby.physics.client.render.items;
 
-import java.nio.ByteBuffer;
-import java.nio.IntBuffer;
-
 import javax.vecmath.Vector3f;
 
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.*;
-import static org.lwjgl.opengl.GL14.*;
-import static org.lwjgl.opengl.GL15.*;
-import static org.lwjgl.opengl.GL20.*;
-import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.opengl.GL44.*;
 import net.gliby.gman.client.render.RawItemRenderer;
 import net.gliby.physics.Physics;
-import net.gliby.physics.common.items.ItemToolGun;
+import net.gliby.physics.common.game.items.toolgun.ItemToolGun;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.model.ModelRenderer;

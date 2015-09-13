@@ -18,13 +18,11 @@ import net.gliby.gman.OSUtil;
 import net.gliby.gman.io.MinecraftResourceLoader;
 import net.gliby.physics.MetadataLoader;
 import net.gliby.physics.Physics;
-import net.gliby.physics.common.entity.EntityPhysicsBlock;
 import net.gliby.physics.common.physics.block.PhysicsBlockMetadata;
-import net.gliby.physics.common.physics.jbullet.JavaPhysicsWorld;
-import net.gliby.physics.common.physics.nativebullet.NativePhysicsWorld;
-import net.gliby.physics.common.physics.worldmechanics.EntityCollisionResponseMechanic;
-import net.gliby.physics.common.physics.worldmechanics.gravitymagnets.GravityModifierMechanic;
-import net.gliby.physics.common.physics.worldmechanics.physicsgun.PickUpMechanic;
+import net.gliby.physics.common.physics.engine.javabullet.JavaPhysicsWorld;
+import net.gliby.physics.common.physics.engine.nativebullet.NativePhysicsWorld;
+import net.gliby.physics.common.physics.mechanics.gravitymagnets.GravityModifierMechanic;
+import net.gliby.physics.common.physics.mechanics.physicsgun.PickUpMechanic;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
@@ -78,23 +76,18 @@ public class ServerPhysicsOverworld extends PhysicsOverworld {
 
 	}
 
-	@SubscribeEvent(priority = EventPriority.HIGHEST)
-	public void onPlayerJoinWorld(EntityJoinWorldEvent event) {
-		if (event.entity instanceof EntityPlayer) {
-			if (!event.world.isRemote) {
-				EntityPlayer player = (EntityPlayer) event.entity;
-				World world = event.world;
-				// TODO Settings
-				if (!getPhysicsWorldMap().containsKey(world)) {
-					PhysicsWorld physicsWorld = createPhysics(world);
-					Thread thread = new Thread(physicsWorld,
-							world.getWorldInfo().getWorldName() + " Physics Simulator, " + physicsWorld);
-					thread.start();
-					Physics.getLogger().info("Running " + thread.getName() + ".");
-					getPhysicsWorldMap().put(world, physicsWorld);
-				}
-			}
+	@Override
+	public PhysicsWorld getPhysicsByWorld(World access) {
+		PhysicsWorld physicsWorld = getPhysicsWorldMap().get(access);
+		if (physicsWorld == null) {
+			physicsWorld = createPhysics(access);
+			Thread thread = new Thread(physicsWorld,
+					access.getWorldInfo().getWorldName() + " Physics Simulator, " + physicsWorld);
+			thread.start();
+			Physics.getLogger().info("Running " + physicsWorld + ".");
+			getPhysicsWorldMap().put(access, physicsWorld);
 		}
+		return physicsWorld;
 	}
 
 	protected PhysicsWorld createPhysics(World world) {
@@ -132,7 +125,7 @@ public class ServerPhysicsOverworld extends PhysicsOverworld {
 	public void onUnload(WorldEvent.Unload event) {
 		PhysicsWorld stepSimulator;
 		if ((stepSimulator = getPhysicsWorldMap().get(event.world)) != null) {
-			stepSimulator.dispose();
+			stepSimulator.destroy();
 			getPhysicsWorldMap().remove(event.world);
 			Physics.getLogger().info(
 					"Stopped and disposed of " + event.world.getWorldInfo().getWorldName() + " physics simulator.");

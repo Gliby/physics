@@ -1,0 +1,10 @@
+{
+  "mass": 1.0,
+  "friction": 0.99999994,
+  "mechanics": [
+    "EnvironmentGravity",
+    "EnvironmentResponse",
+    "BlockInheritance",
+    "ClientBlockInheritance"
+  ]
+}

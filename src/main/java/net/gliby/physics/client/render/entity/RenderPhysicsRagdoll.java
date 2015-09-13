@@ -3,39 +3,20 @@
  */
 package net.gliby.physics.client.render.entity;
 
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glColor4f;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glLineWidth;
-import static org.lwjgl.opengl.GL11.glMultMatrix;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScalef;
-import static org.lwjgl.opengl.GL11.glTranslatef;
-
 import java.lang.reflect.Field;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 
-import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
-import net.gliby.physics.client.render.RenderUtilities;
 import net.gliby.physics.common.entity.EntityPhysicsBase;
 import net.gliby.physics.common.physics.AttachementPoint;
 import net.gliby.physics.common.physics.ModelPart;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
-
-import org.lwjgl.BufferUtils;
-
-import com.bulletphysics.linearmath.Transform;
 
 /**
  *

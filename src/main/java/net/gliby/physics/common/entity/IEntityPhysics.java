@@ -7,7 +7,6 @@ import net.gliby.gman.settings.ObjectSetting;
 import net.gliby.gman.settings.Setting.Listener;
 import net.gliby.physics.Physics;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 
 public interface IEntityPhysics {
 

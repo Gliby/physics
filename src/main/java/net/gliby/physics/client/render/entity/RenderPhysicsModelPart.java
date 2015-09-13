@@ -18,20 +18,19 @@ import java.nio.FloatBuffer;
 
 import javax.vecmath.Vector3f;
 
+import org.lwjgl.BufferUtils;
+
+import com.bulletphysics.linearmath.Transform;
+
 import net.gliby.physics.client.render.RenderUtilities;
 import net.gliby.physics.client.render.blocks.CustomModelRenderer;
 import net.gliby.physics.common.entity.EntityPhysicsBase;
-import net.gliby.physics.common.entity.EntityPhysicsBlock;
 import net.gliby.physics.common.entity.EntityPhysicsModelPart;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
-
-import org.lwjgl.BufferUtils;
-
-import com.bulletphysics.linearmath.Transform;
 
 /**
  *

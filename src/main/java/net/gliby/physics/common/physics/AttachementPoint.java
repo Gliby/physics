@@ -5,9 +5,6 @@ package net.gliby.physics.common.physics;
 
 import javax.vecmath.Vector3f;
 
-import net.minecraft.client.model.ModelBox;
-import net.minecraft.client.model.ModelRenderer;
-
 /**
  *
  */

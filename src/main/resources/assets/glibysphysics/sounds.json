@@ -1,0 +1,19 @@
+{
+    "item.toolgun.scroll":
+    {
+        "category": "master",
+        "sounds":
+        [
+            "toolgun_scroll"
+        ]
+    },
+    "item.toolgun.beam":
+    {
+        "category": "master",
+        "sounds":
+        [
+            "toolgun_beam0",
+            "toolgun_beam1"  
+        ]
+    }
+}

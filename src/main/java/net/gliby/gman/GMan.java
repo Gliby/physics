@@ -6,15 +6,14 @@ import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import net.minecraftforge.fml.common.FMLCommonHandler;
-
 import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 
 public class GMan {
 
-	public static void launchMod(final Logger logger, ModInfo modInfo, final String minecraftVersion, final String modVersion) {
+	public static void launchMod(final Logger logger, ModInfo modInfo, final String minecraftVersion,
+			final String modVersion) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("https://raw.githubusercontent.com/Gliby/Mod-Information-Storage/master/");
 		builder.append(modInfo.modId);
@@ -27,7 +26,8 @@ public class GMan {
 			e.printStackTrace();
 			return;
 		} catch (final IOException e) {
-			logger.info("Failed to retrieve mod info, either mod doesn't exist or host(" + builder.toString() +") is down?");
+			logger.info("Failed to retrieve mod info, either mod doesn't exist or host(" + builder.toString()
+					+ ") is down?");
 			return;
 		}
 
@@ -36,6 +36,7 @@ public class GMan {
 		modInfo.updateURL = externalInfo.updateURL;
 		modInfo.versions = externalInfo.versions;
 		modInfo.determineUpdate(modVersion, minecraftVersion);
-		logger.info(modInfo.isUpdated() ? "Mod is up-to-date." : "Mod is outdated, download latest at " + modInfo.updateURL);
+		logger.info(modInfo.isUpdated() ? "Mod is up-to-date."
+				: "Mod is outdated, download latest at " + modInfo.updateURL);
 	}
 }

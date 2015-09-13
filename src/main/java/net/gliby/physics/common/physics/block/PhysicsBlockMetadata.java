@@ -6,11 +6,7 @@ package net.gliby.physics.common.physics.block;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.vecmath.Vector3f;
-
-import com.google.gson.annotations.SerializedName;
-
-import net.gliby.physics.common.physics.entitymechanics.RigidBodyMechanic;
+import net.gliby.physics.common.entity.mechanics.RigidBodyMechanic;
 
 /**
  *
@@ -20,7 +16,7 @@ public class PhysicsBlockMetadata {
 	public boolean shouldSpawnInExplosion = true;
 	public float mass;
 	public float friction;
-	public boolean overrideCollisionShape;
+	public boolean defaultCollisionShape;
 	// TODO Re-implement
 	public float restitution;
 	// Cannot be serialized without guide!

@@ -1,0 +1,8 @@
+{
+  "mass": 60.0,
+  "friction": 1.9999999,
+  "mechanics": [
+    "EnvironmentGravity",
+    "EnvironmentResponse"
+  ]
+}

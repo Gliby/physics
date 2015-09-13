@@ -13,9 +13,9 @@ import net.gliby.physics.common.entity.EntityPhysicsBlock;
 import net.gliby.physics.common.entity.EntityPhysicsModelPart;
 import net.gliby.physics.common.entity.EntityToolGunBeam;
 import net.gliby.physics.common.entity.IEntityPhysics;
-import net.gliby.physics.common.items.ItemPhysicsGun;
-import net.gliby.physics.common.items.ItemSpawnRigidBody;
-import net.gliby.physics.common.items.ItemToolGun;
+import net.gliby.physics.common.game.items.ItemPhysicsGun;
+import net.gliby.physics.common.game.items.ItemSpawnRigidBody;
+import net.gliby.physics.common.game.items.toolgun.ItemToolGun;
 import net.gliby.physics.common.packets.PacketPlayerJoin;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -61,7 +61,7 @@ public class Physics {
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		this.instance = this;
+		Physics.instance = this;
 		registerEntity(EntityPhysicsBlock.class, "PhysicsBlock", 64, 1, false);
 		registerEntity(EntityPhysicsModelPart.class, "Model Part Entity", 64, 1, false);
 		registerEntity(EntityToolGunBeam.class, "Tool Gun Beam", 64, 1, false);

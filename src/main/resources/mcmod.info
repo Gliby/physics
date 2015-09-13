@@ -1,0 +1,16 @@
+[
+{
+  "modid": "glibysphysics",
+  "name": "Gliby's Physics",
+  "description": "In development.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "http://www.gliby.net/",
+  "updateUrl": "",
+  "authorList": ["Gliby"],
+  "credits": "@Immortius, Bullet Team.",
+  "logoFile": "logo.png",
+  "screenshots": [],
+  "dependencies": [ "DynamicLights" ]
+}
+]

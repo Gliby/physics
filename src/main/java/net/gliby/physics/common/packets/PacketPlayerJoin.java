@@ -3,12 +3,11 @@
  */
 package net.gliby.physics.common.packets;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 import java.util.List;
 
-import net.gliby.physics.common.items.toolgun.ToolGunActionRegistry;
+import io.netty.buffer.ByteBuf;
+import net.gliby.physics.common.game.items.toolgun.actions.ToolGunActionRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;

@@ -10,7 +10,6 @@ import net.gliby.physics.Physics;
 import net.gliby.physics.client.render.Render;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -50,7 +49,6 @@ public class RenderItemPhysicsGun extends RawItemRenderer {
 		float scale = -0.0625f;
 		float f1 = 40F - MathHelper.abs(MathHelper.sin((float) (Minecraft.getSystemTime() % 1000L) / 1000.0F * (float) Math.PI * 1.0F) * 40F);
 		int lightValue = (int) MathHelper.clamp_float((200 + f1), 0, 250);
-
 		if (owner != null) {
 			if (transformType == TransformType.FIRST_PERSON) {
 				GlStateManager.rotate(1.0f, 0.0F, 0.0F, 1.0F);

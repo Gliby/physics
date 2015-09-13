@@ -9,6 +9,10 @@ import java.nio.FloatBuffer;
 
 import javax.vecmath.Vector3f;
 
+import org.lwjgl.BufferUtils;
+
+import com.bulletphysics.linearmath.Transform;
+
 import net.gliby.physics.client.render.RenderUtilities;
 import net.gliby.physics.client.render.blocks.CustomModelRenderer;
 import net.gliby.physics.common.entity.EntityPhysicsBase;
@@ -22,15 +26,9 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.BlockPos;
-
-import org.lwjgl.BufferUtils;
-
-import com.bulletphysics.linearmath.Transform;
 
 /**
  *
