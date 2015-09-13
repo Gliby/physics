@@ -1,24 +1,17 @@
 package net.gliby.physics.common;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import net.gliby.gman.settings.BooleanSetting;
-import net.gliby.gman.settings.SettingsHandler;
 import net.gliby.physics.Physics;
-import net.gliby.physics.common.entity.EntityToolGunBeam;
-import net.gliby.physics.common.entity.IEntityPhysics;
-import net.gliby.physics.common.event.ExplosionHandler;
-import net.gliby.physics.common.items.toolgun.ToolGunActionRegistry;
-import net.gliby.physics.common.items.toolgun.defaultactions.ToolGunAlignAction;
-import net.gliby.physics.common.items.toolgun.defaultactions.ToolGunAttachAction;
-import net.gliby.physics.common.items.toolgun.defaultactions.ToolGunAttractAction;
-import net.gliby.physics.common.items.toolgun.defaultactions.ToolGunChangeGravityAction;
-import net.gliby.physics.common.items.toolgun.defaultactions.ToolGunRemoveAction;
-import net.gliby.physics.common.items.toolgun.defaultactions.ToolGunReviveAction;
+import net.gliby.physics.common.game.events.ExplosionHandler;
+import net.gliby.physics.common.game.items.toolgun.actions.ToolGunActionRegistry;
+import net.gliby.physics.common.game.items.toolgun.actions.ToolGunAlignAction;
+import net.gliby.physics.common.game.items.toolgun.actions.ToolGunAttachAction;
+import net.gliby.physics.common.game.items.toolgun.actions.ToolGunAttractAction;
+import net.gliby.physics.common.game.items.toolgun.actions.ToolGunChangeGravityAction;
+import net.gliby.physics.common.game.items.toolgun.actions.ToolGunRemoveAction;
+import net.gliby.physics.common.game.items.toolgun.actions.ToolGunReviveAction;
 import net.gliby.physics.common.packets.PacketPlayerJoin;
 import net.gliby.physics.common.physics.ServerPhysicsOverworld;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
@@ -31,9 +24,6 @@ import net.minecraftforge.fml.common.event.FMLServerAboutToStartEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
-import net.minecraftforge.fml.relauncher.Side;
 
 public class PhysicsServer {
 

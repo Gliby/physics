@@ -1,9 +1,11 @@
 package net.gliby.physics.client.keybindings;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
@@ -14,9 +16,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Type;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 
 @SideOnly(Side.CLIENT)
 public class KeyManager {

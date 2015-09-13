@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.gliby.gman.RawItem;
-import net.gliby.physics.Physics;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.Item;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;

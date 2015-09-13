@@ -5,10 +5,12 @@ package net.gliby.physics.client.render.entity;
 
 import javax.vecmath.Vector3f;
 
+import org.lwjgl.opengl.GL11;
+
 import net.gliby.physics.client.render.RenderUtilities;
 import net.gliby.physics.common.entity.EntityPhysicsBase;
 import net.gliby.physics.common.entity.EntityPhysicsBlock;
-import net.gliby.physics.common.items.ItemPhysicsGun;
+import net.gliby.physics.common.game.items.ItemPhysicsGun;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -21,8 +23,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
-
-import org.lwjgl.opengl.GL11;
 
 public abstract class RenderPhysics extends Render {
 

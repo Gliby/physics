@@ -3,8 +3,6 @@
  */
 package net.gliby.physics.client.render.entity;
 
-import java.util.Random;
-
 import javax.vecmath.Vector3f;
 
 import net.gliby.physics.client.render.RenderUtilities;
@@ -14,7 +12,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;

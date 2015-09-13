@@ -48,7 +48,7 @@ public class ModInfo {
 
 	@Override
 	public String toString() {
-		return  "[" + modId + "]" + "; Up to date? " + (isUpdated() ? "Yes":"No");
+		return "[" + modId + "]" + "; Up to date? " + (isUpdated() ? "Yes" : "No");
 
 	}
 

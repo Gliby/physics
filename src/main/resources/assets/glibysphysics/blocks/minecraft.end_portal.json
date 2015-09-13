@@ -1,0 +1,11 @@
+{
+  "mass": 1.0,
+  "friction": 1.9999999,
+  "shouldSpawnInExplosion": false,
+  "mechanics": [
+    "EnvironmentGravity",
+    "EnvironmentResponse",
+    "BlockInheritance",
+    "ClientBlockInheritance"
+  ]
+}

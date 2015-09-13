@@ -3,32 +3,43 @@
  */
 package net.gliby.physics.common.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
 import com.bulletphysics.collision.broadphase.CollisionFilterGroups;
 import com.bulletphysics.linearmath.QuaternionUtil;
 import com.bulletphysics.linearmath.Transform;
+import com.bulletphysics.linearmath.VectorUtil;
+import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.reflect.TypeToken;
 
 import io.netty.buffer.ByteBuf;
 import net.gliby.gman.BlockUtility;
+import net.gliby.gman.DataWatchableQuat4f;
+import net.gliby.gman.DataWatchableVector3f;
+import net.gliby.gman.WorldUtility;
 import net.gliby.physics.Physics;
 import net.gliby.physics.client.render.Render;
-import net.gliby.physics.common.entity.datawatcher.DataWatchableQuat4f;
-import net.gliby.physics.common.entity.datawatcher.DataWatchableVector3f;
-import net.gliby.physics.common.physics.ICollisionShape;
-import net.gliby.physics.common.physics.IRigidBody;
+import net.gliby.physics.common.entity.mechanics.RigidBodyMechanic;
 import net.gliby.physics.common.physics.PhysicsWorld;
 import net.gliby.physics.common.physics.ServerPhysicsOverworld;
 import net.gliby.physics.common.physics.block.PhysicsBlockMetadata;
-import net.gliby.physics.common.physics.entitymechanics.RigidBodyMechanic;
+import net.gliby.physics.common.physics.engine.ICollisionShape;
+import net.gliby.physics.common.physics.engine.IRigidBody;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
@@ -37,6 +48,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  *
  */
+
+//TODO Remove ability to spawn tile-entites.
 public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAdditionalSpawnData {
 	/**
 	 * @param world
@@ -47,9 +60,9 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 		setSize(0.85f, 1.05f);
 	}
 
-	private Item dropItem;
+	private ItemStack dropItem;
 
-	public EntityPhysicsBlock setDropItem(Item dropItem) {
+	public EntityPhysicsBlock setDropItem(ItemStack dropItem) {
 		this.dropItem = dropItem;
 		return this;
 	}
@@ -61,14 +74,15 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 	@SideOnly(Side.CLIENT)
 	public Quat4f renderRotation;
 
+	private List<AxisAlignedBB> collisionBBs;
+
 	private Vector3f position = new Vector3f();
 	private Quat4f rotation = new Quat4f();
-	private IRigidBody rigidBody;
 
-	private Vector3f spawnLocation;
+	private IRigidBody rigidBody;
 	private ICollisionShape collisionShape;
 
-	private boolean overrideCollisionShape, collisionEnabled;
+	private boolean defaultCollisionShape, collisionEnabled = true;
 	private float mass;
 	private float friction;
 
@@ -86,9 +100,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 			float z) {
 		super(world, physicsWorld);
 		this.blockState = blockState;
-		this.spawnLocation = new Vector3f(x, y, z);
-		this.position.set(spawnLocation);
-
+		this.position.set(x, y, z);
 		QuaternionUtil.setEuler(rotation, 0, 0, 0);
 		this.rotation.set(rotation);
 
@@ -100,15 +112,21 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
 		this.mass = metadataExists ? metadata.mass : 10;
 		this.friction = metadataExists ? metadata.friction : 0.5f;
-		this.overrideCollisionShape = metadataExists ? metadata.overrideCollisionShape : false;
+		this.defaultCollisionShape = metadataExists ? metadata.defaultCollisionShape : false;
 		this.collisionEnabled = metadataExists ? metadata.collisionEnabled : true;
 
 		try {
-			if (this.overrideCollisionShape)
+			if (this.defaultCollisionShape)
 				this.collisionShape = physicsWorld.createBoxShape(new Vector3f(0.5f, 0.5f, 0.5f));
-			else
-				this.collisionShape = physicsWorld.createBlockShape(this.worldObj,
-						new BlockPos(spawnLocation.x, spawnLocation.y, spawnLocation.z), blockState);
+			else {
+				blockState.getBlock().addCollisionBoxesToList(worldObj, new BlockPos(x, y, z), blockState,
+						WorldUtility.MAX_BB, collisionBBs = new ArrayList<AxisAlignedBB>(), this);
+				for (int i = 0; i < collisionBBs.size(); i++) {
+					collisionBBs.set(i, collisionBBs.get(i).offset(-x, -y, -z));
+				}
+
+				this.collisionShape = physicsWorld.buildCollisionShape(collisionBBs, VectorUtil.IDENTITY);
+			}
 		} catch (IllegalArgumentException e) {
 			this.collisionShape = physicsWorld.createBoxShape(new Vector3f(0.5f, 0.5f, 0.5f));
 			Physics.getLogger().error("Block doesn't exist, couldn't create collision shape");
@@ -118,8 +136,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 			if (metadata.mechanics != null)
 				this.mechanics.addAll(metadata.mechanics);
 		}
-
-		this.setPositionAndUpdate(spawnLocation.x, spawnLocation.y, spawnLocation.z);
+		setLocationAndAngles(position.x, position.y, position.z, 0, 0);
 	}
 
 	private Vector3f linearVelocity, angularVelocity;
@@ -130,8 +147,6 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 		transform.setIdentity();
 		transform.origin.set(this.position);
 		transform.setRotation(this.rotation);
-		// TODO Capitalize getProperties.put names!
-
 		rigidBody = physicsWorld.createRigidBody(this, transform, Math.abs(mass), collisionShape);
 		rigidBody.getProperties().put("BlockState", blockState);
 
@@ -202,7 +217,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 					rigidBody.getPosition().getZ());
 			rotation.set(rigidBody.getRotation().getX(), rigidBody.getRotation().getY(), rigidBody.getRotation().getZ(),
 					rigidBody.getRotation().getW());
-			setPositionAndUpdate(position.x + 0.5f, position.y, position.z + 0.5f);
+			setLocationAndAngles(position.x + 0.5f, position.y, position.z + 0.5f, 0, 0);
 			if (watchablePosition != null) {
 				if (isDirty() && (!watchablePosition.lastWrote.equals(position)
 						|| !watchableRotation.lastWrote.equals(rotation))) {
@@ -227,66 +242,120 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
 	@Override
 	public void writeEntityToNBT(NBTTagCompound tagCompound) {
-		try {
-			tagCompound.setInteger("Block", Block.getStateId(blockState));
+
+		ResourceLocation resourcelocation = (ResourceLocation) Block.blockRegistry
+				.getNameForObject(blockState.getBlock());
+		tagCompound.setString("Block", resourcelocation == null ? "" : resourcelocation.toString());
+		tagCompound.setByte("Data", (byte) blockState.getBlock().getMetaFromState(this.blockState));
+
+		tagCompound.setFloat("Mass", mass);
+		tagCompound.setFloat("Friction", friction);
+
+		if (defaultCollisionShape)
+			tagCompound.setBoolean("DefaultCollisionShape", defaultCollisionShape);
+		if (!collisionEnabled)
 			tagCompound.setBoolean("CollisionEnabled", collisionEnabled);
-			tagCompound.setFloat("Mass", mass);
-			tagCompound.setFloat("Friction", friction);
-			tagCompound.setBoolean("OverrideCollisionShape", overrideCollisionShape);
-			tagCompound.setString("CollisionShape", physicsWorld.writeBlockCollisionShape(collisionShape));
-			tagCompound.setString("Rotation", rotation.x + ":" + rotation.y + ":" + rotation.z + ":" + rotation.w);
-			Vector3f linearVelocity = rigidBody.getLinearVelocity(new Vector3f());
-			tagCompound.setString("LinearVelocity", linearVelocity.x + ":" + linearVelocity.y + ":" + linearVelocity.z);
-			Vector3f angularVelocity = rigidBody.getAngularVelocity(new Vector3f());
-			tagCompound.setString("AngularVelocity",
-					angularVelocity.x + ":" + angularVelocity.y + ":" + angularVelocity.z);
-			super.writeEntityToNBT(tagCompound);
-		} catch (Exception e) {
-			// TODO Remove
+		if (collisionBBs != null)
+			tagCompound.setString("CollisionShape", new Gson().toJson(collisionBBs));
+		// Remove original tags.
+		tagCompound.removeTag("Pos");
+		tagCompound.removeTag("Rotation");
+
+		// Add removed tags, but with new values.
+		tagCompound.setTag("Pos",
+				this.newDoubleNBTList(new double[] { this.position.x, this.position.y, this.position.z }));
+		tagCompound.setTag("Rotation", this
+				.newFloatNBTList(new float[] { this.rotation.x, this.rotation.y, this.rotation.z, this.rotation.w }));
+
+		Vector3f linearVelocity = rigidBody.getLinearVelocity(new Vector3f());
+		tagCompound.setTag("LinearVelocity",
+				this.newFloatNBTList(new float[] { linearVelocity.x, linearVelocity.y, linearVelocity.z }));
+		Vector3f angularVelocity = rigidBody.getAngularVelocity(new Vector3f());
+		tagCompound.setTag("AngularVelocity",
+				this.newFloatNBTList(new float[] { angularVelocity.x, angularVelocity.y, angularVelocity.z }));
+
+		if (dropItem != null) {
+			NBTTagCompound compound = dropItem.writeToNBT(new NBTTagCompound());
+			tagCompound.setTag("DropItem", compound);
 		}
+		super.writeEntityToNBT(tagCompound);
 	}
 
-	// FIXME Block's don't get saved.
 	@Override
 	public void readEntityFromNBT(NBTTagCompound tagCompound) {
-		try {
-			this.blockState = Block.getStateById(tagCompound.getInteger("Block"));
-			this.collisionEnabled = tagCompound.getBoolean("CollisionEnabled");
+		this.physicsWorld = Physics.getInstance().getCommonProxy().getPhysicsOverworld().getPhysicsByWorld(worldObj);
+		int data = tagCompound.getByte("Data") & 255;
 
-			this.mass = tagCompound.getFloat("Mass");
-			this.friction = tagCompound.getFloat("Friction");
-			this.overrideCollisionShape = tagCompound.getBoolean("OverrideCollisionShape");
-			this.physicsWorld = Physics.getInstance().getCommonProxy().getPhysicsOverworld()
-					.getPhysicsByWorld(this.worldObj);
-			this.collisionShape = physicsWorld.readBlockCollisionShape(tagCompound.getString("CollisionShape"));
-			String locationString[] = tagCompound.getString("Location").split(":");
-			// Read spawn location.
-			this.spawnLocation = new Vector3f((float) this.posX - 0.5f, (float) posY, (float) posZ - 0.5f);
-			// Read quat rotation string, and set.
-			String rotationString[] = tagCompound.getString("Rotation").split(":");
-			this.rotation.set(new Quat4f(Float.parseFloat(rotationString[0]), Float.parseFloat(rotationString[1]),
-					Float.parseFloat(rotationString[2]), Float.parseFloat(rotationString[3])));
+		if (tagCompound.hasKey("Block", 8))
+			this.blockState = Block.getBlockFromName(tagCompound.getString("Block")).getStateFromMeta(data);
+		else if (tagCompound.hasKey("TileID", 99))
+			this.blockState = Block.getBlockById(tagCompound.getInteger("TileID")).getStateFromMeta(data);
+		else
+			this.blockState = Block.getBlockById(tagCompound.getByte("Tile") & 255).getStateFromMeta(data);
 
-			String linearVelocity[] = tagCompound.getString("LinearVelocity").split(":");
-			this.linearVelocity = new Vector3f(Float.parseFloat(linearVelocity[0]), Float.parseFloat(linearVelocity[1]),
-					Float.parseFloat(linearVelocity[2]));
+		this.mass = (float) (tagCompound.hasKey("Mass") ? tagCompound.getFloat("Mass") : 1.0);
+		this.friction = (float) (tagCompound.hasKey("Friction") ? tagCompound.getFloat("Friction") : 0.5);
+		this.defaultCollisionShape = tagCompound.hasKey("DefaultCollisionShape")
+				? tagCompound.getBoolean("DefaultCollisionShape") : false;
+		this.collisionEnabled = tagCompound.hasKey("CollisionEnabled") ? tagCompound.getBoolean("CollisionEnabled")
+				: collisionEnabled;
 
-			String angularVelocity[] = tagCompound.getString("AngularVelocity").split(":");
-			this.angularVelocity = new Vector3f(Float.parseFloat(angularVelocity[0]),
-					Float.parseFloat(angularVelocity[1]), Float.parseFloat(angularVelocity[2]));
+		if (tagCompound.hasKey("CollisionShape")) {
+			collisionBBs = new Gson().fromJson(tagCompound.getString("CollisionShape"),
+					new TypeToken<List<AxisAlignedBB>>() {
+					}.getType());
+			this.collisionShape = physicsWorld.buildCollisionShape(collisionBBs, VectorUtil.IDENTITY);
+		} else
+			this.collisionShape = physicsWorld.createBoxShape(new Vector3f(0.5F, 0.5F, 0.5F));
 
-			if (watchablePosition == null && watchableRotation == null) {
-				watchablePosition = new DataWatchableVector3f(this, position);
-				watchableRotation = new DataWatchableQuat4f(this, rotation);
-			}
-			super.readEntityFromNBT(tagCompound);
-		} catch (Exception e) {
-
+		this.position.set((float) posX, (float) posY, (float) posZ);
+		if (tagCompound.hasKey("Rotation")) {
+			NBTTagList list = tagCompound.getTagList("Rotation", 5);
+			this.rotation.set(list.getFloat(0), list.getFloat(1), list.get(2) != null ? list.getFloat(2) : 0,
+					list.get(3) != null ? list.getFloat(3) : 0);
 		}
+
+		if (tagCompound.hasKey("LinearVelocity")) {
+			NBTTagList linearVelocity = tagCompound.getTagList("LinearVelocity", 5);
+			this.linearVelocity = new Vector3f(linearVelocity.getFloat(0), linearVelocity.getFloat(1),
+					linearVelocity.getFloat(2));
+		}
+
+		if (tagCompound.hasKey("AngularVelocity")) {
+			NBTTagList angularVelocity = tagCompound.getTagList("AngularVelocity", 5);
+			this.linearVelocity = new Vector3f(angularVelocity.getFloat(0), angularVelocity.getFloat(1),
+					angularVelocity.getFloat(2));
+		}
+
+		if (tagCompound.hasKey("DropItem")) {
+			NBTTagCompound compound = tagCompound.getCompoundTag("DropItem");
+			this.dropItem = ItemStack.loadItemStackFromNBT(compound);
+		}
+		if (!doesPhysicsObjectExist()) {
+			createPhysicsObject(physicsWorld);
+		} else {
+			updatePhysicsObject(physicsWorld);
+		}
+		super.readEntityFromNBT(tagCompound);
 	}
 
-	// FIXME Causing java.util.ConcurrentModificationException
-	// TODO Probable causes: Saving, dupe entities.
+	@Override
+	protected void updatePhysicsObject(PhysicsWorld physicsWorld) {
+		Transform transform = new Transform();
+		transform.setIdentity();
+		transform.origin.set(this.position);
+		transform.setRotation(this.rotation);
+		rigidBody.setWorldTransform(transform);
+		rigidBody.getProperties().put("BlockState", blockState);
+		if (mass < 0)
+			rigidBody.setGravity(new Vector3f());
+		rigidBody.setFriction(friction);
+		if (linearVelocity != null)
+			rigidBody.setLinearVelocity(linearVelocity);
+		if (angularVelocity != null)
+			rigidBody.setAngularVelocity(angularVelocity);
+	}
+
 	@Override
 	public void writeSpawnData(ByteBuf buffer) {
 		super.writeSpawnData(buffer);
@@ -381,7 +450,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 		// Drops item.
 		if (dropItem != null) {
 			Vector3f centerOfMass = rigidBody.getCenterOfMassPosition();
-			entityDropItem(new ItemStack(dropItem), 0);
+			entityDropItem(dropItem, 0);
 			/*
 			 * Block.spawnAsEntity(worldObj, new BlockPos(centerOfMass.x + 0.5f,
 			 * centerOfMass.y + 0.5F, centerOfMass.z + 0.5F), new

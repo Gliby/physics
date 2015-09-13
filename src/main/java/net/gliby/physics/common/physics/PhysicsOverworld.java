@@ -7,13 +7,13 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
 import net.gliby.physics.Physics;
-import net.gliby.physics.common.physics.entitymechanics.ActivateRedstoneMechanic;
-import net.gliby.physics.common.physics.entitymechanics.BlockInheritanceMechanic;
-import net.gliby.physics.common.physics.entitymechanics.BounceMechanic;
-import net.gliby.physics.common.physics.entitymechanics.ClientBlockInheritanceMechanic;
-import net.gliby.physics.common.physics.entitymechanics.EnvironmentGravityMechanic;
-import net.gliby.physics.common.physics.entitymechanics.EnvironmentResponseMechanic;
-import net.gliby.physics.common.physics.entitymechanics.RigidBodyMechanic;
+import net.gliby.physics.common.entity.mechanics.ActivateRedstoneMechanic;
+import net.gliby.physics.common.entity.mechanics.BlockInheritanceMechanic;
+import net.gliby.physics.common.entity.mechanics.BounceMechanic;
+import net.gliby.physics.common.entity.mechanics.ClientBlockInheritanceMechanic;
+import net.gliby.physics.common.entity.mechanics.EnvironmentGravityMechanic;
+import net.gliby.physics.common.entity.mechanics.EnvironmentResponseMechanic;
+import net.gliby.physics.common.entity.mechanics.RigidBodyMechanic;
 import net.minecraft.world.World;
 
 public class PhysicsOverworld {
@@ -44,7 +44,7 @@ public class PhysicsOverworld {
 		return mechanic;
 	}
 
-	private Map<World, PhysicsWorld> physicsWorlds = new HashMap<World, PhysicsWorld>();
+	protected Map<World, PhysicsWorld> physicsWorlds = new HashMap<World, PhysicsWorld>();
 
 	public Map<World, PhysicsWorld> getPhysicsWorldMap() {
 		return physicsWorlds;

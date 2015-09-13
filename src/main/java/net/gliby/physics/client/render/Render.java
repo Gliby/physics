@@ -13,7 +13,6 @@ import net.gliby.physics.client.render.entity.RenderPhysicsModelPart;
 import net.gliby.physics.client.render.entity.RenderToolGunBeam;
 import net.gliby.physics.client.render.items.RenderItemPhysicsGun;
 import net.gliby.physics.client.render.items.RenderItemToolGun;
-import net.gliby.physics.client.render.lighting.AtomicStrykerLight;
 import net.gliby.physics.client.render.lighting.DummyLight;
 import net.gliby.physics.client.render.lighting.IDynamicLightHandler;
 import net.gliby.physics.client.render.player.RenderAdditionalPlayer;
@@ -37,6 +36,7 @@ public class Render {
 	{
 		physicsGunColors.put("a6a677aa-2589-4988-b686-59afd7c170f2", 0xFF87FF77);
 		physicsGunColors.put("c4924b85-b249-4264-9d93-b54b1137d629", 0xFFF81A1A);
+		physicsGunColors.put("1d7df249-ed29-49ca-a448-209264346386", 0xFFED7C12); // Reed
 	}
 
 	/**
@@ -49,10 +49,10 @@ public class Render {
 	private static IDynamicLightHandler lightHandler;
 
 	public Render(boolean dynamicLightsPresent) {
-		//TODO Re-implement some day
+		// TODO Re-implement some day
 		if (dynamicLightsPresent) {
-//			lightHandler = new AtomicStrykerLight();
-		}else
+			// lightHandler = new AtomicStrykerLight();
+		} else
 			lightHandler = new DummyLight();
 	}
 

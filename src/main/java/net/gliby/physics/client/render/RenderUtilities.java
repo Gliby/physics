@@ -13,16 +13,13 @@ import java.nio.FloatBuffer;
 
 import javax.vecmath.Vector3f;
 
+import com.bulletphysics.linearmath.Transform;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-import com.bulletphysics.linearmath.Transform;
 
 /**
  *

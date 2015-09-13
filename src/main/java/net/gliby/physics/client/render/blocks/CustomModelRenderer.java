@@ -17,7 +17,6 @@ import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.fml.client.config.GuiConfigEntries.IntegerEntry;
 
 /**
  *

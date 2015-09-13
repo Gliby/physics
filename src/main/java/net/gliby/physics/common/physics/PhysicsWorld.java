@@ -3,6 +3,7 @@
  */
 package net.gliby.physics.common.physics;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -11,17 +12,22 @@ import java.util.Map;
 import javax.vecmath.Vector3f;
 
 import com.bulletphysics.linearmath.Transform;
-import com.google.common.base.Predicate;
 import com.google.gson.annotations.SerializedName;
 
-import net.gliby.gman.settings.INIProperties;
-import net.gliby.gman.settings.ObjectSetting;
-import net.gliby.gman.settings.Setting.Listener;
-import net.gliby.physics.Physics;
-import net.gliby.physics.common.physics.worldmechanics.PhysicsMechanic;
+import net.gliby.gman.WorldUtility;
+import net.gliby.physics.common.physics.engine.ICollisionObject;
+import net.gliby.physics.common.physics.engine.ICollisionShape;
+import net.gliby.physics.common.physics.engine.IConstraint;
+import net.gliby.physics.common.physics.engine.IConstraintGeneric6Dof;
+import net.gliby.physics.common.physics.engine.IConstraintPoint2Point;
+import net.gliby.physics.common.physics.engine.IConstraintSlider;
+import net.gliby.physics.common.physics.engine.IGhostObject;
+import net.gliby.physics.common.physics.engine.IRayResult;
+import net.gliby.physics.common.physics.engine.IRigidBody;
+import net.gliby.physics.common.physics.engine.IRope;
+import net.gliby.physics.common.physics.mechanics.PhysicsMechanic;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
@@ -36,8 +42,6 @@ public abstract class PhysicsWorld implements Runnable {
 	protected boolean running;
 	protected World world;
 
-	protected final static AxisAlignedBB MAX_BB = AxisAlignedBB.fromBounds(Double.MAX_VALUE, Double.MAX_VALUE,
-			Double.MAX_VALUE, -Double.MAX_VALUE, -Double.MAX_VALUE, -Double.MAX_VALUE);
 	protected HashMap<String, PhysicsMechanic> physicsMechanics;
 
 	public abstract boolean shouldSimulate();
@@ -69,6 +73,20 @@ public abstract class PhysicsWorld implements Runnable {
 		}
 	}
 
+	// TODO Get rid of transform references
+	public ICollisionShape createBlockShape(World worldObj, BlockPos blockPos, IBlockState blockState) {
+		if (!blockState.getBlock().isNormalCube()) {
+			List<AxisAlignedBB> collisionBBs = new ArrayList<AxisAlignedBB>();
+			blockState.getBlock().addCollisionBoxesToList(worldObj, blockPos, blockState, WorldUtility.MAX_BB,
+					collisionBBs, null);
+			return buildCollisionShape(collisionBBs, new Vector3f(blockPos.getX(), blockPos.getY(), blockPos.getZ()));
+		}
+		Vector3f blockPosition = new Vector3f((float) blockState.getBlock().getBlockBoundsMaxX(),
+				(float) blockState.getBlock().getBlockBoundsMaxY(), (float) blockState.getBlock().getBlockBoundsMaxZ());
+		blockPosition.scale(0.5f);
+		return createBoxShape(blockPosition);
+	}
+
 	int tick;
 
 	protected void update() {
@@ -85,6 +103,8 @@ public abstract class PhysicsWorld implements Runnable {
 			}
 		}
 	}
+
+	public abstract ICollisionShape buildCollisionShape(List<AxisAlignedBB> bbs, Vector3f offset);
 
 	public abstract IRigidBody createRigidBody(Entity owner, Transform transform, float mass, ICollisionShape shape);
 
@@ -125,17 +145,16 @@ public abstract class PhysicsWorld implements Runnable {
 		dispose();
 	}
 
-	public abstract void dispose();
-
-	public abstract IRope createRope(Vector3f startPos, Vector3f endPos, int detail);
+	protected abstract void dispose();
 
 	/**
-	 * @param worldObj
-	 * @param blockPos
-	 * @param blockState
+	 * 
+	 * @param startPos
+	 * @param endPos
+	 * @param detail
 	 * @return
 	 */
-	public abstract ICollisionShape createBlockShape(World worldObj, BlockPos blockPos, IBlockState blockState);
+	public abstract IRope createRope(Vector3f startPos, Vector3f endPos, int detail);
 
 	/**
 	 * @return

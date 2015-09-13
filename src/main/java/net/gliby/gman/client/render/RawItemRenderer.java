@@ -2,12 +2,12 @@ package net.gliby.gman.client.render;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import javax.vecmath.Matrix4f;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -24,12 +24,9 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.model.IFlexibleBakedModel;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.client.model.ISmartItemModel;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Credits: iChun

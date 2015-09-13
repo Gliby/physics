@@ -3,18 +3,16 @@
  */
 package net.gliby.gman;
 
-import io.netty.buffer.ByteBuf;
-
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
+import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.state.IBlockState;
 
 /**
- * 
+ *
  */
 public class BlockUtility {
 
@@ -60,7 +58,7 @@ public class BlockUtility {
 		IBlockState outState = metaState;
 		IBlockState defaultState = metaState.getBlock().getDefaultState();
 
-		List<IProperty> dataProperties = new ArrayList<IProperty>();
+		new ArrayList<IProperty>();
 
 		for (IProperty property : (Collection<IProperty>) metaState.getProperties().keySet()) {
 			Comparable<?> metaValue = metaState.getValue(property);

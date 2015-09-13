@@ -5,7 +5,6 @@ package net.gliby.physics.client.gui;
 
 import net.gliby.physics.Physics;
 import net.gliby.physics.client.PhysicsClient;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;

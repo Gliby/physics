@@ -3,7 +3,26 @@
  */
 package net.gliby.physics.client.render.world;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
+import static org.lwjgl.opengl.GL11.GL_LINE_SMOOTH;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glBegin;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glColor4f;
+import static org.lwjgl.opengl.GL11.glDisable;
+import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.glEnd;
+import static org.lwjgl.opengl.GL11.glLineWidth;
+import static org.lwjgl.opengl.GL11.glMultMatrix;
+import static org.lwjgl.opengl.GL11.glPointSize;
+import static org.lwjgl.opengl.GL11.glPopMatrix;
+import static org.lwjgl.opengl.GL11.glPushMatrix;
+import static org.lwjgl.opengl.GL11.glScalef;
+import static org.lwjgl.opengl.GL11.glTranslatef;
+import static org.lwjgl.opengl.GL11.glVertex3f;
 
 import java.nio.FloatBuffer;
 import java.util.List;
@@ -18,13 +37,13 @@ import com.bulletphysics.linearmath.Transform;
 import net.gliby.physics.Physics;
 import net.gliby.physics.client.ClientPhysicsOverworld;
 import net.gliby.physics.client.render.RenderUtilities;
-import net.gliby.physics.common.physics.ICollisionShapeChildren;
-import net.gliby.physics.common.physics.IConstraint;
-import net.gliby.physics.common.physics.IConstraintGeneric6Dof;
-import net.gliby.physics.common.physics.IConstraintPoint2Point;
-import net.gliby.physics.common.physics.IRigidBody;
-import net.gliby.physics.common.physics.IRope;
 import net.gliby.physics.common.physics.PhysicsWorld;
+import net.gliby.physics.common.physics.engine.ICollisionShapeChildren;
+import net.gliby.physics.common.physics.engine.IConstraint;
+import net.gliby.physics.common.physics.engine.IConstraintGeneric6Dof;
+import net.gliby.physics.common.physics.engine.IConstraintPoint2Point;
+import net.gliby.physics.common.physics.engine.IRigidBody;
+import net.gliby.physics.common.physics.engine.IRope;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -44,8 +63,8 @@ public class RenderAdditionalWorld {
 		mc = Minecraft.getMinecraft();
 	}
 
-	//TODO REDO
-	
+	// TODO REDO
+
 	@SubscribeEvent
 	public void postRender(RenderWorldLastEvent event) {
 		// if (MineFortress.DEBUG_PHYSICS_RENDER)
@@ -66,131 +85,123 @@ public class RenderAdditionalWorld {
 		boolean renderRopeJoints = true;
 
 		PhysicsWorld physicsWorld = overworld.getPhysicsByWorld(mc.theWorld);
-		Vector3f world = RenderUtilities.getWorldTranslation(mc, event.partialTicks);
-		glEnable(GL_LINE_SMOOTH);
-		glDisable(GL_TEXTURE_2D);
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glPushMatrix();
-		// Transform into world + physics offset because Minecraft is special.
-		glTranslatef(-world.x + 0.5F, -world.y + 0.5F, -world.z + 0.5F);
-		if (renderConstraint) {
-			for (int i = 0; i < physicsWorld.getConstraints().size(); i++) {
-				IConstraint constraint = physicsWorld.getConstraints().get(i);
-				if (constraint.isPoint2Point()) {
-					IConstraintPoint2Point point2point = (IConstraintPoint2Point) constraint;
-					Vector3f pointA = point2point.getPivotInA(new Vector3f());
-					Vector3f pointB = point2point.getPivotInB(new Vector3f());
-					glPushMatrix();
-					GL11.glBegin(GL11.GL_LINES);
-					GL11.glVertex3f(pointA.x, pointA.y, pointA.z);
-					GL11.glVertex3f(pointB.x, pointB.y, pointB.z);
-					GL11.glEnd();
-					glPopMatrix();
-				} else if (constraint.isGeneric6Dof()) {
-					IConstraintGeneric6Dof generic6Dof = (IConstraintGeneric6Dof) constraint;
-					Transform pointA = generic6Dof.getGlobalFrameOffsetA(new Transform());
-					Transform pointB = generic6Dof.getGlobalFrameOffsetB(new Transform());
-					glPushMatrix();
-					glColor4f(1.0f, 0.2f, 0.2f, 1.0f);
-					glDisable(GL_DEPTH_TEST);
-					glLineWidth(999.0F);
-					glBegin(GL11.GL_LINES);
-					float size = 0;
-					glVertex3f(pointA.origin.x - size, pointA.origin.y - size, pointA.origin.z - size);
-					glVertex3f(pointB.origin.x + size, pointB.origin.y + size, pointB.origin.z + size);
-					glEnd();
-					glEnable(GL_DEPTH_TEST);
-					glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-					glLineWidth(1.0F);
-					glPopMatrix();
-				}
-			}
-		}
-		for (int i = 0; i < physicsWorld.getRopes().size(); i++) {
-			IRope rope = physicsWorld.getRopes().get(i);
+		if (physicsWorld != null) {
+
+			Vector3f world = RenderUtilities.getWorldTranslation(mc, event.partialTicks);
+			glEnable(GL_LINE_SMOOTH);
+			glDisable(GL_TEXTURE_2D);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glPushMatrix();
-			glColor4f(0.0F, 0.0F, 0.0F, 1.0F);
-
-			if (renderRopeJoints) {
-				glEnable(GL11.GL_POINT_SMOOTH);
-				glPointSize(20);
-				glBegin(GL11.GL_POINTS);
-				for (Vector3f pos : rope.getSpherePositions()) {
-					GL11.glVertex3f(pos.x, pos.y, pos.z);
-				}
-				glEnd();
-
-				glPointSize(15);
-				glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-				glBegin(GL11.GL_POINTS);
-				for (Vector3f pos : rope.getSpherePositions()) {
-					GL11.glVertex3f(pos.x, pos.y, pos.z);
-				}
-				glEnd();
-				glDisable(GL11.GL_POINT_SMOOTH);
-			}
-
-			glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-			glBegin(GL11.GL_LINE_STRIP);
-			for (Vector3f pos : rope.getSpherePositions()) {
-				GL11.glVertex3f(pos.x, pos.y, pos.z);
-			}
-			glEnd();
-			glPopMatrix();
-		}
-
-		for (int i = 0; i < physicsWorld.getRigidBodies().size(); i++) {
-			glPushMatrix();
-			IRigidBody rigidBody = physicsWorld.getRigidBodies().get(i);
-			// Get's world Transform.
-			rigidBody.getWorldTransform(physicsTransform); //
-			// Converts transform.matrix into a matrix4x4 float array.
-			physicsTransform.getOpenGLMatrix(physicsFloatMatrix4x4);
-			physicsFloatBufferMatrix4x4.clear(); // Insert float matrix4x4 into
-			// FloatBuffer because LWJGL takes // FloatBuffer, not float array.
-			physicsFloatBufferMatrix4x4.put(physicsFloatMatrix4x4);
-			physicsFloatBufferMatrix4x4.flip(); // Apply transformation.
-			glMultMatrix(physicsFloatBufferMatrix4x4);
-			if (rigidBody.getCollisionShape().isBoxShape()) {
-				Vector3f halfExtent = new Vector3f();
-				rigidBody.getCollisionShape().getHalfExtentsWithMargin(halfExtent);
-				glScalef(2f * halfExtent.x, 2f * halfExtent.y, 2f * halfExtent.z);
-				glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-				RenderUtilities.drawCube(1.0f, true);
-				glLineWidth(1.5f);
-				glColor4f(1.0f, 0.2f, 0.2f, 0.6f);
-				RenderUtilities.drawCube(1.0f, false);
-			} else if (rigidBody.getCollisionShape().isCompoundShape()) {
-				List<ICollisionShapeChildren> children = rigidBody.getCollisionShape().getChildren();
-				for (int j = 0; j < children.size(); j++) {
-					ICollisionShapeChildren shape = children.get(j);
-					if (shape.getCollisionShape().isBoxShape()) {
-						Transform transform = shape.getTransform();
-						shape.getTransform().getOpenGLMatrix(physicsFloatMatrix4x4);
-						physicsFloatBufferMatrix4x4.clear();
-						physicsFloatBufferMatrix4x4.put(physicsFloatMatrix4x4);
-						physicsFloatBufferMatrix4x4.flip();
-
+			// Transform into world + physics offset because Minecraft is
+			// special.
+			glTranslatef(-world.x + 0.5F, -world.y + 0.5F, -world.z + 0.5F);
+			if (renderConstraint) {
+				for (int i = 0; i < physicsWorld.getConstraints().size(); i++) {
+					IConstraint constraint = physicsWorld.getConstraints().get(i);
+					if (constraint.isPoint2Point()) {
+						IConstraintPoint2Point point2point = (IConstraintPoint2Point) constraint;
+						Vector3f pointA = point2point.getPivotInA(new Vector3f());
+						Vector3f pointB = point2point.getPivotInB(new Vector3f());
 						glPushMatrix();
-						glMultMatrix(physicsFloatBufferMatrix4x4);
-						Vector3f halfExtent = new Vector3f();
-						shape.getCollisionShape().getHalfExtentsWithMargin(halfExtent);
-						glScalef(2f * halfExtent.x, 2f * halfExtent.y, 2f * halfExtent.z);
+						GL11.glBegin(GL11.GL_LINES);
+						GL11.glVertex3f(pointA.x, pointA.y, pointA.z);
+						GL11.glVertex3f(pointB.x, pointB.y, pointB.z);
+						GL11.glEnd();
+						glPopMatrix();
+					} else if (constraint.isGeneric6Dof()) {
+						IConstraintGeneric6Dof generic6Dof = (IConstraintGeneric6Dof) constraint;
+						Transform pointA = generic6Dof.getGlobalFrameOffsetA(new Transform());
+						Transform pointB = generic6Dof.getGlobalFrameOffsetB(new Transform());
+						glPushMatrix();
+						glColor4f(1.0f, 0.2f, 0.2f, 1.0f);
+						glDisable(GL_DEPTH_TEST);
+						glLineWidth(999.0F);
+						glBegin(GL11.GL_LINES);
+						float size = 0;
+						glVertex3f(pointA.origin.x - size, pointA.origin.y - size, pointA.origin.z - size);
+						glVertex3f(pointB.origin.x + size, pointB.origin.y + size, pointB.origin.z + size);
+						glEnd();
+						glEnable(GL_DEPTH_TEST);
 						glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-						RenderUtilities.drawCube(1.0f, true);
-						glLineWidth(1.5f);
-						glColor4f(1.0f, 0.2f, 0.2f, 0.6f);
-						RenderUtilities.drawCube(1.0f, false);
+						glLineWidth(1.0F);
 						glPopMatrix();
 					}
 				}
 			}
+			/*
+			 * for (int i = 0; i < physicsWorld.getRopes().size(); i++) { IRope
+			 * rope = physicsWorld.getRopes().get(i); glPushMatrix();
+			 * glColor4f(0.0F, 0.0F, 0.0F, 1.0F);
+			 * 
+			 * if (renderRopeJoints) { glEnable(GL11.GL_POINT_SMOOTH);
+			 * glPointSize(20); glBegin(GL11.GL_POINTS); for (Vector3f pos :
+			 * rope.getSpherePositions()) { GL11.glVertex3f(pos.x, pos.y,
+			 * pos.z); } glEnd();
+			 * 
+			 * glPointSize(15); glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+			 * glBegin(GL11.GL_POINTS); for (Vector3f pos :
+			 * rope.getSpherePositions()) { GL11.glVertex3f(pos.x, pos.y,
+			 * pos.z); } glEnd(); glDisable(GL11.GL_POINT_SMOOTH); }
+			 * 
+			 * glColor4f(1.0F, 1.0F, 1.0F, 1.0F); glBegin(GL11.GL_LINE_STRIP);
+			 * for (Vector3f pos : rope.getSpherePositions()) {
+			 * GL11.glVertex3f(pos.x, pos.y, pos.z); } glEnd(); glPopMatrix(); }
+			 */
+			for (int i = 0; i < physicsWorld.getRigidBodies().size(); i++) {
+				glPushMatrix();
+				IRigidBody rigidBody = physicsWorld.getRigidBodies().get(i);
+				// Get's world Transform.
+				rigidBody.getWorldTransform(physicsTransform); //
+				// Converts transform.matrix into a matrix4x4 float array.
+				physicsTransform.getOpenGLMatrix(physicsFloatMatrix4x4);
+				physicsFloatBufferMatrix4x4.clear(); // Insert float matrix4x4
+														// into
+				// FloatBuffer because LWJGL takes // FloatBuffer, not float
+				// array.
+				physicsFloatBufferMatrix4x4.put(physicsFloatMatrix4x4);
+				physicsFloatBufferMatrix4x4.flip(); // Apply transformation.
+				glMultMatrix(physicsFloatBufferMatrix4x4);
+				if (rigidBody.getCollisionShape().isBoxShape()) {
+					Vector3f halfExtent = new Vector3f();
+					rigidBody.getCollisionShape().getHalfExtentsWithMargin(halfExtent);
+					glScalef(2f * halfExtent.x, 2f * halfExtent.y, 2f * halfExtent.z);
+					glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+					RenderUtilities.drawCube(1.0f, true);
+					glLineWidth(1.5f);
+					glColor4f(1.0f, 0.2f, 0.2f, 0.6f);
+					RenderUtilities.drawCube(1.0f, false);
+				} else if (rigidBody.getCollisionShape().isCompoundShape()) {
+					List<ICollisionShapeChildren> children = rigidBody.getCollisionShape().getChildren();
+					for (int j = 0; j < children.size(); j++) {
+						ICollisionShapeChildren shape = children.get(j);
+						if (shape.getCollisionShape().isBoxShape()) {
+							Transform transform = shape.getTransform();
+							shape.getTransform().getOpenGLMatrix(physicsFloatMatrix4x4);
+							physicsFloatBufferMatrix4x4.clear();
+							physicsFloatBufferMatrix4x4.put(physicsFloatMatrix4x4);
+							physicsFloatBufferMatrix4x4.flip();
+
+							glPushMatrix();
+							glMultMatrix(physicsFloatBufferMatrix4x4);
+							Vector3f halfExtent = new Vector3f();
+							shape.getCollisionShape().getHalfExtentsWithMargin(halfExtent);
+							glScalef(2f * halfExtent.x, 2f * halfExtent.y, 2f * halfExtent.z);
+							glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+							RenderUtilities.drawCube(1.0f, true);
+							glLineWidth(1.5f);
+							glColor4f(1.0f, 0.2f, 0.2f, 0.6f);
+							RenderUtilities.drawCube(1.0f, false);
+							glPopMatrix();
+						}
+					}
+				}
+				glPopMatrix();
+			}
 			glPopMatrix();
+			glDisable(GL_LINE_SMOOTH);
+			glEnable(GL_TEXTURE_2D);
 		}
-		glPopMatrix();
-		glDisable(GL_LINE_SMOOTH);
-		glEnable(GL_TEXTURE_2D);
 
 	}
 

@@ -3,15 +3,12 @@
  */
 package net.gliby.physics.common.entity;
 
-import io.netty.buffer.ByteBuf;
-
 import javax.vecmath.Vector3f;
 
+import io.netty.buffer.ByteBuf;
 import net.gliby.physics.client.SoundHandler;
 import net.gliby.physics.client.render.RenderUtilities;
-import net.gliby.physics.common.EntityUtility;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ISound;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;

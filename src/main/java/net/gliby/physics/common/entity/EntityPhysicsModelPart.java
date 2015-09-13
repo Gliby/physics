@@ -3,26 +3,23 @@
  */
 package net.gliby.physics.common.entity;
 
-import io.netty.buffer.ByteBuf;
-
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
-import net.gliby.physics.common.entity.datawatcher.DataWatchableQuat4f;
-import net.gliby.physics.common.entity.datawatcher.DataWatchableVector3f;
-import net.gliby.physics.common.physics.IRigidBody;
+import com.bulletphysics.collision.shapes.BoxShape;
+import com.bulletphysics.linearmath.Transform;
+
+import io.netty.buffer.ByteBuf;
+import net.gliby.gman.DataWatchableQuat4f;
+import net.gliby.gman.DataWatchableVector3f;
 import net.gliby.physics.common.physics.PhysicsWorld;
-import net.gliby.physics.common.physics.jbullet.JavaCollisionObject;
+import net.gliby.physics.common.physics.engine.IRigidBody;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import com.bulletphysics.collision.shapes.BoxShape;
-import com.bulletphysics.dynamics.RigidBody;
-import com.bulletphysics.linearmath.Transform;
 
 /**
  *
@@ -212,5 +209,9 @@ public class EntityPhysicsModelPart extends EntityPhysicsBase implements IEntity
 
 	@Override
 	protected void createPhysicsObject(PhysicsWorld physicsWorld) {
+	}
+
+	@Override
+	protected void updatePhysicsObject(PhysicsWorld physicsWorld) {
 	}
 }
