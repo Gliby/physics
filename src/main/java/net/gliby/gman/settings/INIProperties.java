@@ -347,7 +347,7 @@ public class INIProperties extends ArrayList {
 			try {
 				throw new INIPropertiesReadFailure("ReadString operation failed", value);
 			} catch (INIPropertiesReadFailure e) {
-				e.printStackTrace();
+//				e.printStackTrace();
 			}
 		}
 		return value;

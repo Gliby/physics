@@ -6,12 +6,25 @@ package net.gliby.gman.settings;
 import java.util.ArrayList;
 
 import net.gliby.gman.settings.INIProperties.INIPropertiesReadFailure;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**
  *
  */
 public abstract class Setting {
+
+	public enum Side {
+		CLIENT, SERVER, BOTH;
+
+		public static Side getEffectiveSide() {
+			return toSide(FMLCommonHandler.instance().getEffectiveSide());
+		}
+
+		private static Side toSide(net.minecraftforge.fml.relauncher.Side effectiveSide) {
+			return effectiveSide == net.minecraftforge.fml.relauncher.Side.CLIENT ? Side.CLIENT : Side.CLIENT;
+		}
+	}
 
 	public final String name, category;
 	public final Side side;

@@ -1,12 +1,21 @@
 package net.gliby.physics;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.badlogic.gdx.Version;
+import com.google.common.base.Predicate;
+
+import net.gliby.gman.GMan;
+import net.gliby.gman.ModInfo;
 import net.gliby.gman.RawItem;
+import net.gliby.gman.settings.Setting;
 import net.gliby.gman.settings.SettingsHandler;
+import net.gliby.gman.settings.StringSetting;
 import net.gliby.physics.client.PhysicsClient;
 import net.gliby.physics.common.PhysicsServer;
 import net.gliby.physics.common.entity.EntityPhysicsBlock;
@@ -38,7 +47,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = Physics.MOD_ID, name = Physics.MOD_NAME, version = "0.0.1")
+@Mod(modid = Physics.MOD_ID, name = Physics.MOD_NAME, version = Physics.MOD_VERSION)
 public class Physics {
 
 	/**
@@ -48,6 +57,7 @@ public class Physics {
 
 	public static final String MOD_NAME = "Gliby's Physics";
 	public static final String MOD_ID = "glibysphysics";
+	public static final String MOD_VERSION = "0.0.4";
 
 	@Instance
 	private static Physics instance;
@@ -59,9 +69,16 @@ public class Physics {
 
 	public static RawItem itemPhysicsGun, itemToolgun;
 
+	private GMan gman;
+
+	public GMan getGMan() {
+		return gman;
+	}
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		Physics.instance = this;
+		this.instance = this;
+
 		registerEntity(EntityPhysicsBlock.class, "PhysicsBlock", 64, 1, false);
 		registerEntity(EntityPhysicsModelPart.class, "Model Part Entity", 64, 1, false);
 		registerEntity(EntityToolGunBeam.class, "Tool Gun Beam", 64, 1, false);
@@ -71,25 +88,62 @@ public class Physics {
 		settings = new SettingsHandler(new File(dir, "Settings.ini"));
 
 		// TODO Add on client
-		settings.registerBoolean("PhysicsEngine", "UseJavaPhysics", false, Side.SERVER);
+		settings.registerBoolean("PhysicsEngine", "UseJavaPhysics", false, Setting.Side.SERVER);
 
 		settings.registerObject("PhysicsEntities", "EntityColliderBlacklist", new String[] {
 				IEntityPhysics.class.getName(), EntityToolGunBeam.class.getName(), EntityItem.class.getName() },
-				Side.SERVER);
+				Setting.Side.SERVER);
 
-		settings.registerFloat("PhysicsEntities", "InactivityDeathTime", 30, Side.SERVER);
-		settings.registerFloat("PhysicsEntities", "EntityColliderCleanupTime", 0.25f, Side.SERVER);
-		settings.registerFloat("Game", "ProjectileImpulseForce", 30, Side.SERVER);
-		settings.registerFloat("Game", "ExplosionImpulseRadius", 16, Side.SERVER);
-		settings.registerFloat("Game", "ExplosionImpulseForce", 150, Side.SERVER);
+		settings.registerFloat("PhysicsEntities", "InactivityDeathTime", 30, Setting.Side.SERVER);
+		settings.registerFloat("PhysicsEntities", "EntityColliderCleanupTime", 0.25f, Setting.Side.SERVER);
+		settings.registerFloat("Game", "ProjectileImpulseForce", 30, Setting.Side.SERVER);
+		settings.registerFloat("Game", "ExplosionImpulseRadius", 16, Setting.Side.SERVER);
+		settings.registerFloat("Game", "ExplosionImpulseForce", 150, Setting.Side.SERVER);
+		settings.registerInteger("Tools", "AttractRadius", 16, Setting.Side.SERVER);
+		settings.registerInteger("Tools", "GravitizerRadius", 16, Setting.Side.SERVER);
+		settings.registerInteger("Tools", "GravitizerForce", 10, Setting.Side.SERVER);
+		settings.registerInteger("Tools", "AttractForce", 10, Setting.Side.SERVER);
 
-		settings.registerInteger("Tools", "AttractRadius", 16, Side.SERVER);
-		settings.registerInteger("Tools", "GravitizerRadius", 16, Side.SERVER);
-		settings.registerInteger("Tools", "GravitizerForce", 10, Side.SERVER);
-		settings.registerInteger("Tools", "AttractForce", 10, Side.SERVER);
-
-		settings.registerBoolean("Miscellaneous", "DisableAllowFlight", true, Side.SERVER);
+		settings.registerString("Miscellaneous", "LastVersion", MOD_VERSION, Setting.Side.BOTH);
+		settings.registerBoolean("Miscellaneous", "DisableAllowFlight", true, Setting.Side.SERVER);
 		settings.load();
+		gman = GMan.create(getLogger(), new ModInfo(MOD_ID, event.getModMetadata().updateUrl),
+				MinecraftForge.MC_VERSION, MOD_VERSION);
+
+		StringSetting lastVersion = settings.getStringSetting("Miscellaneous.LastVersion");
+		final boolean modUpdated = !lastVersion.getString().equals(MOD_VERSION);
+		System.out.println("Mod updated? " + modUpdated);
+		if (modUpdated) {
+			getLogger().info("Version change detected, gathering change logs!");
+			gman.request(new GMan.CustomRequest() {
+
+				@Override
+				public void request(final GMan gman) {
+					Map<String, Object> json = gman.getJSONMap("news/index.json");
+					final ArrayList<String> index = (ArrayList<String>) json.get("Versions");
+					String versions[] = gman.getVersionsBetween(MOD_VERSION, gman.getModInfo().getLatestVersion(),
+							new Predicate<String>() {
+						@Override
+						public boolean apply(String input) {
+							return index.contains(input) && !input.equals(MOD_VERSION);
+						}
+					});
+					ArrayList<VersionChanges> changes = new ArrayList<VersionChanges>();
+					for (String s : versions) {
+						VersionChanges versionChanges = (VersionChanges) gman.getJSON("news/" + s + ".json",
+								VersionChanges.class);
+						if (versionChanges != null)
+							if (versionChanges.getMajorChanges() != null)
+								changes.add(versionChanges.setVersion(s));
+					}
+					gman.getProperties().put("VersionChanges", changes);
+				}
+			});
+		}
+
+		// TODO Re-enable
+		// lastVersion.setString(MOD_VERSION);
+		settings.save();
 
 		/*
 		 * EntityRegistry.registerGlobalEntityID(EntityPhysicsRagdoll.class,
