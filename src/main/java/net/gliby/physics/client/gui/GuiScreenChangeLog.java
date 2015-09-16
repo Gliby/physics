@@ -3,6 +3,8 @@ package net.gliby.physics.client.gui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.input.Keyboard;
+
 import net.gliby.physics.Physics;
 import net.gliby.physics.VersionChanges;
 import net.gliby.physics.client.gui.GuiScreenChangeLog.FormattedChangeLog.Page;
@@ -31,8 +33,8 @@ public class GuiScreenChangeLog extends GuiScreen {
 			ArrayList<Page> pages = new ArrayList<Page>();
 			ArrayList<Text> texts = new ArrayList<Text>();
 			for (String s : changes) {
-				int blockSize = fontRenderer.listFormattedStringToWidth(s, wrap).size();
-				texts.add(new Text(s, blockSize));
+				s += "?????????????";
+				texts.add(new Text(s));
 			}
 			pages.add(new Page(category, texts));
 			// pages.add(new Page(category, changes));
@@ -43,11 +45,9 @@ public class GuiScreenChangeLog extends GuiScreen {
 
 			public static class Text {
 				String text;
-				int blockSize;
 
-				public Text(String s, int blockSize) {
+				public Text(String s) {
 					this.text = s;
-					this.blockSize = blockSize;
 				}
 			}
 
@@ -68,6 +68,7 @@ public class GuiScreenChangeLog extends GuiScreen {
 	ArrayList<FormattedChangeLog> formattedLog;
 
 	protected final int PAGE_DIVIDER = 20;
+	protected final int WRAP = 175;
 
 	public GuiScreenChangeLog(ArrayList<VersionChanges> versionChanges) {
 		this.versionChanges = versionChanges;
@@ -86,7 +87,7 @@ public class GuiScreenChangeLog extends GuiScreen {
 		// if (formattedLog.isEmpty()) {
 		formattedLog.clear();
 		for (VersionChanges changes : versionChanges) {
-			formattedLog.add(new FormattedChangeLog(changes, fontRendererObj, 175, 5));
+			formattedLog.add(new FormattedChangeLog(changes, fontRendererObj, WRAP, 5));
 		}
 		// }
 	}
@@ -96,6 +97,9 @@ public class GuiScreenChangeLog extends GuiScreen {
 	// texture size: 570, 382
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+		if (Keyboard.isKeyDown(Keyboard.KEY_R))
+			initGui();
+
 		drawDefaultBackground();
 		mc.renderEngine.bindTexture(backgroundGui);
 		int drawWidth = 412;
@@ -105,17 +109,30 @@ public class GuiScreenChangeLog extends GuiScreen {
 		drawModalRectWithCustomSizedTexture(width / 2 - 152 - 37, height / 2 - 105, 0, 0, drawWidth, drawHeight,
 				drawWidth + 100, drawHeight);
 		FormattedChangeLog changes = formattedLog.get(0);
-		for (int pageIndex = 0; pageIndex < changes.getPages().size(); pageIndex++) {
+		for (int pageIndex = 0; pageIndex < 1; pageIndex++) {
 			Page page = changes.getPages().get(pageIndex);
+			Page prevPage = null;
+			int textX = width / 2 - 175;
+			/*
+			 * drawString(fontRendererObj, EnumChatFormatting.BOLD +
+			 * page.category, textX, height / 2 - 97 + ((page.blockSizeSum *
+			 * fontRendererObj.FONT_HEIGHT) * pageIndex), -1);
+			 */
+
 			for (int textIndex = 0; textIndex < page.texts.size(); textIndex++) {
 				Text text = page.texts.get(textIndex);
-				String textString = EnumChatFormatting.BOLD + "* " + EnumChatFormatting.RESET + text.text + "";
-				int textY = height / 2 + ((pageIndex * textIndex) * text.blockSize * fontRendererObj.FONT_HEIGHT) - 90;
-				int textX = width / 2 - 175;
-
-				fontRendererObj.drawSplitString(textString, textX + 1, textY + 1, 175, 0);
-				fontRendererObj.drawSplitString(textString, textX, textY, 175, -1);
+				String textString = EnumChatFormatting.BOLD + " * " + EnumChatFormatting.RESET + text.text + "";
+				/*
+				 * int textY = height / 2 + ((pageIndex * page.blockSizeSum) *
+				 * fontRendererObj.FONT_HEIGHT) + ((text.blockSize * textIndex)
+				 * * fontRendererObj.FONT_HEIGHT) - 85;
+				 */
+				int tempBlockSize = fontRendererObj.listFormattedStringToWidth(textString, WRAP).size();
+				int textY = height / 2 - 90 + ((textIndex) * (tempBlockSize) * fontRendererObj.FONT_HEIGHT);
+				fontRendererObj.drawSplitString(textString, textX + 1, textY + 1, WRAP, 0);
+				fontRendererObj.drawSplitString(textString, textX, textY, WRAP, -1);
 			}
+			prevPage = page;
 		}
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}
