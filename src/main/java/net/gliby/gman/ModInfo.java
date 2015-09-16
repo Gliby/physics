@@ -19,6 +19,8 @@ public class ModInfo {
 
 	public final String modId;
 
+	private String latestVersion;
+
 	public ModInfo() {
 		this.modId = "NULL";
 	}
@@ -29,13 +31,15 @@ public class ModInfo {
 		this.modId = modId;
 	}
 
-	void determineUpdate(String currentModVersion, String currentMinecraftVersion) {
+	ModInfo determineUpdate(String currentModVersion, String currentMinecraftVersion) {
 		for (final String s : versions) {
 			if (s.startsWith(currentMinecraftVersion)) {
-				updated = s.split(":")[1].trim().equals(currentModVersion);
+				this.latestVersion = s.split(":")[1].trim();
+				updated = latestVersion.equals(currentModVersion);
 				break;
 			}
 		}
+		return this;
 	}
 
 	public final String getUpdateSite() {
@@ -54,5 +58,9 @@ public class ModInfo {
 
 	public final boolean updateNeeded() {
 		return !updated;
+	}
+	
+	public String getLatestVersion() {
+		return latestVersion;
 	}
 }

@@ -35,6 +35,10 @@ public class StringSetting extends Setting {
 		return (String) data;
 	}
 
+	public void setString(String s) {
+		this.data = s;
+	}
+
 	@Override
 	public boolean hasChanged() {
 		return data != lastData;

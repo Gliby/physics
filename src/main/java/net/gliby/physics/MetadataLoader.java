@@ -51,7 +51,6 @@ public abstract class MetadataLoader {
 						} catch (Exception e) {
 							if (!(e instanceof NullPointerException))
 								e.printStackTrace();
-						} finally {
 						}
 					}
 				}
@@ -71,9 +70,7 @@ public abstract class MetadataLoader {
 				blockLoadQueue.offer(new Callable() {
 					@Override
 					public Object call() {
-
 						Map<String, Object> json = null;
-
 						try {
 							if ((json = loadMetadataJSON(blockID)) != null) {
 								PhysicsBlockMetadata metadata = getMetadata(blockID, json);
