@@ -38,6 +38,7 @@ public class EnvironmentResponseMechanic extends RigidBodyMechanic {
 			rigidBody.getOwner().setDead();
 		}
 		
+		
 		if (entity.isInWater()) {
 			Vector3f centerOfMass = rigidBody.getCenterOfMassPosition();
 			float size = 0.5f;

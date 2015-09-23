@@ -88,6 +88,8 @@ public class EntityCollisionResponseMechanic extends PhysicsMechanic {
 
 				IGhostObject ghostObject;
 				if ((ghostObject = ghostObjects.get(entity.getEntityId())) != null) {
+					
+					
 					// Update
 					ghostObject.setWorldTransform(entityTransform);
 					timeAdded.put(entity.getEntityId(), System.currentTimeMillis());
