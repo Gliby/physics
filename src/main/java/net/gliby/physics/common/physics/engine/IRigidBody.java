@@ -16,8 +16,6 @@ import net.minecraft.entity.Entity;
  */
 public interface IRigidBody extends ICollisionObject {
 
-	public Entity getOwner();
-
 	/**
 	 * @return
 	 */

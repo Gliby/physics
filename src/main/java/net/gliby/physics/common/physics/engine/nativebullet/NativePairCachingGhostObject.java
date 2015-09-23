@@ -9,6 +9,7 @@ import com.bulletphysics.linearmath.Transform;
 
 import net.gliby.physics.common.physics.engine.ICollisionShape;
 import net.gliby.physics.common.physics.engine.IGhostObject;
+import net.minecraft.entity.Entity;
 
 /**
  *
@@ -16,9 +17,15 @@ import net.gliby.physics.common.physics.engine.IGhostObject;
 class NativePairCachingGhostObject implements IGhostObject {
 
 	private btPairCachingGhostObject ghostObject;
-
+	Entity owner;
+	
 	NativePairCachingGhostObject(btPairCachingGhostObject object) {
 		this.ghostObject = object;
+	}
+	
+	NativePairCachingGhostObject(Entity owner, btPairCachingGhostObject object) {
+		this.ghostObject = object;
+		this.owner = owner;
 	}
 
 	@Override
@@ -50,6 +57,11 @@ class NativePairCachingGhostObject implements IGhostObject {
 	@Override
 	public void setInterpolationWorldTransform(Transform entityTransform) {
 		ghostObject.setInterpolationWorldTransform(NativePhysicsWorld.fromTransformToMatrix4(entityTransform));
+	}
+
+	@Override
+	public Entity getOwner() {
+		return owner;
 	}
 
 }

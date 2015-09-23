@@ -24,26 +24,19 @@ import net.minecraft.entity.Entity;
  */
 class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 
-	private Entity entity;
 	private btRigidBody rigidBody;
 
 	private ICollisionShape collisionShape;
 	private Map<String, Object> properties;
 
 	public NativeRigidBody(btRigidBody rigidBody, Entity entity) {
-		super(rigidBody);
+		super(entity, rigidBody);
 		this.rigidBody = rigidBody;
-		this.entity = entity;
 		this.collisionShape = new NativeCollisionShape(rigidBody.getCollisionShape());
 		this.properties = new HashMap<String, Object>();
 		this.rotation = new NativeQuaternion(rigidBody.getOrientation());
 		this.vectorPosition = new Vector3();
 		this.position = new NativeVector3(vectorPosition);
-	}
-
-	@Override
-	public Entity getOwner() {
-		return entity;
 	}
 
 	@Override

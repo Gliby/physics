@@ -5,11 +5,16 @@ package net.gliby.physics.common.physics.engine;
 
 import com.bulletphysics.linearmath.Transform;
 
+import net.minecraft.entity.Entity;
+
 /**
  *
  */
 public interface ICollisionObject {
 
+	public Entity getOwner();
+	
+	
 	public Object getCollisionObject();
 
 	/**

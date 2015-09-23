@@ -9,6 +9,7 @@ import com.bulletphysics.linearmath.Transform;
 
 import net.gliby.physics.common.physics.engine.ICollisionObject;
 import net.gliby.physics.common.physics.engine.ICollisionShape;
+import net.minecraft.entity.Entity;
 
 /**
  *
@@ -20,6 +21,14 @@ class NativeCollisionObject implements ICollisionObject {
 	NativeCollisionObject(btCollisionObject object) {
 		this.object = object;
 	}
+	
+	Entity owner;
+
+	NativeCollisionObject(Entity owner, btCollisionObject object) {
+		this.owner = owner;
+		this.object = object;
+	}
+
 
 	@Override
 	public Object getCollisionObject() {
@@ -44,6 +53,11 @@ class NativeCollisionObject implements ICollisionObject {
 	@Override
 	public void setInterpolationWorldTransform(Transform transform) {
 		object.setInterpolationWorldTransform(NativePhysicsWorld.fromTransformToMatrix4(transform));
+	}
+
+	@Override
+	public Entity getOwner() {
+		return owner;
 	}
 
 }

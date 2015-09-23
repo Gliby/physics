@@ -9,6 +9,7 @@ import com.bulletphysics.linearmath.Transform;
 
 import net.gliby.physics.common.physics.engine.ICollisionObject;
 import net.gliby.physics.common.physics.engine.ICollisionShape;
+import net.minecraft.entity.Entity;
 
 /**
  *
@@ -18,6 +19,13 @@ public class JavaCollisionObject implements ICollisionObject {
 	private CollisionObject object;
 
 	JavaCollisionObject(CollisionObject object) {
+		this.object = object;
+	}
+	
+	Entity owner;
+	
+	JavaCollisionObject(Entity owner, CollisionObject object) {
+		this.owner = owner;
 		this.object = object;
 	}
 
@@ -44,6 +52,11 @@ public class JavaCollisionObject implements ICollisionObject {
 	@Override
 	public void setInterpolationWorldTransform(Transform transform) {
 		object.setInterpolationWorldTransform(transform);
+	}
+
+	@Override
+	public Entity getOwner() {
+		return owner;
 	}
 
 }

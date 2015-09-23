@@ -32,11 +32,13 @@ public class GuiScreenChangeLog extends GuiScreen {
 				int wrap, int blockDivider) {
 			ArrayList<Page> pages = new ArrayList<Page>();
 			ArrayList<Text> texts = new ArrayList<Text>();
+			int blockSum = 0;
 			for (String s : changes) {
-				s += "?????????????";
+				s = EnumChatFormatting.BOLD + " * " + EnumChatFormatting.RESET + s + "";
+				blockSum += fontRenderer.listFormattedStringToWidth(s, wrap).size();
 				texts.add(new Text(s));
 			}
-			pages.add(new Page(category, texts));
+			pages.add(new Page(category, texts, blockSum));
 			// pages.add(new Page(category, changes));
 			return pages;
 		}
@@ -54,9 +56,12 @@ public class GuiScreenChangeLog extends GuiScreen {
 			String category;
 			List<Text> texts;
 
-			public Page(String category, List<Text> text) {
+			int blockSum;
+
+			public Page(String category, List<Text> text, int blockSum) {
 				this.category = category;
 				this.texts = text;
+				this.blockSum = blockSum;
 			}
 		}
 
@@ -109,28 +114,28 @@ public class GuiScreenChangeLog extends GuiScreen {
 		drawModalRectWithCustomSizedTexture(width / 2 - 152 - 37, height / 2 - 105, 0, 0, drawWidth, drawHeight,
 				drawWidth + 100, drawHeight);
 		FormattedChangeLog changes = formattedLog.get(0);
-		for (int pageIndex = 0; pageIndex < 1; pageIndex++) {
+		for (int pageIndex = 0; pageIndex < changes.pages.size(); pageIndex++) {
 			Page page = changes.getPages().get(pageIndex);
 			Page prevPage = null;
 			int textX = width / 2 - 175;
-			/*
-			 * drawString(fontRendererObj, EnumChatFormatting.BOLD +
-			 * page.category, textX, height / 2 - 97 + ((page.blockSizeSum *
-			 * fontRendererObj.FONT_HEIGHT) * pageIndex), -1);
-			 */
+			drawString(fontRendererObj, EnumChatFormatting.BOLD + page.category, textX,
+					height / 2 - 97 + ((page.blockSum * fontRendererObj.FONT_HEIGHT) * pageIndex), -1);
 
 			for (int textIndex = 0; textIndex < page.texts.size(); textIndex++) {
 				Text text = page.texts.get(textIndex);
-				String textString = EnumChatFormatting.BOLD + " * " + EnumChatFormatting.RESET + text.text + "";
 				/*
 				 * int textY = height / 2 + ((pageIndex * page.blockSizeSum) *
 				 * fontRendererObj.FONT_HEIGHT) + ((text.blockSize * textIndex)
 				 * * fontRendererObj.FONT_HEIGHT) - 85;
 				 */
-				int tempBlockSize = fontRendererObj.listFormattedStringToWidth(textString, WRAP).size();
-				int textY = height / 2 - 90 + ((textIndex) * (tempBlockSize) * fontRendererObj.FONT_HEIGHT);
-				fontRendererObj.drawSplitString(textString, textX + 1, textY + 1, WRAP, 0);
-				fontRendererObj.drawSplitString(textString, textX, textY, WRAP, -1);
+				int prevBlockSize = (int) (textIndex > 0
+						? fontRendererObj.listFormattedStringToWidth(page.texts.get(textIndex - 1).text, WRAP).size()
+						: 0);
+				int prevBlockSum = prevPage != null ? prevPage.blockSum : 0;
+				int textY = height / 2 - 85 + (fontRendererObj.FONT_HEIGHT * (pageIndex * prevBlockSum))
+						+ (fontRendererObj.FONT_HEIGHT * textIndex) + (5) * (textIndex * prevBlockSize);
+				fontRendererObj.drawSplitString(text.text, textX + 1, textY + 1, WRAP, 0);
+				fontRendererObj.drawSplitString(text.text, textX, textY, WRAP, -1);
 			}
 			prevPage = page;
 		}

@@ -24,14 +24,13 @@ import net.minecraft.entity.Entity;
 class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
 
 	private RigidBody rigidBody;
-	private Entity owner;
 
 	private ICollisionShape collisionShape;
 
 	private Map<String, Object> properties;
 
 	public JavaRigidBody(RigidBody body, Entity owner) {
-		super(body);
+		super(owner, body);
 		this.rigidBody = body;
 		this.owner = owner;
 		this.collisionShape = new JavaCollisionShape(body.getCollisionShape());
@@ -40,11 +39,6 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
 		this.rotation = new JavaQuaternion(quatRotation);
 		this.worldTransform = new Transform();
 		this.position = new JavaVector3(worldTransform.origin);
-	}
-
-	@Override
-	public Entity getOwner() {
-		return owner;
 	}
 
 	@Override
