@@ -1,5 +1,6 @@
 package net.gliby.gman;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -8,6 +9,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
 
 import org.apache.logging.log4j.Logger;
 
@@ -125,7 +128,25 @@ public class GMan {
 			return new Gson().fromJson(reader, clz);
 		return null;
 	}
-	
+
+	public BufferedImage getImage(String filePath) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(LOCATION);
+		builder.append(modInfo.modId);
+		builder.append("/");
+		builder.append(filePath);
+		BufferedImage image = null;
+		try {
+			URL url = new URL(builder.toString());
+			image = ImageIO.read(url);
+		} catch (IOException e) {
+			logger.warn(
+					"Failed to retrieve image from URL, doesn't exist or host(" + builder.toString() + ") is down?");
+			e.printStackTrace();
+		}
+		return image;
+	}
+
 	public Map<String, Object> getJSONMap(String filePath) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(LOCATION);

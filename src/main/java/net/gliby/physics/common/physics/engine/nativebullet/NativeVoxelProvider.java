@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btVoxelContentProvider;
 import com.badlogic.gdx.physics.bullet.collision.btVoxelInfo;
 
+import net.gliby.physics.common.physics.PhysicsOverworld;
 import net.gliby.physics.common.physics.PhysicsWorld;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockPos;
@@ -16,11 +17,13 @@ import net.minecraft.world.World;
 class NativeVoxelProvider extends btVoxelContentProvider {
 
 	private World world;
+	private PhysicsOverworld physicsOverworld;
 	private PhysicsWorld physicsWorld;
 
-	NativeVoxelProvider(World world, PhysicsWorld physicsWorld) {
+	NativeVoxelProvider(World world, PhysicsWorld physicsWorld, PhysicsOverworld physicsOverworld) {
 		this.world = world;
 		this.physicsWorld = physicsWorld;
+		this.physicsOverworld = physicsOverworld;
 	}
 
 	/*
@@ -33,7 +36,6 @@ class NativeVoxelProvider extends btVoxelContentProvider {
 	 * state.getBlock().slipperiness) * 5, 0, 0); }
 	 */
 
-	private Map<IBlockState, btCollisionShape> collisionShapeCache = new HashMap<IBlockState, btCollisionShape>();
 
 	private btVoxelInfo info = new btVoxelInfo(false, false, 0, 0, null, new Vector3(0, 0, 0), 0, 0, 0);
 
@@ -41,14 +43,10 @@ class NativeVoxelProvider extends btVoxelContentProvider {
 	public btVoxelInfo getVoxel(int x, int y, int z) {
 		final BlockPos blockPosition = new BlockPos(x, y, z);
 		final IBlockState state = world.getBlockState(blockPosition);
-		btCollisionShape shape;
-		if ((shape = collisionShapeCache.get(state)) == null) {
-			shape = (btCollisionShape) physicsWorld.createBlockShape(world, blockPosition, state).getCollisionShape();
-			collisionShapeCache.put(state, shape);
-		}
 		info.setTracable(false);
 		info.setBlocking(state.getBlock().getMaterial().isSolid());
-		info.setCollisionShape(shape);
+		info.setCollisionShape((btCollisionShape) physicsOverworld.getBlockCache().getShape(physicsWorld, world, blockPosition, state)
+				.getCollisionShape());
 		info.setFriction((1 - state.getBlock().slipperiness) * 5);
 		return info;
 

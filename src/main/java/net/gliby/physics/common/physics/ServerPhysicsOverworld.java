@@ -24,15 +24,12 @@ import net.gliby.physics.common.physics.engine.nativebullet.NativePhysicsWorld;
 import net.gliby.physics.common.physics.mechanics.gravitymagnets.GravityModifierMechanic;
 import net.gliby.physics.common.physics.mechanics.physicsgun.PickUpMechanic;
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
@@ -96,20 +93,19 @@ public class ServerPhysicsOverworld extends PhysicsOverworld {
 		Vector3f gravity = new Vector3f(0, -9.8F, 0);
 		boolean forceJava = Physics.getInstance().getSettings().getBooleanSetting("PhysicsEngine.UseJavaPhysics")
 				.getBooleanValue();
-		PhysicsWorld worldStepSimulator = OSUtil.getOSType() == OSUtil.EnumOS.WINDOWS && !forceJava
-				? new NativePhysicsWorld(world, tps, gravity) {
+		PhysicsWorld worldStepSimulator = !forceJava ? new NativePhysicsWorld(this, world, tps, gravity) {
 
-					@Override
-					public boolean shouldSimulate() {
-						return true;
-					}
-				} : new JavaPhysicsWorld(world, tps, gravity) {
+			@Override
+			public boolean shouldSimulate(World world, PhysicsWorld physicsWorld) {
+				return !world.playerEntities.isEmpty();
+			}
+		} : new JavaPhysicsWorld(this, world, tps, gravity) {
 
-					@Override
-					public boolean shouldSimulate() {
-						return true;
-					}
-				};
+			@Override
+			public boolean shouldSimulate(World world, PhysicsWorld physicsWorld) {
+				return !world.playerEntities.isEmpty();
+			}
+		};
 
 		worldStepSimulator.getMechanics().put("PickUp", new PickUpMechanic(worldStepSimulator, true, 20));
 		worldStepSimulator.getMechanics().put("GravityMagnet",
@@ -132,15 +128,17 @@ public class ServerPhysicsOverworld extends PhysicsOverworld {
 		}
 	}
 
+	final AxisAlignedBB blockEventBB = new AxisAlignedBB(-1.75, -1.75, -1.75, 1.75, 1.75, 1.75);
+
+	@SubscribeEvent
+	public void onWorldSave(WorldEvent.Save event) {
+	}
+
 	@SubscribeEvent
 	public void onBlockEvent(BlockEvent event) {
 		PhysicsWorld stepSimulator;
 		if ((stepSimulator = getPhysicsWorldMap().get(event.world)) != null) {
-			// 1.75f is completely arbitrary. It works quite well for the time
-			// being.
-			float size = 1.75f;
-			final AxisAlignedBB bb = new AxisAlignedBB(-size, -size, -size, size, size, size).offset(event.pos.getX(),
-					event.pos.getY(), event.pos.getZ());
+			AxisAlignedBB bb = blockEventBB.offset(event.pos.getX(), event.pos.getY(), event.pos.getZ());
 			stepSimulator.awakenArea(new Vector3f((float) bb.minX, (float) bb.minY, (float) bb.minZ),
 					new Vector3f((float) bb.maxX, (float) bb.maxY, (float) bb.maxZ));
 		}

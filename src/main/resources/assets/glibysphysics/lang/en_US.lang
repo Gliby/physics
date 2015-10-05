@@ -3,3 +3,10 @@ item.physicsblockspawner.name=Spawn Physics Block
 item.physicstransformer.name=Physics Transformer
 item.physicstoolgun.name=Tooling Master 3000
 item.physicsgun.name=Physics Manipulator
+
+gui.changelog.next=Next
+gui.changelog.previous=Previous
+gui.changelog.skip=Skip
+gui.changelog.title=What's changed in Gliby's Physics?
+
+gui.creator.title=Physics Creator

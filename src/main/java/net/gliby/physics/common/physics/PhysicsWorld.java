@@ -44,7 +44,7 @@ public abstract class PhysicsWorld implements Runnable {
 
 	protected HashMap<String, PhysicsMechanic> physicsMechanics;
 
-	public abstract boolean shouldSimulate();
+	public abstract boolean shouldSimulate(World world, PhysicsWorld physicsWorld);
 
 	public final int getTicksPerSecond() {
 		return ticksPerSecond;
@@ -140,7 +140,7 @@ public abstract class PhysicsWorld implements Runnable {
 
 	public abstract List<IRope> getRopes();
 
-	public void destroy() {
+	public final void destroy() {
 		this.running = false;
 		dispose();
 	}

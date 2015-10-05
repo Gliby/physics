@@ -10,6 +10,7 @@ import net.gliby.physics.VersionChanges;
 import net.gliby.physics.client.gui.GuiDebug;
 import net.gliby.physics.client.gui.GuiScreenChangeLog;
 import net.gliby.physics.client.gui.GuiScreenWelcome;
+import net.gliby.physics.client.gui.creator.GuiScreenPhysicsCreator;
 import net.gliby.physics.client.keybindings.KeyManager;
 import net.gliby.physics.client.render.Render;
 import net.gliby.physics.common.PhysicsServer;
