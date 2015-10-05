@@ -70,19 +70,19 @@ public class PhysicsClient extends PhysicsServer {
 	}
 
 	@Override
-	public void init(FMLInitializationEvent event) {
-		Physics.getLogger().info("Started!");
+	public void init(Physics physics, FMLInitializationEvent event) {
+		physics.getLogger().info("Started!");
 		boolean dynamicLightsPresent = Loader.isModLoaded("DynamicLights");
 		if (dynamicLightsPresent) {
-			Physics.getLogger().info("DynamicLights by AtomicStryker has been found, enabling dynamic light creation!");
+			physics.getLogger().info("DynamicLights by AtomicStryker has been found, enabling dynamic light creation!");
 		}
 		ItemHandler itemHandler = ItemHandler.getInstance();
 
-		itemHandler.addAlwaysUsedItem(Physics.itemPhysicsGun, false, false);
-		itemHandler.addAlwaysUsedItem(Physics.itemToolgun, false, false);
+		itemHandler.addAlwaysUsedItem(physics.itemPhysicsGun, false, false);
+		itemHandler.addAlwaysUsedItem(physics.itemToolgun, false, false);
 		// TODO Settings
 		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(physicsWorld = new ClientPhysicsOverworld());
+		MinecraftForge.EVENT_BUS.register(physicsWorld = new ClientPhysicsOverworld(physics));
 		// MinecraftForge.EVENT_BUS.register(new
 		// EntityDeathHandler(physicsWorld));
 		render = new Render(dynamicLightsPresent);

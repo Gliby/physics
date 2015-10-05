@@ -12,7 +12,6 @@ import com.google.gson.Gson;
 
 import net.gliby.gman.settings.INIProperties.INIPropertiesReadFailure;
 import net.gliby.gman.settings.Setting.Side;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 
 /**
  * 
@@ -25,12 +24,18 @@ public class SettingsHandler {
 		return settings;
 	}
 
-	private File file;
+	private final File file;
 	private INIProperties properties;
+	private final File directory;
 
-	public SettingsHandler(File file) {
-		this.file = file;
-		properties = new INIProperties(file);
+	public File getDirectory() {
+		return directory;
+	}
+
+	public SettingsHandler(File directory, File settingsFile) {
+		this.directory = directory;
+		this.file = settingsFile;
+		properties = new INIProperties(settingsFile);
 		settings = new ConcurrentHashMap<String, Setting>();
 	}
 

@@ -7,9 +7,9 @@ import javax.vecmath.Vector3f;
 
 import net.gliby.gman.EntityUtility;
 import net.gliby.physics.Physics;
+import net.gliby.physics.common.blocks.PhysicsBlockMetadata;
 import net.gliby.physics.common.entity.EntityPhysicsBlock;
 import net.gliby.physics.common.physics.PhysicsWorld;
-import net.gliby.physics.common.physics.block.PhysicsBlockMetadata;
 import net.gliby.physics.common.physics.engine.IRigidBody;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;

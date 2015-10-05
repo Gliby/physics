@@ -71,11 +71,15 @@ public abstract class JavaPhysicsWorld extends PhysicsWorld {
 	private List<IConstraint> constraints;
 	private DiscreteDynamicsWorld dynamicsWorld;
 	private PhysicsOverworld physicsOverworld;
+	private Physics physics;
+
 	/**
 	 * @param ticksPerSecond
 	 */
-	public JavaPhysicsWorld(PhysicsOverworld physicsOverworld, World world, int ticksPerSecond, Vector3f gravity) {
+	public JavaPhysicsWorld(Physics physics, PhysicsOverworld physicsOverworld, World world, int ticksPerSecond,
+			Vector3f gravity) {
 		super(world, ticksPerSecond, gravity);
+		this.physics = physics;
 		this.physicsOverworld = physicsOverworld;
 	}
 
@@ -116,7 +120,8 @@ public abstract class JavaPhysicsWorld extends PhysicsWorld {
 		Transform identityTransform = new Transform(new Matrix4f(rot, new Vector3f(0, 0, 0), 1.0f));
 
 		// Create block collision connection to bullet.
-		JBulletVoxelWorldShape blockCollisionHandler = new JBulletVoxelWorldShape(new JavaVoxelProvider(world, physicsOverworld, this));
+		JBulletVoxelWorldShape blockCollisionHandler = new JBulletVoxelWorldShape(
+				new JavaVoxelProvider(world, physics, this));
 		blockCollisionHandler.calculateLocalInertia(0, new Vector3f());
 		RigidBodyConstructionInfo blockConsInf = new RigidBodyConstructionInfo(0,
 				new DefaultMotionState(identityTransform), blockCollisionHandler, new Vector3f());

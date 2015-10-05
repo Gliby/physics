@@ -39,6 +39,7 @@ import com.badlogic.gdx.physics.bullet.dynamics.btTypedConstraint;
 import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
 import com.bulletphysics.linearmath.Transform;
 
+import net.gliby.physics.Physics;
 import net.gliby.physics.common.physics.PhysicsOverworld;
 import net.gliby.physics.common.physics.PhysicsWorld;
 import net.gliby.physics.common.physics.engine.ICollisionObject;
@@ -71,7 +72,8 @@ public abstract class NativePhysicsWorld extends PhysicsWorld {
 
 	private List<IConstraint> constraints;
 	private List<IRigidBody> rigidBodies;
-	PhysicsOverworld physicsOverworld;
+	private PhysicsOverworld physicsOverworld;
+	private Physics physics;
 
 	/**
 	 * @param overWorld
@@ -79,8 +81,10 @@ public abstract class NativePhysicsWorld extends PhysicsWorld {
 	 * @param ticksPerSecond
 	 * @param gravity
 	 */
-	public NativePhysicsWorld(PhysicsOverworld physicsOverworld, World world, int ticksPerSecond, Vector3f gravity) {
+	public NativePhysicsWorld(Physics physics, PhysicsOverworld physicsOverworld, World world, int ticksPerSecond,
+			Vector3f gravity) {
 		super(world, ticksPerSecond, gravity);
+		this.physics = physics;
 		this.physicsOverworld = physicsOverworld;
 	}
 
@@ -114,13 +118,14 @@ public abstract class NativePhysicsWorld extends PhysicsWorld {
 		this.dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase,
 				new btSequentialImpulseConstraintSolver(), collisionConfiguration);
 		this.dynamicsWorld.setGravity(toVector3(gravity));
-		btVoxelShape voxelHandler = new btVoxelShape(new NativeVoxelProvider(world, this, physicsOverworld),
+		btVoxelShape voxelHandler = new btVoxelShape(new NativeVoxelProvider(world, this, physics),
 				new Vector3(-Integer.MAX_VALUE, -Integer.MAX_VALUE, -Integer.MAX_VALUE),
 				new Vector3(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE));
 		btCollisionObject body = new btCollisionObject();
 		body.setCollisionShape(voxelHandler);
 		body.setCollisionFlags(btCollisionObject.CollisionFlags.CF_STATIC_OBJECT | body.getCollisionFlags());
 		this.dynamicsWorld.addCollisionObject(body);
+
 		super.create();
 	}
 
