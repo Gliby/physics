@@ -14,9 +14,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import com.google.gson.JsonSyntaxException;
 
+import net.gliby.physics.common.blocks.PhysicsBlockMetadata;
 import net.gliby.physics.common.entity.mechanics.RigidBodyMechanic;
 import net.gliby.physics.common.physics.ServerPhysicsOverworld;
-import net.gliby.physics.common.physics.block.PhysicsBlockMetadata;
 import net.minecraft.block.Block;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
@@ -72,7 +72,7 @@ public abstract class MetadataLoader {
 					public Object call() {
 						Map<String, Object> json = null;
 						try {
-							if ((json = loadMetadataJSON(blockID)) != null) {
+							if ((json = loadMetadata(blockID)) != null) {
 								PhysicsBlockMetadata metadata = getMetadata(blockID, json);
 								metadataMap.put(blockID, metadata);
 							} else {
@@ -133,8 +133,6 @@ public abstract class MetadataLoader {
 
 	}
 
-	// TODO Add domains + don't load if already exists.
-
 	private PhysicsBlockMetadata getMetadata(String name, Map<String, Object> json) {
 		ServerPhysicsOverworld overworld = Physics.getInstance().getCommonProxy().getPhysicsOverworld();
 		PhysicsBlockMetadata metadata = metadataMap.get(name);
@@ -166,5 +164,5 @@ public abstract class MetadataLoader {
 		return metadata;
 	}
 
-	public abstract Map<String, Object> loadMetadataJSON(String name) throws JsonSyntaxException, IOException;
+	public abstract Map<String, Object> loadMetadata(String name) throws JsonSyntaxException, IOException;
 }

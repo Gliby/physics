@@ -34,15 +34,21 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  */
 public class ClientPhysicsOverworld extends PhysicsOverworld {
 
+	private Physics physics;
+
+	public ClientPhysicsOverworld(Physics physics) {
+		this.physics = physics;
+	}
+
 	// TODO Re-enable
 	@SubscribeEvent
 	public void onLoad(WorldEvent.Load event) {
-		//TODO Settings: client physics
-		if(false) {
+		// TODO Settings: client physics
+		if (false) {
 			World world = event.world;
 			PhysicsWorld worldStepSimulator;
 			if ((worldStepSimulator = getPhysicsWorldMap().get(event.world)) == null) {
-				worldStepSimulator = new NativePhysicsWorld(this, world, 60, new Vector3f(0, -9.8F, 0)) {
+				worldStepSimulator = new NativePhysicsWorld(physics, this, world, 60, new Vector3f(0, -9.8F, 0)) {
 
 					@Override
 					public boolean shouldSimulate(World world, PhysicsWorld physicsWorld) {
@@ -53,7 +59,8 @@ public class ClientPhysicsOverworld extends PhysicsOverworld {
 
 				// TODO Re-enable.
 				// worldStepSimulator.getMechanics().put("EntityCollision",
-				// new EntityCollisionResponseMechanic(world, worldStepSimulator,
+				// new EntityCollisionResponseMechanic(world,
+				// worldStepSimulator,
 				// false, 20));
 				worldStepSimulator.create();
 
@@ -92,12 +99,12 @@ public class ClientPhysicsOverworld extends PhysicsOverworld {
 	}
 
 	public void debugSpawn(World world) {
-		if(false) {
+		if (false) {
 			PhysicsWorld physicsWorld = getPhysicsByWorld(world);
 			Minecraft mc = Minecraft.getMinecraft();
 			/*
-			 * PhysicsWorld physicsWorld = getPhysicsByWorld(world); Minecraft mc =
-			 * Minecraft.getMinecraft(); Vector3f basePos =
+			 * PhysicsWorld physicsWorld = getPhysicsByWorld(world); Minecraft
+			 * mc = Minecraft.getMinecraft(); Vector3f basePos =
 			 * EntityUtility.toVector3f(mc.thePlayer.getPositionVector());
 			 * basePos.sub(new Vector3f(0.5F, 0.5F, 0.5F)); IRope rope =
 			 * physicsWorld.createRope(new Vector3f(basePos), new
@@ -105,22 +112,25 @@ public class ClientPhysicsOverworld extends PhysicsOverworld {
 			 * physicsWorld.addRope(rope);
 			 */
 			/*
-			 * BlockPos pos = mc.objectMouseOver.getBlockPos(); IBlockState state;
-			 * if(pos != null && (state =
-			 * world.getBlockState(pos)).getBlock().getMaterial() != Material.air) {
-			 * PhysicsWorld physicsWorld = getStepSimulatorByWorld(world);
-			 * ICollisionShape shape = physicsWorld.createBlockShape(world, pos,
-			 * state); Transform location = new Transform(); location.setIdentity();
+			 * BlockPos pos = mc.objectMouseOver.getBlockPos(); IBlockState
+			 * state; if(pos != null && (state =
+			 * world.getBlockState(pos)).getBlock().getMaterial() !=
+			 * Material.air) { PhysicsWorld physicsWorld =
+			 * getStepSimulatorByWorld(world); ICollisionShape shape =
+			 * physicsWorld.createBlockShape(world, pos, state); Transform
+			 * location = new Transform(); location.setIdentity();
 			 * location.origin.set(new Vector3f((float)mc.thePlayer.posX,
-			 * (float)mc.thePlayer.posY, (float)mc.thePlayer.posZ)); IRigidBody body
-			 * = physicsWorld.createRigidBody(null, location, new
-			 * Random().nextInt(100) + 1, shape); physicsWorld.addRigidBody(body);
-			 * if(lastBody != null) { Transform transformA = new Transform();
-			 * transformA.setIdentity(); transformA.origin.set(0, 0, 0); Transform
-			 * transformB = new Transform(); transformB.setIdentity();
-			 * transformB.origin.set(0, 1, 0); IConstraintGeneric6Dof constraint =
-			 * physicsWorld.createGeneric6DofConstraint(lastBody, body, transformA,
-			 * transformB, true); physicsWorld.addConstraint(constraint);
+			 * (float)mc.thePlayer.posY, (float)mc.thePlayer.posZ)); IRigidBody
+			 * body = physicsWorld.createRigidBody(null, location, new
+			 * Random().nextInt(100) + 1, shape);
+			 * physicsWorld.addRigidBody(body); if(lastBody != null) { Transform
+			 * transformA = new Transform(); transformA.setIdentity();
+			 * transformA.origin.set(0, 0, 0); Transform transformB = new
+			 * Transform(); transformB.setIdentity(); transformB.origin.set(0,
+			 * 1, 0); IConstraintGeneric6Dof constraint =
+			 * physicsWorld.createGeneric6DofConstraint(lastBody, body,
+			 * transformA, transformB, true);
+			 * physicsWorld.addConstraint(constraint);
 			 * 
 			 * } this.lastBody = body; }
 			 */

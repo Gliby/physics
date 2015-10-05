@@ -32,7 +32,7 @@ public class PhysicsServer {
 	public void preInit(FMLPreInitializationEvent event) {
 	}
 
-	public void init(FMLInitializationEvent event) {
+	public void init(Physics physics, FMLInitializationEvent event) {
 	}
 
 	public void postInit(FMLPostInitializationEvent event) {
@@ -69,7 +69,7 @@ public class PhysicsServer {
 	public final void serverAboutToStart(Physics physics, FMLServerAboutToStartEvent event) {
 		if (!hasStartedOnce) {
 
-			MinecraftForge.EVENT_BUS.register(physicsWorld = new ServerPhysicsOverworld());
+			MinecraftForge.EVENT_BUS.register(physicsWorld = new ServerPhysicsOverworld(physics));
 			MinecraftForge.EVENT_BUS.register(new ExplosionHandler(physics));
 			FMLCommonHandler.instance().bus().register(this);
 			ToolGunActionRegistry.getInstance().registerAction(new ToolGunAttachAction(), Physics.MOD_ID);

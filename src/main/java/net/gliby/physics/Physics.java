@@ -23,6 +23,7 @@ import net.gliby.gman.settings.SettingsHandler;
 import net.gliby.gman.settings.StringSetting;
 import net.gliby.physics.client.PhysicsClient;
 import net.gliby.physics.common.PhysicsServer;
+import net.gliby.physics.common.blocks.BlockManager;
 import net.gliby.physics.common.entity.EntityPhysicsBlock;
 import net.gliby.physics.common.entity.EntityPhysicsModelPart;
 import net.gliby.physics.common.entity.EntityToolGunBeam;
@@ -52,7 +53,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = Physics.MOD_ID, name = Physics.MOD_NAME, version = Physics.MOD_VERSION)
+@Mod(modid = Physics.MOD_ID, name = Physics.MOD_NAME, version = Physics.MOD_VERSION, guiFactory = "net.gliby.physics.client.gui.options.GuiFactory")
 public class Physics {
 
 	/**
@@ -72,6 +73,7 @@ public class Physics {
 
 	private static Item itemRigidBodySpawner;
 
+	// TODO Make these not static
 	public static RawItem itemPhysicsGun, itemToolgun;
 
 	private GMan gman;
@@ -83,6 +85,7 @@ public class Physics {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		this.instance = this;
+		blockManager = new BlockManager(this);
 
 		registerEntity(EntityPhysicsBlock.class, "PhysicsBlock", 64, 1, false);
 		registerEntity(EntityPhysicsModelPart.class, "Model Part Entity", 64, 1, false);
@@ -90,7 +93,7 @@ public class Physics {
 		File dir = new File(event.getModConfigurationDirectory(), MOD_ID);
 		if (!dir.exists())
 			dir.mkdir();
-		settings = new SettingsHandler(new File(dir, "Settings.ini"));
+		settings = new SettingsHandler(dir, new File(dir, "Settings.ini"));
 
 		// TODO Add on client
 		settings.registerBoolean("PhysicsEngine", "UseJavaPhysics", false, Setting.Side.SERVER);
@@ -217,8 +220,7 @@ public class Physics {
 
 	@EventHandler
 	public void init(FMLInitializationEvent event) {
-
-		proxy.init(event);
+		proxy.init(this, event);
 	}
 
 	@EventHandler
@@ -261,4 +263,9 @@ public class Physics {
 		return settings;
 	}
 
+	private BlockManager blockManager;
+
+	public BlockManager getBlockManager() {
+		return blockManager;
+	}
 }

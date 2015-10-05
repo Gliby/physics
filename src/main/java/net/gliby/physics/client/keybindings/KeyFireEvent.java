@@ -4,6 +4,7 @@
 package net.gliby.physics.client.keybindings;
 
 import net.gliby.physics.Physics;
+import net.gliby.physics.client.gui.creator.GuiScreenPhysicsCreator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.world.World;
@@ -35,7 +36,8 @@ public class KeyFireEvent extends KeyEvent {
 	public void keyUp(KeyBinding kb, boolean tickEnd) {
 		World world = null;
 		if ((world = Minecraft.getMinecraft().theWorld) != null) {
-			Physics.getInstance().getClientProxy().getPhysicsOverWorld().debugSpawn(world);
+			Minecraft.getMinecraft().displayGuiScreen(new GuiScreenPhysicsCreator(null));
+			// Physics.getInstance().getClientProxy().getPhysicsOverWorld().debugSpawn(world);
 		}
 	}
 

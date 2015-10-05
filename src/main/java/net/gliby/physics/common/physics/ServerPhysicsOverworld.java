@@ -3,9 +3,13 @@
  */
 package net.gliby.physics.common.physics;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import javax.vecmath.Vector3f;
 
@@ -14,11 +18,10 @@ import org.apache.commons.io.IOUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
-import net.gliby.gman.OSUtil;
 import net.gliby.gman.io.MinecraftResourceLoader;
 import net.gliby.physics.MetadataLoader;
 import net.gliby.physics.Physics;
-import net.gliby.physics.common.physics.block.PhysicsBlockMetadata;
+import net.gliby.physics.common.blocks.PhysicsBlockMetadata;
 import net.gliby.physics.common.physics.engine.javabullet.JavaPhysicsWorld;
 import net.gliby.physics.common.physics.engine.nativebullet.NativePhysicsWorld;
 import net.gliby.physics.common.physics.mechanics.gravitymagnets.GravityModifierMechanic;
@@ -53,13 +56,37 @@ public class ServerPhysicsOverworld extends PhysicsOverworld {
 
 	private ConcurrentHashMap<String, PhysicsBlockMetadata> physicsBlockMetadata;
 
-	public ServerPhysicsOverworld() {
+	private Physics physics;
+
+	public ServerPhysicsOverworld(Physics physics) {
+		this.physics = physics;
 		// TODO When metadata has finished loading, copy concurrenthashmap from
 		// MetadataLoader to physicsBlockMetadata hashmap.
+		File tempFile = null;
+		ZipFile tempZip = null;
+		if ((tempFile = new File(physics.getSettings().getDirectory(), "/custom/blocks.zip")).exists()) {
+			try {
+				tempZip = new ZipFile(tempFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		final ZipFile otherZip = tempZip;
+		final File otherFile = tempFile;
 		MetadataLoader loader = new MetadataLoader(
 				physicsBlockMetadata = new ConcurrentHashMap<String, PhysicsBlockMetadata>()) {
 			@Override
-			public Map<String, Object> loadMetadataJSON(String name) throws JsonSyntaxException, IOException {
+			public Map<String, Object> loadMetadata(String name) throws JsonSyntaxException, IOException {
+				if (otherFile.exists()) {
+					ZipEntry entry = otherZip.getEntry(name + ".json");
+					if (entry != null) {
+						InputStream stream = otherZip.getInputStream(entry);
+						if (stream != null) {
+							return new Gson().fromJson(IOUtils.toString(stream), Map.class);
+						}
+					}
+				}
+
 				String text = IOUtils.toString(
 						MinecraftResourceLoader.getResource(Physics.getLogger(), FMLCommonHandler.instance().getSide(),
 								new ResourceLocation(Physics.MOD_ID, "blocks/" + name + ".json")));
@@ -91,15 +118,14 @@ public class ServerPhysicsOverworld extends PhysicsOverworld {
 		// TODO Settings.
 		int tps = 30;
 		Vector3f gravity = new Vector3f(0, -9.8F, 0);
-		boolean forceJava = Physics.getInstance().getSettings().getBooleanSetting("PhysicsEngine.UseJavaPhysics")
-				.getBooleanValue();
-		PhysicsWorld worldStepSimulator = !forceJava ? new NativePhysicsWorld(this, world, tps, gravity) {
+		boolean forceJava = physics.getSettings().getBooleanSetting("PhysicsEngine.UseJavaPhysics").getBooleanValue();
+		PhysicsWorld worldStepSimulator = !forceJava ? new NativePhysicsWorld(physics, this, world, tps, gravity) {
 
 			@Override
 			public boolean shouldSimulate(World world, PhysicsWorld physicsWorld) {
 				return !world.playerEntities.isEmpty();
 			}
-		} : new JavaPhysicsWorld(this, world, tps, gravity) {
+		} : new JavaPhysicsWorld(physics, this, world, tps, gravity) {
 
 			@Override
 			public boolean shouldSimulate(World world, PhysicsWorld physicsWorld) {
