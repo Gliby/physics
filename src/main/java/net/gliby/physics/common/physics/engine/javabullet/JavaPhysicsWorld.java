@@ -43,6 +43,7 @@ import com.google.gson.Gson;
 
 import net.gliby.gman.WorldUtility;
 import net.gliby.physics.Physics;
+import net.gliby.physics.common.physics.PhysicsOverworld;
 import net.gliby.physics.common.physics.PhysicsWorld;
 import net.gliby.physics.common.physics.engine.ICollisionObject;
 import net.gliby.physics.common.physics.engine.ICollisionShape;
@@ -69,12 +70,13 @@ public abstract class JavaPhysicsWorld extends PhysicsWorld {
 	private List<IRigidBody> rigidBodies;
 	private List<IConstraint> constraints;
 	private DiscreteDynamicsWorld dynamicsWorld;
-
+	private PhysicsOverworld physicsOverworld;
 	/**
 	 * @param ticksPerSecond
 	 */
-	public JavaPhysicsWorld(World world, int ticksPerSecond, Vector3f gravity) {
+	public JavaPhysicsWorld(PhysicsOverworld physicsOverworld, World world, int ticksPerSecond, Vector3f gravity) {
 		super(world, ticksPerSecond, gravity);
+		this.physicsOverworld = physicsOverworld;
 	}
 
 	@Override
@@ -88,7 +90,7 @@ public abstract class JavaPhysicsWorld extends PhysicsWorld {
 				} catch (InterruptedException e) {
 					Physics.getLogger().catching(e);
 				}
-				if (shouldSimulate())
+				if (shouldSimulate(world, this))
 					update();
 				updateFPS();
 			}
@@ -114,7 +116,7 @@ public abstract class JavaPhysicsWorld extends PhysicsWorld {
 		Transform identityTransform = new Transform(new Matrix4f(rot, new Vector3f(0, 0, 0), 1.0f));
 
 		// Create block collision connection to bullet.
-		JBulletVoxelWorldShape blockCollisionHandler = new JBulletVoxelWorldShape(new JavaBlockCollision(this, world));
+		JBulletVoxelWorldShape blockCollisionHandler = new JBulletVoxelWorldShape(new JavaVoxelProvider(world, physicsOverworld, this));
 		blockCollisionHandler.calculateLocalInertia(0, new Vector3f());
 		RigidBodyConstructionInfo blockConsInf = new RigidBodyConstructionInfo(0,
 				new DefaultMotionState(identityTransform), blockCollisionHandler, new Vector3f());
@@ -215,9 +217,14 @@ public abstract class JavaPhysicsWorld extends PhysicsWorld {
 			PhysicsMechanic mechanic = ((Map.Entry<String, PhysicsMechanic>) it.next()).getValue();
 			mechanic.setEnabled(false);
 		}
-		dynamicsWorld = null;
+		for (int i = 0; i < dynamicsWorld.getNumCollisionObjects(); i++) {
+			CollisionObject object = dynamicsWorld.getCollisionObjectArray().get(i);
+			dynamicsWorld.removeCollisionObject(object);
+		}
+
+		dynamicsWorld.destroy();
 		rigidBodies.clear();
-		this.running = false;
+		constraints.clear();
 	}
 
 	private long lastFrame;

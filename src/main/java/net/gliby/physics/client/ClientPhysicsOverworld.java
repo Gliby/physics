@@ -42,10 +42,10 @@ public class ClientPhysicsOverworld extends PhysicsOverworld {
 			World world = event.world;
 			PhysicsWorld worldStepSimulator;
 			if ((worldStepSimulator = getPhysicsWorldMap().get(event.world)) == null) {
-				worldStepSimulator = new NativePhysicsWorld(world, 60, new Vector3f(0, -9.8F, 0)) {
+				worldStepSimulator = new NativePhysicsWorld(this, world, 60, new Vector3f(0, -9.8F, 0)) {
 
 					@Override
-					public boolean shouldSimulate() {
+					public boolean shouldSimulate(World world, PhysicsWorld physicsWorld) {
 						Minecraft mc = Minecraft.getMinecraft();
 						return !mc.isGamePaused();
 					}

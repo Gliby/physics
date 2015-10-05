@@ -39,7 +39,7 @@ import com.badlogic.gdx.physics.bullet.dynamics.btTypedConstraint;
 import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
 import com.bulletphysics.linearmath.Transform;
 
-import net.gliby.gman.WorldUtility;
+import net.gliby.physics.common.physics.PhysicsOverworld;
 import net.gliby.physics.common.physics.PhysicsWorld;
 import net.gliby.physics.common.physics.engine.ICollisionObject;
 import net.gliby.physics.common.physics.engine.ICollisionShape;
@@ -52,10 +52,8 @@ import net.gliby.physics.common.physics.engine.IRayResult;
 import net.gliby.physics.common.physics.engine.IRigidBody;
 import net.gliby.physics.common.physics.engine.IRope;
 import net.gliby.physics.common.physics.mechanics.PhysicsMechanic;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
@@ -73,6 +71,7 @@ public abstract class NativePhysicsWorld extends PhysicsWorld {
 
 	private List<IConstraint> constraints;
 	private List<IRigidBody> rigidBodies;
+	PhysicsOverworld physicsOverworld;
 
 	/**
 	 * @param overWorld
@@ -80,8 +79,9 @@ public abstract class NativePhysicsWorld extends PhysicsWorld {
 	 * @param ticksPerSecond
 	 * @param gravity
 	 */
-	public NativePhysicsWorld(World world, int ticksPerSecond, Vector3f gravity) {
+	public NativePhysicsWorld(PhysicsOverworld physicsOverworld, World world, int ticksPerSecond, Vector3f gravity) {
 		super(world, ticksPerSecond, gravity);
+		this.physicsOverworld = physicsOverworld;
 	}
 
 	@Override
@@ -96,7 +96,7 @@ public abstract class NativePhysicsWorld extends PhysicsWorld {
 					e.printStackTrace();
 				}
 			}
-			if (shouldSimulate())
+			if (shouldSimulate(world, this))
 				update();
 			updateFPS();
 		}
@@ -114,7 +114,7 @@ public abstract class NativePhysicsWorld extends PhysicsWorld {
 		this.dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase,
 				new btSequentialImpulseConstraintSolver(), collisionConfiguration);
 		this.dynamicsWorld.setGravity(toVector3(gravity));
-		btVoxelShape voxelHandler = new btVoxelShape(new NativeVoxelProvider(world, this),
+		btVoxelShape voxelHandler = new btVoxelShape(new NativeVoxelProvider(world, this, physicsOverworld),
 				new Vector3(-Integer.MAX_VALUE, -Integer.MAX_VALUE, -Integer.MAX_VALUE),
 				new Vector3(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE));
 		btCollisionObject body = new btCollisionObject();
@@ -252,7 +252,13 @@ public abstract class NativePhysicsWorld extends PhysicsWorld {
 			PhysicsMechanic mechanic = ((Map.Entry<String, PhysicsMechanic>) it.next()).getValue();
 			mechanic.setEnabled(false);
 		}
+
+		for (int i = 0; i < dynamicsWorld.getCollisionObjectArray().size(); i++) {
+			btCollisionObject object = dynamicsWorld.getCollisionObjectArray().at(i);
+			dynamicsWorld.removeCollisionObject(object);
+		}
 		dynamicsWorld.dispose();
+		constraints.clear();
 		rigidBodies.clear();
 	}
 

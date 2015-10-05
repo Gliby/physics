@@ -138,5 +138,6 @@ public interface IRigidBody extends ICollisionObject {
 	public IQuaternion getRotation();
 
 	public IVector3 getPosition();
+
 	
 }

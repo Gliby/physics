@@ -1,13 +1,18 @@
 package net.gliby.physics;
 
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.badlogic.gdx.Version;
 import com.google.common.base.Predicate;
 
 import net.gliby.gman.GMan;
@@ -112,37 +117,43 @@ public class Physics {
 
 		StringSetting lastVersion = settings.getStringSetting("Miscellaneous.LastVersion");
 		final boolean modUpdated = !lastVersion.getString().equals(MOD_VERSION);
-		System.out.println("Mod updated? " + modUpdated);
 		if (modUpdated) {
 			getLogger().info("Version change detected, gathering change logs!");
 			gman.request(new GMan.CustomRequest() {
 
 				@Override
 				public void request(final GMan gman) {
-					Map<String, Object> json = gman.getJSONMap("news/index.json");
-					final ArrayList<String> index = (ArrayList<String>) json.get("Versions");
-					String versions[] = gman.getVersionsBetween(MOD_VERSION, gman.getModInfo().getLatestVersion(),
-							new Predicate<String>() {
+					new Thread(new Runnable() {
+
 						@Override
-						public boolean apply(String input) {
-							return index.contains(input) && !input.equals(MOD_VERSION);
+						public void run() {
+							Map<String, Object> json = gman.getJSONMap("news/index.json");
+							final ArrayList<String> index = (ArrayList<String>) json.get("Versions");
+							String versions[] = gman.getVersionsBetween(MOD_VERSION,
+									gman.getModInfo().getLatestVersion(), new Predicate<String>() {
+								@Override
+								public boolean apply(String input) {
+									return index.contains(input) && !input.equals(MOD_VERSION);
+								}
+							});
+							ArrayList<VersionChanges> changes = new ArrayList<VersionChanges>();
+							for (String s : versions) {
+								VersionChanges versionChanges = (VersionChanges) gman.getJSON("news/" + s + ".json",
+										VersionChanges.class);
+
+								if (versionChanges != null)
+									if (versionChanges.getChanges() != null)
+										changes.add(versionChanges.setVersion(s)
+												.setImage(gman.getImage("news/" + s + ".png")));
+							}
+							gman.getProperties().put("VersionChanges", changes);
 						}
-					});
-					ArrayList<VersionChanges> changes = new ArrayList<VersionChanges>();
-					for (String s : versions) {
-						VersionChanges versionChanges = (VersionChanges) gman.getJSON("news/" + s + ".json",
-								VersionChanges.class);
-						if (versionChanges != null)
-							if (versionChanges.getMajorChanges() != null)
-								changes.add(versionChanges.setVersion(s));
-					}
-					gman.getProperties().put("VersionChanges", changes);
+					}, "GMAN Update/News Proccesor").start();
 				}
 			});
 		}
 
-		// TODO Re-enable
-		// lastVersion.setString(MOD_VERSION);
+		lastVersion.setString(MOD_VERSION);
 		settings.save();
 
 		/*
