@@ -7,7 +7,7 @@ import javax.vecmath.Vector3f;
 
 import net.gliby.gman.client.render.RawItemRenderer;
 import net.gliby.physics.Physics;
-import net.gliby.physics.client.render.Render;
+import net.gliby.physics.client.render.RenderHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelRenderer;
@@ -24,30 +24,41 @@ import net.minecraft.util.ResourceLocation;
  */
 public class RenderItemPhysicsGun extends RawItemRenderer {
 
-	private ItemCameraTransforms transforms = new ItemCameraTransforms(new ItemTransformVec3f(new Vector3f(-90, -180, 0), new Vector3f(0.1f, 0.19f, -0.1F), new Vector3f(-1, 1, 1)), new ItemTransformVec3f(new Vector3f(27, -40, 8), new Vector3f(-0.33f, 0.14f, 0.25f), new Vector3f(-1, -1, -1)), new ItemTransformVec3f(new Vector3f(), new Vector3f(), new Vector3f()), new ItemTransformVec3f(new Vector3f(0,
-			-90, 0), new Vector3f(-0.05f, 0, 0), new Vector3f(-1.5f, -1.5f, -1.5f)));
+	private ItemCameraTransforms transforms = new ItemCameraTransforms(
+			new ItemTransformVec3f(new Vector3f(-90, -180, 0), new Vector3f(0.1f, 0.19f, -0.1F),
+					new Vector3f(-1, 1, 1)),
+			new ItemTransformVec3f(new Vector3f(27, -40, 8), new Vector3f(-0.33f, 0.14f, 0.25f),
+					new Vector3f(-1, -1, -1)),
+			new ItemTransformVec3f(new Vector3f(), new Vector3f(), new Vector3f()), new ItemTransformVec3f(
+					new Vector3f(0, -90, 0), new Vector3f(-0.05f, 0, 0), new Vector3f(-1.5f, -1.5f, -1.5f)));
 
 	private ModelRenderer bipedLeftArm;
+	private RenderHandler renderHandler;
 
 	/**
+	 * @param renderMananger
 	 * @param resourceLocation
 	 */
-	public RenderItemPhysicsGun(ModelResourceLocation resourceLocation) {
+
+	public RenderItemPhysicsGun(RenderHandler renderHandler, ModelResourceLocation resourceLocation) {
 		super(resourceLocation);
 		this.bipedLeftArm = new ModelRenderer(playerBiped, 40, 16);
 		this.bipedLeftArm.mirror = true;
 		this.bipedLeftArm.addBox(-1.0F, -2.0F, -2.0F, 4, 12, 4, 0);
 		this.bipedLeftArm.setRotationPoint(5.0F, 2.0F + 0, 0.0F);
+		this.renderHandler = renderHandler;
 	}
 
 	private ModelItemPhysicsGun model = new ModelItemPhysicsGun(0xFF87FFFF, 200);
-	private ResourceLocation textureColorable = new ResourceLocation(Physics.MOD_ID, "textures/physics_gun_colorable.png");
+	private ResourceLocation textureColorable = new ResourceLocation(Physics.MOD_ID,
+			"textures/physics_gun_colorable.png");
 
 	@Override
 	public void render() {
 		model.setColor(0xFF87FFFF);
 		float scale = -0.0625f;
-		float f1 = 40F - MathHelper.abs(MathHelper.sin((float) (Minecraft.getSystemTime() % 1000L) / 1000.0F * (float) Math.PI * 1.0F) * 40F);
+		float f1 = 40F - MathHelper.abs(
+				MathHelper.sin((float) (Minecraft.getSystemTime() % 1000L) / 1000.0F * (float) Math.PI * 1.0F) * 40F);
 		int lightValue = (int) MathHelper.clamp_float((200 + f1), 0, 250);
 		if (owner != null) {
 			if (transformType == TransformType.FIRST_PERSON) {
@@ -67,8 +78,8 @@ public class RenderItemPhysicsGun extends RawItemRenderer {
 			}
 
 			String UUID;
-			if (Render.getPhysicsGunColors().containsKey(UUID = owner.getUniqueID().toString())) {
-				model.setColor(Render.getPhysicsGunColors().get(UUID));
+			if (renderHandler.getPhysicsGunColors().containsKey(UUID = owner.getUniqueID().toString())) {
+				model.setColor(renderHandler.getPhysicsGunColors().get(UUID));
 			}
 			//
 			// TODO Gonzalo color

@@ -19,9 +19,6 @@ import java.util.Random;
 import com.google.common.collect.EvictingQueue;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 
 import net.gliby.physics.Physics;
 import net.gliby.physics.client.gui.creator.GuiScreenCreator;
@@ -29,14 +26,16 @@ import net.gliby.physics.common.blocks.IBlockGenerator;
 import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
+import scala.collection.generic.BitOperations.Int;
 
-public class GuiScreenBlockCreator extends GuiScreenCreator {
+public class GuiScreenBlockCreator extends GuiScreenCreator implements GuiYesNoCallback {
 
 	private EvictingQueue messagesList;
 	private GuiButton generateButton;
@@ -62,15 +61,14 @@ public class GuiScreenBlockCreator extends GuiScreenCreator {
 		blocksBuilt = 0;
 		thread = new Thread();
 		lucky = new Random().nextInt(20000) == 0;
-	}
+
+		if (!physics.getBlockManager().getBlockGenerators().isEmpty())
+			addMessage("Custom block generators found.");}
 
 	public void initGui() {
-		messagesList.clear();
 		buttonList.clear();
 		buttonList.add(
 				generateButton = new GuiButton(0, 130, 7, I18n.format("gui.creator.physicsblockGenerator.generate")));
-		if (!physics.getBlockManager().getBlockGenerators().isEmpty())
-			addMessage("Custom block generators found.");
 
 	}
 
@@ -85,27 +83,36 @@ public class GuiScreenBlockCreator extends GuiScreenCreator {
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float partialTicks) {
 		drawDefaultBackground();
-		drawRectangleWithOutline(18, 213, width - 30, 32, 1, 0xFF000000, 0xFFFFFFFF);
+		int consoleY = height - 42;
+		drawRectangleWithOutline(18, consoleY, width - 30, 32, 1, 0xFF000000, 0xFFFFFFFF);
 		for (int i = messagesList.size() - 1; i >= 0; i--) {
 			String s = (String) messagesList.toArray()[i];
-			drawString(fontRendererObj, s, 20, 215 + (i * (fontRendererObj.FONT_HEIGHT + 1)), -1);
+			drawString(fontRendererObj, s, 20, consoleY + 2 + (i * (fontRendererObj.FONT_HEIGHT + 1)), -1);
 		}
 
-		drawRectangleWithOutline(18, 8, 89, 200, 1, 0xFF000000, 0xFFFFFFFF);
+		int modHeight = MathHelper.clamp_int(height - 55,
+				Loader.instance().getActiveModList().size() * fontRendererObj.FONT_HEIGHT + 3, Integer.MAX_VALUE);
+
+		drawRectangleWithOutline(18, 8, 89, modHeight, 1, 0xFF000000, 0xFFFFFFFF);
 		for (int i = 0; i < Loader.instance().getActiveModList().size(); i++) {
 			ModContainer mod = Loader.instance().getActiveModList().get(i);
-			if (i < 200 / fontRendererObj.FONT_HEIGHT) {
+			if (i < modHeight / fontRendererObj.FONT_HEIGHT) {
 				drawString(fontRendererObj,
 						mod.getName().substring(0, mod.getName().length() > 15 ? 15 : mod.getName().length()), 20,
 						10 + i * fontRendererObj.FONT_HEIGHT,
 						physics.getBlockManager().getBlockGenerators().containsKey(mod.getModId()) ? 0x207060 : -1);
 			}
 		}
-		drawRectangleWithOutline(112, 188, width - 125, 20, 1, 0xFF000000, 0xFFFFFFFF);
+
+		int loadingY = MathHelper.clamp_int(height - 67, 27, Integer.MAX_VALUE);
+		int loadingWidth = width - 125;
+		drawRectangleWithOutline(112, loadingY, loadingWidth, 20, 1, 0xFF000000, 0xFFFFFFFF);
 		double scalar = ((double) blocksBuilt / (double) maxBlocks);
 		if (scalar > 0)
-			drawRectangleWithOutline(112, 188, (int) ((width - 125) * (double) scalar), 20, 1, 0xFF449044, 0xFFFFFFFF);
-		drawString(fontRendererObj, (int) (100 * scalar) + "%", 275, 194, -1);
+			drawRectangleWithOutline(112, loadingY, (int) (loadingWidth * (double) scalar), 20, 1, 0xFF449044,
+					0xFFFFFFFF);
+		drawCenteredString(fontRendererObj, (int) (100 * scalar) + "%", 112 + (loadingWidth / 2), loadingY + 6, -1);
+
 		if (lucky) {
 			String whatchagonnado = "¯\\_(ツ)_/¯";
 			luckyTick += 88 * partialTicks;
@@ -139,7 +146,7 @@ public class GuiScreenBlockCreator extends GuiScreenCreator {
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-				// TODO Expand
+				// TODO Expand, and add skip option
 				while (itr.hasNext()) {
 					final Block block = itr.next();
 					UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(block);

@@ -45,7 +45,7 @@ public abstract class RawItemRenderer implements ISmartItemModel, IPerspectiveAw
 	public ModelResourceLocation resourceLocation;
 
 	private Pair<IBakedModel, Matrix4f> pair;
-	protected ModelBiped playerBiped = new ModelBiped();
+	protected ModelBiped playerBiped;
 	protected Minecraft mc;
 
 	public RawItemRenderer(ModelResourceLocation resourceLocation) {
@@ -74,7 +74,8 @@ public abstract class RawItemRenderer implements ISmartItemModel, IPerspectiveAw
 
 		if (owner != null) {
 			if (transformType == TransformType.THIRD_PERSON) {
-				if (owner.isSneaking()) GlStateManager.translate(0.0F, -0.2F, 0.0F);
+				if (owner.isSneaking())
+					GlStateManager.translate(0.0F, -0.2F, 0.0F);
 			}
 		}
 
@@ -93,7 +94,6 @@ public abstract class RawItemRenderer implements ISmartItemModel, IPerspectiveAw
 		worldrenderer.startDrawingQuads();
 		return Collections.EMPTY_LIST;
 	}
-
 
 	protected boolean onGround() {
 		return transformType == null;

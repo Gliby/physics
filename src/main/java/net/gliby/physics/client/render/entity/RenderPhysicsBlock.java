@@ -13,6 +13,7 @@ import org.lwjgl.BufferUtils;
 
 import com.bulletphysics.linearmath.Transform;
 
+import net.gliby.physics.client.render.RenderHandler;
 import net.gliby.physics.client.render.RenderUtilities;
 import net.gliby.physics.client.render.blocks.CustomModelRenderer;
 import net.gliby.physics.common.entity.EntityPhysicsBase;
@@ -38,8 +39,8 @@ public class RenderPhysicsBlock extends RenderPhysics {
 	/**
 	 * @param renderManager
 	 */
-	public RenderPhysicsBlock(RenderManager renderManager) {
-		super(renderManager);
+	public RenderPhysicsBlock(RenderHandler renderHandler, RenderManager renderManager) {
+		super(renderHandler, renderManager);
 	}
 
 	private static Transform entityTransform = new Transform();
@@ -56,7 +57,8 @@ public class RenderPhysicsBlock extends RenderPhysics {
 		Block block = state.getBlock();
 		Vector3f worldTranslation = RenderUtilities.getWorldTranslation(mc, partialTick);
 		BlockRendererDispatcher blockrendererdispatcher = mc.getBlockRendererDispatcher();
-		IBakedModel ibakedmodel = blockrendererdispatcher.getModelFromBlockState(state, entity.getEntityWorld(), (BlockPos) null);
+		IBakedModel ibakedmodel = blockrendererdispatcher.getModelFromBlockState(state, entity.getEntityWorld(),
+				(BlockPos) null);
 		entityTransform.setIdentity();
 		entityTransform.setRotation(entity.renderRotation);
 		entityTransform.origin.set(entity.renderPosition);
@@ -75,7 +77,8 @@ public class RenderPhysicsBlock extends RenderPhysics {
 		// GlStateManager.rotate(180, 0, 0, 1);
 		GlStateManager.translate(-(0.5f), -(0.5f), -(0.5f));
 		if (block.getRenderType() == 3) {
-			rotatableBlockModelRenderer.renderModel(entity.worldObj, state, new BlockPos(entity), ibakedmodel, tessellator, worldrenderer);
+			rotatableBlockModelRenderer.renderModel(entity.worldObj, state, new BlockPos(entity), ibakedmodel,
+					tessellator, worldrenderer);
 		}
 		GlStateManager.popMatrix();
 	}

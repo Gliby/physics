@@ -1,14 +1,8 @@
 package net.gliby.physics;
 
-import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
-
-import javax.imageio.ImageIO;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,7 +23,6 @@ import net.gliby.physics.common.entity.EntityPhysicsModelPart;
 import net.gliby.physics.common.entity.EntityToolGunBeam;
 import net.gliby.physics.common.entity.IEntityPhysics;
 import net.gliby.physics.common.game.items.ItemPhysicsGun;
-import net.gliby.physics.common.game.items.ItemSpawnRigidBody;
 import net.gliby.physics.common.game.items.toolgun.ItemToolGun;
 import net.gliby.physics.common.packets.PacketPlayerJoin;
 import net.minecraft.entity.Entity;
@@ -74,7 +67,7 @@ public class Physics {
 	private static Item itemRigidBodySpawner;
 
 	// TODO Make these not static
-	public static RawItem itemPhysicsGun, itemToolgun;
+	public RawItem itemPhysicsGun, itemToolgun;
 
 	private GMan gman;
 
@@ -177,8 +170,6 @@ public class Physics {
 		// Part Entity", baseId + 3, this, 64, 1, false);
 
 		GameRegistry.registerItem(itemToolgun = new ItemToolGun(this), itemToolgun.getUnlocalizedName());
-		GameRegistry.registerItem(itemRigidBodySpawner = new ItemSpawnRigidBody(),
-				itemRigidBodySpawner.getUnlocalizedName());
 		GameRegistry.registerItem(itemPhysicsGun = new ItemPhysicsGun(this), itemPhysicsGun.getUnlocalizedName());
 		// GameRegistry.registerItem(itemPhysicsTransformer = new
 		// ItemPhysicsTransformer(),
@@ -186,8 +177,8 @@ public class Physics {
 		// GameRegistry.registerItem(itemRagdollSpawner = new
 		// ItemSpawnRagdoll(), itemRagdollSpawner.getUnlocalizedName());
 
-		MinecraftForge.EVENT_BUS.register(Physics.itemPhysicsGun);
-		MinecraftForge.EVENT_BUS.register(Physics.itemToolgun);
+		MinecraftForge.EVENT_BUS.register(itemPhysicsGun);
+		MinecraftForge.EVENT_BUS.register(itemToolgun);
 
 		registerPacket(PacketPlayerJoin.class, PacketPlayerJoin.class, Side.CLIENT);
 

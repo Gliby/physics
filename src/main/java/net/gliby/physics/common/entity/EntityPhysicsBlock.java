@@ -24,7 +24,7 @@ import net.gliby.gman.DataWatchableQuat4f;
 import net.gliby.gman.DataWatchableVector3f;
 import net.gliby.gman.WorldUtility;
 import net.gliby.physics.Physics;
-import net.gliby.physics.client.render.Render;
+import net.gliby.physics.client.render.RenderHandler;
 import net.gliby.physics.common.blocks.PhysicsBlockMetadata;
 import net.gliby.physics.common.entity.mechanics.RigidBodyMechanic;
 import net.gliby.physics.common.physics.PhysicsWorld;
@@ -49,7 +49,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  */
 
-//TODO Remove ability to spawn tile-entites.
+// TODO Remove ability to spawn tile-entites.
 public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAdditionalSpawnData {
 	/**
 	 * @param world
@@ -392,7 +392,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 		}
 
 		if (blockState.getBlock().getLightValue() > 0 && !hasLight) {
-			Render.getLightHandler().create(this, blockState.getBlock().getLightValue());
+			RenderHandler.getLightHandler().create(this, blockState.getBlock().getLightValue());
 			hasLight = true;
 		}
 

@@ -22,6 +22,7 @@ import org.lwjgl.BufferUtils;
 
 import com.bulletphysics.linearmath.Transform;
 
+import net.gliby.physics.client.render.RenderHandler;
 import net.gliby.physics.client.render.RenderUtilities;
 import net.gliby.physics.client.render.blocks.CustomModelRenderer;
 import net.gliby.physics.common.entity.EntityPhysicsBase;
@@ -40,16 +41,20 @@ public class RenderPhysicsModelPart extends RenderPhysics {
 	/**
 	 * @param renderManager
 	 */
-	public RenderPhysicsModelPart(RenderManager renderManager) {
-		super(renderManager);
+	public RenderPhysicsModelPart(RenderHandler renderHandler, RenderManager renderManager) {
+		super(renderHandler, renderManager);
+		entityTransform = new Transform();
+		rotatableBlockModelRenderer = new CustomModelRenderer();
+		tessellator = Tessellator.getInstance();
+		worldRenderer = tessellator.getWorldRenderer();
+		renderMatrix = BufferUtils.createFloatBuffer(16);
 	}
 
-	private static Transform entityTransform = new Transform();
-	private static CustomModelRenderer rotatableBlockModelRenderer = new CustomModelRenderer();
-	private static Tessellator tessellator = Tessellator.getInstance();
-	private static WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-	private static Minecraft mc = Minecraft.getMinecraft();
-	private static FloatBuffer renderMatrix = BufferUtils.createFloatBuffer(16);
+	private Transform entityTransform;
+	private CustomModelRenderer rotatableBlockModelRenderer;
+	private Tessellator tessellator;
+	private WorldRenderer worldRenderer;
+	private FloatBuffer renderMatrix;
 
 	protected void draw(Entity castEntity, double entityX, double entityY, double entityZ, float partialTick) {
 		EntityPhysicsModelPart entity = (EntityPhysicsModelPart) castEntity;

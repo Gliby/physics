@@ -12,7 +12,7 @@ import net.gliby.physics.client.gui.GuiScreenChangeLog;
 import net.gliby.physics.client.gui.GuiScreenWelcome;
 import net.gliby.physics.client.gui.creator.GuiScreenPhysicsCreator;
 import net.gliby.physics.client.keybindings.KeyManager;
-import net.gliby.physics.client.render.Render;
+import net.gliby.physics.client.render.RenderHandler;
 import net.gliby.physics.common.PhysicsServer;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
@@ -46,7 +46,7 @@ public class PhysicsClient extends PhysicsServer {
 		return physicsWorld;
 	}
 
-	private Render render;
+	private RenderHandler render;
 
 	boolean playerCreated;
 
@@ -85,7 +85,7 @@ public class PhysicsClient extends PhysicsServer {
 		MinecraftForge.EVENT_BUS.register(physicsWorld = new ClientPhysicsOverworld(physics));
 		// MinecraftForge.EVENT_BUS.register(new
 		// EntityDeathHandler(physicsWorld));
-		render = new Render(dynamicLightsPresent);
+		render = new RenderHandler(physics, dynamicLightsPresent);
 		render.init(event);
 	}
 

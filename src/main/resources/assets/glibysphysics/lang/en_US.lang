@@ -10,6 +10,7 @@ gui.changelog.skip=Skip
 gui.changelog.title=What's changed in Gliby's Physics?
 
 gui.creator.title=Physics Creator
+gui.creator.physicsMobModelGenerator=Physics Mob Model Generator
 gui.creator.physicsblockGenerator=Physics Block Generator
 gui.creator.physicsblockGenerator.generate=Generate Physics Block
 gui.creator.unfinished=Unfinished
