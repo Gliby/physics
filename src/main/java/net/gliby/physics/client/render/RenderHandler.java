@@ -29,7 +29,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 /**
  *
  */
-public class Render {
+public class RenderHandler {
 
 	private static Map<String, Integer> physicsGunColors = new HashMap<String, Integer>();
 
@@ -42,14 +42,17 @@ public class Render {
 	/**
 	 * @return the physicsGunColors
 	 */
-	public static Map<String, Integer> getPhysicsGunColors() {
+	public Map<String, Integer> getPhysicsGunColors() {
 		return physicsGunColors;
 	}
 
 	private static IDynamicLightHandler lightHandler;
 
-	public Render(boolean dynamicLightsPresent) {
-		// TODO Re-implement some day
+	private Physics physics;
+
+	public RenderHandler(Physics physics, boolean dynamicLightsPresent) {
+		this.physics = physics;
+		// TODO Add dynamic lighting back.
 		if (dynamicLightsPresent) {
 			// lightHandler = new AtomicStrykerLight();
 		} else
@@ -74,11 +77,11 @@ public class Render {
 		Minecraft mc = Minecraft.getMinecraft();
 
 		RenderingRegistry.registerEntityRenderingHandler(EntityPhysicsBlock.class,
-				new RenderPhysicsBlock(mc.getRenderManager()));
+				new RenderPhysicsBlock(this, mc.getRenderManager()));
 		// RenderingRegistry.registerEntityRenderingHandler(EntityPhysicsRagdoll.class,
 		// new RenderPhysicsRagdoll(mc.getRenderManager()));
 		RenderingRegistry.registerEntityRenderingHandler(EntityPhysicsModelPart.class,
-				new RenderPhysicsModelPart(mc.getRenderManager()));
+				new RenderPhysicsModelPart(this, mc.getRenderManager()));
 		RenderingRegistry.registerEntityRenderingHandler(EntityToolGunBeam.class, new RenderToolGunBeam(mc));
 		ItemRendererManager itemRenderManager = ItemRendererManager.getInstance();
 
@@ -86,9 +89,9 @@ public class Render {
 		// Create actual RawItemRenderer instance, simply a class that
 		// "extends RawItemRenderer".
 		// Register and bind to item!
-		itemRenderManager.registerItemRenderer(Physics.itemPhysicsGun,
-				new RenderItemPhysicsGun(new ModelResourceLocation(Physics.MOD_ID, "physicsgun")));
-		itemRenderManager.registerItemRenderer(Physics.itemToolgun,
+		itemRenderManager.registerItemRenderer(physics.itemPhysicsGun,
+				new RenderItemPhysicsGun(this, new ModelResourceLocation(Physics.MOD_ID, "physicsgun")));
+		itemRenderManager.registerItemRenderer(physics.itemToolgun,
 				new RenderItemToolGun(new ModelResourceLocation(Physics.MOD_ID, "toolgun")));
 
 	}

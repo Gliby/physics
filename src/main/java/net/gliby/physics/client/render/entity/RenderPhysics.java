@@ -7,6 +7,7 @@ import javax.vecmath.Vector3f;
 
 import org.lwjgl.opengl.GL11;
 
+import net.gliby.physics.client.render.RenderHandler;
 import net.gliby.physics.client.render.RenderUtilities;
 import net.gliby.physics.common.entity.EntityPhysicsBase;
 import net.gliby.physics.common.entity.EntityPhysicsBlock;
@@ -28,14 +29,16 @@ public abstract class RenderPhysics extends Render {
 
 	public abstract Vector3f getRenderHitPoint(EntityPhysicsBase entity, float partialTick);
 
-	private Minecraft mc;
+	protected Minecraft mc;
+	private RenderHandler renderHandler;
 
 	/**
 	 * @param renderManager
 	 */
-	protected RenderPhysics(RenderManager renderManager) {
+	protected RenderPhysics(RenderHandler renderHandler, RenderManager renderManager) {
 		super(renderManager);
 		this.mc = Minecraft.getMinecraft();
+		this.renderHandler = renderHandler;
 	}
 
 	@Override
@@ -47,7 +50,9 @@ public abstract class RenderPhysics extends Render {
 	public final boolean shouldRender(Entity entity, ICamera camera, double camX, double camY, double camZ) {
 		EntityPhysicsBase interpolatableEntity = (EntityPhysicsBase) entity;
 		interpolatableEntity.interpolate();
-		return interpolatableEntity.pickerEntity != null || entity.isInRangeToRender3d(camX, camY, camZ) && (entity.ignoreFrustumCheck || camera.isBoundingBoxInFrustum(interpolatableEntity.getRenderBoundingBox()));
+		return interpolatableEntity.pickerEntity != null
+				|| entity.isInRangeToRender3d(camX, camY, camZ) && (entity.ignoreFrustumCheck
+						|| camera.isBoundingBoxInFrustum(interpolatableEntity.getRenderBoundingBox()));
 	}
 
 	protected abstract void draw(Entity uncast, double entityX, double entityY, double entityZ, float partialTick);
@@ -61,15 +66,26 @@ public abstract class RenderPhysics extends Render {
 			if (item instanceof ItemPhysicsGun) {
 				Vector3f hitPoint = getRenderHitPoint(entity, partialTick);
 				Vec3 firstPersonOffset = new Vec3(-0.22D, -0.08D, 0.35D);
-				firstPersonOffset = firstPersonOffset.rotatePitch(-(entity.pickerEntity.prevRotationPitch + (entity.pickerEntity.rotationPitch - entity.pickerEntity.prevRotationPitch) * partialTick) * (float) Math.PI / 180.0F);
-				firstPersonOffset = firstPersonOffset.rotateYaw(-(entity.pickerEntity.prevRotationYaw + (entity.pickerEntity.rotationYaw - entity.pickerEntity.prevRotationYaw) * partialTick) * (float) Math.PI / 180.0F);
+				firstPersonOffset = firstPersonOffset.rotatePitch(-(entity.pickerEntity.prevRotationPitch
+						+ (entity.pickerEntity.rotationPitch - entity.pickerEntity.prevRotationPitch) * partialTick)
+						* (float) Math.PI / 180.0F);
+				firstPersonOffset = firstPersonOffset.rotateYaw(-(entity.pickerEntity.prevRotationYaw
+						+ (entity.pickerEntity.rotationYaw - entity.pickerEntity.prevRotationYaw) * partialTick)
+						* (float) Math.PI / 180.0F);
 
-				double d3 = entity.pickerEntity.prevPosX + (entity.pickerEntity.posX - entity.pickerEntity.prevPosX) * (double) partialTick + firstPersonOffset.xCoord;
-				double d4 = entity.pickerEntity.prevPosY + (entity.pickerEntity.posY - entity.pickerEntity.prevPosY) * (double) partialTick + firstPersonOffset.yCoord;
-				double d5 = entity.pickerEntity.prevPosZ + (entity.pickerEntity.posZ - entity.pickerEntity.prevPosZ) * (double) partialTick + firstPersonOffset.zCoord;
+				double d3 = entity.pickerEntity.prevPosX
+						+ (entity.pickerEntity.posX - entity.pickerEntity.prevPosX) * (double) partialTick
+						+ firstPersonOffset.xCoord;
+				double d4 = entity.pickerEntity.prevPosY
+						+ (entity.pickerEntity.posY - entity.pickerEntity.prevPosY) * (double) partialTick
+						+ firstPersonOffset.yCoord;
+				double d5 = entity.pickerEntity.prevPosZ
+						+ (entity.pickerEntity.posZ - entity.pickerEntity.prevPosZ) * (double) partialTick
+						+ firstPersonOffset.zCoord;
 
 				if (this.renderManager.options.thirdPersonView != 0 || entity.pickerEntity != mc.thePlayer) {
-					Vec3 beamStart = RenderUtilities.calculateRay(entity.pickerEntity, 1.0f, partialTick, new Vector3f(-0.1f, -0.25F, 0));
+					Vec3 beamStart = RenderUtilities.calculateRay(entity.pickerEntity, 1.0f, partialTick,
+							new Vector3f(-0.1f, -0.25F, 0));
 					d3 = beamStart.xCoord;
 					d4 = beamStart.yCoord;
 					d5 = beamStart.zCoord;
@@ -79,9 +95,12 @@ public abstract class RenderPhysics extends Render {
 				}
 				double d6 = (double) entity.pickerEntity.getEyeHeight();
 
-				double d16 = (entity.prevPosX + (entity.posX - entity.prevPosX) * (double) partialTick) + hitPoint.x - entityX;
-				double d8 = (entity.prevPosY + (entity.posY - entity.prevPosY) * (double) partialTick + 0.25D) + hitPoint.y - entityY;
-				double d10 = (entity.prevPosZ + (entity.posZ - entity.prevPosZ) * (double) partialTick) + hitPoint.z - entityZ;
+				double d16 = (entity.prevPosX + (entity.posX - entity.prevPosX) * (double) partialTick) + hitPoint.x
+						- entityX;
+				double d8 = (entity.prevPosY + (entity.posY - entity.prevPosY) * (double) partialTick + 0.25D)
+						+ hitPoint.y - entityY;
+				double d10 = (entity.prevPosZ + (entity.posZ - entity.prevPosZ) * (double) partialTick) + hitPoint.z
+						- entityZ;
 				double d12 = (double) ((float) (d3 - d16));
 				double d14 = (double) ((float) (d4 - d8)) + d6;
 				double d15 = (double) ((float) (d5 - d10));
@@ -90,15 +109,19 @@ public abstract class RenderPhysics extends Render {
 				OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 0);
 				worldRenderer.startDrawing(3);
 				String UUID;
-				if (net.gliby.physics.client.render.Render.getPhysicsGunColors().containsKey(UUID = entity.pickerEntity.getUniqueID().toString())) {
-					worldRenderer.setColorOpaque_I(net.gliby.physics.client.render.Render.getPhysicsGunColors().get(UUID));
-				} else worldRenderer.setColorOpaque_I(0xFF87FFFF);
+				if (renderHandler.getPhysicsGunColors()
+						.containsKey(UUID = entity.pickerEntity.getUniqueID().toString())) {
+					worldRenderer.setColorOpaque_I(renderHandler.getPhysicsGunColors().get(UUID));
+				} else
+					worldRenderer.setColorOpaque_I(0xFF87FFFF);
 				// net.gliby.physics.client.render.Render.getPhysicsGunColors().put(entity.pickerEntity.getUniqueID().toString(),
 				// 0xFFF81A1A);
 				byte b2 = 16;
 				for (int i = 0; i <= b2; ++i) {
 					float f12 = (float) i / (float) b2;
-					worldRenderer.addVertex(hitPoint.x + d12 * (double) f12, hitPoint.y + (d14 + 0.0f) * (double) (f12 * f12 + f12) * 0.5D + 0.25D, hitPoint.z + d15 * (double) f12);
+					worldRenderer.addVertex(hitPoint.x + d12 * (double) f12,
+							hitPoint.y + (d14 + 0.0f) * (double) (f12 * f12 + f12) * 0.5D + 0.25D,
+							hitPoint.z + d15 * (double) f12);
 				}
 				tessellator.draw();
 				GlStateManager.enableLighting();
@@ -107,7 +130,8 @@ public abstract class RenderPhysics extends Render {
 				int brightness = entity.getBrightnessForRender(partialTick);
 				int lightX = brightness % 65536;
 				int lightY = brightness / 65536;
-				OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) lightX / 1.0F, (float) lightY / 1.0F);
+				OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) lightX / 1.0F,
+						(float) lightY / 1.0F);
 				super.doRender(entity, entityX, entityY, entityZ, 0, partialTick);
 			}
 		}

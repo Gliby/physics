@@ -45,6 +45,8 @@ public class EntityCollisionResponseMechanic extends PhysicsMechanic {
 	private Map<Integer, Long> timeAdded = new HashMap<Integer, Long>();
 	private Map<Integer, IGhostObject> ghostObjects = new HashMap<Integer, IGhostObject>();
 
+	private Transform entityTransform = new Transform();
+
 	@Override
 	public void update() {
 		for (int i = 0; i < physicsWorld.getRigidBodies().size(); i++) {
@@ -64,9 +66,7 @@ public class EntityCollisionResponseMechanic extends PhysicsMechanic {
 						IEntityPhysics.NOT_PHYSICS_OBJECT);
 			}
 
-			// TODO Settings ignored entities.
 			for (Entity entity : intersectingEntites) {
-				Transform entityTransform = new Transform();
 				entityTransform.setIdentity();
 				entityTransform.origin.set(new Vector3f((float) entity.posX - 0.5f, (float) entity.posY + 0.25f,
 						(float) entity.posZ - 0.5f));
@@ -78,8 +78,8 @@ public class EntityCollisionResponseMechanic extends PhysicsMechanic {
 					direction.setZ((float) (entity.motionZ));
 					boolean moving = direction.length() > 0;
 					if (moving) {
-						direction
-								.scale(Physics.getInstance().getSettings().getFloatSetting("ProjectileImpulseForce").getFloatValue());
+						direction.scale(Physics.getInstance().getSettings().getFloatSetting("ProjectileImpulseForce")
+								.getFloatValue());
 						rigidBody.applyCentralImpulse(direction);
 						rigidBody.activate();
 					}
@@ -88,8 +88,7 @@ public class EntityCollisionResponseMechanic extends PhysicsMechanic {
 
 				IGhostObject ghostObject;
 				if ((ghostObject = ghostObjects.get(entity.getEntityId())) != null) {
-					
-					
+
 					// Update
 					ghostObject.setWorldTransform(entityTransform);
 					timeAdded.put(entity.getEntityId(), System.currentTimeMillis());

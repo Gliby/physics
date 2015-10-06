@@ -415,6 +415,12 @@ public abstract class JavaPhysicsWorld extends PhysicsWorld {
 				frameInA, frameInB, useLinearReferenceFrameA));
 	}
 
+	private static Transform transform = new Transform();
+
+	private static Transform getTransform() {
+		return transform;
+	}
+
 	@Override
 	public ICollisionShape buildCollisionShape(List<AxisAlignedBB> bbs, Vector3f offset) {
 		CompoundShape compoundShape = new CompoundShape();
@@ -426,7 +432,6 @@ public abstract class JavaPhysicsWorld extends PhysicsWorld {
 			Vector3f extents = new Vector3f((float) relativeBB.maxX - (float) relativeBB.minX,
 					(float) relativeBB.maxY - (float) relativeBB.minY,
 					(float) relativeBB.maxZ - (float) relativeBB.minZ);
-			Transform transform = new Transform();
 			transform.setIdentity();
 			transform.origin.set((float) relativeBB.minX + (float) relativeBB.maxX - 0.5f,
 					(float) relativeBB.minY + (float) relativeBB.maxY - 0.5f,

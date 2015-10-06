@@ -115,7 +115,7 @@ public class ServerPhysicsOverworld extends PhysicsOverworld {
 	}
 
 	protected PhysicsWorld createPhysics(World world) {
-		// TODO Settings.
+		// TODO Settings tps.
 		int tps = 30;
 		Vector3f gravity = new Vector3f(0, -9.8F, 0);
 		boolean forceJava = physics.getSettings().getBooleanSetting("PhysicsEngine.UseJavaPhysics").getBooleanValue();

@@ -35,7 +35,7 @@ public class ExplosionHandler {
 				(float) event.explosion.getPosition().yCoord, (float) event.explosion.getPosition().zCoord);
 
 		for (int i = 0; i < event.getAffectedBlocks().size(); i++) {
-			// TODO Probability that TNT will spawn?
+			// TODO How much of tnt will spawn?
 			BlockPos pos = event.getAffectedBlocks().get(i);
 			IBlockState blockState = event.world.getBlockState(pos);
 			PhysicsBlockMetadata metadata = Physics.getInstance().getCommonProxy().getPhysicsOverworld()
