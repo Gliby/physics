@@ -22,6 +22,7 @@ import net.gliby.gman.io.MinecraftResourceLoader;
 import net.gliby.physics.MetadataLoader;
 import net.gliby.physics.Physics;
 import net.gliby.physics.common.blocks.PhysicsBlockMetadata;
+import net.gliby.physics.common.game.events.ExplosionHandler;
 import net.gliby.physics.common.physics.engine.javabullet.JavaPhysicsWorld;
 import net.gliby.physics.common.physics.engine.nativebullet.NativePhysicsWorld;
 import net.gliby.physics.common.physics.mechanics.gravitymagnets.GravityModifierMechanic;
@@ -30,6 +31,7 @@ import net.minecraft.block.Block;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -42,62 +44,13 @@ import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
  */
 public class ServerPhysicsOverworld extends PhysicsOverworld {
 
-	/**
-	 * @return the physicsBlockMetadata
-	 */
-	public Map<String, PhysicsBlockMetadata> getPhysicsBlockMetadata() {
-		return physicsBlockMetadata;
-	}
-
-	public String getBlockIdentity(Block block) {
-		UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(block);
-		return id.modId + "." + id.name;
-	}
-
-	private ConcurrentHashMap<String, PhysicsBlockMetadata> physicsBlockMetadata;
-
 	private Physics physics;
 
 	public ServerPhysicsOverworld(Physics physics) {
 		this.physics = physics;
-		// TODO When metadata has finished loading, copy concurrenthashmap from
-		// MetadataLoader to physicsBlockMetadata hashmap.
-		File tempFile = null;
-		ZipFile tempZip = null;
-		if ((tempFile = new File(physics.getSettings().getDirectory(), "/custom/blocks.zip")).exists()) {
-			try {
-				tempZip = new ZipFile(tempFile);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		final ZipFile otherZip = tempZip;
-		final File otherFile = tempFile;
-		MetadataLoader loader = new MetadataLoader(
-				physicsBlockMetadata = new ConcurrentHashMap<String, PhysicsBlockMetadata>()) {
-			@Override
-			public Map<String, Object> loadMetadata(String name) throws JsonSyntaxException, IOException {
-				if (otherFile.exists()) {
-					ZipEntry entry = otherZip.getEntry(name + ".json");
-					if (entry != null) {
-						InputStream stream = otherZip.getInputStream(entry);
-						if (stream != null) {
-							return new Gson().fromJson(IOUtils.toString(stream), Map.class);
-						}
-					}
-				}
-
-				String text = IOUtils.toString(
-						MinecraftResourceLoader.getResource(Physics.getLogger(), FMLCommonHandler.instance().getSide(),
-								new ResourceLocation(Physics.MOD_ID, "blocks/" + name + ".json")));
-				if (text != null) {
-					Map<String, Object> json = new Gson().fromJson(text, Map.class);
-					return json;
-				}
-				return null;
-			}
-		};
-
+		
+		//TODO Settings!
+		MinecraftForge.EVENT_BUS.register(new ExplosionHandler(physics));
 	}
 
 	@Override

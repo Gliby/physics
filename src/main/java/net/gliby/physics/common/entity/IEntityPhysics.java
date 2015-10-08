@@ -42,8 +42,8 @@ public interface IEntityPhysics {
 			return true;
 		}
 
-		public boolean apply(Object p_apply_1_) {
-			return this.apply((Entity) p_apply_1_);
+		public boolean apply(Object object) {
+			return this.apply((Entity) object);
 		}
 	};
 

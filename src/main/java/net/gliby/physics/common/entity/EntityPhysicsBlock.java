@@ -104,10 +104,10 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 		QuaternionUtil.setEuler(rotation, 0, 0, 0);
 		this.rotation.set(rotation);
 
-		ServerPhysicsOverworld overworld = Physics.getInstance().getCommonProxy().getPhysicsOverworld();
+		Physics physics = Physics.getInstance();
 
-		PhysicsBlockMetadata metadata = overworld.getPhysicsBlockMetadata()
-				.get(overworld.getBlockIdentity(blockState.getBlock()));
+		PhysicsBlockMetadata metadata = physics.getBlockManager().getPhysicsBlockMetadata()
+				.get(physics.getBlockManager().getBlockIdentity(blockState.getBlock()));
 		boolean metadataExists = metadata != null;
 
 		this.mass = metadataExists ? metadata.mass : 10;

@@ -21,6 +21,7 @@ import com.google.gson.Gson;
  * Update, minecraft -> server handler;
  *
  */
+// TODO Fix mod outdated inaccuracy bug.
 public class GMan {
 
 	public HashMap<String, Object> properties;

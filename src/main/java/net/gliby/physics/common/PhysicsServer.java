@@ -11,6 +11,7 @@ import net.gliby.physics.common.game.items.toolgun.actions.ToolGunChangeGravityA
 import net.gliby.physics.common.game.items.toolgun.actions.ToolGunRemoveAction;
 import net.gliby.physics.common.game.items.toolgun.actions.ToolGunReviveAction;
 import net.gliby.physics.common.packets.PacketPlayerJoin;
+import net.gliby.physics.common.physics.PhysicsOverworld;
 import net.gliby.physics.common.physics.ServerPhysicsOverworld;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -25,11 +26,11 @@ import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
-public class PhysicsServer {
+public class PhysicsServer implements IPhysicsProxy {
 
 	private ServerPhysicsOverworld physicsWorld;
 
-	public void preInit(FMLPreInitializationEvent event) {
+	public void preInit(Physics physics, FMLPreInitializationEvent event) {
 	}
 
 	public void init(Physics physics, FMLInitializationEvent event) {
@@ -70,7 +71,6 @@ public class PhysicsServer {
 		if (!hasStartedOnce) {
 
 			MinecraftForge.EVENT_BUS.register(physicsWorld = new ServerPhysicsOverworld(physics));
-			MinecraftForge.EVENT_BUS.register(new ExplosionHandler(physics));
 			FMLCommonHandler.instance().bus().register(this);
 			ToolGunActionRegistry.getInstance().registerAction(new ToolGunAttachAction(), Physics.MOD_ID);
 			ToolGunActionRegistry.getInstance().registerAction(new ToolGunReviveAction(), Physics.MOD_ID);
@@ -93,7 +93,8 @@ public class PhysicsServer {
 		}
 	}
 
-	public final ServerPhysicsOverworld getPhysicsOverworld() {
+	@Override
+	public PhysicsOverworld getPhysicsOverworld() {
 		return physicsWorld;
 	}
 

@@ -37,6 +37,7 @@ import com.bulletphysics.linearmath.Transform;
 import net.gliby.physics.Physics;
 import net.gliby.physics.client.ClientPhysicsOverworld;
 import net.gliby.physics.client.render.RenderUtilities;
+import net.gliby.physics.common.physics.PhysicsOverworld;
 import net.gliby.physics.common.physics.PhysicsWorld;
 import net.gliby.physics.common.physics.engine.ICollisionShapeChildren;
 import net.gliby.physics.common.physics.engine.IConstraint;
@@ -68,8 +69,8 @@ public class RenderAdditionalWorld {
 	@SubscribeEvent
 	public void postRender(RenderWorldLastEvent event) {
 		// if (MineFortress.DEBUG_PHYSICS_RENDER)
-		if (Physics.getInstance().getClientProxy().getPhysicsOverWorld() != null)
-			renderDebugPhysics(Physics.getInstance().getClientProxy().getPhysicsOverWorld(), event);
+		if (Physics.getInstance().getPhysicsOverworld() != null)
+			renderDebugPhysics(Physics.getInstance().getPhysicsOverworld(), event);
 		// event);
 	}
 
@@ -80,7 +81,7 @@ public class RenderAdditionalWorld {
 	/**
 	 * Draws debug physics world with inefficient rendering.
 	 */
-	private void renderDebugPhysics(ClientPhysicsOverworld overworld, RenderWorldLastEvent event) {
+	private void renderDebugPhysics(PhysicsOverworld overworld, RenderWorldLastEvent event) {
 		boolean renderConstraint = false;
 		boolean renderRopeJoints = true;
 

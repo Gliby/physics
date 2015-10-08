@@ -5,6 +5,7 @@ package net.gliby.physics;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -14,28 +15,34 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import com.google.gson.JsonSyntaxException;
 
+import net.gliby.physics.common.blocks.BlockManager;
 import net.gliby.physics.common.blocks.PhysicsBlockMetadata;
 import net.gliby.physics.common.entity.mechanics.RigidBodyMechanic;
-import net.gliby.physics.common.physics.ServerPhysicsOverworld;
+import net.gliby.physics.common.physics.PhysicsOverworld;
 import net.minecraft.block.Block;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
 
 /**
  *
  */
 public abstract class MetadataLoader {
 
-	private ConcurrentHashMap<String, PhysicsBlockMetadata> metadataMap;
+	private HashMap<String, PhysicsBlockMetadata> actualMap;
+	private ConcurrentHashMap<String, PhysicsBlockMetadata> tempData;
+	private BlockManager blockManager;
+	private Physics physics;
 
-	public MetadataLoader(ConcurrentHashMap<String, PhysicsBlockMetadata> metadataMap) {
-		this.metadataMap = metadataMap;
+	public MetadataLoader(Physics physics, BlockManager blockManager,
+			HashMap<String, PhysicsBlockMetadata> metadataMap) {
+		this.physics = physics;
+		this.actualMap = metadataMap;
+		this.tempData = new ConcurrentHashMap<String, PhysicsBlockMetadata>();
+		this.blockManager = blockManager;
 		start();
 	}
 
-	BlockingQueue<Callable> blockLoadQueue = new LinkedBlockingQueue<Callable>();
+	private BlockingQueue<Callable> blockLoadQueue = new LinkedBlockingQueue<Callable>();
 
-	int loaded;
+	private int loaded;
 
 	private Runnable loadQueue() {
 		return new Runnable() {
@@ -54,6 +61,9 @@ public abstract class MetadataLoader {
 						}
 					}
 				}
+				actualMap.putAll(tempData);
+				tempData.clear();
+				System.out.println("Copied " + actualMap.size() + "  to " + tempData);
 				Physics.getLogger().info("Loaded " + loaded + " physics blocks.");
 			}
 
@@ -64,24 +74,16 @@ public abstract class MetadataLoader {
 		Iterator<Block> itr = Block.blockRegistry.iterator();
 		while (itr.hasNext()) {
 			final Block block = itr.next();
-			UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(block);
-			final String blockID = id.modId + "." + id.name;
-			if (!metadataMap.containsKey(blockID)) {
+			final String blockID = blockManager.getBlockIdentity(block);
+			if (!tempData.containsKey(blockID)) {
 				blockLoadQueue.offer(new Callable() {
 					@Override
-					public Object call() {
+					public Object call() throws JsonSyntaxException, IOException {
 						Map<String, Object> json = null;
-						try {
-							if ((json = loadMetadata(blockID)) != null) {
-								PhysicsBlockMetadata metadata = getMetadata(blockID, json);
-								metadataMap.put(blockID, metadata);
-							} else {
-
-							}
-						} catch (JsonSyntaxException | IOException e) {
-							// e.printStackTrace();
+						if ((json = loadMetadata(blockID)) != null) {
+							PhysicsBlockMetadata metadata = formatMetadata(blockID, json);
+							tempData.put(blockID, metadata);
 						}
-
 						/*
 						 * Gson gson = new
 						 * GsonBuilder().setPrettyPrinting().create();
@@ -133,9 +135,9 @@ public abstract class MetadataLoader {
 
 	}
 
-	private PhysicsBlockMetadata getMetadata(String name, Map<String, Object> json) {
-		ServerPhysicsOverworld overworld = Physics.getInstance().getCommonProxy().getPhysicsOverworld();
-		PhysicsBlockMetadata metadata = metadataMap.get(name);
+	private PhysicsBlockMetadata formatMetadata(String name, Map<String, Object> json) {
+		PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
+		PhysicsBlockMetadata metadata = tempData.get(name);
 		if (metadata == null) {
 			metadata = new PhysicsBlockMetadata();
 			if (json.containsKey("friction"))
@@ -143,7 +145,7 @@ public abstract class MetadataLoader {
 			if (json.containsKey("mass"))
 				metadata.mass = new Float((Double) json.get("mass")).floatValue();
 			if (json.containsKey("shouldSpawnInExplosion"))
-				metadata.shouldSpawnInExplosion = (Boolean) json.get("shouldSpawnInExplosion");
+				metadata.spawnInExplosions = (Boolean) json.get("shouldSpawnInExplosion");
 			if (json.containsKey("overrideCollisionShape"))
 				metadata.defaultCollisionShape = (Boolean) json.get("overrideCollisionShape");
 			if (json.containsKey("restitution"))

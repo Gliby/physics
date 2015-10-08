@@ -13,14 +13,13 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Type;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class KeyManager {
-
-	private static final KeyManager instance = new KeyManager();
 
 	@SideOnly(Side.CLIENT)
 	private final List<KeyEvent> keyEvents = new ArrayList<KeyEvent>();
@@ -100,15 +99,14 @@ public class KeyManager {
 		return keyBinding;
 	}
 
-	public static KeyManager getInstance() {
-		return instance;
-	}
-
+	//TODO Look into phases.
 	@SubscribeEvent
 	public void tick(TickEvent event) {
 		if (event.side == Side.CLIENT) {
 			if (event.type == Type.CLIENT) {
-				KeyManager.getInstance().keyEvent(null);
+//				if(event.phase == Phase.END) {
+					this.keyEvent(null);
+//				}
 			}
 		}
 	}

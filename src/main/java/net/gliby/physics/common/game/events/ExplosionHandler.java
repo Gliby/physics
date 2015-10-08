@@ -30,6 +30,7 @@ public class ExplosionHandler {
 
 	@SubscribeEvent
 	public void handleEvent(ExplosionEvent.Detonate event) {
+		Physics physics = Physics.getInstance();
 		PhysicsWorld physicsWorld = physics.getCommonProxy().getPhysicsOverworld().getPhysicsByWorld(event.world);
 		Vector3f explosion = new Vector3f((float) event.explosion.getPosition().xCoord,
 				(float) event.explosion.getPosition().yCoord, (float) event.explosion.getPosition().zCoord);
@@ -38,9 +39,9 @@ public class ExplosionHandler {
 			// TODO How much of tnt will spawn?
 			BlockPos pos = event.getAffectedBlocks().get(i);
 			IBlockState blockState = event.world.getBlockState(pos);
-			PhysicsBlockMetadata metadata = Physics.getInstance().getCommonProxy().getPhysicsOverworld()
-					.getPhysicsBlockMetadata().get(blockState.getBlock().getUnlocalizedName());
-			boolean shouldSpawnInExplosions = metadata != null ? metadata.shouldSpawnInExplosion : true;
+			PhysicsBlockMetadata metadata = physics.getBlockManager().getPhysicsBlockMetadata()
+					.get(physics.getBlockManager().getBlockIdentity(blockState.getBlock()));
+			boolean shouldSpawnInExplosions = metadata != null ? metadata.spawnInExplosions : true;
 			if (blockState.getBlock().getMaterial() != Material.air && shouldSpawnInExplosions) {
 				blockState = blockState.getBlock().getActualState(blockState, event.world, pos);
 				EntityPhysicsBlock analog = new EntityPhysicsBlock(event.world, physicsWorld, blockState, pos.getX(),
