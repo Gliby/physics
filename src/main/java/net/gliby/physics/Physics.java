@@ -16,6 +16,7 @@ import net.gliby.gman.settings.Setting;
 import net.gliby.gman.settings.SettingsHandler;
 import net.gliby.gman.settings.StringSetting;
 import net.gliby.physics.client.PhysicsClient;
+import net.gliby.physics.common.IPhysicsProxy;
 import net.gliby.physics.common.PhysicsServer;
 import net.gliby.physics.common.blocks.BlockManager;
 import net.gliby.physics.common.entity.EntityPhysicsBlock;
@@ -25,6 +26,7 @@ import net.gliby.physics.common.entity.IEntityPhysics;
 import net.gliby.physics.common.game.items.ItemPhysicsGun;
 import net.gliby.physics.common.game.items.toolgun.ItemToolGun;
 import net.gliby.physics.common.packets.PacketPlayerJoin;
+import net.gliby.physics.common.physics.PhysicsOverworld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
@@ -78,8 +80,6 @@ public class Physics {
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		this.instance = this;
-		blockManager = new BlockManager(this);
-
 		registerEntity(EntityPhysicsBlock.class, "PhysicsBlock", 64, 1, false);
 		registerEntity(EntityPhysicsModelPart.class, "Model Part Entity", 64, 1, false);
 		registerEntity(EntityToolGunBeam.class, "Tool Gun Beam", 64, 1, false);
@@ -182,7 +182,8 @@ public class Physics {
 
 		registerPacket(PacketPlayerJoin.class, PacketPlayerJoin.class, Side.CLIENT);
 
-		proxy.preInit(event);
+		proxy.preInit(this, event);
+		blockManager = new BlockManager(this);
 		getLogger().info("Pre-initialization completed on " + FMLCommonHandler.instance().getEffectiveSide());
 	}
 
@@ -235,8 +236,13 @@ public class Physics {
 		return LOGGER;
 	}
 
+	// TODO Get rid of most static calls, we're trying to look professional.
 	public static Physics getInstance() {
 		return instance;
+	}
+
+	public IPhysicsProxy getProxy() {
+		return proxy;
 	}
 
 	public PhysicsServer getCommonProxy() {
@@ -258,5 +264,9 @@ public class Physics {
 
 	public BlockManager getBlockManager() {
 		return blockManager;
+	}
+
+	public PhysicsOverworld getPhysicsOverworld() {
+		return proxy.getPhysicsOverworld();
 	}
 }

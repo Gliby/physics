@@ -157,7 +157,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 	public void readEntityFromNBT(NBTTagCompound tagCompound) {
 		if (!worldObj.isRemote) {
 			mechanics.clear();
-			ServerPhysicsOverworld overworld = Physics.getInstance().getCommonProxy().getPhysicsOverworld();
+			PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
 			ArrayList<String> mechanicsByNames = new Gson().fromJson(tagCompound.getString("Mechanics"),
 					ArrayList.class);
 			if (mechanicsByNames != null) {
@@ -179,6 +179,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 	}
 
 	protected abstract void createPhysicsObject(PhysicsWorld physicsWorld);
+
 	protected abstract void updatePhysicsObject(PhysicsWorld physicsWorld);
 
 	/**
@@ -303,7 +304,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 	@Override
 	public void readSpawnData(ByteBuf buffer) {
 		int size = buffer.readInt();
-		PhysicsOverworld overworld = Physics.getInstance().getClientProxy().getPhysicsOverWorld();
+		PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
 		for (int i = 0; i < size; i++) {
 			String mechanicName = ByteBufUtils.readUTF8String(buffer);
 			RigidBodyMechanic mechanic = overworld.getMechanicFromName(mechanicName);

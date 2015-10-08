@@ -14,6 +14,7 @@ import net.gliby.physics.client.gui.creator.GuiScreenPhysicsCreator;
 import net.gliby.physics.client.keybindings.KeyManager;
 import net.gliby.physics.client.render.RenderHandler;
 import net.gliby.physics.common.PhysicsServer;
+import net.gliby.physics.common.physics.PhysicsOverworld;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.WorldEvent;
@@ -30,11 +31,16 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class PhysicsClient extends PhysicsServer {
 
 	@Override
-	public void preInit(FMLPreInitializationEvent event) {
+	public void preInit(Physics physics, FMLPreInitializationEvent event) {
+		MinecraftForge.EVENT_BUS.register(physicsWorld = new ClientPhysicsOverworld(physics));
 		MinecraftForge.EVENT_BUS.register(new GuiDebug());
-		KeyManager.getInstance().init();
-		Minecraft mc = Minecraft.getMinecraft();
+		this.keyManager = new KeyManager();
+	}
 
+	private KeyManager keyManager;
+
+	public KeyManager getKeyMananger() {
+		return keyManager;
 	}
 
 	private ClientPhysicsOverworld physicsWorld;
@@ -42,19 +48,20 @@ public class PhysicsClient extends PhysicsServer {
 	/**
 	 * @return the physicsWorld
 	 */
-	public ClientPhysicsOverworld getPhysicsOverWorld() {
+	@Override
+	public PhysicsOverworld getPhysicsOverworld() {
 		return physicsWorld;
 	}
 
 	private RenderHandler render;
 
-	boolean playerCreated;
+	private boolean init;
 
 	@SubscribeEvent
 	@SideOnly(Side.CLIENT)
 	public void onJoin(PlayerTickEvent event) {
 		if (event.phase == Phase.END) {
-			if (event.side == Side.CLIENT && !playerCreated) {
+			if (event.side == Side.CLIENT && !init) {
 				final Minecraft mc = Minecraft.getMinecraft();
 				final Physics physics = Physics.getInstance();
 				if (physics.getSettings().isFirstTime()) {
@@ -64,7 +71,7 @@ public class PhysicsClient extends PhysicsServer {
 							(ArrayList<VersionChanges>) physics.getGMan().getProperties().get("VersionChanges")));
 					physics.getGMan().getProperties().remove("VersionChanges");
 				}
-				playerCreated = true;
+				init = true;
 			}
 		}
 	}
@@ -72,20 +79,21 @@ public class PhysicsClient extends PhysicsServer {
 	@Override
 	public void init(Physics physics, FMLInitializationEvent event) {
 		physics.getLogger().info("Started!");
-		boolean dynamicLightsPresent = Loader.isModLoaded("DynamicLights");
-		if (dynamicLightsPresent) {
-			physics.getLogger().info("DynamicLights by AtomicStryker has been found, enabling dynamic light creation!");
-		}
-		ItemHandler itemHandler = ItemHandler.getInstance();
+		/*
+		 * TODO Enable dynamic lights. boolean dynamicLightsPresent =
+		 * Loader.isModLoaded("DynamicLights"); if (dynamicLightsPresent) {
+		 * physics.getLogger().info(
+		 * "DynamicLights by AtomicStryker has been found, enabling dynamic light creation!"
+		 * ); }
+		 */ ItemHandler itemHandler = ItemHandler.getInstance();
 
 		itemHandler.addAlwaysUsedItem(physics.itemPhysicsGun, false, false);
 		itemHandler.addAlwaysUsedItem(physics.itemToolgun, false, false);
-		// TODO Settings
 		MinecraftForge.EVENT_BUS.register(this);
-		MinecraftForge.EVENT_BUS.register(physicsWorld = new ClientPhysicsOverworld(physics));
 		// MinecraftForge.EVENT_BUS.register(new
 		// EntityDeathHandler(physicsWorld));
-		render = new RenderHandler(physics, dynamicLightsPresent);
+		render = new RenderHandler(physics,
+				false /* TODO Continue... Redo this right here! */);
 		render.init(event);
 	}
 
