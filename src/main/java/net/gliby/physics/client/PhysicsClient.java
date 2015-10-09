@@ -32,7 +32,6 @@ public class PhysicsClient extends PhysicsServer {
 
 	@Override
 	public void preInit(Physics physics, FMLPreInitializationEvent event) {
-		MinecraftForge.EVENT_BUS.register(physicsWorld = new ClientPhysicsOverworld(physics));
 		MinecraftForge.EVENT_BUS.register(new GuiDebug());
 		this.keyManager = new KeyManager();
 	}
@@ -41,16 +40,6 @@ public class PhysicsClient extends PhysicsServer {
 
 	public KeyManager getKeyMananger() {
 		return keyManager;
-	}
-
-	private ClientPhysicsOverworld physicsWorld;
-
-	/**
-	 * @return the physicsWorld
-	 */
-	@Override
-	public PhysicsOverworld getPhysicsOverworld() {
-		return physicsWorld;
 	}
 
 	private RenderHandler render;

@@ -45,6 +45,7 @@ import net.gliby.gman.WorldUtility;
 import net.gliby.physics.Physics;
 import net.gliby.physics.common.physics.PhysicsOverworld;
 import net.gliby.physics.common.physics.PhysicsWorld;
+import net.gliby.physics.common.physics.PhysicsOverworld.IPhysicsWorldConfiguration;
 import net.gliby.physics.common.physics.engine.ICollisionObject;
 import net.gliby.physics.common.physics.engine.ICollisionShape;
 import net.gliby.physics.common.physics.engine.IConstraint;
@@ -65,7 +66,7 @@ import net.minecraft.world.World;
 /**
  *
  */
-public abstract class JavaPhysicsWorld extends PhysicsWorld {
+public class JavaPhysicsWorld extends PhysicsWorld {
 
 	private List<IRigidBody> rigidBodies;
 	private List<IConstraint> constraints;
@@ -76,9 +77,9 @@ public abstract class JavaPhysicsWorld extends PhysicsWorld {
 	/**
 	 * @param ticksPerSecond
 	 */
-	public JavaPhysicsWorld(Physics physics, PhysicsOverworld physicsOverworld, World world, int ticksPerSecond,
-			Vector3f gravity) {
-		super(world, ticksPerSecond, gravity);
+	public JavaPhysicsWorld(Physics physics, PhysicsOverworld physicsOverworld,
+			IPhysicsWorldConfiguration physicsConfig) {
+		super(physicsConfig);
 		this.physics = physics;
 		this.physicsOverworld = physicsOverworld;
 	}
@@ -90,11 +91,11 @@ public abstract class JavaPhysicsWorld extends PhysicsWorld {
 		while (running) {
 			synchronized (this) {
 				try {
-					wait(1000 / getTicksPerSecond());
+					wait(1000 / getPhysicsConfiguration().getTicksPerSecond());
 				} catch (InterruptedException e) {
 					Physics.getLogger().catching(e);
 				}
-				if (shouldSimulate(world, this))
+				if (getPhysicsConfiguration().shouldSimulate(getPhysicsConfiguration().getWorld(), this))
 					update();
 				updateFPS();
 			}
@@ -113,7 +114,7 @@ public abstract class JavaPhysicsWorld extends PhysicsWorld {
 
 		this.dynamicsWorld = new DiscreteDynamicsWorld(dispatcher, broadphase, new SequentialImpulseConstraintSolver(),
 				collisionConfiguration);
-		this.dynamicsWorld.setGravity(gravity);
+		this.dynamicsWorld.setGravity(getPhysicsConfiguration().getRegularGravity());
 
 		Matrix3f rot = new Matrix3f();
 		rot.setIdentity();
@@ -121,7 +122,7 @@ public abstract class JavaPhysicsWorld extends PhysicsWorld {
 
 		// Create block collision connection to bullet.
 		JBulletVoxelWorldShape blockCollisionHandler = new JBulletVoxelWorldShape(
-				new JavaVoxelProvider(world, physics, this));
+				new JavaVoxelProvider(getPhysicsConfiguration().getWorld(), physics, this));
 		blockCollisionHandler.calculateLocalInertia(0, new Vector3f());
 		RigidBodyConstructionInfo blockConsInf = new RigidBodyConstructionInfo(0,
 				new DefaultMotionState(identityTransform), blockCollisionHandler, new Vector3f());
@@ -134,10 +135,7 @@ public abstract class JavaPhysicsWorld extends PhysicsWorld {
 	@Override
 	public void update() {
 		float delta = getDelta();
-		if (!world.playerEntities.isEmpty()) {
-			if (dynamicsWorld != null)
-				dynamicsWorld.stepSimulation(1, Math.round(delta / 7));
-		}
+		dynamicsWorld.stepSimulation(1, Math.round(delta / 7));
 		super.update();
 	}
 

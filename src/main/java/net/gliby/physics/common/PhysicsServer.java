@@ -2,22 +2,10 @@ package net.gliby.physics.common;
 
 import net.gliby.gman.settings.BooleanSetting;
 import net.gliby.physics.Physics;
-import net.gliby.physics.common.game.events.ExplosionHandler;
-import net.gliby.physics.common.game.items.toolgun.actions.ToolGunActionRegistry;
-import net.gliby.physics.common.game.items.toolgun.actions.ToolGunAlignAction;
-import net.gliby.physics.common.game.items.toolgun.actions.ToolGunAttachAction;
-import net.gliby.physics.common.game.items.toolgun.actions.ToolGunAttractAction;
-import net.gliby.physics.common.game.items.toolgun.actions.ToolGunChangeGravityAction;
-import net.gliby.physics.common.game.items.toolgun.actions.ToolGunRemoveAction;
-import net.gliby.physics.common.game.items.toolgun.actions.ToolGunReviveAction;
 import net.gliby.physics.common.packets.PacketPlayerJoin;
-import net.gliby.physics.common.physics.PhysicsOverworld;
-import net.gliby.physics.common.physics.ServerPhysicsOverworld;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -28,8 +16,6 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
 public class PhysicsServer implements IPhysicsProxy {
 
-	private ServerPhysicsOverworld physicsWorld;
-
 	public void preInit(Physics physics, FMLPreInitializationEvent event) {
 	}
 
@@ -39,6 +25,7 @@ public class PhysicsServer implements IPhysicsProxy {
 	public void postInit(FMLPostInitializationEvent event) {
 	}
 
+	// TODO Replace this event.
 	@SubscribeEvent
 	public void playerJoinEvent(final PlayerLoggedInEvent event) {
 		MinecraftServer.getServer().addScheduledTask(new Runnable() {
@@ -55,8 +42,8 @@ public class PhysicsServer implements IPhysicsProxy {
 						}
 					}
 				}
-				Physics.getDispatcher().sendTo(
-						new PacketPlayerJoin(ToolGunActionRegistry.getInstance().getValueDefinitions()),
+				Physics physics = Physics.getInstance();
+				physics.getDispatcher().sendTo(new PacketPlayerJoin(physics.getToolGunRegistry().getValueDefinitions()),
 						(EntityPlayerMP) event.player);
 				event.player
 						.addChatComponentMessage(new ChatComponentText("Running: " + System.getProperty("os.name")));
@@ -65,22 +52,7 @@ public class PhysicsServer implements IPhysicsProxy {
 		});
 	}
 
-	private static boolean hasStartedOnce;
-
 	public final void serverAboutToStart(Physics physics, FMLServerAboutToStartEvent event) {
-		if (!hasStartedOnce) {
-
-			MinecraftForge.EVENT_BUS.register(physicsWorld = new ServerPhysicsOverworld(physics));
-			FMLCommonHandler.instance().bus().register(this);
-			ToolGunActionRegistry.getInstance().registerAction(new ToolGunAttachAction(), Physics.MOD_ID);
-			ToolGunActionRegistry.getInstance().registerAction(new ToolGunReviveAction(), Physics.MOD_ID);
-			ToolGunActionRegistry.getInstance().registerAction(new ToolGunAlignAction(), Physics.MOD_ID);
-			ToolGunActionRegistry.getInstance().registerAction(new ToolGunAttractAction(), Physics.MOD_ID);
-			ToolGunActionRegistry.getInstance().registerAction(new ToolGunChangeGravityAction(), Physics.MOD_ID);
-			ToolGunActionRegistry.getInstance().registerAction(new ToolGunRemoveAction(), Physics.MOD_ID);
-
-			hasStartedOnce = !hasStartedOnce;
-		}
 	}
 
 	public final void serverStarted(FMLServerStartedEvent event) {
@@ -92,10 +64,4 @@ public class PhysicsServer implements IPhysicsProxy {
 			MinecraftServer.getServer().setAllowFlight(true);
 		}
 	}
-
-	@Override
-	public PhysicsOverworld getPhysicsOverworld() {
-		return physicsWorld;
-	}
-
 }

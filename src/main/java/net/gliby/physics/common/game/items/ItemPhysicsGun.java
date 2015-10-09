@@ -62,7 +62,8 @@ public class ItemPhysicsGun extends RawItem {
 	@SubscribeEvent
 	public void onMouseEvent(MouseEvent event) {
 		Minecraft mc = Minecraft.getMinecraft();
-		if (mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemPhysicsGun && !mc.thePlayer.isSpectator()) {
+		if (mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemPhysicsGun
+				&& !mc.thePlayer.isSpectator()) {
 			if (event.dwheel != 0) {
 				if (holdingDown) {
 					Physics.getDispatcher().sendToServer(new PacketPhysicsGunWheel(event.dwheel > 0));
@@ -124,7 +125,7 @@ public class ItemPhysicsGun extends RawItem {
 				public void run() {
 					EntityPlayerMP player = ctx.getServerHandler().playerEntity;
 					World world = player.worldObj;
-					PhysicsWorld physicsWorld = Physics.getInstance().getCommonProxy().getPhysicsOverworld()
+					PhysicsWorld physicsWorld = Physics.getInstance().getPhysicsOverworld()
 							.getPhysicsByWorld(player.worldObj);
 					PickUpMechanic mechanic = (PickUpMechanic) physicsWorld.getMechanics().get("PickUp");
 					if (player != null && physicsWorld != null && mechanic != null) {
@@ -204,7 +205,7 @@ public class ItemPhysicsGun extends RawItem {
 				public void run() {
 					EntityPlayerMP player = ctx.getServerHandler().playerEntity;
 					World world = player.worldObj;
-					PhysicsWorld physicsWorld = Physics.getInstance().getCommonProxy().getPhysicsOverworld()
+					PhysicsWorld physicsWorld = Physics.getInstance().getPhysicsOverworld()
 							.getPhysicsByWorld(player.worldObj);
 					if (player.getCurrentEquippedItem() != null
 							&& player.getCurrentEquippedItem().getItem() instanceof ItemPhysicsGun) {

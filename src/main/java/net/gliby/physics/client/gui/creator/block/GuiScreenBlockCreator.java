@@ -58,9 +58,9 @@ public class GuiScreenBlockCreator extends GuiScreenCreator implements GuiYesNoC
 		this.physics = Physics.getInstance();
 		this.messagesList = EvictingQueue.create(3);
 		this.maxBlocks = Block.blockRegistry.getKeys().size();
-		blocksBuilt = 0;
 		thread = new Thread();
 		lucky = new Random().nextInt(20000) == 0;
+		blocksBuilt = 0;
 
 		if (!physics.getBlockManager().getBlockGenerators().isEmpty())
 			addMessage("Custom block generators found.");}
@@ -197,7 +197,7 @@ public class GuiScreenBlockCreator extends GuiScreenCreator implements GuiYesNoC
 		}
 	}
 
-	public synchronized void stoppedBuilding(UniqueIdentifier id, Exception e) {
+	public void stoppedBuilding(UniqueIdentifier id, Exception e) {
 		if (e != null) {
 			addMessage("Error! Build failed because of: " + e);
 			addMessage("Given error block was: " + id.modId + "." + id.name);

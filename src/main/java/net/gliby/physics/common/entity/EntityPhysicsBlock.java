@@ -5,7 +5,6 @@ package net.gliby.physics.common.entity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
@@ -15,7 +14,6 @@ import com.bulletphysics.linearmath.QuaternionUtil;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.linearmath.VectorUtil;
 import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 
 import io.netty.buffer.ByteBuf;
@@ -28,12 +26,10 @@ import net.gliby.physics.client.render.RenderHandler;
 import net.gliby.physics.common.blocks.PhysicsBlockMetadata;
 import net.gliby.physics.common.entity.mechanics.RigidBodyMechanic;
 import net.gliby.physics.common.physics.PhysicsWorld;
-import net.gliby.physics.common.physics.ServerPhysicsOverworld;
 import net.gliby.physics.common.physics.engine.ICollisionShape;
 import net.gliby.physics.common.physics.engine.IRigidBody;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -124,7 +120,6 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 				for (int i = 0; i < collisionBBs.size(); i++) {
 					collisionBBs.set(i, collisionBBs.get(i).offset(-x, -y, -z));
 				}
-
 				this.collisionShape = physicsWorld.buildCollisionShape(collisionBBs, VectorUtil.IDENTITY);
 			}
 		} catch (IllegalArgumentException e) {
@@ -283,7 +278,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
 	@Override
 	public void readEntityFromNBT(NBTTagCompound tagCompound) {
-		this.physicsWorld = Physics.getInstance().getCommonProxy().getPhysicsOverworld().getPhysicsByWorld(worldObj);
+		this.physicsWorld = Physics.getInstance().getPhysicsOverworld().getPhysicsByWorld(worldObj);
 		int data = tagCompound.getByte("Data") & 255;
 
 		if (tagCompound.hasKey("Block", 8))

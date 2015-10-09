@@ -25,6 +25,13 @@ import net.gliby.physics.common.entity.EntityToolGunBeam;
 import net.gliby.physics.common.entity.IEntityPhysics;
 import net.gliby.physics.common.game.items.ItemPhysicsGun;
 import net.gliby.physics.common.game.items.toolgun.ItemToolGun;
+import net.gliby.physics.common.game.items.toolgun.actions.ToolGunActionRegistry;
+import net.gliby.physics.common.game.items.toolgun.actions.ToolGunAlignAction;
+import net.gliby.physics.common.game.items.toolgun.actions.ToolGunAttachAction;
+import net.gliby.physics.common.game.items.toolgun.actions.ToolGunAttractAction;
+import net.gliby.physics.common.game.items.toolgun.actions.ToolGunChangeGravityAction;
+import net.gliby.physics.common.game.items.toolgun.actions.ToolGunRemoveAction;
+import net.gliby.physics.common.game.items.toolgun.actions.ToolGunReviveAction;
 import net.gliby.physics.common.packets.PacketPlayerJoin;
 import net.gliby.physics.common.physics.PhysicsOverworld;
 import net.minecraft.entity.Entity;
@@ -66,12 +73,19 @@ public class Physics {
 	@SidedProxy(serverSide = "net.gliby.physics.common.PhysicsServer", clientSide = "net.gliby.physics.client.PhysicsClient")
 	private static PhysicsServer proxy;
 
+	// TODO Move into item package.
 	private static Item itemRigidBodySpawner;
 
+	// TODO Move into item package.
 	// TODO Make these not static
 	public RawItem itemPhysicsGun, itemToolgun;
 
 	private GMan gman;
+
+	// TODO Move to Item package.
+	private ToolGunActionRegistry toolGunRegistry;
+
+	private PhysicsOverworld physicsOverworld;
 
 	public GMan getGMan() {
 		return gman;
@@ -152,38 +166,25 @@ public class Physics {
 		lastVersion.setString(MOD_VERSION);
 		settings.save();
 
-		/*
-		 * EntityRegistry.registerGlobalEntityID(EntityPhysicsRagdoll.class,
-		 * "Ragdoll Entity", baseId + 1);
-		 * EntityRegistry.registerModEntity(EntityPhysicsRagdoll.class,
-		 * "Ragdoll Entity", baseId + 1, this, 64, 1, false);
-		 */
-
-		// EntityRegistry.registerGlobalEntityID(EntityPhysicsModelPart.class,
-		// "Model Part Entity", baseId + 2);
-		// EntityRegistry.registerModEntity(EntityPhysicsModelPart.class, "Model
-		// Part Entity", baseId + 2, this, 64, 1, false);
-
-		// EntityRegistry.registerGlobalEntityID(EntityPhysicsModelPart.class,
-		// "Model Part Entity", baseId + 3);
-		// EntityRegistry.registerModEntity(EntityPhysicsModelPart.class, "Model
-		// Part Entity", baseId + 3, this, 64, 1, false);
-
 		GameRegistry.registerItem(itemToolgun = new ItemToolGun(this), itemToolgun.getUnlocalizedName());
 		GameRegistry.registerItem(itemPhysicsGun = new ItemPhysicsGun(this), itemPhysicsGun.getUnlocalizedName());
-		// GameRegistry.registerItem(itemPhysicsTransformer = new
-		// ItemPhysicsTransformer(),
-		// itemPhysicsTransformer.getUnlocalizedName());
-		// GameRegistry.registerItem(itemRagdollSpawner = new
-		// ItemSpawnRagdoll(), itemRagdollSpawner.getUnlocalizedName());
-
 		MinecraftForge.EVENT_BUS.register(itemPhysicsGun);
 		MinecraftForge.EVENT_BUS.register(itemToolgun);
 
+		toolGunRegistry = new ToolGunActionRegistry();
+		toolGunRegistry.registerAction(new ToolGunAttachAction(), Physics.MOD_ID);
+		toolGunRegistry.registerAction(new ToolGunReviveAction(), Physics.MOD_ID);
+		toolGunRegistry.registerAction(new ToolGunAlignAction(), Physics.MOD_ID);
+		toolGunRegistry.registerAction(new ToolGunAttractAction(), Physics.MOD_ID);
+		toolGunRegistry.registerAction(new ToolGunChangeGravityAction(), Physics.MOD_ID);
+		toolGunRegistry.registerAction(new ToolGunRemoveAction(), Physics.MOD_ID);
+
 		registerPacket(PacketPlayerJoin.class, PacketPlayerJoin.class, Side.CLIENT);
 
-		proxy.preInit(this, event);
+		physicsOverworld = new PhysicsOverworld(this);
 		blockManager = new BlockManager(this);
+		FMLCommonHandler.instance().bus().register(this);
+		proxy.preInit(this, event);
 		getLogger().info("Pre-initialization completed on " + FMLCommonHandler.instance().getEffectiveSide());
 	}
 
@@ -267,6 +268,10 @@ public class Physics {
 	}
 
 	public PhysicsOverworld getPhysicsOverworld() {
-		return proxy.getPhysicsOverworld();
+		return physicsOverworld;
+	}
+
+	public ToolGunActionRegistry getToolGunRegistry() {
+		return toolGunRegistry;
 	}
 }

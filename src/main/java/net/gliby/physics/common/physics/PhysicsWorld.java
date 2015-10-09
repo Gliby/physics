@@ -15,6 +15,7 @@ import com.bulletphysics.linearmath.Transform;
 import com.google.gson.annotations.SerializedName;
 
 import net.gliby.gman.WorldUtility;
+import net.gliby.physics.common.physics.PhysicsOverworld.IPhysicsWorldConfiguration;
 import net.gliby.physics.common.physics.engine.ICollisionObject;
 import net.gliby.physics.common.physics.engine.ICollisionShape;
 import net.gliby.physics.common.physics.engine.IConstraint;
@@ -37,29 +38,23 @@ import net.minecraft.world.World;
  */
 public abstract class PhysicsWorld implements Runnable {
 
-	protected final int ticksPerSecond;
-	protected final Vector3f gravity;
-	protected boolean running;
-	protected World world;
+	private IPhysicsWorldConfiguration physicsConfiguration;
 
-	protected HashMap<String, PhysicsMechanic> physicsMechanics;
-
-	public abstract boolean shouldSimulate(World world, PhysicsWorld physicsWorld);
-
-	public final int getTicksPerSecond() {
-		return ticksPerSecond;
+	public IPhysicsWorldConfiguration getPhysicsConfiguration() {
+		return physicsConfiguration;
 	}
+
+	protected boolean running;
+	protected HashMap<String, PhysicsMechanic> physicsMechanics;
 
 	public Map<String, PhysicsMechanic> getMechanics() {
 		return physicsMechanics;
 	}
 
-	public PhysicsWorld(World world, int ticksPerSecond, Vector3f gravity) {
-		this.world = world;
-		this.ticksPerSecond = ticksPerSecond;
+	public PhysicsWorld(IPhysicsWorldConfiguration physicsConfiguration) {
+		this.physicsConfiguration = physicsConfiguration;
+		this.physicsMechanics = new HashMap<String, PhysicsMechanic>();
 		this.running = true;
-		this.gravity = gravity;
-		physicsMechanics = new HashMap<String, PhysicsMechanic>();
 	}
 
 	public void create() {
@@ -87,10 +82,10 @@ public abstract class PhysicsWorld implements Runnable {
 		return createBoxShape(blockPosition);
 	}
 
-	int tick;
+	protected int tick;
 
 	protected void update() {
-		if (tick >= ticksPerSecond)
+		if (tick >= getPhysicsConfiguration().getTicksPerSecond())
 			tick = 0;
 		tick++;
 		Iterator it = physicsMechanics.entrySet().iterator();
@@ -240,10 +235,6 @@ public abstract class PhysicsWorld implements Runnable {
 	 */
 	public abstract IConstraintGeneric6Dof createGeneric6DofConstraint(IRigidBody rbA, IRigidBody rbB,
 			Transform frameInA, Transform frameInB, boolean useLinearReferenceFrameA);
-
-	public Vector3f getGravity() {
-		return gravity;
-	}
 
 	public abstract ICollisionShape createSphereShape(float radius);
 

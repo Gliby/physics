@@ -31,7 +31,7 @@ public class ExplosionHandler {
 	@SubscribeEvent
 	public void handleEvent(ExplosionEvent.Detonate event) {
 		Physics physics = Physics.getInstance();
-		PhysicsWorld physicsWorld = physics.getCommonProxy().getPhysicsOverworld().getPhysicsByWorld(event.world);
+		PhysicsWorld physicsWorld = physics.getPhysicsOverworld().getPhysicsByWorld(event.world);
 		Vector3f explosion = new Vector3f((float) event.explosion.getPosition().xCoord,
 				(float) event.explosion.getPosition().yCoord, (float) event.explosion.getPosition().zCoord);
 

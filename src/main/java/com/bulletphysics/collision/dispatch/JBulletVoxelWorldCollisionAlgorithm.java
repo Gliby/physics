@@ -134,8 +134,6 @@ public class JBulletVoxelWorldCollisionAlgorithm extends CollisionAlgorithm {
 						info.algorithm = null;
 					}
 					colObj.internalSetTemporaryCollisionShape((CollisionShape)childInfo.getCollisionShape());
-					colObj.setFriction(childInfo.getFriction());
-					colObj.setRestitution(childInfo.getRestitution());
 
 					if (info.algorithm == null) {
 						info.algorithm = dispatcher.findAlgorithm(colObj, otherObj);
