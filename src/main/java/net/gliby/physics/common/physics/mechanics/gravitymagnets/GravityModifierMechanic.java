@@ -73,7 +73,7 @@ public class GravityModifierMechanic extends PhysicsMechanic {
 		for (int i = 0; i < physicsWorld.getRigidBodies().size(); i++) {
 			IRigidBody body = physicsWorld.getRigidBodies().get(i);
 			if (body.getProperties().get("Magnet") == magnet) {
-				body.setGravity(physicsWorld.getGravity());
+				body.setGravity(physicsWorld.getPhysicsConfiguration().getRegularGravity());
 				body.getProperties().remove("Magnet");
 			}
 		}

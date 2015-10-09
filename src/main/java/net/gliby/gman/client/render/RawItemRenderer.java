@@ -87,7 +87,7 @@ public abstract class RawItemRenderer implements ISmartItemModel, IPerspectiveAw
 		GlStateManager.popMatrix();
 		// Reset the dynamic values.
 		this.owner = null;
-		this.stack = null;
+		this.itemStack = null;
 		this.transformType = null;
 		// Method that this gets called is expecting that we are still using
 		// startDrawingQuads.
@@ -127,11 +127,11 @@ public abstract class RawItemRenderer implements ISmartItemModel, IPerspectiveAw
 	@Override
 	public abstract ItemCameraTransforms getItemCameraTransforms();
 
-	protected ItemStack stack;
+	protected ItemStack itemStack;
 
 	@Override
 	public IBakedModel handleItemState(ItemStack stack) {
-		this.stack = stack;
+		this.itemStack = stack;
 		return this;
 	}
 

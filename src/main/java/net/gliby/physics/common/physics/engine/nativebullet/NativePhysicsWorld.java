@@ -42,6 +42,7 @@ import com.bulletphysics.linearmath.Transform;
 import net.gliby.physics.Physics;
 import net.gliby.physics.common.physics.PhysicsOverworld;
 import net.gliby.physics.common.physics.PhysicsWorld;
+import net.gliby.physics.common.physics.PhysicsOverworld.IPhysicsWorldConfiguration;
 import net.gliby.physics.common.physics.engine.ICollisionObject;
 import net.gliby.physics.common.physics.engine.ICollisionShape;
 import net.gliby.physics.common.physics.engine.IConstraint;
@@ -61,8 +62,8 @@ import net.minecraft.world.World;
 /**
  *
  */
-// TODO Clean up after exit.
-public abstract class NativePhysicsWorld extends PhysicsWorld {
+// TODO Stop using stupid Vector/Matrix/Transform conversions. Use IVector and IQuaternion, IMatrix
+public class NativePhysicsWorld extends PhysicsWorld {
 
 	static {
 		Bullet.init();
@@ -81,9 +82,9 @@ public abstract class NativePhysicsWorld extends PhysicsWorld {
 	 * @param ticksPerSecond
 	 * @param gravity
 	 */
-	public NativePhysicsWorld(Physics physics, PhysicsOverworld physicsOverworld, World world, int ticksPerSecond,
-			Vector3f gravity) {
-		super(world, ticksPerSecond, gravity);
+	public NativePhysicsWorld(Physics physics, PhysicsOverworld physicsOverworld,
+			IPhysicsWorldConfiguration physicsConfig) {
+		super(physicsConfig);
 		this.physics = physics;
 		this.physicsOverworld = physicsOverworld;
 	}
@@ -95,18 +96,16 @@ public abstract class NativePhysicsWorld extends PhysicsWorld {
 		while (running) {
 			synchronized (this) {
 				try {
-					wait(1000 / getTicksPerSecond());
+					wait(1000 / getPhysicsConfiguration().getTicksPerSecond());
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
-			if (shouldSimulate(world, this))
+			if (getPhysicsConfiguration().shouldSimulate(getPhysicsConfiguration().getWorld(), this))
 				update();
 			updateFPS();
 		}
 	}
-
-	private static boolean launch = true;
 
 	@Override
 	public void create() {
@@ -117,8 +116,9 @@ public abstract class NativePhysicsWorld extends PhysicsWorld {
 		btCollisionDispatcher dispatcher = new btCollisionDispatcher(collisionConfiguration);
 		this.dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase,
 				new btSequentialImpulseConstraintSolver(), collisionConfiguration);
-		this.dynamicsWorld.setGravity(toVector3(gravity));
-		btVoxelShape voxelHandler = new btVoxelShape(new NativeVoxelProvider(world, this, physics),
+		this.dynamicsWorld.setGravity(toVector3(getPhysicsConfiguration().getRegularGravity()));
+		btVoxelShape voxelHandler = new btVoxelShape(
+				new NativeVoxelProvider(getPhysicsConfiguration().getWorld(), this, physics),
 				new Vector3(-Integer.MAX_VALUE, -Integer.MAX_VALUE, -Integer.MAX_VALUE),
 				new Vector3(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE));
 		btCollisionObject body = new btCollisionObject();
@@ -132,9 +132,7 @@ public abstract class NativePhysicsWorld extends PhysicsWorld {
 	@Override
 	protected void update() {
 		float delta = getDelta();
-		if (!world.playerEntities.isEmpty()) {
-			dynamicsWorld.stepSimulation(1, Math.round(delta / 7));
-		}
+		dynamicsWorld.stepSimulation(1, Math.round(delta / 7));
 		super.update();
 	}
 
@@ -226,7 +224,7 @@ public abstract class NativePhysicsWorld extends PhysicsWorld {
 	@Override
 	public void setGravity(Vector3f newGravity) {
 		synchronized (this) {
-			dynamicsWorld.setGravity(toVector3(gravity));
+			dynamicsWorld.setGravity(toVector3(newGravity));
 		}
 	}
 
@@ -251,7 +249,7 @@ public abstract class NativePhysicsWorld extends PhysicsWorld {
 	}
 
 	@Override
-	public void dispose() {
+	protected void dispose() {
 		Iterator it = physicsMechanics.entrySet().iterator();
 		while (it.hasNext()) {
 			PhysicsMechanic mechanic = ((Map.Entry<String, PhysicsMechanic>) it.next()).getValue();
@@ -388,7 +386,7 @@ public abstract class NativePhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public String toString() {
-		return "BulletPhysicsWorld[ " + this.rigidBodies.size() + " rigid bodies" + "]";
+		return "NativePhysicsWorld[ " + this.rigidBodies.size() + " rigid bodies" + "]";
 	}
 
 	// TODO Add rope support

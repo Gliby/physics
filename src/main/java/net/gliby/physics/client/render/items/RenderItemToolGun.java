@@ -52,7 +52,7 @@ public class RenderItemToolGun extends RawItemRenderer {
 				GlStateManager.rotate(9.0F, 0.0F, 1.0F, 0.0F);
 				GlStateManager.rotate(22.0F, 1.0F, 0.0F, 0.0F);
 				GlStateManager.translate(-0.5F, 0.27F, -0.2F);
-				text = ItemToolGun.getModeName();
+				text = ((ItemToolGun) itemStack.getItem()).getModeName();
 				if (!owner.isInvisible()) {
 					textureManager.bindTexture(((AbstractClientPlayer) mc.thePlayer).getLocationSkin());
 					GlStateManager.pushMatrix();

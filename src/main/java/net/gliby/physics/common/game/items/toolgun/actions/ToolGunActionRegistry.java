@@ -18,7 +18,7 @@ import net.minecraftforge.common.MinecraftForge;
  */
 public class ToolGunActionRegistry {
 
-	private static ToolGunActionRegistry instance = new ToolGunActionRegistry();
+	private static ToolGunActionRegistry instance;
 
 	private Map<Integer, IToolGunAction> actions;
 
@@ -34,14 +34,11 @@ public class ToolGunActionRegistry {
 	private static int actionIndex;
 
 	public void registerAction(IToolGunAction action, String modID) {
-		if (!MinecraftForge.EVENT_BUS.post(new ToolGunActionEvent.Register(action, modID != null ? modID.equals(Physics.MOD_ID) : false))) {
+		if (!MinecraftForge.EVENT_BUS
+				.post(new ToolGunActionEvent.Register(action, modID != null ? modID.equals(Physics.MOD_ID) : false))) {
 			actions.put(actionIndex++, action);
 			valueDefinitions.add(action.getName());
 		}
-	}
-
-	public static ToolGunActionRegistry getInstance() {
-		return instance;
 	}
 
 	private List<String> valueDefinitions;

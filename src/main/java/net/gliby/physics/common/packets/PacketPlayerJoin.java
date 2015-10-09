@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.netty.buffer.ByteBuf;
+import net.gliby.physics.Physics;
 import net.gliby.physics.common.game.items.toolgun.actions.ToolGunActionRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -49,10 +50,11 @@ public class PacketPlayerJoin extends MinecraftPacket implements IMessageHandler
 	@Override
 	public IMessage onMessage(final PacketPlayerJoin message, MessageContext ctx) {
 		Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-			
+
 			@Override
 			public void run() {
-				ToolGunActionRegistry.getInstance().setValueDefinitions(message.actions);
+				Physics physics = Physics.getInstance();
+				physics.getToolGunRegistry().setValueDefinitions(message.actions);
 			}
 		});
 		return null;

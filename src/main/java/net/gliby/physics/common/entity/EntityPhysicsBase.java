@@ -17,7 +17,6 @@ import net.gliby.physics.common.entity.mechanics.RigidBodyMechanic;
 import net.gliby.physics.common.game.items.ItemPhysicsGun;
 import net.gliby.physics.common.physics.PhysicsOverworld;
 import net.gliby.physics.common.physics.PhysicsWorld;
-import net.gliby.physics.common.physics.ServerPhysicsOverworld;
 import net.gliby.physics.common.physics.engine.IRigidBody;
 import net.gliby.physics.common.physics.mechanics.physicsgun.OwnedPickedObject;
 import net.gliby.physics.common.physics.mechanics.physicsgun.PickUpMechanic;
@@ -190,8 +189,8 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 	public void writeEntityToNBT(NBTTagCompound tagCompound) {
 		ArrayList<String> mechanicsByNames = new ArrayList<String>();
 		for (int i = 0; i < mechanics.size(); i++) {
-			mechanicsByNames.add(Physics.getInstance().getCommonProxy().getPhysicsOverworld().getMechanicsMap()
-					.inverse().get(mechanics.get(i)));
+			mechanicsByNames
+					.add(Physics.getInstance().getPhysicsOverworld().getMechanicsMap().inverse().get(mechanics.get(i)));
 		}
 		tagCompound.setString("Mechanics", new Gson().toJson(mechanicsByNames));
 	}
@@ -288,7 +287,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 			}
 		}
 
-		PhysicsOverworld overworld = Physics.getInstance().getCommonProxy().getPhysicsOverworld();
+		PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
 
 		buffer.writeInt(clientMechanics.size());
 		for (int i = 0; i < clientMechanics.size(); i++) {

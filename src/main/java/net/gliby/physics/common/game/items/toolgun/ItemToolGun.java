@@ -37,7 +37,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class ItemToolGun extends RawItem {
 
+	Physics physics;
+
 	public ItemToolGun(Physics physics) {
+		this.physics = physics;
 		setMaxStackSize(1);
 		setCreativeTab(CreativeTabs.tabTools);
 		setUnlocalizedName("physicstoolgun");
@@ -55,9 +58,9 @@ public class ItemToolGun extends RawItem {
 		return 0;
 	}
 
-	private static int currentMode = 0, lastMode;
+	private int currentMode = 0, lastMode;
 
-	public static int getCurrentMode() {
+	public int getCurrentMode() {
 		return currentMode;
 	}
 
@@ -72,7 +75,7 @@ public class ItemToolGun extends RawItem {
 					Physics.getDispatcher().sendToServer(new PacketToolGunUse(currentMode,
 							EntityUtility.toVector3f(EntityUtility.rayTrace(mc.thePlayer, 64).hitVec)));
 				} else if (event.button == 1) {
-					if (currentMode < ToolGunActionRegistry.getInstance().getValueDefinitions().size() - 1) {
+					if (currentMode < physics.getToolGunRegistry().getValueDefinitions().size() - 1) {
 						currentMode++;
 					} else
 						currentMode = 0;
@@ -99,9 +102,9 @@ public class ItemToolGun extends RawItem {
 	/**
 	 * @return
 	 */
-	public static String getModeName() {
-		if (!ToolGunActionRegistry.getInstance().getValueDefinitions().isEmpty())
-			return ToolGunActionRegistry.getInstance().getValueDefinitions().get(currentMode);
+	public String getModeName() {
+		if (!physics.getToolGunRegistry().getValueDefinitions().isEmpty())
+			return physics.getToolGunRegistry().getValueDefinitions().get(currentMode);
 		else
 			return "Loading";
 	}
@@ -135,13 +138,12 @@ public class ItemToolGun extends RawItem {
 				public void run() {
 					EntityPlayerMP player = ctx.getServerHandler().playerEntity;
 					World world = player.worldObj;
-					PhysicsWorld physicsWorld = Physics.getInstance().getCommonProxy().getPhysicsOverworld()
-							.getPhysicsByWorld(world);
+					Physics physics = Physics.getInstance();
+					PhysicsWorld physicsWorld = Physics.getInstance().getPhysicsOverworld().getPhysicsByWorld(world);
 					if (player.getCurrentEquippedItem() != null
 							&& player.getCurrentEquippedItem().getItem() instanceof ItemToolGun) {
 						IToolGunAction toolGunAction;
-						if ((toolGunAction = ToolGunActionRegistry.getInstance().getActions()
-								.get(packet.mode)) != null) {
+						if ((toolGunAction = physics.getToolGunRegistry().getActions().get(packet.mode)) != null) {
 							toolGunAction.stoppedUsing(physicsWorld, player);
 						}
 					}
@@ -194,13 +196,12 @@ public class ItemToolGun extends RawItem {
 				public void run() {
 					EntityPlayerMP player = ctx.getServerHandler().playerEntity;
 					World world = player.worldObj;
-					PhysicsWorld physicsWorld = Physics.getInstance().getCommonProxy().getPhysicsOverworld()
-							.getPhysicsByWorld(world);
+					Physics physics = Physics.getInstance();
+					PhysicsWorld physicsWorld = physics.getPhysicsOverworld().getPhysicsByWorld(world);
 					if (player.getCurrentEquippedItem() != null
 							&& player.getCurrentEquippedItem().getItem() instanceof ItemToolGun) {
 						IToolGunAction toolGunAction;
-						if ((toolGunAction = ToolGunActionRegistry.getInstance().getActions()
-								.get(packet.mode)) != null) {
+						if ((toolGunAction = physics.getToolGunRegistry().getActions().get(packet.mode)) != null) {
 							if (toolGunAction.use(physicsWorld, player, packet.lookAt)) {
 								EntityUtility.spawnEntitySynchronized(world,
 										new EntityToolGunBeam(world, player, packet.lookAt));
