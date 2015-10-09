@@ -151,6 +151,8 @@ public class JBulletVoxelWorldCollisionAlgorithm extends CollisionAlgorithm {
 					colObj.setWorldTransform(newChildWorldTrans);
 					colObj.setInterpolationWorldTransform(newChildWorldTrans);
 					colObj.setUserPointer(childInfo.getUserData());
+					colObj.setRestitution(childInfo.getRestitution());
+					colObj.setFriction(childInfo.getFriction());
 
 					((CollisionAlgorithm) info.algorithm).processCollision(colObj, otherObj, dispatchInfo, resultOut);
 
