@@ -388,7 +388,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public String toString() {
-		return "JavaPhysicsWorld[ " + this.rigidBodies.size() + " rigid bodies" + "]";
+		return getClass().getSimpleName() + "[ " + this.rigidBodies.size() + " rigid bodies" + "]";
 	}
 
 	@Override

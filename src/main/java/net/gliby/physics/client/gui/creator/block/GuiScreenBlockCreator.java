@@ -58,12 +58,13 @@ public class GuiScreenBlockCreator extends GuiScreenCreator implements GuiYesNoC
 		this.physics = Physics.getInstance();
 		this.messagesList = EvictingQueue.create(3);
 		this.maxBlocks = Block.blockRegistry.getKeys().size();
-		thread = new Thread();
+		thread = new Thread("Block Generator.");
 		lucky = new Random().nextInt(20000) == 0;
 		blocksBuilt = 0;
 
 		if (!physics.getBlockManager().getBlockGenerators().isEmpty())
-			addMessage("Custom block generators found.");}
+			addMessage("Custom block generators found.");
+	}
 
 	public void initGui() {
 		buttonList.clear();

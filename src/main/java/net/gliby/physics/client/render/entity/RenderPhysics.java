@@ -61,7 +61,7 @@ public abstract class RenderPhysics extends Render {
 		Tessellator tessellator = Tessellator.getInstance();
 		WorldRenderer worldRenderer = tessellator.getWorldRenderer();
 		EntityPhysicsBase entity = (EntityPhysicsBase) uncast;
-		if (entity.pickerEntity != null) {
+		drawBeam: if (entity.pickerEntity != null) {
 			Item item = entity.pickerEntity.getHeldItem() != null ? entity.pickerEntity.getHeldItem().getItem() : null;
 			if (item instanceof ItemPhysicsGun) {
 				Vector3f hitPoint = getRenderHitPoint(entity, partialTick);
@@ -91,6 +91,9 @@ public abstract class RenderPhysics extends Render {
 					d5 = beamStart.zCoord;
 					GL11.glLineWidth(2.0f);
 				} else {
+					if (!mc.isGuiEnabled()) {
+						break drawBeam;
+					}
 					GL11.glLineWidth(10.0f);
 				}
 				double d6 = (double) entity.pickerEntity.getEyeHeight();

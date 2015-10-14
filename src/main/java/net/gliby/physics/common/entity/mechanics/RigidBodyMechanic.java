@@ -87,11 +87,6 @@ public abstract class RigidBodyMechanic {
 			return blockPosition;
 		}
 
-		@Override
-		public boolean equals(Object location) {
-			return location instanceof BlockStateAndLocation
-					&& ((BlockStateAndLocation) location).blockPosition == this.blockPosition;
-		}
 	}
 
 	public void dispose() {

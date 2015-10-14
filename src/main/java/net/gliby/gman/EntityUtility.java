@@ -9,6 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -65,5 +66,11 @@ public class EntityUtility {
 
 	private static Vec3 getPositionEyesMC(Entity base) {
 		return new Vec3(base.posX, base.posY + base.getEyeHeight(), base.posZ);
+	}
+
+	public static boolean isEntityInChunk(Entity entity, int chunkCoordX, int chunkCoordZ) {
+		int chunkX = MathHelper.floor_double(entity.posX / 16.0D);
+		int chunkZ = MathHelper.floor_double(entity.posZ / 16.0D);
+		return chunkX != chunkCoordX || chunkZ != chunkCoordZ;
 	}
 }

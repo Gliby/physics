@@ -186,4 +186,14 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 		return position.set(rigidBody.getWorldTransform().getTranslation(vectorPosition));
 	}
 
+	@Override
+	public void applyTorque(Vector3f vector) {
+		rigidBody.applyTorque(NativePhysicsWorld.toVector3(vector));
+	}
+
+	@Override
+	public void applyTorqueImpulse(Vector3f vector) {
+		rigidBody.applyTorqueImpulse(NativePhysicsWorld.toVector3(vector));
+	}
+
 }

@@ -10,6 +10,7 @@ import net.gliby.physics.common.entity.EntityPhysicsBlock;
 import net.gliby.physics.common.physics.PhysicsWorld;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MovingObjectPosition;
 
@@ -25,7 +26,7 @@ public class ToolGunReviveAction implements IToolGunAction {
 			state = state.getBlock().getActualState(state, player.worldObj, position.getBlockPos());
 			EntityPhysicsBlock block = new EntityPhysicsBlock(player.worldObj, world, state,
 					position.getBlockPos().getX(), position.getBlockPos().getY(), position.getBlockPos().getZ())
-							.setDropItem(new ItemStack(state.getBlock().getItem(player.worldObj, position.getBlockPos())));
+							.setDropItem(new ItemStack(Item.getItemFromBlock(state.getBlock())));
 			player.worldObj.setBlockToAir(position.getBlockPos());
 			player.worldObj.spawnEntityInWorld(block);
 			return true;

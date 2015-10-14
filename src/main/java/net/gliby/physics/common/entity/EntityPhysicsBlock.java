@@ -20,6 +20,7 @@ import io.netty.buffer.ByteBuf;
 import net.gliby.gman.BlockUtility;
 import net.gliby.gman.DataWatchableQuat4f;
 import net.gliby.gman.DataWatchableVector3f;
+import net.gliby.gman.EntityUtility;
 import net.gliby.gman.WorldUtility;
 import net.gliby.physics.Physics;
 import net.gliby.physics.client.render.RenderHandler;
@@ -35,8 +36,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -47,15 +50,16 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 // TODO Remove ability to spawn tile-entites.
 public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAdditionalSpawnData {
-	/**
-	 * @param world
-	 */
+
 	public EntityPhysicsBlock(World world) {
 		super(world);
 		noClip = true;
 		setSize(0.85f, 1.05f);
 	}
 
+	/**
+	 * Optional drop item.
+	 */
 	private ItemStack dropItem;
 
 	public EntityPhysicsBlock setDropItem(ItemStack dropItem) {
@@ -63,23 +67,65 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 		return this;
 	}
 
+	/**
+	 * Block.
+	 */
 	private IBlockState blockState;
 
+	/**
+	 * Client-side render position, basically a smoothed position.
+	 */
 	@SideOnly(Side.CLIENT)
 	public Vector3f renderPosition;
+	/**
+	 * Client-side render rotation, basically a smoothed rotation.
+	 */
 	@SideOnly(Side.CLIENT)
 	public Quat4f renderRotation;
 
+	/**
+	 * Block bounding boxes, this only gets generated when you create a new
+	 * instance, otherwise it will load/save from NBT.
+	 */
 	private List<AxisAlignedBB> collisionBBs;
 
+	/**
+	 * Common variable, physics object's absolute position.
+	 */
 	private Vector3f position = new Vector3f();
+	/**
+	 * Common variable, physics object's absolute rotation.
+	 */
 	private Quat4f rotation = new Quat4f();
 
+	/**
+	 * Reference to block's built rigid body.
+	 */
 	private IRigidBody rigidBody;
+
+	/**
+	 * Reference to rigid bodies -> collision shape.
+	 */
 	private ICollisionShape collisionShape;
 
-	private boolean defaultCollisionShape, collisionEnabled = true;
+	/**
+	 * If true, physics block will not use generated collision shape, but rather
+	 * a simple box shape.
+	 */
+	private boolean defaultCollisionShape;
+
+	/**
+	 * Collision with entites(including players).
+	 */
+	private boolean collisionEnabled = true;
+	/**
+	 * Rigid body mass.
+	 */
 	private float mass;
+
+	/**
+	 * Friction.
+	 */
 	private float friction;
 
 	/**
@@ -111,6 +157,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 		this.defaultCollisionShape = metadataExists ? metadata.defaultCollisionShape : false;
 		this.collisionEnabled = metadataExists ? metadata.collisionEnabled : true;
 
+		// TODO Introduce block bounding box caching.
 		try {
 			if (this.defaultCollisionShape)
 				this.collisionShape = physicsWorld.createBoxShape(new Vector3f(0.5f, 0.5f, 0.5f));
@@ -138,6 +185,9 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
 	@Override
 	protected void createPhysicsObject(PhysicsWorld physicsWorld) {
+		this.watchablePosition = new DataWatchableVector3f(this, position);
+		this.watchableRotation = new DataWatchableQuat4f(this, rotation);
+
 		Transform transform = new Transform();
 		transform.setIdentity();
 		transform.origin.set(this.position);
@@ -169,19 +219,14 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 	private DataWatchableQuat4f watchableRotation;
 
 	@Override
-	public void onCommonInit() {
-	}
-
-	@Override
-	public void onClientInit() {
-	}
-
-	@Override
-	public void onServerInit() {
-	}
-
-	@Override
 	public void onCommonUpdate() {
+		this.prevDistanceWalkedModified = this.distanceWalkedModified;
+		this.prevPosX = this.posX;
+		this.prevPosY = this.posY;
+		this.prevPosZ = this.posZ;
+		this.prevRotationPitch = this.rotationPitch;
+		this.prevRotationYaw = this.rotationYaw;
+
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -208,14 +253,22 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 	@Override
 	public void onServerUpdate() {
 		if (rigidBody != null) {
+			// Update position from given rigid body.
 			position.set(rigidBody.getPosition().getX(), rigidBody.getPosition().getY(),
 					rigidBody.getPosition().getZ());
+			// Update rotation from given rigid body.
 			rotation.set(rigidBody.getRotation().getX(), rigidBody.getRotation().getY(), rigidBody.getRotation().getZ(),
 					rigidBody.getRotation().getW());
+			// Set location and angles, so client could have proper bounding
+			// boxes.
 			setLocationAndAngles(position.x + 0.5f, position.y, position.z + 0.5f, 0, 0);
-			if (watchablePosition != null) {
-				if (isDirty() && (!watchablePosition.lastWrote.equals(position)
+			// TODO Remove != null
+			// Check if rigidBody is active, and if the last written postion
+			// and rotation has changed.
+			if (isDirty()) {
+				if (watchablePosition != null && (!watchablePosition.lastWrote.equals(position)
 						|| !watchableRotation.lastWrote.equals(rotation))) {
+					// TODO Write postion, rotation to dataWatcher.
 					watchableRotation.write(rotation);
 					watchablePosition.write(position);
 				}
@@ -227,9 +280,13 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 	public void onClientUpdate() {
 		// No-collision check.
 		this.onGround = false;
+
+		// Read dataWatcher objects, then set.
 		watchablePosition.read(position);
 		watchableRotation.read(rotation);
 
+		// Force vanilla entity bounding box to follow custom physics render
+		// bounding box.
 		this.setEntityBoundingBox(getRenderBoundingBox());
 		// setPosition(renderPosition.x + 0.5f, renderPosition.y,
 		// renderPosition.z + 0.5f);
@@ -237,7 +294,6 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
 	@Override
 	public void writeEntityToNBT(NBTTagCompound tagCompound) {
-
 		ResourceLocation resourcelocation = (ResourceLocation) Block.blockRegistry
 				.getNameForObject(blockState.getBlock());
 		tagCompound.setString("Block", resourcelocation == null ? "" : resourcelocation.toString());
@@ -256,7 +312,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 		tagCompound.removeTag("Pos");
 		tagCompound.removeTag("Rotation");
 
-		// Add removed tags, but with new values.
+		// Add removed tags, but with additional values.
 		tagCompound.setTag("Pos",
 				this.newDoubleNBTList(new double[] { this.position.x, this.position.y, this.position.z }));
 		tagCompound.setTag("Rotation", this
@@ -326,6 +382,8 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 			NBTTagCompound compound = tagCompound.getCompoundTag("DropItem");
 			this.dropItem = ItemStack.loadItemStackFromNBT(compound);
 		}
+
+		// Read from NBT gets called multiple times.
 		if (!doesPhysicsObjectExist()) {
 			createPhysicsObject(physicsWorld);
 		} else {
@@ -341,6 +399,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 		transform.origin.set(this.position);
 		transform.setRotation(this.rotation);
 		rigidBody.setWorldTransform(transform);
+		// Used for specific block mechanics.
 		rigidBody.getProperties().put("BlockState", blockState);
 		if (mass < 0)
 			rigidBody.setGravity(new Vector3f());
@@ -354,11 +413,6 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 	@Override
 	public void writeSpawnData(ByteBuf buffer) {
 		super.writeSpawnData(buffer);
-
-		if (watchablePosition == null && watchableRotation == null) {
-			watchablePosition = new DataWatchableVector3f(this, position);
-			watchableRotation = new DataWatchableQuat4f(this, rotation);
-		}
 
 		BlockUtility.serializeBlockState(blockState, buffer);
 		buffer.writeBoolean(collisionEnabled);
@@ -375,17 +429,17 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 	@Override
 	public void readSpawnData(ByteBuf buffer) {
 		super.readSpawnData(buffer);
+		if (watchablePosition == null) {
+			watchablePosition = new DataWatchableVector3f(this, position);
+			watchableRotation = new DataWatchableQuat4f(this, rotation);
+		}
 		this.blockState = BlockUtility.deserializeBlockState(buffer);
 		this.collisionEnabled = buffer.readBoolean();
 		this.position = new Vector3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
 		this.rotation = new Quat4f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
 		this.renderPosition = new Vector3f(position);
 		this.renderRotation = new Quat4f(rotation);
-		if (watchablePosition == null && watchableRotation == null) {
-			watchablePosition = new DataWatchableVector3f(this, position);
-			watchableRotation = new DataWatchableQuat4f(this, rotation);
-		}
-
+		// Create dynamic light source if we can!
 		if (blockState.getBlock().getLightValue() > 0 && !hasLight) {
 			RenderHandler.getLightHandler().create(this, blockState.getBlock().getLightValue());
 			hasLight = true;
@@ -444,9 +498,9 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 	protected void dispose() {
 		// Drops item.
 		if (dropItem != null) {
-			Vector3f centerOfMass = rigidBody.getCenterOfMassPosition();
 			entityDropItem(dropItem, 0);
 			/*
+			 * Vector3f centerOfMass = rigidBody.getCenterOfMassPosition();
 			 * Block.spawnAsEntity(worldObj, new BlockPos(centerOfMass.x + 0.5f,
 			 * centerOfMass.y + 0.5F, centerOfMass.z + 0.5F), new
 			 * ItemStack(dropItem));
@@ -469,4 +523,17 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 		return AxisAlignedBB.fromBounds(-0.2f, -0.2f, -0.2f, 1.3f, 1.2f, 1.2f).offset(renderPosition.x,
 				renderPosition.y, renderPosition.z);
 	}
+
+	@Override
+	public void onCommonInit() {
+	}
+
+	@Override
+	public void onClientInit() {
+	}
+
+	@Override
+	public void onServerInit() {
+	}
+
 }

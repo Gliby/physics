@@ -73,7 +73,7 @@ public class RenderHandler {
 	 */
 	public void init(FMLInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(new RenderAdditionalPlayer());
-		MinecraftForge.EVENT_BUS.register(new RenderAdditionalWorld());
+		MinecraftForge.EVENT_BUS.register(new RenderAdditionalWorld(physics));
 		Minecraft mc = Minecraft.getMinecraft();
 
 		RenderingRegistry.registerEntityRenderingHandler(EntityPhysicsBlock.class,

@@ -172,4 +172,14 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
 		return position.set(rigidBody.getWorldTransform(worldTransform).origin);
 	}
 
+	@Override
+	public void applyTorque(Vector3f vector) {
+		this.rigidBody.applyTorque(vector);
+	}
+
+	@Override
+	public void applyTorqueImpulse(Vector3f vector) {
+		this.rigidBody.applyTorqueImpulse(vector);
+	}
+
 }

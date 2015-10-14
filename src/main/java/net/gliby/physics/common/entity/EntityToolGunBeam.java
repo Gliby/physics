@@ -43,7 +43,6 @@ public class EntityToolGunBeam extends Entity implements IEntityAdditionalSpawnD
 		this.ignoreFrustumCheck = true;
 	}
 
-
 	public EntityToolGunBeam(World worldIn, Entity owner, Vector3f hitPoint) {
 		super(worldIn);
 		this.noClip = true;
@@ -71,10 +70,12 @@ public class EntityToolGunBeam extends Entity implements IEntityAdditionalSpawnD
 					soundPosition.normalize();
 					soundPosition.scale(MathHelper.clamp_float(distance, 0, 16));
 					soundPosition.add(clientOrigin != null ? clientOrigin : worldOrigin);
-					worldObj.playSound(soundPosition.x, soundPosition.y, soundPosition.z, SoundHandler.getSoundByIdentifer("ToolGun.Beam"), 1.0F, 1.0F, false);
+					worldObj.playSound(soundPosition.x, soundPosition.y, soundPosition.z,
+							SoundHandler.getSoundByIdentifer("ToolGun.Beam"), 1.0F, 1.0F, false);
 				}
 			}
-			float val = MathHelper.clamp_float((System.currentTimeMillis() - timeCreated), 0, msUntilGone) / msUntilGone;
+			float val = MathHelper.clamp_float((System.currentTimeMillis() - timeCreated), 0, msUntilGone)
+					/ msUntilGone;
 			Vector3f toBe = new Vector3f(clientOrigin != null ? clientOrigin : worldOrigin);
 			toBe.interpolate(hit, val);
 			setPosition(toBe.x, toBe.y, toBe.z);
@@ -104,15 +105,20 @@ public class EntityToolGunBeam extends Entity implements IEntityAdditionalSpawnD
 	@Override
 	public void readSpawnData(ByteBuf additionalData) {
 		this.hit = new Vector3f(additionalData.readFloat(), additionalData.readFloat(), additionalData.readFloat());
-		this.owner = (Entity) worldObj.getEntityByID(additionalData.readInt());
+		this.owner = worldObj.getEntityByID(additionalData.readInt());
 		if (owner == Minecraft.getMinecraft().thePlayer) {
 			Vec3 firstPersonOffset = new Vec3(owner.onGround ? -0.20D : -0.24D, -0.06D, 0.39D);
-			firstPersonOffset = firstPersonOffset.rotatePitch(-(owner.prevRotationPitch + (owner.rotationPitch - owner.prevRotationPitch)) * (float) Math.PI / 180.0F);
-			firstPersonOffset = firstPersonOffset.rotateYaw(-(owner.prevRotationYaw + (owner.rotationYaw - owner.prevRotationYaw)) * (float) Math.PI / 180.0F);
+			firstPersonOffset = firstPersonOffset
+					.rotatePitch(-(owner.prevRotationPitch + (owner.rotationPitch - owner.prevRotationPitch))
+							* (float) Math.PI / 180.0F);
+			firstPersonOffset = firstPersonOffset.rotateYaw(
+					-(owner.prevRotationYaw + (owner.rotationYaw - owner.prevRotationYaw)) * (float) Math.PI / 180.0F);
 			clientOrigin = RenderUtilities.toVector3f(firstPersonOffset);
-			clientOrigin.add(new Vector3f((float) owner.posX, (float) owner.posY + owner.getEyeHeight(), (float) owner.posZ));
+			clientOrigin.add(
+					new Vector3f((float) owner.posX, (float) owner.posY + owner.getEyeHeight(), (float) owner.posZ));
 		}
-		worldOrigin = RenderUtilities.toVector3f(RenderUtilities.calculateRay(owner, 1.0f, 1.0f, new Vector3f(-0.30f, owner.getEyeHeight(), 0)));
+		worldOrigin = RenderUtilities.toVector3f(
+				RenderUtilities.calculateRay(owner, 1.0f, 1.0f, new Vector3f(-0.30f, owner.getEyeHeight(), 0)));
 		timeCreated = System.currentTimeMillis();
 	}
 }

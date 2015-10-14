@@ -77,9 +77,8 @@ public class RenderItemPhysicsGun extends RawItemRenderer {
 				}
 			}
 
-			String UUID;
-			if (renderHandler.getPhysicsGunColors().containsKey(UUID = owner.getUniqueID().toString())) {
-				model.setColor(renderHandler.getPhysicsGunColors().get(UUID));
+			if (renderHandler.getPhysicsGunColors().containsKey(owner.getUniqueID().toString())) {
+				model.setColor(renderHandler.getPhysicsGunColors().get(owner.getUniqueID().toString()));
 			}
 			//
 			// TODO Gonzalo color

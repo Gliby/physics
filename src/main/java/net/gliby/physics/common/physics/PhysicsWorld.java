@@ -40,6 +40,12 @@ public abstract class PhysicsWorld implements Runnable {
 
 	private IPhysicsWorldConfiguration physicsConfiguration;
 
+	private Vector3f gravityDirection;
+
+	public Vector3f getGravityDirection() {
+		return gravityDirection;
+	}
+
 	public IPhysicsWorldConfiguration getPhysicsConfiguration() {
 		return physicsConfiguration;
 	}
@@ -54,6 +60,8 @@ public abstract class PhysicsWorld implements Runnable {
 	public PhysicsWorld(IPhysicsWorldConfiguration physicsConfiguration) {
 		this.physicsConfiguration = physicsConfiguration;
 		this.physicsMechanics = new HashMap<String, PhysicsMechanic>();
+		this.gravityDirection = new Vector3f(physicsConfiguration.getRegularGravity());
+		this.gravityDirection.normalize();
 		this.running = true;
 	}
 
