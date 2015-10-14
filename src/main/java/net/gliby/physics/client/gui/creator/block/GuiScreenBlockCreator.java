@@ -139,7 +139,7 @@ public class GuiScreenBlockCreator extends GuiScreenCreator implements GuiYesNoC
 
 				Path path = Paths.get(dir.toPath().toString() + "/blocks.zip");
 				URI uri = URI.create("jar:" + path.toUri());
-				Map<String, String> env = new HashMap<>();
+				Map<String, String> env = new HashMap<String, String>();
 				env.put("create", "true");
 				FileSystem fs = null;
 				try {
