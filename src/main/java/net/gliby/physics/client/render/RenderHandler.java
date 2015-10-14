@@ -37,6 +37,7 @@ public class RenderHandler {
 		physicsGunColors.put("a6a677aa-2589-4988-b686-59afd7c170f2", 0xFF87FF77);
 		physicsGunColors.put("c4924b85-b249-4264-9d93-b54b1137d629", 0xFFF81A1A);
 		physicsGunColors.put("1d7df249-ed29-49ca-a448-209264346386", 0xFFED7C12); // Reed
+		physicsGunColors.put("04372b9e-4e31-4a69-9660-4ac1cc2dbdb4", 0xFFD22828); // ZeAmateis
 	}
 
 	/**
