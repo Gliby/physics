@@ -2,10 +2,13 @@ package net.gliby.physics.common;
 
 import net.gliby.gman.settings.BooleanSetting;
 import net.gliby.physics.Physics;
+import net.gliby.physics.common.game.events.ExplosionHandler;
 import net.gliby.physics.common.packets.PacketPlayerJoin;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.world.Explosion;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -52,7 +55,13 @@ public class PhysicsServer implements IPhysicsProxy {
 		});
 	}
 
+	boolean hasStarted;
+
 	public final void serverAboutToStart(Physics physics, FMLServerAboutToStartEvent event) {
+		if (!hasStarted) {
+			MinecraftForge.EVENT_BUS.register(new ExplosionHandler(physics));
+			hasStarted = true;
+		}
 	}
 
 	public final void serverStarted(FMLServerStartedEvent event) {

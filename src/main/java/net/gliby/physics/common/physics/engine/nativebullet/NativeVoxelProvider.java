@@ -21,6 +21,7 @@ class NativeVoxelProvider extends btVoxelContentProvider {
 		this.world = world;
 		this.physicsWorld = physicsWorld;
 		this.physics = physics;
+		this.info = new btVoxelInfo(false, true, 0, 0, null, new Vector3(0, 0, 0), 0, 0, 0);
 	}
 
 	/*
@@ -33,17 +34,19 @@ class NativeVoxelProvider extends btVoxelContentProvider {
 	 * state.getBlock().slipperiness) * 5, 0, 0); }
 	 */
 
-	private btVoxelInfo info = new btVoxelInfo(false, false, 0, 0, null, new Vector3(0, 0, 0), 0, 0, 0);
+	private btVoxelInfo info;
 
 	@Override
 	public btVoxelInfo getVoxel(int x, int y, int z) {
-		final BlockPos blockPosition = new BlockPos(x, y, z);
-		final IBlockState state = world.getBlockState(blockPosition);
-		info.setTracable(false);
-		info.setBlocking(state.getBlock().getMaterial().isSolid());
-		info.setCollisionShape((btCollisionShape) physics.getBlockManager().getBlockCache()
-				.getShape(physicsWorld, world, blockPosition, state).getCollisionShape());
-		info.setFriction((1 - state.getBlock().slipperiness) * 5);
+		if (!world.playerEntities.isEmpty()) {
+			final BlockPos blockPosition = new BlockPos(x, y, z);
+			final IBlockState state = world.getBlockState(blockPosition);
+			info.setTracable(false);
+			info.setBlocking(state.getBlock().getMaterial().isSolid());
+			info.setCollisionShape((btCollisionShape) physics.getBlockManager().getBlockCache()
+					.getShape(physicsWorld, world, blockPosition, state).getCollisionShape());
+			info.setFriction((1 - state.getBlock().slipperiness) * 5);
+		}
 		return info;
 
 	}

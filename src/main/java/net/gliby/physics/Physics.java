@@ -30,6 +30,7 @@ import net.gliby.physics.common.game.items.toolgun.actions.ToolGunAlignAction;
 import net.gliby.physics.common.game.items.toolgun.actions.ToolGunAttachAction;
 import net.gliby.physics.common.game.items.toolgun.actions.ToolGunAttractAction;
 import net.gliby.physics.common.game.items.toolgun.actions.ToolGunChangeGravityAction;
+import net.gliby.physics.common.game.items.toolgun.actions.ToolGunMotorAction;
 import net.gliby.physics.common.game.items.toolgun.actions.ToolGunRemoveAction;
 import net.gliby.physics.common.game.items.toolgun.actions.ToolGunReviveAction;
 import net.gliby.physics.common.packets.PacketPlayerJoin;
@@ -65,7 +66,7 @@ public class Physics {
 
 	public static final String MOD_NAME = "Gliby's Physics";
 	public static final String MOD_ID = "glibysphysics";
-	public static final String MOD_VERSION = "0.0.4";
+	public static final String MOD_VERSION = "0.1.4";
 
 	@Instance
 	private static Physics instance;
@@ -100,6 +101,7 @@ public class Physics {
 		File dir = new File(event.getModConfigurationDirectory(), MOD_ID);
 		if (!dir.exists())
 			dir.mkdir();
+		// TODO Fix settings.
 		settings = new SettingsHandler(dir, new File(dir, "Settings.ini"));
 
 		// TODO Add on client
@@ -178,6 +180,7 @@ public class Physics {
 		toolGunRegistry.registerAction(new ToolGunAttractAction(), Physics.MOD_ID);
 		toolGunRegistry.registerAction(new ToolGunChangeGravityAction(), Physics.MOD_ID);
 		toolGunRegistry.registerAction(new ToolGunRemoveAction(), Physics.MOD_ID);
+		toolGunRegistry.registerAction(new ToolGunMotorAction(), Physics.MOD_ID);
 
 		registerPacket(PacketPlayerJoin.class, PacketPlayerJoin.class, Side.CLIENT);
 

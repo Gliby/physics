@@ -24,18 +24,18 @@ public class ToolGunAttractAction implements IToolGunAction {
 		return "Attract";
 	}
 
-	private Map<Integer, GravityMagnet> magnetOwners = new HashMap<Integer, GravityMagnet>();
+	private Map<Integer, GravityMagnet> attractionHandlers = new HashMap<Integer, GravityMagnet>();
 
 	@Override
 	public boolean use(PhysicsWorld world, EntityPlayerMP player, Vector3f lookAt) {
 		GravityModifierMechanic mechanic;
 		if ((mechanic = (GravityModifierMechanic) world.getMechanics().get("GravityMagnet")) != null) {
-			GravityMagnet gravityMagnet = magnetOwners.get(player.getEntityId());
+			GravityMagnet gravityMagnet = attractionHandlers.get(player.getEntityId());
 			if (gravityMagnet != null) {
 				mechanic.removeGravityMagnet(gravityMagnet);
-				magnetOwners.remove(player.getEntityId());
+				attractionHandlers.remove(player.getEntityId());
 			}
-			magnetOwners.put(player.getEntityId(), mechanic.addGravityMagnet(new GravityMagnet(lookAt, Physics.getInstance().getSettings().getIntegerSetting("Tools.AttractRadius").getIntValue(), Physics.getInstance().getSettings().getIntegerSetting("Tools.AttractForce").getIntValue())));
+			attractionHandlers.put(player.getEntityId(), mechanic.addGravityMagnet(new GravityMagnet(lookAt, Physics.getInstance().getSettings().getIntegerSetting("Tools.AttractRadius").getIntValue(), Physics.getInstance().getSettings().getIntegerSetting("Tools.AttractForce").getIntValue())));
 		}
 		return true;
 	}
@@ -44,10 +44,10 @@ public class ToolGunAttractAction implements IToolGunAction {
 	public void stoppedUsing(PhysicsWorld world, EntityPlayerMP player) {
 		GravityModifierMechanic mechanic;
 		if ((mechanic = (GravityModifierMechanic) world.getMechanics().get("GravityMagnet")) != null) {
-			GravityMagnet magnet = magnetOwners.get(player.getEntityId());
+			GravityMagnet magnet = attractionHandlers.get(player.getEntityId());
 			if (magnet != null) {
 				mechanic.removeGravityMagnet(magnet);
-				magnetOwners.remove(player.getEntityId());
+				attractionHandlers.remove(player.getEntityId());
 			}
 		}
 	}

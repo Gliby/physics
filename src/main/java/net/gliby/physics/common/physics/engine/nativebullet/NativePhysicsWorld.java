@@ -62,7 +62,8 @@ import net.minecraft.world.World;
 /**
  *
  */
-// TODO Stop using stupid Vector/Matrix/Transform conversions. Use IVector and IQuaternion, IMatrix
+// TODO Stop using stupid Vector/Matrix/Transform conversions. Use IVector and
+// IQuaternion, IMatrix
 public class NativePhysicsWorld extends PhysicsWorld {
 
 	static {
@@ -297,10 +298,11 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
 	// TODO Replace these.
 	private static Transform temp = new Transform();
+	private static Quat4f rotationTemp = new Quat4f();
 
 	public static Matrix4 toMatrix4(Matrix4f matrix4f) {
 		temp.set(matrix4f);
-		Quat4f rot = temp.getRotation(new Quat4f());
+		Quat4f rot = temp.getRotation(rotationTemp);
 		return new Matrix4().set(temp.origin.x, temp.origin.y, temp.origin.z, rot.x, rot.y, rot.z, rot.w, 1, 1, 1);
 	}
 
@@ -319,13 +321,17 @@ public class NativePhysicsWorld extends PhysicsWorld {
 		return staticVector;
 	}
 
+	static Vector3 tempVec = new Vector3();
+	static Quaternion tempQuat = new Quaternion();
+
 	// TODO Replace.
 	// Java vecmath to libgdx maths, you should be able to just set the values
 	// from one to another.
 	static Matrix4f toMatrix4f(Matrix4 matrix4) {
-		Vector3 position = matrix4.getTranslation(new Vector3());
-		Quaternion rotation = matrix4.getRotation(new Quaternion());
-		temp.setRotation(new Quat4f(new float[] { rotation.x, rotation.y, rotation.z, rotation.w }));
+		Vector3 position = matrix4.getTranslation(tempVec);
+		Quaternion rotation = matrix4.getRotation(tempQuat);
+		rotationTemp.set(rotation.x, rotation.y, rotation.z, rotation.w);
+		temp.setRotation(rotationTemp);
 		temp.origin.set(position.x, position.y, position.z);
 		return temp.getMatrix(new Matrix4f());
 	}
@@ -386,7 +392,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public String toString() {
-		return "NativePhysicsWorld[ " + this.rigidBodies.size() + " rigid bodies" + "]";
+		return getClass().getSimpleName() + "[" + this.rigidBodies.size() + " rigid bodies" + "]";
 	}
 
 	// TODO Add rope support

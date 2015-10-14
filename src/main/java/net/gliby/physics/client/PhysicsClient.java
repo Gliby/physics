@@ -34,6 +34,7 @@ public class PhysicsClient extends PhysicsServer {
 	public void preInit(Physics physics, FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(new GuiDebug());
 		this.keyManager = new KeyManager();
+		keyManager.init();
 	}
 
 	private KeyManager keyManager;

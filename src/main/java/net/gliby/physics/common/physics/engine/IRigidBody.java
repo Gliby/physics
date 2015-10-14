@@ -42,13 +42,13 @@ public interface IRigidBody extends ICollisionObject {
 
 	/**
 	 * @param centerOfMass
-	 * @return 
+	 * @return
 	 */
 	public Vector3f getCenterOfMassPosition(Vector3f centerOfMass);
 
 	/**
 	 * @param transform
-	 * @return 
+	 * @return
 	 */
 	public Transform getWorldTransform(Transform transform);
 
@@ -112,7 +112,7 @@ public interface IRigidBody extends ICollisionObject {
 	/**
 	 * @return
 	 */
-	
+
 	/**
 	 * 
 	 * @return
@@ -133,11 +133,12 @@ public interface IRigidBody extends ICollisionObject {
 	public Vector3f getGravity(Vector3f gravity);
 
 	public Vector3f getCenterOfMassPosition();
-	
-	
+
 	public IQuaternion getRotation();
 
 	public IVector3 getPosition();
 
-	
+	public void applyTorque(Vector3f vector);
+
+	public void applyTorqueImpulse(Vector3f vector);
 }

@@ -15,13 +15,13 @@ import net.gliby.physics.common.physics.PhysicsWorld;
 import net.gliby.physics.common.physics.engine.IConstraintGeneric6Dof;
 import net.gliby.physics.common.physics.engine.IRayResult;
 import net.gliby.physics.common.physics.engine.IRigidBody;
+import net.gliby.physics.common.physics.mechanics.ToolMechanic;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 /**
  *
  */
-public class ToolGunAttachAction implements IToolGunAction {
-
+public class ToolGunMotorAction implements IToolGunAction {
 	private Map<Integer, ToolGunHit> hits = new HashMap<Integer, ToolGunHit>();
 
 	@Override
@@ -33,7 +33,7 @@ public class ToolGunAttachAction implements IToolGunAction {
 		eyeLook.scale(64);
 		lookAt.add(eyeLook);
 		eyePos.sub(offset);
-		lookAt.sub(offset);
+		lookAt.sub(offset); 
 
 		IRayResult ray = physicsWorld.createClosestRayResultCallback(eyePos, lookAt);
 		physicsWorld.rayTest(eyePos, lookAt, ray);
@@ -41,11 +41,13 @@ public class ToolGunAttachAction implements IToolGunAction {
 			IRigidBody body = physicsWorld.upcastRigidBody(ray.getCollisionObject());
 			if (body != null) {
 				Transform centerOfMassTransform = body.getCenterOfMassTransform(new Transform());
+				Vector3f comNormal = new Vector3f(centerOfMassTransform.origin);
+				comNormal.normalize();
+
 				centerOfMassTransform.inverse();
 				Vector3f relativePivot = new Vector3f(ray.getHitPointWorld());
 				centerOfMassTransform.transform(relativePivot);
-		
-				
+
 				ToolGunHit hit;
 				if ((hit = hits.get(player.getEntityId())) != null) {
 					Transform transformA = new Transform();
@@ -57,9 +59,19 @@ public class ToolGunAttachAction implements IToolGunAction {
 
 					body.activate();
 					hit.getLastBody().activate();
+
+					Vector3f direction = new Vector3f();
+					Vector3f up = new Vector3f(physicsWorld.getGravityDirection());
+					// TODO Up vector is inverted gravity direction;
+					up.scale(-1);
+					direction.cross(comNormal, up);
+
+					body.getProperties().put("Motorized", direction);
+					ToolMechanic toolMechanic = (ToolMechanic) physicsWorld.getMechanics().get("ToolMan");
+					toolMechanic.getBodies().add(body);
+
 					IConstraintGeneric6Dof generic6Dof = physicsWorld.createGeneric6DofConstraint(body,
 							hit.getLastBody(), transformA, transformB, true);
-					physicsWorld.addConstraint(generic6Dof);
 					hits.put(player.getEntityId(), null);
 				} else
 					hits.put(player.getEntityId(), new ToolGunHit(relativePivot, body));
@@ -75,6 +87,6 @@ public class ToolGunAttachAction implements IToolGunAction {
 
 	@Override
 	public String getName() {
-		return "Attach";
+		return "Motor";
 	}
 }

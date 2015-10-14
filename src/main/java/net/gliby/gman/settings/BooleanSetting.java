@@ -1,11 +1,10 @@
 package net.gliby.gman.settings;
 
+import net.gliby.gman.settings.INIProperties.INIPropertiesReadFailure;
+
 /**
  * 
  */
-
-import net.gliby.gman.settings.INIProperties.INIPropertiesReadFailure;
-import net.minecraftforge.fml.relauncher.Side;
 
 /**
  *

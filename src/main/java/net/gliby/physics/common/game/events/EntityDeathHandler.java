@@ -45,11 +45,9 @@ public class EntityDeathHandler {
 		for (Object obj : renderManager.entityRenderMap.entrySet()) {
 			Map.Entry<Class<? extends Entity>, RenderLiving> entry = (Map.Entry<Class<? extends Entity>, RenderLiving>) obj;
 			Class<? extends Entity> entityClass = entry.getKey();
-			if (entry.getValue() instanceof RenderLiving) {
-				RenderLiving renderLiving = entry.getValue();
-				ArrayList<ModelPart> modelParts = generateModelParts(renderLiving.getMainModel());
-				modelRegistry.put(entityClass, generateModelParts(renderLiving.getMainModel()));
-			}
+			RenderLiving renderLiving = entry.getValue();
+			ArrayList<ModelPart> modelParts = generateModelParts(renderLiving.getMainModel());
+			modelRegistry.put(entityClass, generateModelParts(renderLiving.getMainModel()));
 		}
 	}
 
@@ -137,20 +135,6 @@ public class EntityDeathHandler {
 			}
 		}
 		return proxyList;
-	}
-
-	private float correctRotation(float offset, float original, float scale) {
-		float f3;
-
-		for (f3 = original - offset; f3 < -180.0F; f3 += 360.0F) {
-			;
-		}
-
-		while (f3 >= 180.0F) {
-			f3 -= 360.0F;
-		}
-
-		return offset + scale * f3;
 	}
 
 }

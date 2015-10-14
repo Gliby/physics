@@ -63,7 +63,6 @@ public abstract class MetadataLoader {
 				}
 				actualMap.putAll(tempData);
 				tempData.clear();
-				System.out.println("Copied " + actualMap.size() + "  to " + tempData);
 				Physics.getLogger().info("Loaded " + loaded + " physics blocks.");
 			}
 

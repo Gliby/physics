@@ -3,25 +3,7 @@
  */
 package net.gliby.physics.client.render.world;
 
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_TEST;
-import static org.lwjgl.opengl.GL11.GL_LINE_SMOOTH;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glColor4f;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glEnd;
-import static org.lwjgl.opengl.GL11.glLineWidth;
-import static org.lwjgl.opengl.GL11.glMultMatrix;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glScalef;
-import static org.lwjgl.opengl.GL11.glTranslatef;
-import static org.lwjgl.opengl.GL11.glVertex3f;
+import static org.lwjgl.opengl.GL11.*;
 
 import java.nio.FloatBuffer;
 import java.util.List;
@@ -42,6 +24,7 @@ import net.gliby.physics.common.physics.engine.IConstraint;
 import net.gliby.physics.common.physics.engine.IConstraintGeneric6Dof;
 import net.gliby.physics.common.physics.engine.IConstraintPoint2Point;
 import net.gliby.physics.common.physics.engine.IRigidBody;
+import net.gliby.physics.common.physics.engine.IRope;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -55,10 +38,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  */
 public class RenderAdditionalWorld {
 
+	private Physics physics;
 	private Minecraft mc;
 
-	public RenderAdditionalWorld() {
-		mc = Minecraft.getMinecraft();
+	public RenderAdditionalWorld(Physics physics) {
+		this.mc = Minecraft.getMinecraft();
+		this.physics = physics;
 	}
 
 	// TODO REDO
@@ -67,7 +52,7 @@ public class RenderAdditionalWorld {
 	public void postRender(RenderWorldLastEvent event) {
 		// if (MineFortress.DEBUG_PHYSICS_RENDER)
 		if (Physics.getInstance().getPhysicsOverworld() != null)
-			renderDebugPhysics(Physics.getInstance().getPhysicsOverworld(), event);
+			renderDebugPhysics(physics.getPhysicsOverworld(), event);
 		// event);
 	}
 
@@ -127,25 +112,40 @@ public class RenderAdditionalWorld {
 					}
 				}
 			}
-			/*
-			 * for (int i = 0; i < physicsWorld.getRopes().size(); i++) { IRope
-			 * rope = physicsWorld.getRopes().get(i); glPushMatrix();
-			 * glColor4f(0.0F, 0.0F, 0.0F, 1.0F);
-			 * 
-			 * if (renderRopeJoints) { glEnable(GL11.GL_POINT_SMOOTH);
-			 * glPointSize(20); glBegin(GL11.GL_POINTS); for (Vector3f pos :
-			 * rope.getSpherePositions()) { GL11.glVertex3f(pos.x, pos.y,
-			 * pos.z); } glEnd();
-			 * 
-			 * glPointSize(15); glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-			 * glBegin(GL11.GL_POINTS); for (Vector3f pos :
-			 * rope.getSpherePositions()) { GL11.glVertex3f(pos.x, pos.y,
-			 * pos.z); } glEnd(); glDisable(GL11.GL_POINT_SMOOTH); }
-			 * 
-			 * glColor4f(1.0F, 1.0F, 1.0F, 1.0F); glBegin(GL11.GL_LINE_STRIP);
-			 * for (Vector3f pos : rope.getSpherePositions()) {
-			 * GL11.glVertex3f(pos.x, pos.y, pos.z); } glEnd(); glPopMatrix(); }
-			 */
+
+			// for (int i = 0; i < physicsWorld.getRopes().size(); i++) {
+			// IRope rope = physicsWorld.getRopes().get(i);
+			// glPushMatrix();
+			// glColor4f(0.0F, 0.0F, 0.0F, 1.0F);
+			//
+			// if (renderRopeJoints) {
+			// glEnable(GL11.GL_POINT_SMOOTH);
+			// glPointSize(20);
+			// glBegin(GL11.GL_POINTS);
+			// for (Vector3f pos : rope.getSpherePositions()) {
+			// GL11.glVertex3f(pos.x, pos.y, pos.z);
+			// }
+			// glEnd();
+			//
+			// glPointSize(15);
+			// glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+			// glBegin(GL11.GL_POINTS);
+			// for (Vector3f pos : rope.getSpherePositions()) {
+			// GL11.glVertex3f(pos.x, pos.y, pos.z);
+			// }
+			// glEnd();
+			// glDisable(GL11.GL_POINT_SMOOTH);
+			// }
+			//
+			// glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+			// glBegin(GL11.GL_LINE_STRIP);
+			// for (Vector3f pos : rope.getSpherePositions()) {
+			// GL11.glVertex3f(pos.x, pos.y, pos.z);
+			// }
+			// glEnd();
+			// glPopMatrix();
+			// }
+
 			for (int i = 0; i < physicsWorld.getRigidBodies().size(); i++) {
 				glPushMatrix();
 				IRigidBody rigidBody = physicsWorld.getRigidBodies().get(i);

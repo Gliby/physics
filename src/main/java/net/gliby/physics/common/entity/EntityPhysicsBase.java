@@ -5,6 +5,7 @@ package net.gliby.physics.common.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.vecmath.Vector3f;
 
@@ -26,6 +27,7 @@ import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.StringUtils;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -152,24 +154,6 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 	@SideOnly(Side.CLIENT)
 	public abstract void interpolate();
 
-	@Override
-	public void readEntityFromNBT(NBTTagCompound tagCompound) {
-		if (!worldObj.isRemote) {
-			mechanics.clear();
-			PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
-			ArrayList<String> mechanicsByNames = new Gson().fromJson(tagCompound.getString("Mechanics"),
-					ArrayList.class);
-			if (mechanicsByNames != null) {
-				for (int i = 0; i < mechanicsByNames.size(); i++) {
-					String mechanicString = mechanicsByNames.get(i);
-					RigidBodyMechanic mechanic = overworld.getMechanicFromName(mechanicString);
-					if (mechanic != null)
-						mechanics.add(overworld.getMechanicFromName(mechanicString));
-				}
-			}
-		}
-	}
-
 	/**
 	 * @return
 	 */
@@ -186,13 +170,42 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 	 */
 	public abstract IRigidBody getRigidBody();
 
+	@Override
+	public void readEntityFromNBT(NBTTagCompound tagCompound) {
+		if (!worldObj.isRemote) {
+			mechanics.clear();
+			PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
+			Gson gson = new Gson();
+			// TODO Get this working!
+			/*
+			 * if (tagCompound.hasKey("Properties")) {
+			 * this.getRigidBody().getProperties()
+			 * .putAll(gson.fromJson(tagCompound.getString("Properties"),
+			 * Map.class)); }
+			 */
+			ArrayList<String> mechanicsByNames = gson.fromJson(tagCompound.getString("Mechanics"), ArrayList.class);
+			if (mechanicsByNames != null) {
+				for (int i = 0; i < mechanicsByNames.size(); i++) {
+					String mechanicString = mechanicsByNames.get(i);
+					RigidBodyMechanic mechanic = overworld.getMechanicFromName(mechanicString);
+					if (mechanic != null)
+						mechanics.add(overworld.getMechanicFromName(mechanicString));
+				}
+			}
+		}
+	}
+
 	public void writeEntityToNBT(NBTTagCompound tagCompound) {
+		Gson gson = new Gson();
 		ArrayList<String> mechanicsByNames = new ArrayList<String>();
 		for (int i = 0; i < mechanics.size(); i++) {
 			mechanicsByNames
 					.add(Physics.getInstance().getPhysicsOverworld().getMechanicsMap().inverse().get(mechanics.get(i)));
 		}
-		tagCompound.setString("Mechanics", new Gson().toJson(mechanicsByNames));
+		// TODO Get this working!
+		// tagCompound.setString("Properties",
+		// gson.toJson(this.getRigidBody().getProperties()));
+		tagCompound.setString("Mechanics", gson.toJson(mechanicsByNames));
 	}
 
 	@Override
