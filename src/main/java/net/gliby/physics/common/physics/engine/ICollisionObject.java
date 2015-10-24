@@ -10,7 +10,7 @@ import net.minecraft.entity.Entity;
 /**
  *
  */
-public interface ICollisionObject {
+public interface ICollisionObject extends IDisposable {
 
 	public Entity getOwner();
 	
@@ -36,4 +36,5 @@ public interface ICollisionObject {
 	 * @param entityTransform
 	 */
 	public void setInterpolationWorldTransform(Transform entityTransform);
+	
 }

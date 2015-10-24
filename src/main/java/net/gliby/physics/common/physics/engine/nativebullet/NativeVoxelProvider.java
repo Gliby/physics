@@ -50,4 +50,5 @@ class NativeVoxelProvider extends btVoxelContentProvider {
 		return info;
 
 	}
+	
 }

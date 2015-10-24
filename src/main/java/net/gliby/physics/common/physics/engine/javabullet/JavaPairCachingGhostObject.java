@@ -64,4 +64,10 @@ public class JavaPairCachingGhostObject implements IGhostObject {
 		return owner;
 	}
 
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

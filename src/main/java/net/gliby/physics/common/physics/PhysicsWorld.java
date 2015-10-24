@@ -22,6 +22,7 @@ import net.gliby.physics.common.physics.engine.IConstraint;
 import net.gliby.physics.common.physics.engine.IConstraintGeneric6Dof;
 import net.gliby.physics.common.physics.engine.IConstraintPoint2Point;
 import net.gliby.physics.common.physics.engine.IConstraintSlider;
+import net.gliby.physics.common.physics.engine.IDisposable;
 import net.gliby.physics.common.physics.engine.IGhostObject;
 import net.gliby.physics.common.physics.engine.IRayResult;
 import net.gliby.physics.common.physics.engine.IRigidBody;
@@ -36,7 +37,7 @@ import net.minecraft.world.World;
 /**
  *
  */
-public abstract class PhysicsWorld implements Runnable {
+public abstract class PhysicsWorld implements Runnable, IDisposable {
 
 	private IPhysicsWorldConfiguration physicsConfiguration;
 
@@ -88,6 +89,11 @@ public abstract class PhysicsWorld implements Runnable {
 				(float) blockState.getBlock().getBlockBoundsMaxY(), (float) blockState.getBlock().getBlockBoundsMaxZ());
 		blockPosition.scale(0.5f);
 		return createBoxShape(blockPosition);
+	}
+	
+	@Override
+	public void dispose() {
+		running = false;
 	}
 
 	protected int tick;
@@ -142,13 +148,6 @@ public abstract class PhysicsWorld implements Runnable {
 	public abstract List<IRigidBody> getRigidBodies();
 
 	public abstract List<IRope> getRopes();
-
-	public final void destroy() {
-		this.running = false;
-		dispose();
-	}
-
-	protected abstract void dispose();
 
 	/**
 	 * 

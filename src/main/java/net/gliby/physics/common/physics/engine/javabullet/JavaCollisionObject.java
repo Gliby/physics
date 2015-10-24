@@ -59,4 +59,10 @@ public class JavaCollisionObject implements ICollisionObject {
 		return owner;
 	}
 
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -6,7 +6,7 @@ package net.gliby.physics.common.physics.engine;
 /**
  *
  */
-public interface IConstraint {
+public interface IConstraint  extends IDisposable {
 
 	/**
 	 * @return
@@ -24,4 +24,5 @@ public interface IConstraint {
 	boolean isGeneric6Dof();
 	
 	boolean isSlider();
+	
 }

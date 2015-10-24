@@ -10,7 +10,7 @@ import javax.vecmath.Vector3f;
 /**
  *
  */
-public interface ICollisionShape {
+public interface ICollisionShape extends IDisposable {
 
 	/**
 	 * @return
@@ -40,6 +40,7 @@ public interface ICollisionShape {
 
 	/**
 	 * Only applies to box shapes.
+	 * 
 	 * @param halfExtent
 	 */
 	void getHalfExtentsWithMargin(Vector3f halfExtent);
