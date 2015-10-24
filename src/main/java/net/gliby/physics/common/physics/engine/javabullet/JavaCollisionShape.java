@@ -75,9 +75,20 @@ public class JavaCollisionShape implements ICollisionShape {
 				public ICollisionShape getCollisionShape() {
 					return new JavaCollisionShape(child.childShape);
 				}
+
+				@Override
+				public void dispose() {
+					
+				}
 			});
 		}
 		return shapeList;
+	}
+
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

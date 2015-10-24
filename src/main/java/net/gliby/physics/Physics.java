@@ -56,6 +56,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+//!FIXME Change package to net.gliby.minecraft.physics
 @Mod(modid = Physics.MOD_ID, name = Physics.MOD_NAME, version = Physics.MOD_VERSION, guiFactory = "net.gliby.physics.client.gui.options.GuiFactory")
 public class Physics {
 

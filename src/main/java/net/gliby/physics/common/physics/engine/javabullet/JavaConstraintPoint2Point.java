@@ -68,4 +68,10 @@ public class JavaConstraintPoint2Point implements IConstraintPoint2Point {
 		return false;
 	}
 
+	@Override
+	public void dispose() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -53,4 +53,9 @@ class NativeClosestRayResultCallback implements IRayResult {
 		return NativePhysicsWorld.toVector3f(vector);
 	}
 
+	@Override
+	public void dispose() {
+		callback.dispose();
+	}
+
 }

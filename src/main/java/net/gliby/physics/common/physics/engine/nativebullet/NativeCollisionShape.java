@@ -78,9 +78,19 @@ class NativeCollisionShape implements ICollisionShape {
 				public ICollisionShape getCollisionShape() {
 					return new NativeCollisionShape(compoundShape.getChildShape(index));
 				}
+
+				@Override
+				public void dispose() {
+					shape.dispose();
+				}
 			});
 		}
 		return shapeList;
+	}
+
+	@Override
+	public void dispose() {
+//		shape.dispose();
 	}
 
 }

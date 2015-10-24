@@ -64,4 +64,9 @@ class NativePairCachingGhostObject implements IGhostObject {
 		return owner;
 	}
 
+	@Override
+	public void dispose() {
+		ghostObject.dispose();
+	}
+
 }

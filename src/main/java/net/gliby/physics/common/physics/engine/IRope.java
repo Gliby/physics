@@ -20,5 +20,6 @@ public interface IRope {
 	public Vector3f getStartPosition();
 	public Vector3f getEndPosition();
 
-	void dispose(PhysicsWorld physicsWorld);
+	public void dispose(PhysicsWorld physicsWorld);
+	
 }

@@ -85,7 +85,7 @@ public class PhysicsOverworld {
 	public void onUnload(WorldEvent.Unload event) {
 		PhysicsWorld physicsWorld;
 		if ((physicsWorld = getPhysicsWorldMap().get(event.world)) != null) {
-			physicsWorld.destroy();
+			physicsWorld.dispose();
 			getPhysicsWorldMap().remove(event.world);
 			Physics.getLogger().info("Destroyed " + event.world.getWorldInfo().getWorldName() + " physics world.");
 		}

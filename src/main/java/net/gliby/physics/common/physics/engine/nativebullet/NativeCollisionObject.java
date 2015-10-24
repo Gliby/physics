@@ -60,4 +60,10 @@ class NativeCollisionObject implements ICollisionObject {
 		return owner;
 	}
 
+
+	@Override
+	public void dispose() {
+		object.dispose();
+	}
+
 }

@@ -13,4 +13,6 @@ public interface ICollisionShapeChildren {
 	public Transform getTransform();
 
 	public ICollisionShape getCollisionShape();
+	
+	public void dispose();
 }

@@ -38,7 +38,7 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 		this.vectorPosition = new Vector3();
 		this.position = new NativeVector3(vectorPosition);
 	}
-
+	
 	@Override
 	public Object getBody() {
 		return rigidBody;

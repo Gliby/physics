@@ -215,19 +215,21 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public void dispose() {
-		Iterator it = physicsMechanics.entrySet().iterator();
-		while (it.hasNext()) {
-			PhysicsMechanic mechanic = ((Map.Entry<String, PhysicsMechanic>) it.next()).getValue();
-			mechanic.setEnabled(false);
-		}
-		for (int i = 0; i < dynamicsWorld.getNumCollisionObjects(); i++) {
-			CollisionObject object = dynamicsWorld.getCollisionObjectArray().get(i);
-			dynamicsWorld.removeCollisionObject(object);
-		}
+		synchronized (this) {
+			Iterator it = physicsMechanics.entrySet().iterator();
+			while (it.hasNext()) {
+				PhysicsMechanic mechanic = ((Map.Entry<String, PhysicsMechanic>) it.next()).getValue();
+				mechanic.setEnabled(false);
+			}
+			for (int i = 0; i < dynamicsWorld.getNumCollisionObjects(); i++) {
+				CollisionObject object = dynamicsWorld.getCollisionObjectArray().get(i);
+				dynamicsWorld.removeCollisionObject(object);
+			}
 
-		dynamicsWorld.destroy();
-		rigidBodies.clear();
-		constraints.clear();
+			dynamicsWorld.destroy();
+			rigidBodies.clear();
+			constraints.clear();
+		}
 	}
 
 	private long lastFrame;

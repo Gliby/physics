@@ -67,4 +67,9 @@ class NativePoint2PointConstraint implements IConstraintPoint2Point {
 		return false;
 	}
 
+	@Override
+	public void dispose() {
+		constraint.dispose();
+	}
+
 }
