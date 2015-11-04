@@ -60,7 +60,7 @@ public class ToolGunAttachAction implements IToolGunAction {
 					IConstraintGeneric6Dof generic6Dof = physicsWorld.createGeneric6DofConstraint(body,
 							hit.getLastBody(), transformA, transformB, true);
 					physicsWorld.addConstraint(generic6Dof);
-					hits.put(player.getEntityId(), null);
+					hits.remove(player.getEntityId());
 				} else
 					hits.put(player.getEntityId(), new ToolGunHit(relativePivot, body));
 			}

@@ -52,10 +52,12 @@ public class KeyFireEvent extends KeyEvent {
 	 */
 	@Override
 	public void keyUp(KeyBinding kb, boolean tickEnd) {
+		Minecraft mc = Minecraft.getMinecraft();
 		World world = null;
-		if ((world = Minecraft.getMinecraft().theWorld) != null) {
-			// Minecraft.getMinecraft().displayGuiScreen(new
-			// GuiScreenPhysicsCreator(null));
+		if ((world = mc.theWorld) != null) {
+			if (mc.currentScreen == null) {
+				Minecraft.getMinecraft().displayGuiScreen(new GuiScreenPhysicsCreator(null));
+			}
 			// TODO Remove client debug physics.
 			// Physics.getInstance().getClientProxy().getPhysicsOverWorld().debugSpawn(world);
 			// debugSpawn(Minecraft.getMinecraft().theWorld);

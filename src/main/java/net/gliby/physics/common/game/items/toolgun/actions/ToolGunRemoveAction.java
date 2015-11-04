@@ -6,6 +6,7 @@ package net.gliby.physics.common.game.items.toolgun.actions;
 import javax.vecmath.Vector3f;
 
 import net.gliby.gman.EntityUtility;
+import net.gliby.physics.common.entity.EnumRigidBodyProperty;
 import net.gliby.physics.common.physics.PhysicsWorld;
 import net.gliby.physics.common.physics.engine.IRayResult;
 import net.gliby.physics.common.physics.engine.IRigidBody;
@@ -37,7 +38,7 @@ public class ToolGunRemoveAction implements IToolGunAction {
 		if (ray.hasHit()) {
 			IRigidBody body = physicsWorld.upcastRigidBody(ray.getCollisionObject());
 			if (body != null) {
-				body.getProperties().put("Dead", System.currentTimeMillis());
+				body.getProperties().put(EnumRigidBodyProperty.DEAD.getName(), System.currentTimeMillis());
 				return true;
 			}
 		}

@@ -15,3 +15,5 @@ gui.creator.physicsblockGenerator=Physics Block Generator
 gui.creator.physicsblockGenerator.generate=Generate Physics Block
 gui.creator.unfinished=Unfinished
 gui.creator.works=Works
+
+gui.creator.mobgenerator.generate=Generate Mobs

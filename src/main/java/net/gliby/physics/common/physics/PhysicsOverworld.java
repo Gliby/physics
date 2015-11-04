@@ -18,7 +18,7 @@ import net.gliby.physics.common.entity.mechanics.EnvironmentResponseMechanic;
 import net.gliby.physics.common.entity.mechanics.RigidBodyMechanic;
 import net.gliby.physics.common.physics.engine.javabullet.JavaPhysicsWorld;
 import net.gliby.physics.common.physics.engine.nativebullet.NativePhysicsWorld;
-import net.gliby.physics.common.physics.mechanics.ToolMechanic;
+import net.gliby.physics.common.physics.mechanics.ToolMechanics;
 import net.gliby.physics.common.physics.mechanics.gravitymagnets.GravityModifierMechanic;
 import net.gliby.physics.common.physics.mechanics.physicsgun.PickUpMechanic;
 import net.minecraft.util.AxisAlignedBB;
@@ -53,7 +53,7 @@ public class PhysicsOverworld {
 						}
 
 						@Override
-						public int getTicksPerSecond() {
+						public final int getTicksPerSecond() {
 							// TODO Settings!
 							return 30;
 						}
@@ -66,7 +66,7 @@ public class PhysicsOverworld {
 					});
 			physicsWorld.getMechanics().put("PickUp", new PickUpMechanic(physicsWorld, true, 20));
 			physicsWorld.getMechanics().put("GravityMagnet", new GravityModifierMechanic(physicsWorld, false, 20));
-			physicsWorld.getMechanics().put("ToolMan", new ToolMechanic(physicsWorld, false, 20));
+			physicsWorld.getMechanics().put("ToolMan", new ToolMechanics(physics.getToolGunRegistry(), physicsWorld, false, 20));
 			// worldStepSimulator.getMechanics().put("EntityCollision",
 			// new EntityCollisionResponseMechanic(world, worldStepSimulator,
 			// true,

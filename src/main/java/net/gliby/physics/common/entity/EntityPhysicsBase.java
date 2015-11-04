@@ -265,7 +265,8 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 			}
 
 			if (getRigidBody() != null) {
-				if (getRigidBody().getProperties().containsKey("Dead")) {
+				if (getRigidBody().getProperties().containsKey(EnumRigidBodyProperty.DEAD.getName())) {
+					System.out.println("Set dead: " + getRigidBody().getProperties());
 					this.setDead();
 				}
 				if (getRigidBody().isActive())

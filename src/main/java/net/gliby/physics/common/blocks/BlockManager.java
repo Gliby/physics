@@ -23,7 +23,10 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.client.FMLFileResourcePack;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
 
@@ -84,7 +87,7 @@ public class BlockManager {
 		};
 
 	}
-
+	
 	private Map<String, IBlockGenerator> blockGenerators;
 
 	public String getBlockIdentity(Block block) {
