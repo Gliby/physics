@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.vecmath.Vector3f;
 
+import net.gliby.physics.common.entity.EnumRigidBodyProperty;
 import net.gliby.physics.common.entity.IEntityPhysics;
 import net.gliby.physics.common.physics.PhysicsWorld;
 import net.gliby.physics.common.physics.engine.IRigidBody;
@@ -20,7 +21,7 @@ public class BlockInheritanceMechanic extends RigidBodyMechanic {
 	public void update(IRigidBody rigidBody, PhysicsWorld physicsWorld, Entity entity, Side side) {
 		IBlockState blockState;
 		if (side.isServer()) {
-			if ((blockState = (IBlockState) rigidBody.getProperties().get("BlockState")) != null) {
+			if ((blockState = (IBlockState) rigidBody.getProperties().get(EnumRigidBodyProperty.BLOCKSTATE.getName())) != null) {
 				Vector3f bbMin = new Vector3f(), bbMax = new Vector3f();
 				rigidBody.getAabb(bbMin, bbMax);
 				AxisAlignedBB bb = AxisAlignedBB.fromBounds(bbMin.x, bbMin.y, bbMin.z, bbMax.x, bbMax.y, bbMax.z)

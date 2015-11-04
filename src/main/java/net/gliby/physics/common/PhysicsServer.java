@@ -28,7 +28,7 @@ public class PhysicsServer implements IPhysicsProxy {
 	public void postInit(FMLPostInitializationEvent event) {
 	}
 
-	// TODO Replace this event.
+	// TODO Replace this with a game tick based event.
 	@SubscribeEvent
 	public void playerJoinEvent(final PlayerLoggedInEvent event) {
 		MinecraftServer.getServer().addScheduledTask(new Runnable() {

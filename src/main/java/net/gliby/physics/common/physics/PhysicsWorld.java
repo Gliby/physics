@@ -90,7 +90,7 @@ public abstract class PhysicsWorld implements Runnable, IDisposable {
 		blockPosition.scale(0.5f);
 		return createBoxShape(blockPosition);
 	}
-	
+
 	@Override
 	public void dispose() {
 		running = false;
@@ -185,7 +185,8 @@ public abstract class PhysicsWorld implements Runnable, IDisposable {
 	 * @param physicsMechanic
 	 */
 	public void restartMechanic(PhysicsMechanic mechanic) {
-		new Thread(mechanic, mechanic.getName()).start();
+		if (mechanic.isThreaded())
+			new Thread(mechanic, mechanic.getName()).start();
 	}
 
 	/**

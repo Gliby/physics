@@ -161,7 +161,7 @@ public class Physics {
 							}
 							gman.getProperties().put("VersionChanges", changes);
 						}
-					}, "GMAN Update/News Proccesor").start();
+					}, "GMAN Update/News").start();
 				}
 			});
 		}
@@ -181,7 +181,7 @@ public class Physics {
 		toolGunRegistry.registerAction(new ToolGunAttractAction(), Physics.MOD_ID);
 		toolGunRegistry.registerAction(new ToolGunChangeGravityAction(), Physics.MOD_ID);
 		toolGunRegistry.registerAction(new ToolGunRemoveAction(), Physics.MOD_ID);
-		toolGunRegistry.registerAction(new ToolGunMotorAction(), Physics.MOD_ID);
+//		toolGunRegistry.registerAction(new ToolGunMotorAction(), Physics.MOD_ID);
 
 		registerPacket(PacketPlayerJoin.class, PacketPlayerJoin.class, Side.CLIENT);
 

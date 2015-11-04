@@ -5,6 +5,7 @@ package net.gliby.physics.common.entity.mechanics;
 
 import javax.vecmath.Vector3f;
 
+import net.gliby.physics.common.entity.EnumRigidBodyProperty;
 import net.gliby.physics.common.physics.PhysicsWorld;
 import net.gliby.physics.common.physics.engine.IRigidBody;
 import net.minecraft.entity.Entity;
@@ -35,11 +36,11 @@ public class BounceMechanic extends RigidBodyMechanic {
 			if (pos != null) {
 				float dist = (float) startRay.distanceTo(pos.hitVec);
 				float biggestDistance = 0;
-				if (rigidBody.getProperties().containsKey("BiggestDistance"))
-					biggestDistance = (Float) rigidBody.getProperties().get("BiggestDistance");
+				if (rigidBody.getProperties().containsKey(EnumRigidBodyProperty.BIGGESTDISTANCE.getName()))
+					biggestDistance = (Float) rigidBody.getProperties().get(EnumRigidBodyProperty.BIGGESTDISTANCE.getName());
 				if (dist >= 1) {
 					if (dist > biggestDistance) {
-						rigidBody.getProperties().put("BiggestDistance", dist);
+						rigidBody.getProperties().put(EnumRigidBodyProperty.BIGGESTDISTANCE.getName(), dist);
 						biggestDistance = (float) dist;
 					}
 				} else if (biggestDistance > 1 && rigidBody.hasContactResponse()) {
@@ -49,7 +50,7 @@ public class BounceMechanic extends RigidBodyMechanic {
 					// TODO Settings, max distance that object can rise.
 					impulse.setY(MathHelper.clamp_float(impulse.getY(), 0, 300));
 					rigidBody.applyCentralImpulse(impulse);
-					rigidBody.getProperties().put("BiggestDistance", 0.0F);
+					rigidBody.getProperties().put(EnumRigidBodyProperty.BIGGESTDISTANCE.getName(), 0.0F);
 					biggestDistance = 0;
 				}
 			}

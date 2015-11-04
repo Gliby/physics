@@ -193,7 +193,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 		transform.origin.set(this.position);
 		transform.setRotation(this.rotation);
 		rigidBody = physicsWorld.createRigidBody(this, transform, Math.abs(mass), collisionShape);
-		rigidBody.getProperties().put("BlockState", blockState);
+		rigidBody.getProperties().put(EnumRigidBodyProperty.BLOCKSTATE.getName(), blockState);
 
 		for (int i = 0; i < mechanics.size(); i++) {
 			RigidBodyMechanic mechanic = mechanics.get(i);
@@ -400,7 +400,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 		transform.setRotation(this.rotation);
 		rigidBody.setWorldTransform(transform);
 		// Used for specific block mechanics.
-		rigidBody.getProperties().put("BlockState", blockState);
+		rigidBody.getProperties().put(EnumRigidBodyProperty.BLOCKSTATE.getName(), blockState);
 		if (mass < 0)
 			rigidBody.setGravity(new Vector3f());
 		rigidBody.setFriction(friction);

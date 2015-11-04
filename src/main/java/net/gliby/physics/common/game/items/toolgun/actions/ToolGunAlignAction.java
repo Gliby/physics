@@ -7,6 +7,7 @@ import javax.vecmath.Vector3f;
 
 import net.gliby.gman.EntityUtility;
 import net.gliby.physics.common.entity.EntityPhysicsBlock;
+import net.gliby.physics.common.entity.EnumRigidBodyProperty;
 import net.gliby.physics.common.physics.PhysicsWorld;
 import net.gliby.physics.common.physics.engine.IRayResult;
 import net.gliby.physics.common.physics.engine.IRigidBody;
@@ -40,7 +41,7 @@ public class ToolGunAlignAction implements IToolGunAction {
 			IRigidBody body = physicsWorld.upcastRigidBody(ray.getCollisionObject());
 			if (body != null && body.getOwner() instanceof EntityPhysicsBlock) {
 				player.worldObj.setBlockState(new BlockPos(body.getOwner().posX, body.getOwner().posY + 0.5F, body.getOwner().posZ), ((EntityPhysicsBlock)body.getOwner()).getBlockState());
-				body.getProperties().put("Dead", System.currentTimeMillis());
+				body.getProperties().put(EnumRigidBodyProperty.DEAD.getName(), System.currentTimeMillis());
 				return true;
 			}
 		}

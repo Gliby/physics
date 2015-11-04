@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import javax.vecmath.Vector3f;
 
+import net.gliby.physics.common.entity.EnumRigidBodyProperty;
 import net.gliby.physics.common.physics.PhysicsWorld;
 import net.gliby.physics.common.physics.engine.IRigidBody;
 import net.gliby.physics.common.physics.mechanics.PhysicsMechanic;
@@ -52,7 +53,7 @@ public class GravityModifierMechanic extends PhysicsMechanic {
 							body.activate();
 						body.setGravity(direction);
 					}
-					body.getProperties().put("Magnet", magnet);
+					body.getProperties().put(EnumRigidBodyProperty.MAGNET.getName(), magnet);
 				}
 			}
 		}
@@ -72,9 +73,9 @@ public class GravityModifierMechanic extends PhysicsMechanic {
 		gravityMagnets.remove(magnet);
 		for (int i = 0; i < physicsWorld.getRigidBodies().size(); i++) {
 			IRigidBody body = physicsWorld.getRigidBodies().get(i);
-			if (body.getProperties().get("Magnet") == magnet) {
+			if (body.getProperties().get(EnumRigidBodyProperty.MAGNET.getName()) == magnet) {
 				body.setGravity(physicsWorld.getPhysicsConfiguration().getRegularGravity());
-				body.getProperties().remove("Magnet");
+				body.getProperties().remove(EnumRigidBodyProperty.MAGNET.getName());
 			}
 		}
 	}
