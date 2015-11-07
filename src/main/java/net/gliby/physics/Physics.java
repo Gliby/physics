@@ -1,8 +1,10 @@
 package net.gliby.physics;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.zip.ZipException;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -94,9 +96,9 @@ public class Physics {
 		return gman;
 	}
 
-	//TODO Move some pre-init actions into seperate functions.
-	//Reason: Organization, the pre-init method is getting a bit crowded.
-	
+	// TODO Move some pre-init actions into seperate functions.
+	// Reason: Organization, the pre-init method is getting a bit crowded.
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		this.instance = this;
@@ -193,6 +195,7 @@ public class Physics {
 		physicsOverworld = new PhysicsOverworld(this);
 		blockManager = new BlockManager(this);
 		mobModelManager = new MobModelManager(this);
+
 		FMLCommonHandler.instance().bus().register(this);
 		proxy.preInit(this, event);
 		getLogger().info("Pre-initialization completed on " + FMLCommonHandler.instance().getEffectiveSide());

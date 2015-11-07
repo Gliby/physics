@@ -129,7 +129,7 @@ public abstract class MetadataLoader {
 			}
 		}
 
-		Thread blockLoadQueue = new Thread(loadQueue(), "Block Load Queue");
+		Thread blockLoadQueue = new Thread(loadQueue(), "Block Loader");
 		blockLoadQueue.start();
 
 	}
