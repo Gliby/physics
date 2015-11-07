@@ -23,6 +23,7 @@ import net.gliby.physics.common.entity.EntityPhysicsBlock;
 import net.gliby.physics.common.entity.EntityPhysicsModelPart;
 import net.gliby.physics.common.entity.EntityToolGunBeam;
 import net.gliby.physics.common.entity.IEntityPhysics;
+import net.gliby.physics.common.entity.models.MobModelManager;
 import net.gliby.physics.common.game.items.ItemPhysicsGun;
 import net.gliby.physics.common.game.items.toolgun.ItemToolGun;
 import net.gliby.physics.common.game.items.toolgun.actions.ToolGunActionRegistry;
@@ -93,6 +94,9 @@ public class Physics {
 		return gman;
 	}
 
+	//TODO Move some pre-init actions into seperate functions.
+	//Reason: Organization, the pre-init method is getting a bit crowded.
+	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		this.instance = this;
@@ -181,12 +185,14 @@ public class Physics {
 		toolGunRegistry.registerAction(new ToolGunAttractAction(), Physics.MOD_ID);
 		toolGunRegistry.registerAction(new ToolGunChangeGravityAction(), Physics.MOD_ID);
 		toolGunRegistry.registerAction(new ToolGunRemoveAction(), Physics.MOD_ID);
-//		toolGunRegistry.registerAction(new ToolGunMotorAction(), Physics.MOD_ID);
+		// toolGunRegistry.registerAction(new ToolGunMotorAction(),
+		// Physics.MOD_ID);
 
 		registerPacket(PacketPlayerJoin.class, PacketPlayerJoin.class, Side.CLIENT);
 
 		physicsOverworld = new PhysicsOverworld(this);
 		blockManager = new BlockManager(this);
+		mobModelManager = new MobModelManager(this);
 		FMLCommonHandler.instance().bus().register(this);
 		proxy.preInit(this, event);
 		getLogger().info("Pre-initialization completed on " + FMLCommonHandler.instance().getEffectiveSide());
@@ -269,6 +275,12 @@ public class Physics {
 
 	public BlockManager getBlockManager() {
 		return blockManager;
+	}
+
+	private MobModelManager mobModelManager;
+
+	public MobModelManager getMobModelManager() {
+		return mobModelManager;
 	}
 
 	public PhysicsOverworld getPhysicsOverworld() {

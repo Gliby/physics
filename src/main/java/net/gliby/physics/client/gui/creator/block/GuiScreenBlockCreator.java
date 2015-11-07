@@ -173,13 +173,12 @@ public class GuiScreenBlockCreator extends GuiScreenCreator implements GuiYesNoC
 					}
 
 				}
-				stoppedBuilding(null, null);
-
 				try {
 					fs.close();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				stoppedBuilding(null, null);
 			}
 		}, "Physics Block Generator");
 	}
