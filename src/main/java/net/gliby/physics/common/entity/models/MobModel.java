@@ -77,4 +77,8 @@ public class MobModel {
 
 	}
 
+	public String getName() {
+		return name;
+	}
+
 }

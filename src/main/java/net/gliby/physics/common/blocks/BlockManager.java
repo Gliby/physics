@@ -54,6 +54,7 @@ public class BlockManager {
 		ZipFile tempZip = null;
 		if ((tempFile = new File(physics.getSettings().getDirectory(), "/custom/blocks.zip")).exists()) {
 			try {
+				Physics.getLogger().info("Blocks found under configuration directory.");
 				tempZip = new ZipFile(tempFile);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -87,7 +88,7 @@ public class BlockManager {
 		};
 
 	}
-	
+
 	private Map<String, IBlockGenerator> blockGenerators;
 
 	public String getBlockIdentity(Block block) {

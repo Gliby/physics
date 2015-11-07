@@ -17,7 +17,7 @@ public class MinecraftResourceLoader {
 		if (side.isClient()) {
 			Minecraft mc = Minecraft.getMinecraft();
 			try {
-				InputStream stream = mc.mcDefaultResourcePack.getInputStream(location);
+				InputStream stream = mc.getResourceManager().getResource(location).getInputStream();
 				return stream;
 			} catch (FileNotFoundException e) {
 				if (logger != null)
