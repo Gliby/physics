@@ -78,7 +78,7 @@ public class RenderPhysicsBlock extends RenderPhysics {
 		GlStateManager.translate(-(0.5f), -(0.5f), -(0.5f));
 		if (block.getRenderType() == 3) {
 			rotatableBlockModelRenderer.renderModel(entity.worldObj, state, new BlockPos(entity), ibakedmodel,
-					tessellator, worldrenderer);
+					tessellator, worldrenderer, entity.getTintIndex());
 		}
 		GlStateManager.popMatrix();
 	}

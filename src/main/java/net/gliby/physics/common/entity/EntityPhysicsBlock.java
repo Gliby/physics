@@ -230,6 +230,9 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 	}
 
 	@SideOnly(Side.CLIENT)
+	private BlockPos blockPosition;
+
+	@SideOnly(Side.CLIENT)
 	@Override
 	public int getBrightnessForRender(float p_70070_1_) {
 		AxisAlignedBB renderAABB = this.getRenderBoundingBox();
@@ -239,11 +242,11 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 		float lightX = (float) (renderAABB.minX + (width / 2));
 		float lightY = (float) (renderAABB.minY + (height / 2));
 		float lightZ = (float) (renderAABB.minZ + (length / 2));
-
-		BlockPos blockpos = new BlockPos(lightX, lightY, lightZ);
-
-		if (this.worldObj.isBlockLoaded(blockpos)) {
-			int lightValue = this.worldObj.getCombinedLight(blockpos, 0);
+		blockPosition = new BlockPos(lightX, lightY, lightZ);
+		if (tintIndex == 0)
+			this.tintIndex = blockState.getBlock().colorMultiplier(worldObj, blockPosition, 0);
+		if (this.worldObj.isBlockLoaded(blockPosition)) {
+			int lightValue = this.worldObj.getCombinedLight(blockPosition, 0);
 			return lightValue;
 		} else {
 			return 0;
@@ -534,6 +537,12 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
 	@Override
 	public void onServerInit() {
+	}
+
+	private int tintIndex;
+
+	public int getTintIndex() {
+		return tintIndex;
 	}
 
 }

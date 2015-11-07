@@ -208,6 +208,9 @@ public class NativePhysicsWorld extends PhysicsWorld {
 		}
 	}
 
+
+	
+	//TODO NativePhysicsWorld: Dispose of object on remove.
 	@Override
 	public void removeRigidBody(IRigidBody body) {
 		synchronized (this) {

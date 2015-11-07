@@ -38,7 +38,6 @@ public class EntityUtility {
 			@Override
 			public void run() {
 				world.spawnEntityInWorld(entity);
-
 			}
 
 		});
