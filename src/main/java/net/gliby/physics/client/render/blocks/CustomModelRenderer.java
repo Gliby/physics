@@ -24,7 +24,7 @@ import net.minecraft.world.IBlockAccess;
 public class CustomModelRenderer {
 
 	public void renderModel(IBlockAccess world, IBlockState blockAccess, BlockPos blockPos, IBakedModel model,
-			Tessellator tessellator, WorldRenderer worldRenderer, int tintIndex) {
+			Tessellator tessellator, WorldRenderer worldRenderer, int tintIndex, float red, float green, float blue) {
 		worldRenderer.startDrawingQuads();
 		worldRenderer.setVertexFormat(DefaultVertexFormats.ITEM);
 		EnumFacing[] aenumfacing = EnumFacing.values();
@@ -33,20 +33,20 @@ public class CustomModelRenderer {
 			EnumFacing enumfacing = aenumfacing[j];
 			List faceQuads = model.getFaceQuads(enumfacing);
 			if (!faceQuads.isEmpty()) {
-				this.renderQuads(world, blockAccess, blockPos, worldRenderer, faceQuads, tintIndex);
+				this.renderQuads(world, blockAccess, blockPos, worldRenderer, faceQuads, tintIndex, red, green, blue);
 			}
 		}
 
 		List generalQuads = model.getGeneralQuads();
 		if (!generalQuads.isEmpty()) {
-			this.renderQuads(world, blockAccess, blockPos, worldRenderer, generalQuads, tintIndex);
+			this.renderQuads(world, blockAccess, blockPos, worldRenderer, generalQuads, tintIndex, red, green, blue);
 		}
 
 		tessellator.draw();
 	}
 
 	private void renderQuads(IBlockAccess world, IBlockState blockState, BlockPos blockPos, WorldRenderer worldRenderer,
-			List listQuadsIn, int tintIndex) {
+			List listQuadsIn, int tintIndex, float red, float green, float blue) {
 		Iterator iterator = listQuadsIn.iterator();
 		while (iterator.hasNext()) {
 			BakedQuad bakedquad = (BakedQuad) iterator.next();
@@ -65,7 +65,7 @@ public class CustomModelRenderer {
 				worldRenderer.putColorMultiplier(f, f1, f2, 2);
 				worldRenderer.putColorMultiplier(f, f1, f2, 1);
 			} else
-				worldRenderer.putColorRGB_F4(1, 1, 1);
+				worldRenderer.putColorRGB_F4(red, green, blue);
 			worldRenderer.putNormal(bakedquad.getFace().getDirectionVec().getX(),
 					bakedquad.getFace().getDirectionVec().getY(), bakedquad.getFace().getDirectionVec().getZ());
 		}
