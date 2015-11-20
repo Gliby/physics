@@ -50,7 +50,8 @@ public class RenderPhysicsBlock extends RenderPhysics {
 	private static Minecraft mc = Minecraft.getMinecraft();
 	private static FloatBuffer renderMatrix = BufferUtils.createFloatBuffer(16);
 
-	protected void draw(Entity castEntity, double entityX, double entityY, double entityZ, float partialTick) {
+	protected void draw(Entity castEntity, double entityX, double entityY, double entityZ, float partialTick,
+			int color) {
 		EntityPhysicsBlock entity = (EntityPhysicsBlock) castEntity;
 		// Logic
 		IBlockState state = entity.getBlockState();
@@ -77,8 +78,11 @@ public class RenderPhysicsBlock extends RenderPhysics {
 		// GlStateManager.rotate(180, 0, 0, 1);
 		GlStateManager.translate(-(0.5f), -(0.5f), -(0.5f));
 		if (block.getRenderType() == 3) {
+			float red = (float) (color >> 16 & 255) / 255.0F;
+			float green = (float) (color >> 8 & 255) / 255.0F;
+			float blue = (float) (color & 255) / 255.0F;
 			rotatableBlockModelRenderer.renderModel(entity.worldObj, state, new BlockPos(entity), ibakedmodel,
-					tessellator, worldrenderer, entity.getTintIndex());
+					tessellator, worldrenderer, entity.getTintIndex(), red, green, blue);
 		}
 		GlStateManager.popMatrix();
 	}

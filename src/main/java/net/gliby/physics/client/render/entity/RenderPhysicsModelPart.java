@@ -56,7 +56,7 @@ public class RenderPhysicsModelPart extends RenderPhysics {
 	private WorldRenderer worldRenderer;
 	private FloatBuffer renderMatrix;
 
-	protected void draw(Entity castEntity, double entityX, double entityY, double entityZ, float partialTick) {
+	protected void draw(Entity castEntity, double entityX, double entityY, double entityZ, float partialTick, int color) {
 		EntityPhysicsModelPart entity = (EntityPhysicsModelPart) castEntity;
 		// Logic
 		Vector3f worldTranslation = RenderUtilities.getWorldTranslation(mc, partialTick);

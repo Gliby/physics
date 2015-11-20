@@ -55,7 +55,7 @@ public abstract class RenderPhysics extends Render {
 						|| camera.isBoundingBoxInFrustum(interpolatableEntity.getRenderBoundingBox()));
 	}
 
-	protected abstract void draw(Entity uncast, double entityX, double entityY, double entityZ, float partialTick);
+	protected abstract void draw(Entity uncast, double entityX, double entityY, double entityZ, float partialTick, int color);
 
 	public void doRender(Entity uncast, double entityX, double entityY, double entityZ, float twen, float partialTick) {
 		Tessellator tessellator = Tessellator.getInstance();
@@ -111,14 +111,7 @@ public abstract class RenderPhysics extends Render {
 				GlStateManager.disableLighting();
 				OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 0);
 				worldRenderer.startDrawing(3);
-				String UUID;
-				if (renderHandler.getPhysicsGunColors()
-						.containsKey(UUID = entity.pickerEntity.getUniqueID().toString())) {
-					worldRenderer.setColorOpaque_I(renderHandler.getPhysicsGunColors().get(UUID));
-				} else
-					worldRenderer.setColorOpaque_I(0xFF87FFFF);
-				// net.gliby.physics.client.render.Render.getPhysicsGunColors().put(entity.pickerEntity.getUniqueID().toString(),
-				// 0xFFF81A1A);
+				worldRenderer.setColorOpaque_I(getBeamColor(entity.pickerEntity));
 				byte b2 = 16;
 				for (int i = 0; i <= b2; ++i) {
 					float f12 = (float) i / (float) b2;
@@ -127,17 +120,43 @@ public abstract class RenderPhysics extends Render {
 							hitPoint.z + d15 * (double) f12);
 				}
 				tessellator.draw();
-				GlStateManager.enableLighting();
-				GlStateManager.enableTexture2D();
-				GL11.glLineWidth(1.0f);
+				
+				//Outline
+				GL11.glLineWidth(3);
+				GL11.glPolygonMode(GL11.GL_FRONT, GL11.GL_LINE);
+				GL11.glDisable(GL11.GL_DEPTH_TEST);
+				draw(uncast, entityX, entityY, entityZ, partialTick, getBeamColor(entity.pickerEntity));
+				GL11.glEnable(GL11.GL_DEPTH_TEST);
+				GL11.glLineWidth(3);
+				GL11.glPolygonMode(GL11.GL_FRONT, GL11.GL_FILL);
+				
+				//Entity lighting
 				int brightness = entity.getBrightnessForRender(partialTick);
 				int lightX = brightness % 65536;
 				int lightY = brightness / 65536;
 				OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, (float) lightX / 1.0F,
 						(float) lightY / 1.0F);
-				super.doRender(entity, entityX, entityY, entityZ, 0, partialTick);
+
+				GlStateManager.enableLighting();
+				GlStateManager.enableTexture2D();
+				GL11.glLineWidth(1.0f);
 			}
 		}
-		draw(uncast, entityX, entityY, entityZ, partialTick);
+		draw(uncast, entityX, entityY, entityZ, partialTick, -1);
+
+	}
+
+	// What if beam color is actually -1 ?
+	private int beamColor = -1;
+
+	public int getBeamColor(Entity pickerEntity) {
+		if (beamColor == -1) {
+			String UUID;
+			if (renderHandler.getPhysicsGunColors().containsKey(UUID = pickerEntity.getUniqueID().toString())) {
+				beamColor = renderHandler.getPhysicsGunColors().get(UUID);
+			} else
+				beamColor = 0xFF87FFFF;
+		}
+		return beamColor;
 	}
 }
