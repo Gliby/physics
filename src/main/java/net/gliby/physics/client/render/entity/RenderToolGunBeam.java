@@ -35,9 +35,6 @@ public class RenderToolGunBeam extends Render {
 		EntityToolGunBeam entity = (EntityToolGunBeam) uncast;				
 		Tessellator tessellator = Tessellator.getInstance();
 		WorldRenderer worldRenderer = tessellator.getWorldRenderer();
-
-
-
 		Vector3f worldTranslation = RenderUtilities.getWorldTranslation(mc, partialTick);
 		GlStateManager.disableTexture2D();
 		GlStateManager.disableLighting();

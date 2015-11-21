@@ -41,6 +41,8 @@ public class RenderItemToolGun extends RawItemRenderer {
 	private ResourceLocation modelTexture = new ResourceLocation(Physics.MOD_ID, "textures/tool_gun.png");
 	private ResourceLocation screenTexture = new ResourceLocation(Physics.MOD_ID, "textures/tool_gunScreen.png");
 
+	
+	//TODO When not held, use super low resolution textures.
 	@Override
 	public void render() {
 		float scale = -0.0625f;
