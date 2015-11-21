@@ -3,28 +3,22 @@
  */
 package net.gliby.physics.client.keybindings;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 import javax.vecmath.Vector3f;
 
 import com.bulletphysics.linearmath.Transform;
+import com.bulletphysics.linearmath.VectorUtil;
 
+import net.gliby.gman.EntityUtility;
 import net.gliby.physics.Physics;
-import net.gliby.physics.client.gui.creator.GuiScreenPhysicsCreator;
-import net.gliby.physics.common.physics.AttachementPoint;
-import net.gliby.physics.common.physics.ModelPart;
+import net.gliby.physics.common.entity.models.MobModel.ModelCubeGroup;
 import net.gliby.physics.common.physics.PhysicsWorld;
-import net.gliby.physics.common.physics.engine.IConstraintGeneric6Dof;
+import net.gliby.physics.common.physics.engine.ICollisionShape;
 import net.gliby.physics.common.physics.engine.IRigidBody;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.model.ModelBox;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.world.World;
 
 /**
@@ -56,7 +50,10 @@ public class KeyFireEvent extends KeyEvent {
 		World world = null;
 		if ((world = mc.theWorld) != null) {
 			if (mc.currentScreen == null) {
-				Minecraft.getMinecraft().displayGuiScreen(new GuiScreenPhysicsCreator(null));
+				// Minecraft.getMinecraft().displayGuiScreen(new
+				// GuiScreenPhysicsCreator(null));
+				debugSpawn(world);
+
 			}
 			// TODO Remove client debug physics.
 			// Physics.getInstance().getClientProxy().getPhysicsOverWorld().debugSpawn(world);
@@ -65,6 +62,29 @@ public class KeyFireEvent extends KeyEvent {
 	}
 
 	public void debugSpawn(World world) {
+		Minecraft mc = Minecraft.getMinecraft();
+		Physics physics = Physics.getInstance();
+		PhysicsWorld physicsWorld = physics.getPhysicsOverworld().getPhysicsByWorld(world);
+		Vector3f playerPosition = EntityUtility.toVector3f(mc.thePlayer.getPositionVector());
+		List<ModelCubeGroup> cubeGroups = physics.getMobModelManager().getModelRegistry().get(EntityZombie.class)
+				.getCubeGroups();
+		float scale = 1.0F / 16.0F;
+		//TODO Finish
+		System.out.println("Scale is: " + scale);
+		for (ModelCubeGroup group : cubeGroups) {
+			Transform transform = new Transform();
+			transform.setIdentity();
+			transform.origin.add(group.getOffset());
+			Vector3f translation = new Vector3f(group.getRotationPoint());
+			transform.origin.add(translation);
+			transform.origin.scale(-scale);
+			transform.origin.add(playerPosition);
+			ICollisionShape shape = physicsWorld.buildCollisionShape(group.getCubes(), VectorUtil.IDENTITY);
+			shape.setLocalScaling(new Vector3f(scale, scale, scale));
+			IRigidBody body = physicsWorld.createRigidBody(null, transform, 0, shape);
+			physicsWorld.addRigidBody(body);
+		}
+
 		/*
 		 * if (true) { PhysicsWorld physicsWorld =
 		 * Physics.getInstance().getPhysicsOverworld().getPhysicsByWorld(world);
@@ -151,84 +171,6 @@ public class KeyFireEvent extends KeyEvent {
 		 * } }
 		 */
 
-	}
-
-	public ArrayList<ModelPart> generateModelProxies(ModelBase modelBase) {
-		ArrayList<ModelPart> proxyList = new ArrayList<ModelPart>();
-		for (int i = 0; i < modelBase.getClass().getDeclaredFields().length; i++) {
-			Field field = modelBase.getClass().getDeclaredFields()[i];
-			field.setAccessible(true);
-			Object obj = null;
-			try {
-				obj = field.get(modelBase);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			if (obj instanceof ModelRenderer) {
-				ModelRenderer modelRenderer = (ModelRenderer) obj;
-				for (int i1 = 0; i1 < modelRenderer.cubeList.size(); i1++) {
-					ModelBox box = (ModelBox) modelRenderer.cubeList.get(i1);
-					Vector3f rotationPoint = new Vector3f(modelRenderer.rotationPointX, modelRenderer.rotationPointY,
-							modelRenderer.rotationPointZ);
-					proxyList.add(new ModelPart(rotationPoint, box));
-				}
-			}
-		}
-
-		return proxyList;
-	}
-
-	// Attachement points should be generated from ModelProxies.
-	public ArrayList<AttachementPoint> generateAttachementPoints(ModelBase modelBase) {
-		ArrayList<ModelPart> proxyList = new ArrayList<ModelPart>();
-		ArrayList<AttachementPoint> points = new ArrayList<AttachementPoint>();
-		for (int i = 0; i < modelBase.getClass().getDeclaredFields().length; i++) {
-			Field field = modelBase.getClass().getDeclaredFields()[i];
-			field.setAccessible(true);
-			Object obj = null;
-			try {
-				obj = field.get(modelBase);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-			if (obj instanceof ModelRenderer) {
-				ModelRenderer modelRenderer = (ModelRenderer) obj;
-				for (int i1 = 0; i1 < modelRenderer.cubeList.size(); i1++) {
-					ModelBox box = (ModelBox) modelRenderer.cubeList.get(i1);
-					Vector3f rotationPoint = new Vector3f(modelRenderer.rotationPointX, modelRenderer.rotationPointY,
-							modelRenderer.rotationPointZ);
-					proxyList.add(new ModelPart(rotationPoint, box));
-					points.add(new AttachementPoint(rotationPoint));
-				}
-			}
-		}
-		// Should points be the same model proxy in size?
-
-		for (int i = 0; i < points.size(); i++) {
-			AttachementPoint point = points.get(i);
-			for (int j = 0; j < proxyList.size(); j++) {
-				ModelPart model = proxyList.get(j);
-				float size = 0.07f;
-				AxisAlignedBB pointBB = AxisAlignedBB
-						.fromBounds(point.getPosition().x, point.getPosition().y, point.getPosition().z,
-								point.getPosition().x, point.getPosition().y, point.getPosition().z)
-						.expand(size, size, size);
-				AxisAlignedBB modelBB = AxisAlignedBB
-						.fromBounds(model.getModelBox().posX1, model.getModelBox().posY1, model.getModelBox().posZ1,
-								model.getModelBox().posX2, model.getModelBox().posY2, model.getModelBox().posZ2)
-						.offset(model.getPosition().x, model.getPosition().y, model.getPosition().z);
-				if (pointBB.intersectsWith(modelBB)) {
-					if (point.bodyA == null)
-						point.setBodyA(model);
-					else if (point.bodyB == null) {
-						point.setBodyB(model);
-					}
-				}
-			}
-		}
-		return points;
 	}
 
 	@Override

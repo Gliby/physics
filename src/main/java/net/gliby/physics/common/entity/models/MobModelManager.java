@@ -22,10 +22,16 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StringUtils;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import scala.reflect.api.Internals.ReificationSupportApi.SyntacitcSingletonTypeExtractor;
 
 public class MobModelManager {
 
+	//
 	private Map<Class, MobModel> modelRegistry;
+
+	public Map<Class, MobModel> getModelRegistry() {
+		return modelRegistry;
+	}
 
 	public MobModelManager(final Physics physics) {
 		this.modelRegistry = new HashMap<Class, MobModel>();
@@ -77,9 +83,11 @@ public class MobModelManager {
 							}
 						} else {
 							try {
-								mobModel = IOUtils.toString(MinecraftResourceLoader.getResource(Physics.getLogger(),
+								InputStream stream = MinecraftResourceLoader.getResource(Physics.getLogger(),
 										FMLCommonHandler.instance().getSide(),
-										new ResourceLocation(Physics.MOD_ID, "mobs/" + uniqueEntityId + ".json")));
+										new ResourceLocation(Physics.MOD_ID, "mobs/" + uniqueEntityId + ".json"));
+								if (stream != null)
+									mobModel = IOUtils.toString(stream);
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
@@ -87,6 +95,7 @@ public class MobModelManager {
 
 						if (mobModel != null) {
 							MobModel model;
+							System.out.println("loaded: " + entry.getValue());
 							modelRegistry.put(entry.getValue(), model = gson.fromJson(mobModel, MobModel.class));
 							loaded++;
 						}

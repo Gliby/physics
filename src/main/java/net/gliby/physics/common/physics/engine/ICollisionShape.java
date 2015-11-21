@@ -32,6 +32,8 @@ public interface ICollisionShape extends IDisposable {
 	 */
 	boolean isCompoundShape();
 
+	void setLocalScaling(Vector3f localScaling);
+	
 	/**
 	 * @param mass
 	 * @param localInertia

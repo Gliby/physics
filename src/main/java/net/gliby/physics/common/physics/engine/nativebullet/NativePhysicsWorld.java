@@ -502,7 +502,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
 			}
 
 			for (IDisposable disposable : disposables) {
-				System.out.println("Removed: " + disposable);
 				disposable.dispose();
 			}
 			voxelBody.dispose();

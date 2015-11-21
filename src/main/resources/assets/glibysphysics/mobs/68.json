@@ -1,0 +1,3833 @@
+{
+  "name": "Guardian",
+  "cubeGroups": [
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -6.0,
+          "minY": 10.0,
+          "minZ": -8.0,
+          "maxX": 6.0,
+          "maxY": 22.0,
+          "maxZ": 8.0
+        },
+        {
+          "minX": -8.0,
+          "minY": 10.0,
+          "minZ": -6.0,
+          "maxX": -6.0,
+          "maxY": 22.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": 6.0,
+          "minY": 10.0,
+          "minZ": -6.0,
+          "maxX": 8.0,
+          "maxY": 22.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": -6.0,
+          "minY": 8.0,
+          "minZ": -6.0,
+          "maxX": 6.0,
+          "maxY": 10.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": -6.0,
+          "minY": 22.0,
+          "minZ": -6.0,
+          "maxX": 6.0,
+          "maxY": 24.0,
+          "maxZ": 6.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -6.0,
+          "minY": 10.0,
+          "minZ": -8.0,
+          "maxX": 6.0,
+          "maxY": 22.0,
+          "maxZ": 8.0
+        },
+        {
+          "minX": -8.0,
+          "minY": 10.0,
+          "minZ": -6.0,
+          "maxX": -6.0,
+          "maxY": 22.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": 6.0,
+          "minY": 10.0,
+          "minZ": -6.0,
+          "maxX": 8.0,
+          "maxY": 22.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": -6.0,
+          "minY": 8.0,
+          "minZ": -6.0,
+          "maxX": 6.0,
+          "maxY": 10.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": -6.0,
+          "minY": 22.0,
+          "minZ": -6.0,
+          "maxX": 6.0,
+          "maxY": 24.0,
+          "maxZ": 6.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -6.0,
+          "minY": 10.0,
+          "minZ": -8.0,
+          "maxX": 6.0,
+          "maxY": 22.0,
+          "maxZ": 8.0
+        },
+        {
+          "minX": -8.0,
+          "minY": 10.0,
+          "minZ": -6.0,
+          "maxX": -6.0,
+          "maxY": 22.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": 6.0,
+          "minY": 10.0,
+          "minZ": -6.0,
+          "maxX": 8.0,
+          "maxY": 22.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": -6.0,
+          "minY": 8.0,
+          "minZ": -6.0,
+          "maxX": 6.0,
+          "maxY": 10.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": -6.0,
+          "minY": 22.0,
+          "minZ": -6.0,
+          "maxX": 6.0,
+          "maxY": 24.0,
+          "maxZ": 6.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -6.0,
+          "minY": 10.0,
+          "minZ": -8.0,
+          "maxX": 6.0,
+          "maxY": 22.0,
+          "maxZ": 8.0
+        },
+        {
+          "minX": -8.0,
+          "minY": 10.0,
+          "minZ": -6.0,
+          "maxX": -6.0,
+          "maxY": 22.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": 6.0,
+          "minY": 10.0,
+          "minZ": -6.0,
+          "maxX": 8.0,
+          "maxY": 22.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": -6.0,
+          "minY": 8.0,
+          "minZ": -6.0,
+          "maxX": 6.0,
+          "maxY": 10.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": -6.0,
+          "minY": 22.0,
+          "minZ": -6.0,
+          "maxX": 6.0,
+          "maxY": 24.0,
+          "maxZ": 6.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -6.0,
+          "minY": 10.0,
+          "minZ": -8.0,
+          "maxX": 6.0,
+          "maxY": 22.0,
+          "maxZ": 8.0
+        },
+        {
+          "minX": -8.0,
+          "minY": 10.0,
+          "minZ": -6.0,
+          "maxX": -6.0,
+          "maxY": 22.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": 6.0,
+          "minY": 10.0,
+          "minZ": -6.0,
+          "maxX": 8.0,
+          "maxY": 22.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": -6.0,
+          "minY": 8.0,
+          "minZ": -6.0,
+          "maxX": 6.0,
+          "maxY": 10.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": -6.0,
+          "minY": 22.0,
+          "minZ": -6.0,
+          "maxX": 6.0,
+          "maxY": 24.0,
+          "maxZ": 6.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -6.0,
+          "minY": 10.0,
+          "minZ": -8.0,
+          "maxX": 6.0,
+          "maxY": 22.0,
+          "maxZ": 8.0
+        },
+        {
+          "minX": -8.0,
+          "minY": 10.0,
+          "minZ": -6.0,
+          "maxX": -6.0,
+          "maxY": 22.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": 6.0,
+          "minY": 10.0,
+          "minZ": -6.0,
+          "maxX": 8.0,
+          "maxY": 22.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": -6.0,
+          "minY": 8.0,
+          "minZ": -6.0,
+          "maxX": 6.0,
+          "maxY": 10.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": -6.0,
+          "minY": 22.0,
+          "minZ": -6.0,
+          "maxX": 6.0,
+          "maxY": 24.0,
+          "maxZ": 6.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -6.0,
+          "minY": 10.0,
+          "minZ": -8.0,
+          "maxX": 6.0,
+          "maxY": 22.0,
+          "maxZ": 8.0
+        },
+        {
+          "minX": -8.0,
+          "minY": 10.0,
+          "minZ": -6.0,
+          "maxX": -6.0,
+          "maxY": 22.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": 6.0,
+          "minY": 10.0,
+          "minZ": -6.0,
+          "maxX": 8.0,
+          "maxY": 22.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": -6.0,
+          "minY": 8.0,
+          "minZ": -6.0,
+          "maxX": 6.0,
+          "maxY": 10.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": -6.0,
+          "minY": 22.0,
+          "minZ": -6.0,
+          "maxX": 6.0,
+          "maxY": 24.0,
+          "maxZ": 6.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -6.0,
+          "minY": 10.0,
+          "minZ": -8.0,
+          "maxX": 6.0,
+          "maxY": 22.0,
+          "maxZ": 8.0
+        },
+        {
+          "minX": -8.0,
+          "minY": 10.0,
+          "minZ": -6.0,
+          "maxX": -6.0,
+          "maxY": 22.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": 6.0,
+          "minY": 10.0,
+          "minZ": -6.0,
+          "maxX": 8.0,
+          "maxY": 22.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": -6.0,
+          "minY": 8.0,
+          "minZ": -6.0,
+          "maxX": 6.0,
+          "maxY": 10.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": -6.0,
+          "minY": 22.0,
+          "minZ": -6.0,
+          "maxX": 6.0,
+          "maxY": 24.0,
+          "maxZ": 6.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -6.0,
+          "minY": 10.0,
+          "minZ": -8.0,
+          "maxX": 6.0,
+          "maxY": 22.0,
+          "maxZ": 8.0
+        },
+        {
+          "minX": -8.0,
+          "minY": 10.0,
+          "minZ": -6.0,
+          "maxX": -6.0,
+          "maxY": 22.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": 6.0,
+          "minY": 10.0,
+          "minZ": -6.0,
+          "maxX": 8.0,
+          "maxY": 22.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": -6.0,
+          "minY": 8.0,
+          "minZ": -6.0,
+          "maxX": 6.0,
+          "maxY": 10.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": -6.0,
+          "minY": 22.0,
+          "minZ": -6.0,
+          "maxX": 6.0,
+          "maxY": 24.0,
+          "maxZ": 6.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -6.0,
+          "minY": 10.0,
+          "minZ": -8.0,
+          "maxX": 6.0,
+          "maxY": 22.0,
+          "maxZ": 8.0
+        },
+        {
+          "minX": -8.0,
+          "minY": 10.0,
+          "minZ": -6.0,
+          "maxX": -6.0,
+          "maxY": 22.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": 6.0,
+          "minY": 10.0,
+          "minZ": -6.0,
+          "maxX": 8.0,
+          "maxY": 22.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": -6.0,
+          "minY": 8.0,
+          "minZ": -6.0,
+          "maxX": 6.0,
+          "maxY": 10.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": -6.0,
+          "minY": 22.0,
+          "minZ": -6.0,
+          "maxX": 6.0,
+          "maxY": 24.0,
+          "maxZ": 6.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -6.0,
+          "minY": 10.0,
+          "minZ": -8.0,
+          "maxX": 6.0,
+          "maxY": 22.0,
+          "maxZ": 8.0
+        },
+        {
+          "minX": -8.0,
+          "minY": 10.0,
+          "minZ": -6.0,
+          "maxX": -6.0,
+          "maxY": 22.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": 6.0,
+          "minY": 10.0,
+          "minZ": -6.0,
+          "maxX": 8.0,
+          "maxY": 22.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": -6.0,
+          "minY": 8.0,
+          "minZ": -6.0,
+          "maxX": 6.0,
+          "maxY": 10.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": -6.0,
+          "minY": 22.0,
+          "minZ": -6.0,
+          "maxX": 6.0,
+          "maxY": 24.0,
+          "maxZ": 6.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -6.0,
+          "minY": 10.0,
+          "minZ": -8.0,
+          "maxX": 6.0,
+          "maxY": 22.0,
+          "maxZ": 8.0
+        },
+        {
+          "minX": -8.0,
+          "minY": 10.0,
+          "minZ": -6.0,
+          "maxX": -6.0,
+          "maxY": 22.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": 6.0,
+          "minY": 10.0,
+          "minZ": -6.0,
+          "maxX": 8.0,
+          "maxY": 22.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": -6.0,
+          "minY": 8.0,
+          "minZ": -6.0,
+          "maxX": 6.0,
+          "maxY": 10.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": -6.0,
+          "minY": 22.0,
+          "minZ": -6.0,
+          "maxX": 6.0,
+          "maxY": 24.0,
+          "maxZ": 6.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": -4.5,
+          "minZ": -1.0,
+          "maxX": 1.0,
+          "maxY": 4.5,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": 15.0,
+          "minZ": 0.0,
+          "maxX": 1.0,
+          "maxY": 17.0,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": 15.0,
+          "minZ": 0.0,
+          "maxX": 1.0,
+          "maxY": 17.0,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": 15.0,
+          "minZ": 0.0,
+          "maxX": 1.0,
+          "maxY": 17.0,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": 15.0,
+          "minZ": 0.0,
+          "maxX": 1.0,
+          "maxY": 17.0,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": 15.0,
+          "minZ": 0.0,
+          "maxX": 1.0,
+          "maxY": 17.0,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": 15.0,
+          "minZ": 0.0,
+          "maxX": 1.0,
+          "maxY": 17.0,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": 15.0,
+          "minZ": 0.0,
+          "maxX": 1.0,
+          "maxY": 17.0,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": 15.0,
+          "minZ": 0.0,
+          "maxX": 1.0,
+          "maxY": 17.0,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": 15.0,
+          "minZ": 0.0,
+          "maxX": 1.0,
+          "maxY": 17.0,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": 15.0,
+          "minZ": 0.0,
+          "maxX": 1.0,
+          "maxY": 17.0,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": 15.0,
+          "minZ": 0.0,
+          "maxX": 1.0,
+          "maxY": 17.0,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": 15.0,
+          "minZ": 0.0,
+          "maxX": 1.0,
+          "maxY": 17.0,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -1.0,
+          "minY": 15.0,
+          "minZ": 0.0,
+          "maxX": 1.0,
+          "maxY": 17.0,
+          "maxZ": 1.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -2.0,
+          "minY": 14.0,
+          "minZ": 7.0,
+          "maxX": 2.0,
+          "maxY": 18.0,
+          "maxZ": 15.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -2.0,
+          "minY": 14.0,
+          "minZ": 7.0,
+          "maxX": 2.0,
+          "maxY": 18.0,
+          "maxZ": 15.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -2.0,
+          "minY": 14.0,
+          "minZ": 7.0,
+          "maxX": 2.0,
+          "maxY": 18.0,
+          "maxZ": 15.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -2.0,
+          "minY": 14.0,
+          "minZ": 7.0,
+          "maxX": 2.0,
+          "maxY": 18.0,
+          "maxZ": 15.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -2.0,
+          "minY": 14.0,
+          "minZ": 7.0,
+          "maxX": 2.0,
+          "maxY": 18.0,
+          "maxZ": 15.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -2.0,
+          "minY": 14.0,
+          "minZ": 7.0,
+          "maxX": 2.0,
+          "maxY": 18.0,
+          "maxZ": 15.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -2.0,
+          "minY": 14.0,
+          "minZ": 7.0,
+          "maxX": 2.0,
+          "maxY": 18.0,
+          "maxZ": 15.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -2.0,
+          "minY": 14.0,
+          "minZ": 7.0,
+          "maxX": 2.0,
+          "maxY": 18.0,
+          "maxZ": 15.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -2.0,
+          "minY": 14.0,
+          "minZ": 7.0,
+          "maxX": 2.0,
+          "maxY": 18.0,
+          "maxZ": 15.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -2.0,
+          "minY": 14.0,
+          "minZ": 7.0,
+          "maxX": 2.0,
+          "maxY": 18.0,
+          "maxZ": 15.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -2.0,
+          "minY": 14.0,
+          "minZ": 7.0,
+          "maxX": 2.0,
+          "maxY": 18.0,
+          "maxZ": 15.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -2.0,
+          "minY": 14.0,
+          "minZ": 7.0,
+          "maxX": 2.0,
+          "maxY": 18.0,
+          "maxZ": 15.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -2.0,
+          "minY": 14.0,
+          "minZ": 7.0,
+          "maxX": 2.0,
+          "maxY": 18.0,
+          "maxZ": 15.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": -2.0,
+          "minY": 14.0,
+          "minZ": 7.0,
+          "maxX": 2.0,
+          "maxY": 18.0,
+          "maxZ": 15.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 3.0,
+          "maxY": 17.0,
+          "maxZ": 7.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 3.0,
+          "maxY": 17.0,
+          "maxZ": 7.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 3.0,
+          "maxY": 17.0,
+          "maxZ": 7.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 3.0,
+          "maxY": 17.0,
+          "maxZ": 7.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 3.0,
+          "maxY": 17.0,
+          "maxZ": 7.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 3.0,
+          "maxY": 17.0,
+          "maxZ": 7.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 3.0,
+          "maxY": 17.0,
+          "maxZ": 7.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 3.0,
+          "maxY": 17.0,
+          "maxZ": 7.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 3.0,
+          "maxY": 17.0,
+          "maxZ": 7.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 3.0,
+          "maxY": 17.0,
+          "maxZ": 7.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 3.0,
+          "maxY": 17.0,
+          "maxZ": 7.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 3.0,
+          "maxY": 17.0,
+          "maxZ": 7.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 3.0,
+          "maxY": 17.0,
+          "maxZ": 7.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 2.0,
+          "maxY": 16.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": 1.0,
+          "minY": 10.5,
+          "minZ": 3.0,
+          "maxX": 2.0,
+          "maxY": 19.5,
+          "maxZ": 12.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 2.0,
+          "maxY": 16.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": 1.0,
+          "minY": 10.5,
+          "minZ": 3.0,
+          "maxX": 2.0,
+          "maxY": 19.5,
+          "maxZ": 12.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 2.0,
+          "maxY": 16.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": 1.0,
+          "minY": 10.5,
+          "minZ": 3.0,
+          "maxX": 2.0,
+          "maxY": 19.5,
+          "maxZ": 12.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 2.0,
+          "maxY": 16.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": 1.0,
+          "minY": 10.5,
+          "minZ": 3.0,
+          "maxX": 2.0,
+          "maxY": 19.5,
+          "maxZ": 12.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 2.0,
+          "maxY": 16.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": 1.0,
+          "minY": 10.5,
+          "minZ": 3.0,
+          "maxX": 2.0,
+          "maxY": 19.5,
+          "maxZ": 12.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 2.0,
+          "maxY": 16.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": 1.0,
+          "minY": 10.5,
+          "minZ": 3.0,
+          "maxX": 2.0,
+          "maxY": 19.5,
+          "maxZ": 12.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 2.0,
+          "maxY": 16.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": 1.0,
+          "minY": 10.5,
+          "minZ": 3.0,
+          "maxX": 2.0,
+          "maxY": 19.5,
+          "maxZ": 12.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 2.0,
+          "maxY": 16.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": 1.0,
+          "minY": 10.5,
+          "minZ": 3.0,
+          "maxX": 2.0,
+          "maxY": 19.5,
+          "maxZ": 12.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 2.0,
+          "maxY": 16.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": 1.0,
+          "minY": 10.5,
+          "minZ": 3.0,
+          "maxX": 2.0,
+          "maxY": 19.5,
+          "maxZ": 12.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 2.0,
+          "maxY": 16.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": 1.0,
+          "minY": 10.5,
+          "minZ": 3.0,
+          "maxX": 2.0,
+          "maxY": 19.5,
+          "maxZ": 12.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 2.0,
+          "maxY": 16.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": 1.0,
+          "minY": 10.5,
+          "minZ": 3.0,
+          "maxX": 2.0,
+          "maxY": 19.5,
+          "maxZ": 12.0
+        }
+      ]
+    },
+    {
+      "rotationPoint": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "rotateAngle": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+      },
+      "cubes": [
+        {
+          "minX": 0.0,
+          "minY": 14.0,
+          "minZ": 0.0,
+          "maxX": 2.0,
+          "maxY": 16.0,
+          "maxZ": 6.0
+        },
+        {
+          "minX": 1.0,
+          "minY": 10.5,
+          "minZ": 3.0,
+          "maxX": 2.0,
+          "maxY": 19.5,
+          "maxZ": 12.0
+        }
+      ]
+    }
+  ]
+}
