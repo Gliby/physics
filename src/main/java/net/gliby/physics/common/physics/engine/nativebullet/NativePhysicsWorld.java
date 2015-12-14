@@ -337,6 +337,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 	// TODO Replace.
 	// Java vecmath to libgdx maths, you should be able to just set the values
 	// from one to another.
+	// FIXME Potential Memory Leak.
 	static Matrix4f toMatrix4f(Matrix4 matrix4) {
 		Vector3 position = matrix4.getTranslation(tempVec);
 		Quaternion rotation = matrix4.getRotation(tempQuat);

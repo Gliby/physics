@@ -22,7 +22,7 @@ public abstract class Setting {
 		}
 
 		private static Side toSide(net.minecraftforge.fml.relauncher.Side effectiveSide) {
-			return effectiveSide == net.minecraftforge.fml.relauncher.Side.CLIENT ? Side.CLIENT : Side.CLIENT;
+			return effectiveSide == net.minecraftforge.fml.relauncher.Side.CLIENT ? Side.CLIENT : Side.SERVER;
 		}
 	}
 
