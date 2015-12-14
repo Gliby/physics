@@ -4,6 +4,7 @@
 package net.gliby.physics.client.keybindings;
 
 import java.util.List;
+import java.util.Random;
 
 import javax.vecmath.Vector3f;
 
@@ -19,6 +20,8 @@ import net.gliby.physics.common.physics.engine.IRigidBody;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.passive.EntityCow;
+import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.world.World;
 
 /**
@@ -66,22 +69,20 @@ public class KeyFireEvent extends KeyEvent {
 		Physics physics = Physics.getInstance();
 		PhysicsWorld physicsWorld = physics.getPhysicsOverworld().getPhysicsByWorld(world);
 		Vector3f playerPosition = EntityUtility.toVector3f(mc.thePlayer.getPositionVector());
-		List<ModelCubeGroup> cubeGroups = physics.getMobModelManager().getModelRegistry().get(EntityZombie.class)
+		List<ModelCubeGroup> cubeGroups = physics.getMobModelManager().getModelRegistry().get(EntityPig.class)
 				.getCubeGroups();
 		float scale = 1.0F / 16.0F;
-		//TODO Finish
-		System.out.println("Scale is: " + scale);
+		// TODO Finish
 		for (ModelCubeGroup group : cubeGroups) {
-			Transform transform = new Transform();
-			transform.setIdentity();
-			transform.origin.add(group.getOffset());
-			Vector3f translation = new Vector3f(group.getRotationPoint());
-			transform.origin.add(translation);
-			transform.origin.scale(-scale);
-			transform.origin.add(playerPosition);
+			Random rand = new Random();
+			Vector3f localPosition = new Vector3f(rand.nextInt(5), rand.nextInt(5), rand.nextInt(5));
 			ICollisionShape shape = physicsWorld.buildCollisionShape(group.getCubes(), VectorUtil.IDENTITY);
-			shape.setLocalScaling(new Vector3f(scale, scale, scale));
-			IRigidBody body = physicsWorld.createRigidBody(null, transform, 0, shape);
+			shape.setLocalScaling(new Vector3f(-scale, -scale, -scale));
+
+			Transform worldTransform = new Transform();
+			worldTransform.origin.add(localPosition);
+			worldTransform.origin.add(playerPosition);
+			IRigidBody body = physicsWorld.createRigidBody(null, worldTransform, 0, shape);
 			physicsWorld.addRigidBody(body);
 		}
 

@@ -57,6 +57,9 @@ public abstract class RenderPhysics extends Render {
 
 	protected abstract void draw(Entity uncast, double entityX, double entityY, double entityZ, float partialTick, int color);
 
+	
+	//TODO Outline color bugs.
+	
 	public void doRender(Entity uncast, double entityX, double entityY, double entityZ, float twen, float partialTick) {
 		Tessellator tessellator = Tessellator.getInstance();
 		WorldRenderer worldRenderer = tessellator.getWorldRenderer();
