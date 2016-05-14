@@ -24,7 +24,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
-
+//TODO fix outline color
 public abstract class RenderPhysics extends Render {
 
 	public abstract Vector3f getRenderHitPoint(EntityPhysicsBase entity, float partialTick);

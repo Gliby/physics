@@ -23,7 +23,11 @@ archivesBaseName = "glibysphysics"
 
 minecraft {
     version = "1.8-11.14.3.1450"
-    runDir = "eclipse"
+     if(file('../run').exists()) {
+    	runDir = "../run/assets"
+    } else {
+    	runDir = "assets"
+    }
     
     // the mappings can be changed at any time, and must be in the following format.
     // snapshot_YYYYMMDD   snapshot are built nightly.
