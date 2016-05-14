@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.FutureTask;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Quat4f;
@@ -39,9 +42,11 @@ import com.badlogic.gdx.physics.bullet.dynamics.btTypedConstraint.btConstraintIn
 import com.badlogic.gdx.physics.bullet.dynamics.btSequentialImpulseConstraintSolver;
 import com.badlogic.gdx.physics.bullet.dynamics.btTypedConstraint;
 import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
+import com.badlogic.gdx.physics.bullet.softbody.btSoftBodyRigidBodyCollisionConfiguration;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
 import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
 import com.bulletphysics.linearmath.Transform;
+import com.google.common.collect.Queues;
 
 import net.gliby.physics.Physics;
 import net.gliby.physics.common.physics.PhysicsOverworld;
@@ -67,7 +72,6 @@ import net.minecraft.world.World;
 /**
  *
  */
-// TODO Stop using synchronized to handle thread stuff. Add queue.
 // TODO Dispose of everything, we need to care of memory!
 // TODO Stop using stupid Vector/Matrix/Transform conversions. Use IVector and
 // IQuaternion, IMatrix
@@ -97,7 +101,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 		super(physicsConfig);
 		this.physics = physics;
 		this.physicsOverworld = physicsOverworld;
-		this.disposables = new ArrayList<IDisposable>();
+		this.disposables = new CopyOnWriteArrayList<IDisposable>();
 	}
 
 	private boolean shutdown = false;
@@ -128,15 +132,14 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public void create() {
-		rigidBodies = new ArrayList<IRigidBody>();
-		constraints = new ArrayList<IConstraint>();
+		rigidBodies = new CopyOnWriteArrayList<IRigidBody>();
+		constraints = new CopyOnWriteArrayList<IConstraint>();
 		broadphase = new btDbvtBroadphase();
 		collisionConfiguration = new btDefaultCollisionConfiguration();
 		collisionDispatcher = new btCollisionDispatcher(collisionConfiguration);
 		dynamicsWorld = new btDiscreteDynamicsWorld(collisionDispatcher, broadphase,
 				new btSequentialImpulseConstraintSolver(), collisionConfiguration);
 		dynamicsWorld.setGravity(toVector3(getPhysicsConfiguration().getRegularGravity()));
-
 		voxelShape = new btVoxelShape(new NativeVoxelProvider(getPhysicsConfiguration().getWorld(), this, physics),
 				new Vector3(-Integer.MAX_VALUE, -Integer.MAX_VALUE, -Integer.MAX_VALUE),
 				new Vector3(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE));
@@ -149,8 +152,17 @@ public class NativePhysicsWorld extends PhysicsWorld {
 		super.create();
 	}
 
+	private final Queue<Runnable> scheduledTasks = Queues.newArrayDeque();
+
 	@Override
 	protected void update() {
+		Queue queue = this.scheduledTasks;
+		synchronized (this.scheduledTasks) {
+			while (!this.scheduledTasks.isEmpty()) {
+				this.scheduledTasks.poll().run();
+			}
+		}
+
 		float delta = getDelta();
 		dynamicsWorld.stepSimulation(1, Math.round(delta / 7));
 		super.update();
@@ -186,57 +198,75 @@ public class NativePhysicsWorld extends PhysicsWorld {
 	}
 
 	@Override
-	public void addRigidBody(IRigidBody body) {
-		synchronized (this) {
-			this.dynamicsWorld.addRigidBody((btRigidBody) body.getBody());
-			this.rigidBodies.add(body);
-		}
+	public void addRigidBody(final IRigidBody body) {
+		scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				dynamicsWorld.addRigidBody((btRigidBody) body.getBody());
+				rigidBodies.add(body);
+			}
+		});
 	}
 
 	@Override
-	public void addRigidBody(IRigidBody body, short collisionFilterGroup, short collisionFilterMask) {
-		synchronized (this) {
-			this.dynamicsWorld.addRigidBody((btRigidBody) body.getBody(), collisionFilterGroup, collisionFilterMask);
-			this.rigidBodies.add(body);
-		}
+	public void addRigidBody(final IRigidBody body, final short collisionFilterGroup, final short collisionFilterMask) {
+		scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				dynamicsWorld.addRigidBody((btRigidBody) body.getBody(), collisionFilterGroup, collisionFilterMask);
+				rigidBodies.add(body);
+
+			}
+		});
 	}
 
 	@Override
-	public void addConstraint(IConstraint p2p) {
-		synchronized (this) {
-			this.dynamicsWorld.addConstraint((btTypedConstraint) p2p.getConstraint());
-			constraints.add(p2p);
-		}
+	public void addConstraint(final IConstraint p2p) {
+		scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				dynamicsWorld.addConstraint((btTypedConstraint) p2p.getConstraint());
+				constraints.add(p2p);
+			}
+		});
 	}
 
-
-	
-	//TODO NativePhysicsWorld: Dispose of object on remove.
+	// TODO NativePhysicsWorld: Dispose of object on remove.
 	@Override
-	public void removeRigidBody(IRigidBody body) {
-		synchronized (this) {
-			this.dynamicsWorld.removeRigidBody((btRigidBody) body.getBody());
-			this.rigidBodies.remove(body);
-		}
+	public void removeRigidBody(final IRigidBody body) {
+		scheduledTasks.add(new Runnable() {
+			@Override
+			public void run() {
+				dynamicsWorld.removeRigidBody((btRigidBody) body.getBody());
+				rigidBodies.remove(body);
+			}
+		});
 	}
 
 	@Override
 	public void awakenArea(Vector3f min, Vector3f max) {
-		synchronized (this) {
-			AxisAlignedBB bb = AxisAlignedBB.fromBounds(min.x, min.y, min.z, max.x, max.y, max.z);
-			for (int i = 0; i < this.rigidBodies.size(); i++) {
-				IRigidBody body = this.rigidBodies.get(i);
-				Vector3f vec3 = body.getCenterOfMassPosition();
-				Vec3 centerOfMass = new Vec3(vec3.x, vec3.y, vec3.z);
-				if (bb.isVecInside(centerOfMass)) {
-					body.activate();
+		final AxisAlignedBB bb = AxisAlignedBB.fromBounds(min.x, min.y, min.z, max.x, max.y, max.z);
+		scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				for (int i = 0; i < rigidBodies.size(); i++) {
+					IRigidBody body = rigidBodies.get(i);
+					Vector3f vec3 = body.getCenterOfMassPosition();
+					Vec3 centerOfMass = new Vec3(vec3.x, vec3.y, vec3.z);
+					if (bb.isVecInside(centerOfMass)) {
+						body.activate();
+					}
 				}
 			}
-		}
+		});
 	}
 
 	@Override
-	public void rayTest(Vector3f rayFromWorld, Vector3f rayToWorld, IRayResult resultCallback) {
+	public void rayTest(final Vector3f rayFromWorld, final Vector3f rayToWorld, final IRayResult resultCallback) {
 		synchronized (this) {
 			dynamicsWorld.rayTest(toVector3(rayFromWorld), toVector3(rayToWorld),
 					(RayResultCallback) resultCallback.getRayResultCallback());
@@ -244,32 +274,50 @@ public class NativePhysicsWorld extends PhysicsWorld {
 	}
 
 	@Override
-	public void removeCollisionObject(ICollisionObject collisionObject) {
-		synchronized (this) {
-			dynamicsWorld.removeCollisionObject((btCollisionObject) collisionObject.getCollisionObject());
-		}
+	public void removeCollisionObject(final ICollisionObject collisionObject) {
+		scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				dynamicsWorld.removeCollisionObject((btCollisionObject) collisionObject.getCollisionObject());
+			}
+		});
+
 	}
 
 	@Override
-	public void setGravity(Vector3f newGravity) {
-		synchronized (this) {
-			dynamicsWorld.setGravity(toVector3(newGravity));
-		}
+	public void setGravity(final Vector3f newGravity) {
+		scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				dynamicsWorld.setGravity(toVector3(newGravity));
+			}
+		});
 	}
 
 	@Override
-	public void addCollisionObject(ICollisionObject object) {
-		synchronized (this) {
-			dynamicsWorld.addCollisionObject((btCollisionObject) object.getCollisionObject());
-		}
+	public void addCollisionObject(final ICollisionObject object) {
+		scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				dynamicsWorld.addCollisionObject((btCollisionObject) object.getCollisionObject());
+			}
+		});
 	}
 
 	@Override
-	public void addCollisionObject(ICollisionObject object, short collisionFilterGroup, short collisionFilterMask) {
-		synchronized (this) {
-			dynamicsWorld.addCollisionObject((btCollisionObject) object.getCollisionObject(), collisionFilterGroup,
-					collisionFilterMask);
-		}
+	public void addCollisionObject(final ICollisionObject object, final short collisionFilterGroup,
+			final short collisionFilterMask) {
+		scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				dynamicsWorld.addCollisionObject((btCollisionObject) object.getCollisionObject(), collisionFilterGroup,
+						collisionFilterMask);
+			}
+		});
 	}
 
 	@Override
@@ -483,8 +531,8 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
 	}
 
-	// Stop using syncronize and start using tasks.
-
+	// TODO Stop using synchronize and start using tasks.
+	// TODO Make dispose actually dispose something.
 	@Override
 	public void dispose() {
 		System.out.println("Disposing of garbage: " + disposables.size());
