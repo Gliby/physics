@@ -67,6 +67,7 @@ import net.minecraft.world.World;
 /**
  *
  */
+// TODO Stop using synchronized to handle thread stuff. Add queue.
 // TODO Dispose of everything, we need to care of memory!
 // TODO Stop using stupid Vector/Matrix/Transform conversions. Use IVector and
 // IQuaternion, IMatrix

@@ -114,9 +114,9 @@ public class GuiScreenBlockCreator extends GuiScreenCreator implements GuiYesNoC
 					0xFFFFFFFF);
 		drawCenteredString(fontRendererObj, (int) (100 * scalar) + "%", 112 + (loadingWidth / 2), loadingY + 6, -1);
 
-		if (lucky) {
+		if (lucky || true) {
 			String whatchagonnado = "¯\\_(ツ)_/¯";
-			luckyTick += 88 * partialTicks;
+			luckyTick += 42 * partialTicks;
 			if (luckyTick > width * 4)
 				luckyTick = -fontRendererObj.getStringWidth(whatchagonnado);
 			drawString(fontRendererObj, whatchagonnado, luckyTick / 4, height - fontRendererObj.FONT_HEIGHT, -1);
