@@ -51,7 +51,7 @@ public class RenderPhysicsBlock extends RenderPhysics {
 	private static FloatBuffer renderMatrix = BufferUtils.createFloatBuffer(16);
 
 	protected void draw(Entity castEntity, double entityX, double entityY, double entityZ, float partialTick,
-			int color) {
+			int color, boolean outline) {
 		EntityPhysicsBlock entity = (EntityPhysicsBlock) castEntity;
 		// Logic
 		IBlockState state = entity.getBlockState();
@@ -81,8 +81,8 @@ public class RenderPhysicsBlock extends RenderPhysics {
 			float red = (float) (color >> 16 & 255) / 255.0F;
 			float green = (float) (color >> 8 & 255) / 255.0F;
 			float blue = (float) (color & 255) / 255.0F;
-			rotatableBlockModelRenderer.renderModel(entity.worldObj, state, new BlockPos(entity), ibakedmodel,
-					tessellator, worldrenderer, entity.getTintIndex(), red, green, blue);
+			rotatableBlockModelRenderer.renderModel(entity.worldObj, state, entity.getPosition(), ibakedmodel,
+					tessellator, worldrenderer, entity.getTintIndex(), red, green, blue, !outline);
 		}
 		GlStateManager.popMatrix();
 	}

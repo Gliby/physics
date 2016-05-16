@@ -24,7 +24,8 @@ import net.minecraft.world.IBlockAccess;
 public class CustomModelRenderer {
 
 	public void renderModel(IBlockAccess world, IBlockState blockAccess, BlockPos blockPos, IBakedModel model,
-			Tessellator tessellator, WorldRenderer worldRenderer, int tintIndex, float red, float green, float blue) {
+			Tessellator tessellator, WorldRenderer worldRenderer, int tintIndex, float red, float green, float blue,
+			boolean shouldTint) {
 		worldRenderer.startDrawingQuads();
 		worldRenderer.setVertexFormat(DefaultVertexFormats.ITEM);
 		EnumFacing[] aenumfacing = EnumFacing.values();
@@ -33,25 +34,27 @@ public class CustomModelRenderer {
 			EnumFacing enumfacing = aenumfacing[j];
 			List faceQuads = model.getFaceQuads(enumfacing);
 			if (!faceQuads.isEmpty()) {
-				this.renderQuads(world, blockAccess, blockPos, worldRenderer, faceQuads, tintIndex, red, green, blue);
+				this.renderQuads(world, blockAccess, blockPos, worldRenderer, faceQuads, tintIndex, red, green, blue,
+						shouldTint);
 			}
 		}
 
 		List generalQuads = model.getGeneralQuads();
 		if (!generalQuads.isEmpty()) {
-			this.renderQuads(world, blockAccess, blockPos, worldRenderer, generalQuads, tintIndex, red, green, blue);
+			this.renderQuads(world, blockAccess, blockPos, worldRenderer, generalQuads, tintIndex, red, green, blue,
+					shouldTint);
 		}
 
 		tessellator.draw();
 	}
 
 	private void renderQuads(IBlockAccess world, IBlockState blockState, BlockPos blockPos, WorldRenderer worldRenderer,
-			List listQuadsIn, int tintIndex, float red, float green, float blue) {
+			List listQuadsIn, int tintIndex, float red, float green, float blue, boolean shouldTint) {
 		Iterator iterator = listQuadsIn.iterator();
 		while (iterator.hasNext()) {
 			BakedQuad bakedquad = (BakedQuad) iterator.next();
 			worldRenderer.addVertexData(bakedquad.getVertexData());
-			if (bakedquad.hasTintIndex()) {
+			if (bakedquad.hasTintIndex() && shouldTint) {
 				int hexColor = bakedquad.getTintIndex();
 				if (EntityRenderer.anaglyphEnable) {
 					tintIndex = TextureUtil.anaglyphColor(tintIndex);

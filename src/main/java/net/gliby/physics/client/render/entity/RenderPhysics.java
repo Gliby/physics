@@ -24,8 +24,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
+
 //TODO fix outline color
 public abstract class RenderPhysics extends Render {
+
+	private final int DEFAULT_PHYSICS_COLOR = 0xFF87FFFF;
 
 	public abstract Vector3f getRenderHitPoint(EntityPhysicsBase entity, float partialTick);
 
@@ -55,11 +58,11 @@ public abstract class RenderPhysics extends Render {
 						|| camera.isBoundingBoxInFrustum(interpolatableEntity.getRenderBoundingBox()));
 	}
 
-	protected abstract void draw(Entity uncast, double entityX, double entityY, double entityZ, float partialTick, int color);
+	protected abstract void draw(Entity uncast, double entityX, double entityY, double entityZ, float partialTick,
+			int color, boolean outline);
 
-	
-	//TODO Outline color bugs.
-	
+	// TODO Outline color bugs.
+
 	public void doRender(Entity uncast, double entityX, double entityY, double entityZ, float twen, float partialTick) {
 		Tessellator tessellator = Tessellator.getInstance();
 		WorldRenderer worldRenderer = tessellator.getWorldRenderer();
@@ -123,17 +126,19 @@ public abstract class RenderPhysics extends Render {
 							hitPoint.z + d15 * (double) f12);
 				}
 				tessellator.draw();
-				
-				//Outline
+
+				// Outline
 				GL11.glLineWidth(3);
 				GL11.glPolygonMode(GL11.GL_FRONT, GL11.GL_LINE);
 				GL11.glDisable(GL11.GL_DEPTH_TEST);
-				draw(uncast, entityX, entityY, entityZ, partialTick, getBeamColor(entity.pickerEntity));
+				GL11.glDisable(GL11.GL_TEXTURE_2D);
+				draw(uncast, entityX, entityY, entityZ, partialTick, getBeamColor(entity.pickerEntity), true);
 				GL11.glEnable(GL11.GL_DEPTH_TEST);
 				GL11.glLineWidth(3);
 				GL11.glPolygonMode(GL11.GL_FRONT, GL11.GL_FILL);
+				GL11.glEnable(GL11.GL_TEXTURE_2D);
 				
-				//Entity lighting
+				// Entity lighting
 				int brightness = entity.getBrightnessForRender(partialTick);
 				int lightX = brightness % 65536;
 				int lightY = brightness / 65536;
@@ -145,11 +150,11 @@ public abstract class RenderPhysics extends Render {
 				GL11.glLineWidth(1.0f);
 			}
 		}
-		draw(uncast, entityX, entityY, entityZ, partialTick, -1);
+		draw(uncast, entityX, entityY, entityZ, partialTick, -1, false);
 
 	}
 
-	// What if beam color is actually -1 ?
+	// TODO What if beam color is actually -1 ?
 	private int beamColor = -1;
 
 	public int getBeamColor(Entity pickerEntity) {
@@ -158,7 +163,7 @@ public abstract class RenderPhysics extends Render {
 			if (renderHandler.getPhysicsGunColors().containsKey(UUID = pickerEntity.getUniqueID().toString())) {
 				beamColor = renderHandler.getPhysicsGunColors().get(UUID);
 			} else
-				beamColor = 0xFF87FFFF;
+				beamColor = DEFAULT_PHYSICS_COLOR;
 		}
 		return beamColor;
 	}
