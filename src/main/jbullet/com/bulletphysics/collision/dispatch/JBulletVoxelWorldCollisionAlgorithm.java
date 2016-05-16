@@ -33,8 +33,6 @@ import javax.vecmath.Point3i;
 import javax.vecmath.Tuple3i;
 import javax.vecmath.Vector3f;
 
-import net.gliby.physics.common.physics.BlockCollisionInfo;
-
 import com.bulletphysics.collision.broadphase.BroadphaseNativeType;
 import com.bulletphysics.collision.broadphase.CollisionAlgorithm;
 import com.bulletphysics.collision.broadphase.CollisionAlgorithmConstructionInfo;
@@ -48,6 +46,8 @@ import com.bulletphysics.linearmath.IntUtil;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.util.ObjectArrayList;
 import com.bulletphysics.util.ObjectPool;
+
+import net.gliby.minecraft.physics.common.physics.BlockCollisionInfo;
 
 /**
  * @author Immortius
