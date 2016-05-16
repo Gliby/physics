@@ -1,6 +1,7 @@
 /**
  * Copyright (c) 2015, Mine Fortress.
  */
+//TODO Combine NativeVoxelProvider with JavaVoxelProvider.
 package net.gliby.physics.common.physics.engine.javabullet;
 
 import java.util.HashMap;
@@ -33,11 +34,14 @@ public class JavaVoxelProvider implements VoxelPhysicsWorld {
 		this.physics = physics;
 		this.physicsWorld = physicsWorld;
 	}
-
+	
+	BlockPos blockPos;
+	IBlockState blockState;
+	
 	@Override
 	public VoxelInfo getCollisionShapeAt(final int x, final int y, final int z) {
-		final BlockPos blockPosition = new BlockPos(x, y, z);
-		final IBlockState blockState = world.getBlockState(blockPosition);
+		blockPos = new BlockPos(x, y, z);
+		final IBlockState blockState = world.getBlockState(blockPos);
 		// final PhysicsBlockMetadata metadata =
 		// physicsOverworld.getPhysicsBlockMetadata().get(state.getBlock().getUnlocalizedName());
 		return new VoxelInfo() {
@@ -71,7 +75,7 @@ public class JavaVoxelProvider implements VoxelPhysicsWorld {
 			@Override
 			public Object getCollisionShape() {
 				return physics.getBlockManager().getBlockCache()
-						.getShape(physicsWorld, world, blockPosition, blockState).getCollisionShape();
+						.getShape(physicsWorld, world, blockPos, blockState).getCollisionShape();
 			}
 
 			@Override

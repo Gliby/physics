@@ -31,7 +31,7 @@ public class RenderPhysicsRagdoll extends RenderPhysics {
 		super(renderHandler, renderManager);
 	}
 
-	public void draw(Entity uncast, double worldX, double worldY, double worldZ, float partialTick, int color) {
+	public void draw(Entity uncast, double worldX, double worldY, double worldZ, float partialTick, int color, boolean outline) {
 		/*
 		 * EntityPhysicsRagdoll entity = (EntityPhysicsRagdoll) uncast; Vector3f
 		 * world = RenderUtilities.getWorldTranslation(Minecraft.getMinecraft(),
