@@ -74,7 +74,8 @@ import net.minecraft.world.World;
  */
 // FIXME Dispose of everything, we need to care of memory!
 // FIXME Stop using stupid Vector/Matrix/Transform conversions. Use IVector and
-// IQuaternion, IMatrix
+// IQuaternion, IMatrix, replace with custom vector stuff or MC Vec3.
+//TODO Add ability to run in non-thread.
 public class NativePhysicsWorld extends PhysicsWorld {
 
 	List<IDisposable> disposables;
