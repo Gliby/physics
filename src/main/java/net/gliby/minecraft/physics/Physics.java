@@ -57,7 +57,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = Physics.MOD_ID, name = Physics.MOD_NAME, version = Physics.MOD_VERSION, guiFactory = "net.gliby.physics.client.gui.options.GuiFactory")
+@Mod(modid = Physics.MOD_ID, name = Physics.MOD_NAME, version = Physics.MOD_VERSION, guiFactory = "net.gliby.minecraft.physics.client.gui.options.GuiFactory")
 public class Physics {
 
 	/**
@@ -72,7 +72,7 @@ public class Physics {
 	@Instance
 	private static Physics instance;
 
-	@SidedProxy(serverSide = "net.gliby.physics.common.PhysicsServer", clientSide = "net.gliby.physics.client.PhysicsClient")
+	@SidedProxy(serverSide = "net.gliby.minecraft.physics.common.PhysicsServer", clientSide = "net.gliby.minecraft.physics.client.PhysicsClient")
 	private static PhysicsServer proxy;
 	
 	/**
