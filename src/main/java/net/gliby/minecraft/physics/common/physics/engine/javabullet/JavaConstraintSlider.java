@@ -32,10 +32,4 @@ public class JavaConstraintSlider implements IConstraintSlider {
 		return true;
 	}
 
-	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

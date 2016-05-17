@@ -119,4 +119,6 @@ public abstract class PhysicsMechanic implements Callable, Runnable {
 	 * 
 	 */
 	public abstract void init();
+	
+	public abstract void dispose();
 }

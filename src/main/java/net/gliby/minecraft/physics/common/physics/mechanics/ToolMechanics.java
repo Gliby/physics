@@ -12,6 +12,7 @@ import net.gliby.minecraft.physics.common.game.items.toolgun.actions.ToolGunActi
 import net.gliby.minecraft.physics.common.physics.PhysicsWorld;
 import net.gliby.minecraft.physics.common.physics.engine.IRigidBody;
 
+//TODO continue work on this.
 public class ToolMechanics extends PhysicsMechanic {
 
 	private List<IToolGunTickable> tickables;
@@ -54,6 +55,11 @@ public class ToolMechanics extends PhysicsMechanic {
 	public void init() {
 		for (IToolGunTickable tickable : tickables) {
 		}
+	}
+
+	@Override
+	public void dispose() {
+		tickables.clear();
 	}
 
 }

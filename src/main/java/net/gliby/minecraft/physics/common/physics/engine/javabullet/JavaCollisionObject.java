@@ -58,11 +58,4 @@ public class JavaCollisionObject implements ICollisionObject {
 	public Entity getOwner() {
 		return owner;
 	}
-
-	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

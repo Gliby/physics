@@ -10,7 +10,7 @@ import javax.vecmath.Vector3f;
 /**
  *
  */
-public interface ICollisionShape extends IDisposable {
+public interface ICollisionShape {
 
 	/**
 	 * @return

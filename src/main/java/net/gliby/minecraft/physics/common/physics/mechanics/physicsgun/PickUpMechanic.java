@@ -43,7 +43,9 @@ public class PickUpMechanic extends PhysicsMechanic {
 			if (pickObj instanceof OwnedPickedObject) {
 				OwnedPickedObject ownedPicked = (OwnedPickedObject) pickObj;
 				Vector3f offset = new Vector3f(-0.5f, -0.5f, -0.5f);
-				Vector3f playerPosition = new Vector3f((float) ownedPicked.getOwner().posX, (float) ownedPicked.getOwner().posY + ownedPicked.getOwner().getEyeHeight(), (float) ownedPicked.getOwner().posZ);
+				Vector3f playerPosition = new Vector3f((float) ownedPicked.getOwner().posX,
+						(float) ownedPicked.getOwner().posY + ownedPicked.getOwner().getEyeHeight(),
+						(float) ownedPicked.getOwner().posZ);
 				playerPosition.add(offset);
 				Vector3f pickRaw = EntityUtility.calculateRay(ownedPicked.getOwner(), 64, offset);
 				pickRaw.add(offset);
@@ -59,17 +61,18 @@ public class PickUpMechanic extends PhysicsMechanic {
 				IConstraintPoint2Point p2pConstraint = (IConstraintPoint2Point) ownedPicked.getConstraint();
 				p2pConstraint.setPivotB(newPos);
 				float size = 1.75f;
-				final AxisAlignedBB bb = new AxisAlignedBB(-size, -size, -size, size, size, size).offset(newPos.x, newPos.y, newPos.z);
-				physicsWorld.awakenArea(new Vector3f((float) bb.minX, (float) bb.minY, (float) bb.minZ), new Vector3f((float) bb.maxX, (float) bb.maxY, (float) bb.maxZ));
+				final AxisAlignedBB bb = new AxisAlignedBB(-size, -size, -size, size, size, size).offset(newPos.x,
+						newPos.y, newPos.z);
+				physicsWorld.awakenArea(new Vector3f((float) bb.minX, (float) bb.minY, (float) bb.minZ),
+						new Vector3f((float) bb.maxX, (float) bb.maxY, (float) bb.maxZ));
 				/*
 				 * Vector3f directionOffset = new Vector3f();
 				 * directionOffset.sub(pickRaw, eyePos);
 				 * directionOffset.normalize(); Transform transform = new
 				 * Transform();
 				 * ownedPicked.getRigidBody().getCenterOfMassTransform
-				 * (transform); //
-				 * transform.basis.set(ownedPicked.getOriginalCenterOfMassTransform
-				 * ().basis);
+				 * (transform); // transform.basis.set(ownedPicked.
+				 * getOriginalCenterOfMassTransform ().basis);
 				 * 
 				 * //
 				 * ownedPicked.getRigidBody().setCenterOfMassTransform(transform
@@ -114,7 +117,7 @@ public class PickUpMechanic extends PhysicsMechanic {
 			posToEye.sub(pickPosition, object.getRayFromWorld());
 			object.setPickDistance(posToEye.length());
 			object.setOriginalCenterOfMassTransform(object.getRigidBody().getCenterOfMassTransform(new Transform()));
-//			p2p.setImpulseClamp(3.0f);
+			// p2p.setImpulseClamp(3.0f);
 			p2p.setTau(0.1f);
 			this.physicsWorld.addConstraint(p2p);
 			this.pickedObjects.add(object);
@@ -147,7 +150,7 @@ public class PickUpMechanic extends PhysicsMechanic {
 	public String getName() {
 		return "PickUpMechanic";
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -157,6 +160,14 @@ public class PickUpMechanic extends PhysicsMechanic {
 	@Override
 	public void init() {
 		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void dispose() {
+		pickedObjects.clear();
+		ownedPickedObjects.clear();
+		physicsWorld = null;
 
 	}
 }

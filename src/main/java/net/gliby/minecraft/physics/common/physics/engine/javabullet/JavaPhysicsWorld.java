@@ -62,7 +62,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-
+//TODO Deprecate, improve or remove.
 /**
  *
  */
@@ -216,11 +216,6 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 	@Override
 	public void dispose() {
 		synchronized (this) {
-			Iterator it = physicsMechanics.entrySet().iterator();
-			while (it.hasNext()) {
-				PhysicsMechanic mechanic = ((Map.Entry<String, PhysicsMechanic>) it.next()).getValue();
-				mechanic.setEnabled(false);
-			}
 			for (int i = 0; i < dynamicsWorld.getNumCollisionObjects(); i++) {
 				CollisionObject object = dynamicsWorld.getCollisionObjectArray().get(i);
 				dynamicsWorld.removeCollisionObject(object);
@@ -230,6 +225,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 			rigidBodies.clear();
 			constraints.clear();
 		}
+		super.dispose();
 	}
 
 	private long lastFrame;
@@ -273,7 +269,8 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public ICollisionShape createBoxShape(final Vector3f extents) {
-		return new net.gliby.minecraft.physics.common.physics.engine.javabullet.JavaCollisionShape(new BoxShape(extents));
+		return new net.gliby.minecraft.physics.common.physics.engine.javabullet.JavaCollisionShape(
+				new BoxShape(extents));
 	}
 
 	@Override

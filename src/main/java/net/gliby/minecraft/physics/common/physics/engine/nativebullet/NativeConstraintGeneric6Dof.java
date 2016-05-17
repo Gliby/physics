@@ -50,9 +50,4 @@ class NativeConstraintGeneric6Dof implements IConstraintGeneric6Dof {
 		return false;
 	}
 
-	@Override
-	public void dispose() {
-		constraint.dispose();
-	}
-
 }

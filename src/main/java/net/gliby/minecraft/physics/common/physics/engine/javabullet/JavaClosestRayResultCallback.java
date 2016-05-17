@@ -48,8 +48,4 @@ class JavaClosestRayResultCallback implements IRayResult {
 		return rayCallback.hitNormalWorld;
 	}
 
-	@Override
-	public void dispose() {
-	}
-
 }
