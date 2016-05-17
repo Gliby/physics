@@ -1,6 +1,7 @@
 package net.gliby.minecraft.physics.common.physics;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.vecmath.Vector3f;
@@ -18,6 +19,7 @@ import net.gliby.minecraft.physics.common.entity.mechanics.EnvironmentResponseMe
 import net.gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
 import net.gliby.minecraft.physics.common.physics.engine.javabullet.JavaPhysicsWorld;
 import net.gliby.minecraft.physics.common.physics.engine.nativebullet.NativePhysicsWorld;
+import net.gliby.minecraft.physics.common.physics.mechanics.PhysicsMechanic;
 import net.gliby.minecraft.physics.common.physics.mechanics.ToolMechanics;
 import net.gliby.minecraft.physics.common.physics.mechanics.gravitymagnets.GravityModifierMechanic;
 import net.gliby.minecraft.physics.common.physics.mechanics.physicsgun.PickUpMechanic;
@@ -66,7 +68,8 @@ public class PhysicsOverworld {
 					});
 			physicsWorld.getMechanics().put("PickUp", new PickUpMechanic(physicsWorld, true, 20));
 			physicsWorld.getMechanics().put("GravityMagnet", new GravityModifierMechanic(physicsWorld, false, 20));
-			physicsWorld.getMechanics().put("ToolMan", new ToolMechanics(physics.getGameManager().getToolGunRegistry(), physicsWorld, false, 20));
+			physicsWorld.getMechanics().put("ToolMan",
+					new ToolMechanics(physics.getGameManager().getToolGunRegistry(), physicsWorld, false, 20));
 			// worldStepSimulator.getMechanics().put("EntityCollision",
 			// new EntityCollisionResponseMechanic(world, worldStepSimulator,
 			// true,
@@ -86,6 +89,12 @@ public class PhysicsOverworld {
 		PhysicsWorld physicsWorld;
 		if ((physicsWorld = getPhysicsWorldMap().get(event.world)) != null) {
 			physicsWorld.dispose();
+			Iterator it = physicsWorld.physicsMechanics.entrySet().iterator();
+			while (it.hasNext()) {
+				PhysicsMechanic mechanic = ((Map.Entry<String, PhysicsMechanic>) it.next()).getValue();
+				mechanic.dispose();
+				mechanic.setEnabled(false);
+			}
 			getPhysicsWorldMap().remove(event.world);
 			Physics.getLogger().info("Destroyed " + event.world.getWorldInfo().getWorldName() + " physics world.");
 		}
@@ -152,6 +161,8 @@ public class PhysicsOverworld {
 
 		public Vector3f getRegularGravity();
 	}
+
+	static int world;
 
 	private PhysicsWorld createPhysicsWorld(boolean useNative, IPhysicsWorldConfiguration physicsConfig) {
 		PhysicsWorld physicsWorld = useNative ? new NativePhysicsWorld(physics, this, physicsConfig)

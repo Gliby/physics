@@ -14,5 +14,4 @@ public interface ICollisionShapeChildren {
 
 	public ICollisionShape getCollisionShape();
 	
-	public void dispose();
 }

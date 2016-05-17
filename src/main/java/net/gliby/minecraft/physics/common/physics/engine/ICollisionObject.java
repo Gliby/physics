@@ -10,7 +10,7 @@ import net.minecraft.entity.Entity;
 /**
  *
  */
-public interface ICollisionObject extends IDisposable {
+public interface ICollisionObject {
 
 	public Entity getOwner();
 	

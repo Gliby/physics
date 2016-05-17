@@ -6,7 +6,7 @@ package net.gliby.minecraft.physics.common.physics.engine;
 /**
  *
  */
-public interface IConstraint  extends IDisposable {
+public interface IConstraint {
 
 	/**
 	 * @return

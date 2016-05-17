@@ -66,10 +66,4 @@ class NativePoint2PointConstraint implements IConstraintPoint2Point {
 	public boolean isSlider() {
 		return false;
 	}
-
-	@Override
-	public void dispose() {
-		constraint.dispose();
-	}
-
 }

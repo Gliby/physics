@@ -76,6 +76,7 @@ public class MobModelManager {
 									loadedFromZip = true;
 									try {
 										mobModel = IOUtils.toString(stream);
+										stream.close();
 									} catch (IOException e) {
 										e.printStackTrace();
 									}
@@ -86,8 +87,10 @@ public class MobModelManager {
 								InputStream stream = MinecraftResourceLoader.getResource(Physics.getLogger(),
 										FMLCommonHandler.instance().getSide(),
 										new ResourceLocation(Physics.MOD_ID, "mobs/" + uniqueEntityId + ".json"));
-								if (stream != null)
+								if (stream != null) {
 									mobModel = IOUtils.toString(stream);
+									stream.close();
+								}
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
@@ -98,6 +101,14 @@ public class MobModelManager {
 							System.out.println("loaded: " + entry.getValue());
 							modelRegistry.put(entry.getValue(), model = gson.fromJson(mobModel, MobModel.class));
 							loaded++;
+						}
+					}
+					
+					if (tempZip != null) {
+						try {
+							tempZip.close();
+						} catch (IOException e) {
+							e.printStackTrace();
 						}
 					}
 				}

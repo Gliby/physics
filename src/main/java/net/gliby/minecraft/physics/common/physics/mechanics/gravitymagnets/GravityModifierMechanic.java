@@ -185,4 +185,10 @@ public class GravityModifierMechanic extends PhysicsMechanic {
 
 	}
 
+	@Override
+	public void dispose() {
+		gravityMagnets.clear();
+		physicsWorld = null;
+	}
+
 }

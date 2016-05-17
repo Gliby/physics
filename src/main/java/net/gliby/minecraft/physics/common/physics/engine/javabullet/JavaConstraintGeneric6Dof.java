@@ -49,10 +49,5 @@ public class JavaConstraintGeneric6Dof implements IConstraintGeneric6Dof {
 		return false;
 	}
 
-	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-		
-	}
 
 }

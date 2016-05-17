@@ -22,7 +22,6 @@ import net.gliby.minecraft.physics.common.physics.engine.IConstraint;
 import net.gliby.minecraft.physics.common.physics.engine.IConstraintGeneric6Dof;
 import net.gliby.minecraft.physics.common.physics.engine.IConstraintPoint2Point;
 import net.gliby.minecraft.physics.common.physics.engine.IConstraintSlider;
-import net.gliby.minecraft.physics.common.physics.engine.IDisposable;
 import net.gliby.minecraft.physics.common.physics.engine.IGhostObject;
 import net.gliby.minecraft.physics.common.physics.engine.IRayResult;
 import net.gliby.minecraft.physics.common.physics.engine.IRigidBody;
@@ -37,7 +36,7 @@ import net.minecraft.world.World;
 /**
  *
  */
-public abstract class PhysicsWorld implements Runnable, IDisposable {
+public abstract class PhysicsWorld implements Runnable {
 
 	private IPhysicsWorldConfiguration physicsConfiguration;
 
@@ -91,7 +90,6 @@ public abstract class PhysicsWorld implements Runnable, IDisposable {
 		return createBoxShape(blockPosition);
 	}
 
-	@Override
 	public void dispose() {
 		running = false;
 	}

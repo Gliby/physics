@@ -143,4 +143,13 @@ public class EntityCollisionResponseMechanic extends PhysicsMechanic {
 	public void init() {
 	}
 
+	@Override
+	public void dispose() {
+		world = null;
+		physicsWorld = null;
+		entityTransform = null;
+		ghostObjects.clear();
+		timeAdded.clear();
+	}
+
 }

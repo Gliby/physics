@@ -88,7 +88,7 @@ public class Physics {
 		return gman;
 	}
 
-	// TODO Move some pre-init actions into seperate functions.
+	// TODO Move some pre-init actions into separate functions.
 	// Reason: Organization, the pre-init method is getting a bit crowded.
 
 	@EventHandler

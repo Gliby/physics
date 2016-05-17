@@ -71,11 +71,12 @@ public class BlockManager {
 					if (entry != null) {
 						InputStream stream = otherZip.getInputStream(entry);
 						if (stream != null) {
-							return new Gson().fromJson(IOUtils.toString(stream), Map.class);
+							String s = IOUtils.toString(stream);
+							stream.close();
+							return new Gson().fromJson(s, Map.class);
 						}
 					}
 				}
-
 				String text = IOUtils.toString(
 						MinecraftResourceLoader.getResource(Physics.getLogger(), FMLCommonHandler.instance().getSide(),
 								new ResourceLocation(Physics.MOD_ID, "blocks/" + name + ".json")));
@@ -86,7 +87,6 @@ public class BlockManager {
 				return null;
 			}
 		};
-
 	}
 
 	private Map<String, IBlockGenerator> blockGenerators;

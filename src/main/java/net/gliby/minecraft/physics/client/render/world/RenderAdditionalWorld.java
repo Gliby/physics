@@ -52,8 +52,9 @@ public class RenderAdditionalWorld {
 	public void postRender(RenderWorldLastEvent event) {
 		// if (MineFortress.DEBUG_PHYSICS_RENDER)
 		//TODO Remove debug physics
-		if (Physics.getInstance().getPhysicsOverworld() != null)
-			renderDebugPhysics(physics.getPhysicsOverworld(), event);
+		//TODO Re-enable debug physics when needed
+//		if (Physics.getInstance().getPhysicsOverworld() != null)
+//			renderDebugPhysics(physics.getPhysicsOverworld(), event);
 		// event);
 	}
 

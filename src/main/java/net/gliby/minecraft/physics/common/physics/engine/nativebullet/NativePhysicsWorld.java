@@ -4,12 +4,9 @@
 package net.gliby.minecraft.physics.common.physics.engine.nativebullet;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.FutureTask;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Quat4f;
@@ -38,47 +35,43 @@ import com.badlogic.gdx.physics.bullet.dynamics.btGeneric6DofConstraint;
 import com.badlogic.gdx.physics.bullet.dynamics.btPoint2PointConstraint;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstructionInfo;
-import com.badlogic.gdx.physics.bullet.dynamics.btTypedConstraint.btConstraintInfo1;
 import com.badlogic.gdx.physics.bullet.dynamics.btSequentialImpulseConstraintSolver;
 import com.badlogic.gdx.physics.bullet.dynamics.btTypedConstraint;
 import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
-import com.badlogic.gdx.physics.bullet.softbody.btSoftBodyRigidBodyCollisionConfiguration;
-import com.bulletphysics.collision.dispatch.CollisionDispatcher;
-import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
+import com.badlogic.gdx.utils.Disposable;
 import com.bulletphysics.linearmath.Transform;
 import com.google.common.collect.Queues;
 
 import net.gliby.minecraft.physics.Physics;
 import net.gliby.minecraft.physics.common.physics.PhysicsOverworld;
-import net.gliby.minecraft.physics.common.physics.PhysicsWorld;
 import net.gliby.minecraft.physics.common.physics.PhysicsOverworld.IPhysicsWorldConfiguration;
+import net.gliby.minecraft.physics.common.physics.PhysicsWorld;
 import net.gliby.minecraft.physics.common.physics.engine.ICollisionObject;
 import net.gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import net.gliby.minecraft.physics.common.physics.engine.IConstraint;
 import net.gliby.minecraft.physics.common.physics.engine.IConstraintGeneric6Dof;
 import net.gliby.minecraft.physics.common.physics.engine.IConstraintPoint2Point;
 import net.gliby.minecraft.physics.common.physics.engine.IConstraintSlider;
-import net.gliby.minecraft.physics.common.physics.engine.IDisposable;
 import net.gliby.minecraft.physics.common.physics.engine.IGhostObject;
 import net.gliby.minecraft.physics.common.physics.engine.IRayResult;
 import net.gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import net.gliby.minecraft.physics.common.physics.engine.IRope;
-import net.gliby.minecraft.physics.common.physics.mechanics.PhysicsMechanic;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
+import sun.rmi.runtime.RuntimeUtil;
 
 /**
  *
  */
+
+// TODO Start disposing of every, and I mean EVERY native element.
+// TODO dispose on remove from world too.
 // FIXME Dispose of everything, we need to care of memory!
 // FIXME Stop using stupid Vector/Matrix/Transform conversions. Use IVector and
 // IQuaternion, IMatrix, replace with custom vector stuff or MC Vec3.
-//TODO Add ability to run in non-thread.
+// TODO Add ability to run in non-thread.
 public class NativePhysicsWorld extends PhysicsWorld {
-
-	List<IDisposable> disposables;
 
 	static {
 		Bullet.init();
@@ -102,7 +95,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
 		super(physicsConfig);
 		this.physics = physics;
 		this.physicsOverworld = physicsOverworld;
-		this.disposables = new CopyOnWriteArrayList<IDisposable>();
 	}
 
 	private boolean shutdown = false;
@@ -129,31 +121,41 @@ public class NativePhysicsWorld extends PhysicsWorld {
 	private btCollisionConfiguration collisionConfiguration;
 	private btCollisionDispatcher collisionDispatcher;
 	private btVoxelShape voxelShape;
+
 	private btCollisionObject voxelBody;
+	private NativeVoxelProvider voxelProvider;
+
+	private btSequentialImpulseConstraintSolver sequentialSolver;
 
 	@Override
 	public void create() {
+		collisionObjects = new CopyOnWriteArrayList<ICollisionObject>();
 		rigidBodies = new CopyOnWriteArrayList<IRigidBody>();
 		constraints = new CopyOnWriteArrayList<IConstraint>();
+		disposables = new ArrayList<Disposable>();
+
 		broadphase = new btDbvtBroadphase();
 		collisionConfiguration = new btDefaultCollisionConfiguration();
 		collisionDispatcher = new btCollisionDispatcher(collisionConfiguration);
+
 		dynamicsWorld = new btDiscreteDynamicsWorld(collisionDispatcher, broadphase,
-				new btSequentialImpulseConstraintSolver(), collisionConfiguration);
+				sequentialSolver = new btSequentialImpulseConstraintSolver(), collisionConfiguration);
 		dynamicsWorld.setGravity(toVector3(getPhysicsConfiguration().getRegularGravity()));
-		voxelShape = new btVoxelShape(new NativeVoxelProvider(getPhysicsConfiguration().getWorld(), this, physics),
+
+		voxelShape = new btVoxelShape(
+				voxelProvider = new NativeVoxelProvider(getPhysicsConfiguration().getWorld(), this, physics),
 				new Vector3(-Integer.MAX_VALUE, -Integer.MAX_VALUE, -Integer.MAX_VALUE),
 				new Vector3(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE));
-
 		voxelBody = new btCollisionObject();
 		voxelBody.setCollisionShape(voxelShape);
 		voxelBody.setCollisionFlags(btCollisionObject.CollisionFlags.CF_STATIC_OBJECT | voxelBody.getCollisionFlags());
-		this.dynamicsWorld.addCollisionObject(voxelBody);
-
+		dynamicsWorld.addCollisionObject(voxelBody);
 		super.create();
 	}
 
 	private final Queue<Runnable> scheduledTasks = Queues.newArrayDeque();
+
+	boolean run = true;
 
 	@Override
 	protected void update() {
@@ -165,7 +167,8 @@ public class NativePhysicsWorld extends PhysicsWorld {
 		}
 
 		float delta = getDelta();
-		dynamicsWorld.stepSimulation(1, Math.round(delta / 7));
+		if (dynamicsWorld != null && run)
+			dynamicsWorld.stepSimulation(1, Math.round(delta / 7));
 		super.update();
 	}
 
@@ -179,22 +182,44 @@ public class NativePhysicsWorld extends PhysicsWorld {
 		btRigidBodyConstructionInfo constructionInfo = new btRigidBodyConstructionInfo(mass, motionState,
 				(btCollisionShape) shape.getCollisionShape(), localInertia);
 		NativeRigidBody rigidBody = new NativeRigidBody(new btRigidBody(constructionInfo), owner);
-		disposables.add(rigidBody);
+
+		// TODO dispose at diff time
+		/*
+		 * constructionInfo.dispose(); motionState.dispose();
+		 */
+		return rigidBody;
+	}
+
+	@Override
+	public IRigidBody createInertiallessRigidBody(Entity owner, Transform transform, float mass,
+			ICollisionShape shape) {
+		btDefaultMotionState motionState = new btDefaultMotionState(fromTransformToMatrix4(transform));
+		btRigidBodyConstructionInfo constructionInfo = new btRigidBodyConstructionInfo(mass, motionState,
+				(btCollisionShape) shape.getCollisionShape());
+		NativeRigidBody rigidBody = new NativeRigidBody(new btRigidBody(constructionInfo), owner);
 		return rigidBody;
 	}
 
 	@Override
 	public ICollisionShape createBoxShape(Vector3f extents) {
 		NativeCollisionShape shape = new NativeCollisionShape(new btBoxShape(toVector3(extents)));
-		disposables.add(shape);
 		return shape;
 	}
 
+	/**
+	 * Tracks disposable objects that fall under miscellaneous.
+	 */
+
+	private List<Disposable> disposables;
+
+	protected List<ICollisionObject> collisionObjects;
+
 	@Override
 	public IRayResult createClosestRayResultCallback(Vector3f rayFromWorld, Vector3f rayToWorld) {
+		ClosestRayResultCallback nativeCallback;
 		NativeClosestRayResultCallback callback = new NativeClosestRayResultCallback(
-				new ClosestRayResultCallback(toVector3(rayFromWorld), toVector3(rayToWorld)));
-		disposables.add(callback);
+				nativeCallback = new ClosestRayResultCallback(toVector3(rayFromWorld), toVector3(rayToWorld)));
+		disposables.add(nativeCallback);
 		return callback;
 	}
 
@@ -241,8 +266,10 @@ public class NativePhysicsWorld extends PhysicsWorld {
 		scheduledTasks.add(new Runnable() {
 			@Override
 			public void run() {
-				dynamicsWorld.removeRigidBody((btRigidBody) body.getBody());
+				btRigidBody nativeBody;
+				dynamicsWorld.removeRigidBody(nativeBody = (btRigidBody) body.getBody());
 				rigidBodies.remove(body);
+				nativeBody.dispose();
 			}
 		});
 	}
@@ -280,7 +307,11 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
 			@Override
 			public void run() {
-				dynamicsWorld.removeCollisionObject((btCollisionObject) collisionObject.getCollisionObject());
+				btCollisionObject nativeCollsionObject;
+				dynamicsWorld.removeCollisionObject(
+						nativeCollsionObject = (btCollisionObject) collisionObject.getCollisionObject());
+				collisionObjects.remove(collisionObject);
+				nativeCollsionObject.dispose();
 			}
 		});
 
@@ -300,10 +331,10 @@ public class NativePhysicsWorld extends PhysicsWorld {
 	@Override
 	public void addCollisionObject(final ICollisionObject object) {
 		scheduledTasks.add(new Runnable() {
-
 			@Override
 			public void run() {
 				dynamicsWorld.addCollisionObject((btCollisionObject) object.getCollisionObject());
+				collisionObjects.add(object);
 			}
 		});
 	}
@@ -317,6 +348,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 			public void run() {
 				dynamicsWorld.addCollisionObject((btCollisionObject) object.getCollisionObject(), collisionFilterGroup,
 						collisionFilterMask);
+				collisionObjects.add(object);
 			}
 		});
 	}
@@ -399,8 +431,10 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public IGhostObject createPairCachingGhostObject() {
-		NativePairCachingGhostObject pairCache = new NativePairCachingGhostObject(new btPairCachingGhostObject());
-		disposables.add(pairCache);
+		btPairCachingGhostObject nativePair;
+		NativePairCachingGhostObject pairCache = new NativePairCachingGhostObject(
+				nativePair = new btPairCachingGhostObject());
+		disposables.add(nativePair);
 		return pairCache;
 	}
 
@@ -418,18 +452,25 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public IConstraintPoint2Point createPoint2PointConstraint(IRigidBody rigidBody, Vector3f relativePivot) {
+		btPoint2PointConstraint nativeConstraint;
 		NativePoint2PointConstraint p2p = new NativePoint2PointConstraint(
-				new btPoint2PointConstraint((btRigidBody) rigidBody.getBody(), toVector3(relativePivot)));
-		disposables.add(p2p);
+				nativeConstraint = new btPoint2PointConstraint((btRigidBody) rigidBody.getBody(),
+						toVector3(relativePivot)));
 		return p2p;
 	}
 
 	@Override
-	public void removeConstraint(IConstraint constraint) {
-		synchronized (this) {
-			dynamicsWorld.removeConstraint((btTypedConstraint) constraint.getConstraint());
-			constraints.remove(constraint);
-		}
+	public void removeConstraint(final IConstraint constraint) {
+		scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				btTypedConstraint nativeConstraint = (btTypedConstraint) constraint.getConstraint();
+				dynamicsWorld.removeConstraint((btTypedConstraint) constraint.getConstraint());
+				constraints.remove(constraint);
+				nativeConstraint.dispose();
+			}
+		});
 	}
 
 	@Override
@@ -453,7 +494,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
 		NativeConstraintGeneric6Dof constraint = new NativeConstraintGeneric6Dof(new btGeneric6DofConstraint(
 				(btRigidBody) rbA.getBody(), (btRigidBody) rbB.getBody(), this.fromTransformToMatrix4(frameInA),
 				this.fromTransformToMatrix4(frameInB), useLinearReferenceFrameA));
-		disposables.add(constraint);
 		return constraint;
 	}
 
@@ -466,41 +506,33 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public void addRope(IRope object) {
+		// TODO fill
 	}
 
 	@Override
 	public List<IRope> getRopes() {
+		// TODO fill
 		return null;
 	}
 
 	@Override
 	public void removeRope(IRope rope) {
-		// TODO Auto-generated method stub
+		// TODO fill
 
 	}
 
 	@Override
 	public IRope createRope(Vector3f startPos, Vector3f endPos, int detail) {
-		// TODO Auto-generated method stub
+		// TODO fill
 		return null;
 	}
 
 	@Override
 	public ICollisionShape createSphereShape(float radius) {
-		NativeCollisionShape shape = new NativeCollisionShape(new btSphereShape(radius));
-		disposables.add(shape);
+		btSphereShape nativeSphere;
+		NativeCollisionShape shape = new NativeCollisionShape(nativeSphere = new btSphereShape(radius));
+		disposables.add(nativeSphere);
 		return shape;
-	}
-
-	@Override
-	public IRigidBody createInertiallessRigidBody(Entity owner, Transform transform, float mass,
-			ICollisionShape shape) {
-		btDefaultMotionState motionState = new btDefaultMotionState(fromTransformToMatrix4(transform));
-		btRigidBodyConstructionInfo constructionInfo = new btRigidBodyConstructionInfo(mass, motionState,
-				(btCollisionShape) shape.getCollisionShape());
-		NativeRigidBody rigidBody = new NativeRigidBody(new btRigidBody(constructionInfo), owner);
-		disposables.add(rigidBody);
-		return rigidBody;
 	}
 
 	// TODO Add slider constraint
@@ -527,7 +559,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
 			compoundShape.addChildShape(fromTransformToMatrix4(transform), new btBoxShape(toVector3(extents)));
 		}
 		NativeCollisionShape collisionShape = new NativeCollisionShape(compoundShape);
-		disposables.add(collisionShape);
 		return collisionShape;
 
 	}
@@ -536,37 +567,67 @@ public class NativePhysicsWorld extends PhysicsWorld {
 	// TODO Make dispose actually dispose something.
 	@Override
 	public void dispose() {
-		System.out.println("Disposing of garbage: " + disposables.size());
-		synchronized (this) {
-			for (int i = 0; i < rigidBodies.size(); i++) {
-				dynamicsWorld.removeRigidBody((btRigidBody) rigidBodies.get(i).getBody());
+		scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				dynamicsWorld.removeCollisionObject(voxelBody);
+				voxelShape.dispose();
+				voxelBody.dispose();
+				voxelProvider.dispose();
+
+				for (int i = 0; i < disposables.size(); i++) {
+					Disposable disposable = disposables.get(i);
+					disposable.dispose();
+				}
+
+				for (int i = 0; i < constraints.size(); i++) {
+					// Get constraint
+					IConstraint constraint = constraints.get(i);
+					// Remove reference from list
+					constraints.remove(i);
+
+					// Get native reference
+					btTypedConstraint constraintRef = (btTypedConstraint) constraint.getConstraint();
+					// Remove from world.
+					dynamicsWorld.removeConstraint(constraintRef);
+
+					// Dispose of native reference
+					constraintRef.dispose();
+				}
+
+				for (int i = 0; i < collisionObjects.size(); i++) {
+					ICollisionObject object = collisionObjects.get(i);
+					collisionObjects.remove(i);
+					btCollisionObject objectRef = (btCollisionObject) object.getCollisionObject();
+					dynamicsWorld.removeCollisionObject(objectRef);
+					objectRef.dispose();
+				}
+
+				for (int i = 0; i < rigidBodies.size(); i++) {
+					// Get rigidBody
+					IRigidBody rigidBody = (IRigidBody) rigidBodies.get(i);
+					// Remove reference from list
+					rigidBodies.remove(i);
+
+					// Get native reference.
+					btRigidBody rigidBodyRef = (btRigidBody) rigidBody.getBody();
+					// Remove from world.
+					dynamicsWorld.removeRigidBody(rigidBodyRef);
+					// Dispose of native reference
+					rigidBodyRef.getCollisionShape().dispose();
+					rigidBodyRef.getMotionState().dispose();
+					rigidBodyRef.dispose();
+				}
+
+				broadphase.dispose();
+				collisionDispatcher.dispose();
+				collisionConfiguration.dispose();
+				sequentialSolver.dispose();
+				dynamicsWorld.dispose();
+				dynamicsWorld = null;
 			}
-
-			for (int i = 0; i < dynamicsWorld.getNumCollisionObjects(); i++) {
-				btCollisionObject object = dynamicsWorld.getCollisionObjectArray().at(i);
-				dynamicsWorld.removeCollisionObject(object);
-			}
-
-			for (int i = 0; i < dynamicsWorld.getNumConstraints(); i++) {
-				btTypedConstraint constraint = dynamicsWorld.getConstraint(i);
-				dynamicsWorld.removeConstraint(constraint);
-			}
-
-			for (IDisposable disposable : disposables) {
-				disposable.dispose();
-			}
-			voxelBody.dispose();
-
-			/*
-			 * voxelBody.dispose(); collisionDispatcher.dispose();
-			 * collisionConfiguration.dispose(); broadphase.dispose();
-			 */
-
-			constraints.clear();
-			rigidBodies.clear();
-
-			super.dispose();
-			// System.gc();
-		}
+		});
+		super.dispose();
 	}
 }

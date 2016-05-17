@@ -8,7 +8,7 @@ import javax.vecmath.Vector3f;
 /**
  *
  */
-public interface IRayResult extends IDisposable {
+public interface IRayResult {
 
 	public Object getRayResultCallback();
 
