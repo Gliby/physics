@@ -25,7 +25,6 @@ import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Vec3;
 
-//TODO fix outline color
 public abstract class RenderPhysics extends Render {
 
 	private final int DEFAULT_PHYSICS_COLOR = 0xFF87FFFF;
@@ -61,7 +60,6 @@ public abstract class RenderPhysics extends Render {
 	protected abstract void draw(Entity uncast, double entityX, double entityY, double entityZ, float partialTick,
 			int color, boolean outline);
 
-	// TODO Outline color bugs.
 
 	public void doRender(Entity uncast, double entityX, double entityY, double entityZ, float twen, float partialTick) {
 		Tessellator tessellator = Tessellator.getInstance();

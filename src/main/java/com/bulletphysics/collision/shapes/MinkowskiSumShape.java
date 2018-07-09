@@ -23,11 +23,11 @@
 
 package com.bulletphysics.collision.shapes;
 
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.collision.broadphase.BroadphaseNativeType;
 import com.bulletphysics.linearmath.MatrixUtil;
 import com.bulletphysics.linearmath.Transform;
-
-import javax.vecmath.Vector3f;
 
 /**
  * MinkowskiSumShape is only for advanced users. This shape represents implicit

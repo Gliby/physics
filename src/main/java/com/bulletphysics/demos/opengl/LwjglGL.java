@@ -23,13 +23,14 @@
 
 package com.bulletphysics.demos.opengl;
 
-import com.bulletphysics.demos.opengl.FontRender.GLFont;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.Cylinder;
 import org.lwjgl.util.glu.Disk;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.Sphere;
+
+import com.bulletphysics.demos.opengl.FontRender.GLFont;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;

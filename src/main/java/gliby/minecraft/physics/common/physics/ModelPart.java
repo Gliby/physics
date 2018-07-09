@@ -7,10 +7,6 @@ import javax.vecmath.Vector3f;
 
 import net.minecraft.client.model.ModelBox;
 
-/**
- *
- */
-//TODO Remove
 public class ModelPart {
 
 	private final Vector3f position;

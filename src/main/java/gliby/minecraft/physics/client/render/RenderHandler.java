@@ -16,7 +16,7 @@ import gliby.minecraft.physics.client.render.items.RenderItemToolGun;
 import gliby.minecraft.physics.client.render.lighting.DummyLight;
 import gliby.minecraft.physics.client.render.lighting.IDynamicLightHandler;
 import gliby.minecraft.physics.client.render.player.RenderAdditionalPlayer;
-import gliby.minecraft.physics.client.render.world.RenderAdditionalWorld;
+import gliby.minecraft.physics.client.render.world.RenderDebugAdditionalWorld;
 import gliby.minecraft.physics.common.entity.EntityPhysicsBlock;
 import gliby.minecraft.physics.common.entity.EntityPhysicsModelPart;
 import gliby.minecraft.physics.common.entity.EntityToolGunBeam;
@@ -53,7 +53,7 @@ public class RenderHandler {
 
 	public RenderHandler(Physics physics, boolean dynamicLightsPresent) {
 		this.physics = physics;
-		// TODO Add dynamic lighting back.
+		// TODO cosmetic: Add dynamic lighting back.
 		if (dynamicLightsPresent) {
 			// lightHandler = new AtomicStrykerLight();
 		} else
@@ -74,7 +74,8 @@ public class RenderHandler {
 	 */
 	public void init(FMLInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(new RenderAdditionalPlayer());
-		MinecraftForge.EVENT_BUS.register(new RenderAdditionalWorld(physics));
+		// Used for client side physics.
+		//MinecraftForge.EVENT_BUS.register(new RenderAdditionalWorld(physics));
 		Minecraft mc = Minecraft.getMinecraft();
 
 		RenderingRegistry.registerEntityRenderingHandler(EntityPhysicsBlock.class,

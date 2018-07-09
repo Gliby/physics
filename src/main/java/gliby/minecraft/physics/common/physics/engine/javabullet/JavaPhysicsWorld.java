@@ -1,6 +1,3 @@
-/**
- * Copyright (c) 2015, Mine Fortress.
- */
 package gliby.minecraft.physics.common.physics.engine.javabullet;
 
 import java.util.ArrayList;
@@ -8,6 +5,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Matrix4f;
@@ -19,10 +17,10 @@ import com.bulletphysics.collision.dispatch.CollisionDispatcher;
 import com.bulletphysics.collision.dispatch.CollisionFlags;
 import com.bulletphysics.collision.dispatch.CollisionObject;
 import com.bulletphysics.collision.dispatch.CollisionWorld;
-import com.bulletphysics.collision.dispatch.CollisionWorld.RayResultCallback;
 import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
 import com.bulletphysics.collision.dispatch.GhostPairCallback;
 import com.bulletphysics.collision.dispatch.PairCachingGhostObject;
+import com.bulletphysics.collision.dispatch.CollisionWorld.RayResultCallback;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
 import com.bulletphysics.collision.shapes.CompoundShape;
@@ -39,6 +37,7 @@ import com.bulletphysics.dynamics.constraintsolver.SliderConstraint;
 import com.bulletphysics.dynamics.constraintsolver.TypedConstraint;
 import com.bulletphysics.linearmath.DefaultMotionState;
 import com.bulletphysics.linearmath.Transform;
+import com.google.common.collect.Queues;
 import com.google.gson.Gson;
 
 import gliby.minecraft.gman.WorldUtility;
@@ -62,10 +61,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
-//TODO Deprecate, improve or remove.
-/**
- *
- */
+
 public class JavaPhysicsWorld extends PhysicsWorld {
 
 	private List<IRigidBody> rigidBodies;
@@ -132,10 +128,20 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 		super.create();
 	}
 
+	private final Queue<Runnable> scheduledTasks = Queues.newArrayDeque();
+
 	@Override
 	public void update() {
+		Queue queue = this.scheduledTasks;
+		synchronized (this.scheduledTasks) {
+			while (!this.scheduledTasks.isEmpty()) {
+				this.scheduledTasks.poll().run();
+			}
+		}
+
 		float delta = getDelta();
-		dynamicsWorld.stepSimulation(1, Math.round(delta / 7));
+		if (dynamicsWorld != null)
+			dynamicsWorld.stepSimulation(1, Math.round(delta / 7));
 		super.update();
 	}
 
@@ -148,27 +154,41 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 	}
 
 	@Override
-	public void addRigidBody(IRigidBody body, short collisionFilterGroup, short collisionFilterMask) {
-		synchronized (this) {
-			this.dynamicsWorld.addRigidBody((RigidBody) body.getBody(), collisionFilterGroup, collisionFilterMask);
-			this.rigidBodies.add(body);
-		}
+	public void addRigidBody(final IRigidBody body, final short collisionFilterGroup, final short collisionFilterMask) {
+		scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				dynamicsWorld.addRigidBody((RigidBody) body.getBody(), collisionFilterGroup, collisionFilterMask);
+				rigidBodies.add(body);
+
+			}
+		});
 	}
 
 	@Override
-	public void removeRigidBody(IRigidBody body) {
-		synchronized (this) {
-			this.dynamicsWorld.removeRigidBody((RigidBody) body.getBody());
-			this.rigidBodies.remove(body);
-		}
+	public void removeRigidBody(final IRigidBody body) {
+		scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				dynamicsWorld.removeRigidBody((RigidBody) body.getBody());
+				rigidBodies.remove(body);
+			}
+		});
 	}
 
 	@Override
-	public void awakenArea(Vector3f min, Vector3f max) {
-		synchronized (this) {
-			if (dynamicsWorld != null)
-				this.dynamicsWorld.awakenRigidBodiesInArea(min, max);
-		}
+	public void awakenArea(final Vector3f min, final Vector3f max) {
+		scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				if (dynamicsWorld != null)
+					dynamicsWorld.awakenRigidBodiesInArea(min, max);
+			}
+		});
+
 	}
 
 	@Override
@@ -180,32 +200,49 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 	}
 
 	@Override
-	public void removeCollisionObject(ICollisionObject collisionObject) {
-		synchronized (this) {
-			this.dynamicsWorld.removeCollisionObject((CollisionObject) collisionObject.getCollisionObject());
-		}
+	public void removeCollisionObject(final ICollisionObject collisionObject) {
+		scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				dynamicsWorld.removeCollisionObject((CollisionObject) collisionObject.getCollisionObject());
+			}
+		});
 	}
 
 	@Override
-	public void setGravity(Vector3f newGravity) {
-		synchronized (this) {
-			this.dynamicsWorld.setGravity(newGravity);
-		}
+	public void setGravity(final Vector3f newGravity) {
+		scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				dynamicsWorld.setGravity(newGravity);
+			}
+		});
 	}
 
 	@Override
-	public void addCollisionObject(ICollisionObject object) {
-		synchronized (this) {
-			this.dynamicsWorld.addCollisionObject((CollisionObject) object.getCollisionObject());
-		}
+	public void addCollisionObject(final ICollisionObject object) {
+		scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				dynamicsWorld.addCollisionObject((CollisionObject) object.getCollisionObject());
+			}
+		});
 	}
 
 	@Override
-	public void addCollisionObject(ICollisionObject object, short collisionFilterGroup, short collisionFilterMask) {
-		synchronized (this) {
-			this.dynamicsWorld.addCollisionObject((CollisionObject) object.getCollisionObject(), collisionFilterGroup,
-					collisionFilterMask);
-		}
+	public void addCollisionObject(final ICollisionObject object, final short collisionFilterGroup,
+			final short collisionFilterMask) {
+		scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				dynamicsWorld.addCollisionObject((CollisionObject) object.getCollisionObject(), collisionFilterGroup,
+						collisionFilterMask);
+			}
+		});
 	}
 
 	@Override
@@ -215,16 +252,20 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public void dispose() {
-		synchronized (this) {
-			for (int i = 0; i < dynamicsWorld.getNumCollisionObjects(); i++) {
-				CollisionObject object = dynamicsWorld.getCollisionObjectArray().get(i);
-				dynamicsWorld.removeCollisionObject(object);
-			}
+		scheduledTasks.add(new Runnable() {
 
-			dynamicsWorld.destroy();
-			rigidBodies.clear();
-			constraints.clear();
-		}
+			@Override
+			public void run() {
+				for (int i = 0; i < dynamicsWorld.getNumCollisionObjects(); i++) {
+					CollisionObject object = dynamicsWorld.getCollisionObjectArray().get(i);
+					dynamicsWorld.removeCollisionObject(object);
+				}
+
+				dynamicsWorld.destroy();
+				rigidBodies.clear();
+				constraints.clear();
+			}
+		});
 		super.dispose();
 	}
 
@@ -269,8 +310,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public ICollisionShape createBoxShape(final Vector3f extents) {
-		return new gliby.minecraft.physics.common.physics.engine.javabullet.JavaCollisionShape(
-				new BoxShape(extents));
+		return new gliby.minecraft.physics.common.physics.engine.javabullet.JavaCollisionShape(new BoxShape(extents));
 	}
 
 	@Override

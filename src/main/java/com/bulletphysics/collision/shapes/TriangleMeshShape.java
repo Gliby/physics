@@ -23,13 +23,13 @@
 
 package com.bulletphysics.collision.shapes;
 
+import javax.vecmath.Matrix3f;
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.linearmath.AabbUtil2;
 import com.bulletphysics.linearmath.MatrixUtil;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.linearmath.VectorUtil;
-
-import javax.vecmath.Matrix3f;
-import javax.vecmath.Vector3f;
 
 /**
  * Concave triangle mesh abstract class. Use {@link BvhTriangleMeshShape} as concrete

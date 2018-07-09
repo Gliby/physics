@@ -36,10 +36,9 @@ public class PhysicsOverworld {
 	 * @return
 	 */
 	public PhysicsWorld getPhysicsByWorld(final World access) {
-		// TODO Stop forcing java physics engine.
 		PhysicsWorld physicsWorld = getPhysicsWorldMap().get(access);
 		if (physicsWorld == null) {
-			final Vector3f gravity = new Vector3f(0, -9.8F, 0);
+			final Vector3f gravity = new Vector3f(0, physics.getSettings().getFloatSetting("PhysicsEngine.GravityForce").getFloatValue(), 0);
 			physicsWorld = createPhysicsWorld(
 					!physics.getSettings().getBooleanSetting("PhysicsEngine.UseJavaPhysics").getBooleanValue(),
 					new IPhysicsWorldConfiguration() {
@@ -56,13 +55,11 @@ public class PhysicsOverworld {
 
 						@Override
 						public final int getTicksPerSecond() {
-							// TODO Settings!
-							return 30;
+							return physics.getSettings().getIntegerSetting("PhysicsEngine.TickRate").getIntValue();
 						}
 
 						@Override
 						public Vector3f getRegularGravity() {
-							// TODO Settings!
 							return gravity;
 						}
 					});

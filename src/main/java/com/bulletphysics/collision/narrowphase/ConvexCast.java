@@ -23,10 +23,10 @@
 
 package com.bulletphysics.collision.narrowphase;
 
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.linearmath.IDebugDraw;
 import com.bulletphysics.linearmath.Transform;
-
-import javax.vecmath.Vector3f;
 
 /**
  * ConvexCast is an interface for casting.

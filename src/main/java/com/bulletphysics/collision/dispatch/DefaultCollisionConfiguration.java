@@ -23,14 +23,14 @@
 
 package com.bulletphysics.collision.dispatch;
 
+import static com.bulletphysics.collision.broadphase.BroadphaseNativeType.SPHERE_SHAPE_PROXYTYPE;
+import static com.bulletphysics.collision.broadphase.BroadphaseNativeType.STATIC_PLANE_PROXYTYPE;
+
 import com.bulletphysics.collision.broadphase.BroadphaseNativeType;
 import com.bulletphysics.collision.narrowphase.ConvexPenetrationDepthSolver;
 import com.bulletphysics.collision.narrowphase.GjkEpaPenetrationDepthSolver;
 import com.bulletphysics.collision.narrowphase.VoronoiSimplexSolver;
 import com.bulletphysics.extras.gimpact.GImpactCollisionAlgorithm;
-
-import static com.bulletphysics.collision.broadphase.BroadphaseNativeType.SPHERE_SHAPE_PROXYTYPE;
-import static com.bulletphysics.collision.broadphase.BroadphaseNativeType.STATIC_PLANE_PROXYTYPE;
 
 /**
  * Default implementation of {@link CollisionConfiguration}. Provides all core

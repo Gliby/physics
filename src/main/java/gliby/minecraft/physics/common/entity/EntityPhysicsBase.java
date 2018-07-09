@@ -34,7 +34,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-//TODO Replace death timer with physics object limit.
+//TODO feature: Replace death timer with physics object limit.
 
 /**
  *
@@ -177,14 +177,14 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 		if (!worldObj.isRemote) {
 			mechanics.clear();
 			PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
+			// TODO improvement: block property nbt saving
+
 			Gson gson = new Gson();
-			// TODO Get this working!
-			/*
-			 * if (tagCompound.hasKey("Properties")) {
-			 * this.getRigidBody().getProperties()
-			 * .putAll(gson.fromJson(tagCompound.getString("Properties"),
-			 * Map.class)); }
-			 */
+	/*		if (tagCompound.hasKey("Properties")) {
+				this.getRigidBody().getProperties()
+						.putAll(gson.fromJson(tagCompound.getString("Properties"), Map.class));
+			}*/
+
 			ArrayList<String> mechanicsByNames = gson.fromJson(tagCompound.getString("Mechanics"), ArrayList.class);
 			if (mechanicsByNames != null) {
 				for (int i = 0; i < mechanicsByNames.size(); i++) {
@@ -198,15 +198,15 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 	}
 
 	public void writeEntityToNBT(NBTTagCompound tagCompound) {
-		Gson gson = new Gson();
 		ArrayList<String> mechanicsByNames = new ArrayList<String>();
 		for (int i = 0; i < mechanics.size(); i++) {
 			mechanicsByNames
 					.add(Physics.getInstance().getPhysicsOverworld().getMechanicsMap().inverse().get(mechanics.get(i)));
 		}
-		// TODO Get this working!
-		// tagCompound.setString("Properties",
-		// gson.toJson(this.getRigidBody().getProperties()));
+		// TODO improvement: block property nbt saving
+		Gson gson = new Gson();
+/*		 tagCompound.setString("Properties",
+		 gson.toJson(this.getRigidBody().getProperties()));*/
 		tagCompound.setString("Mechanics", gson.toJson(mechanicsByNames));
 	}
 

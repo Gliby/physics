@@ -76,7 +76,6 @@ public abstract class PhysicsWorld implements Runnable {
 		}
 	}
 
-	// TODO Get rid of transform references
 	public ICollisionShape createBlockShape(World worldObj, BlockPos blockPos, IBlockState blockState) {
 		if (!blockState.getBlock().isNormalCube()) {
 			List<AxisAlignedBB> collisionBBs = new ArrayList<AxisAlignedBB>();

@@ -24,6 +24,9 @@
 
 package com.bulletphysics.demos.dynamiccontrol;
 
+import javax.vecmath.Quat4f;
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.collision.shapes.CapsuleShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
@@ -37,9 +40,6 @@ import com.bulletphysics.linearmath.DefaultMotionState;
 import com.bulletphysics.linearmath.MatrixUtil;
 import com.bulletphysics.linearmath.QuaternionUtil;
 import com.bulletphysics.linearmath.Transform;
-
-import javax.vecmath.Quat4f;
-import javax.vecmath.Vector3f;
 
 /**
  * @author LvR

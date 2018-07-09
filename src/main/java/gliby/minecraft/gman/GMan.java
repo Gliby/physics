@@ -17,11 +17,7 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.base.Predicate;
 import com.google.gson.Gson;
 
-/**
- * Update, minecraft -> server handler;
- *
- */
-// TODO Fix mod outdated inaccuracy bug.
+
 public class GMan {
 
 	public HashMap<String, Object> properties;

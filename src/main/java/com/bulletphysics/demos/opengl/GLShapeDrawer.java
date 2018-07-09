@@ -23,6 +23,12 @@
 
 package com.bulletphysics.demos.opengl;
 
+import static com.bulletphysics.demos.opengl.IGL.GL_COLOR_MATERIAL;
+import static com.bulletphysics.demos.opengl.IGL.GL_LINES;
+import static com.bulletphysics.demos.opengl.IGL.GL_TRIANGLES;
+
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.collision.broadphase.BroadphaseNativeType;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
@@ -43,12 +49,6 @@ import com.bulletphysics.linearmath.VectorUtil;
 import com.bulletphysics.util.IntArrayList;
 import com.bulletphysics.util.ObjectArrayList;
 import com.bulletphysics.util.ObjectPool;
-
-import javax.vecmath.Vector3f;
-
-import static com.bulletphysics.demos.opengl.IGL.GL_COLOR_MATERIAL;
-import static com.bulletphysics.demos.opengl.IGL.GL_LINES;
-import static com.bulletphysics.demos.opengl.IGL.GL_TRIANGLES;
 
 //import static org.lwjgl.opengl.GL11.*;
 //import static org.lwjgl.opengl.glu.GLU.*;

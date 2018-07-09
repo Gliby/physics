@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 
 import gliby.minecraft.gman.settings.INIProperties.INIPropertiesReadFailure;
 import gliby.minecraft.gman.settings.Setting.Side;
+import net.minecraft.client.Minecraft;
 
 /**
  * 
@@ -76,54 +77,54 @@ public class SettingsHandler {
 
 	boolean firstTime;
 
-	// TODO Thread this stuff
+	// TODO improvement: run in seperate worker thread
 	public void save() {
-		// Executors.newSingleThreadExecutor().execute(new Runnable() {
-
-		// @Override
-		// public void run() {
-		firstTime = !file.exists();
-		Iterator it = settings.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry<String, Setting> entry = (Map.Entry) it.next();
-			Setting setting = entry.getValue();
-			// if (FMLCommonHandler.instance().getEffectiveSide() ==
-			// settingInfo.getSide()) {
-			if (!setting.isHidden() && (setting.side == Setting.Side.getEffectiveSide() || setting.side == Side.BOTH)) {
-				for (int i = 0; i < setting.getWriteListeners().size(); i++) {
-					setting.getWriteListeners().get(i).listen(properties);
+		Minecraft mc = Minecraft.getMinecraft();
+		mc.addScheduledTask(new Runnable() {
+			public void run() {
+				firstTime = !file.exists();
+				Iterator it = settings.entrySet().iterator();
+				while (it.hasNext()) {
+					Map.Entry<String, Setting> entry = (Map.Entry) it.next();
+					Setting setting = entry.getValue();
+					// if (FMLCommonHandler.instance().getEffectiveSide() ==
+					// settingInfo.getSide()) {
+					if (!setting.isHidden()
+							&& (setting.side == Setting.Side.getEffectiveSide() || setting.side == Side.BOTH)) {
+						for (int i = 0; i < setting.getWriteListeners().size(); i++) {
+							setting.getWriteListeners().get(i).listen(properties);
+						}
+						setting.write(properties);
+					}
+					// }
 				}
-				setting.write(properties);
+
+				properties.updateFile();
 			}
-			// }
-		}
-
-		properties.updateFile();
-		// }
-
-		// });
+		});
 	}
 
 	public void read() {
-		// Executors.newSingleThreadExecutor().execute(new Runnable() {
-
-		// @Override
-		// public void run() {
-		Iterator it = settings.entrySet().iterator();
-		while (it.hasNext()) {
-			Map.Entry<String, Setting> entry = (Map.Entry) it.next();
-			String settingInfo = entry.getKey();
-			Setting setting = entry.getValue();
-			try {
-				for (int i = 0; i < setting.getReadListeners().size(); i++) {
-					setting.getReadListeners().get(i).listen(properties);
+		Minecraft mc = Minecraft.getMinecraft();
+		mc.addScheduledTask(new Runnable() {
+			public void run() {
+				Iterator it = settings.entrySet().iterator();
+				while (it.hasNext()) {
+					Map.Entry<String, Setting> entry = (Map.Entry) it.next();
+					String settingInfo = entry.getKey();
+					Setting setting = entry.getValue();
+					try {
+						for (int i = 0; i < setting.getReadListeners().size(); i++) {
+							setting.getReadListeners().get(i).listen(properties);
+						}
+						setting.read(properties);
+					} catch (INIPropertiesReadFailure e) {
+						// if (!setting.isHidden())
+						// e.printStackTrace();
+					}
 				}
-				setting.read(properties);
-			} catch (INIPropertiesReadFailure e) {
-				// if (!setting.isHidden())
-				// e.printStackTrace();
 			}
-		}
+		});
 		// }
 
 		// });

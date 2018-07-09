@@ -23,6 +23,8 @@
 
 package com.bulletphysics.demos.basic;
 
+import org.lwjgl.LWJGLException;
+
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
 import com.bulletphysics.collision.broadphase.DbvtBroadphase;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
@@ -41,12 +43,11 @@ import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSo
 import com.bulletphysics.linearmath.DefaultMotionState;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.util.ObjectArrayList;
-import org.lwjgl.LWJGLException;
-
-import javax.vecmath.Vector3f;
 
 import static com.bulletphysics.demos.opengl.IGL.GL_COLOR_BUFFER_BIT;
 import static com.bulletphysics.demos.opengl.IGL.GL_DEPTH_BUFFER_BIT;
+
+import javax.vecmath.Vector3f;
 
 /**
  * BasicDemo is good starting point for learning the code base and porting.

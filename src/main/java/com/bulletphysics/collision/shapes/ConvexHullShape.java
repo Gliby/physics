@@ -23,14 +23,14 @@
 
 package com.bulletphysics.collision.shapes;
 
+import javax.vecmath.Vector3f;
+
+import org.apache.commons.math3.util.FastMath;
+
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.collision.broadphase.BroadphaseNativeType;
 import com.bulletphysics.linearmath.VectorUtil;
 import com.bulletphysics.util.ObjectArrayList;
-
-import javax.vecmath.Vector3f;
-
-import org.apache.commons.math3.util.FastMath;
 
 /**
  * ConvexHullShape implements an implicit convex hull of an array of vertices.

@@ -118,7 +118,6 @@ public class EntityCollisionResponseMechanic extends PhysicsMechanic {
 			Map.Entry<Integer, Long> entry = iterator.next();
 			int entityId = entry.getKey();
 			long timeAdded = entry.getValue();
-			// TODO Settings value MS
 			if ((System.currentTimeMillis() - timeAdded) / 1000 > Physics.getInstance().getSettings()
 					.getFloatSetting("PhysicsEntities.EntityColliderCleanupTime").getFloatValue()) {
 				physicsWorld.removeCollisionObject(ghostObjects.get(entityId));

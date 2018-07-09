@@ -26,12 +26,12 @@
 
 package com.bulletphysics.collision.broadphase;
 
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.BulletStats;
 import com.bulletphysics.linearmath.MiscUtil;
 import com.bulletphysics.linearmath.VectorUtil;
 import com.bulletphysics.util.ObjectArrayList;
-
-import javax.vecmath.Vector3f;
 
 /**
  * AxisSweep3Internal is an internal base class that implements sweep and prune.

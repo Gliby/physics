@@ -99,7 +99,6 @@ public class KeyManager {
 		return keyBinding;
 	}
 
-	//TODO Look into phases.
 	@SubscribeEvent
 	public void tick(TickEvent event) {
 		if (event.side == Side.CLIENT) {

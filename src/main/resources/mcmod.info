@@ -2,15 +2,11 @@
 {
   "modid": "glibysphysics",
   "name": "Gliby's Physics",
-  "description": "In development.",
-  "version": "${version}",
+  "description": "Early access physics mod",
   "mcversion": "${mcversion}",
-  "url": "",
-  "updateUrl": "",
   "authorList": ["Gliby"],
   "credits": "@Immortius, Bullet Team.",
   "logoFile": "logo.png",
   "screenshots": [],
-  "dependencies": [ "DynamicLights" ]
 }
 ]

@@ -23,10 +23,10 @@
 
 package com.bulletphysics.linearmath;
 
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.collision.dispatch.CollisionWorld;
 import com.bulletphysics.dynamics.DynamicsWorld;
-
-import javax.vecmath.Vector3f;
 
 /**
  * IDebugDraw interface class allows hooking up a debug renderer to visually debug

@@ -23,13 +23,13 @@
 
 package com.bulletphysics.collision.narrowphase;
 
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.collision.narrowphase.ConvexCast.CastResult;
 import com.bulletphysics.collision.shapes.ConvexShape;
 import com.bulletphysics.collision.shapes.TriangleCallback;
 import com.bulletphysics.collision.shapes.TriangleShape;
 import com.bulletphysics.linearmath.Transform;
-
-import javax.vecmath.Vector3f;
 
 /**
  * @author jezek2

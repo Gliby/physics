@@ -23,6 +23,8 @@
 
 package com.bulletphysics.dynamics;
 
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
 import com.bulletphysics.collision.broadphase.Dispatcher;
 import com.bulletphysics.collision.dispatch.CollisionConfiguration;
@@ -31,8 +33,6 @@ import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
 import com.bulletphysics.dynamics.constraintsolver.ContactSolverInfo;
 import com.bulletphysics.dynamics.constraintsolver.TypedConstraint;
 import com.bulletphysics.dynamics.vehicle.RaycastVehicle;
-
-import javax.vecmath.Vector3f;
 
 /**
  * DynamicsWorld is the interface class for several dynamics implementation,

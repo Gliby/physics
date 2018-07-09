@@ -23,9 +23,10 @@
 
 package com.bulletphysics.demos.bsp;
 
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.util.ObjectArrayList;
 
-import javax.vecmath.Vector3f;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;

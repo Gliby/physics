@@ -70,7 +70,7 @@ public class PhysicsClient extends PhysicsServer {
 	public void init(Physics physics, FMLInitializationEvent event) {
 		physics.getLogger().info("Started!");
 		/*
-		 * TODO Enable dynamic lights. boolean dynamicLightsPresent =
+		 * TODO cosmetic: Enable dynamic lights. boolean dynamicLightsPresent =
 		 * Loader.isModLoaded("DynamicLights"); if (dynamicLightsPresent) {
 		 * physics.getLogger().info(
 		 * "DynamicLights by AtomicStryker has been found, enabling dynamic light creation!"
@@ -80,10 +80,11 @@ public class PhysicsClient extends PhysicsServer {
 		itemHandler.addAlwaysUsedItem(physics.getGameManager().itemPhysicsGun, false, false);
 		itemHandler.addAlwaysUsedItem(physics.getGameManager().itemToolgun, false, false);
 		MinecraftForge.EVENT_BUS.register(this);
+		// TODO unfinished: EntityDeathHandler
 		// MinecraftForge.EVENT_BUS.register(new
 		// EntityDeathHandler(physicsWorld));
 		render = new RenderHandler(physics,
-				false /* TODO Continue... Redo dynamic lighting right here! */);
+				false);
 		render.init(event);
 	}
 

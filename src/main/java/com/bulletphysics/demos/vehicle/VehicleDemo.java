@@ -23,6 +23,9 @@
 
 package com.bulletphysics.demos.vehicle;
 
+import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Keyboard;
+
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
 import com.bulletphysics.collision.broadphase.DbvtBroadphase;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
@@ -50,8 +53,6 @@ import com.bulletphysics.dynamics.vehicle.VehicleTuning;
 import com.bulletphysics.dynamics.vehicle.WheelInfo;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.util.ObjectArrayList;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Keyboard;
 
 import javax.vecmath.Vector3f;
 import java.nio.ByteBuffer;

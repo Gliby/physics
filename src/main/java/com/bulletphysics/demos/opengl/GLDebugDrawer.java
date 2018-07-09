@@ -23,13 +23,13 @@
 
 package com.bulletphysics.demos.opengl;
 
-import com.bulletphysics.linearmath.DebugDrawModes;
-import com.bulletphysics.linearmath.IDebugDraw;
+import static com.bulletphysics.demos.opengl.IGL.GL_LINES;
+import static com.bulletphysics.demos.opengl.IGL.GL_POINTS;
 
 import javax.vecmath.Vector3f;
 
-import static com.bulletphysics.demos.opengl.IGL.GL_LINES;
-import static com.bulletphysics.demos.opengl.IGL.GL_POINTS;
+import com.bulletphysics.linearmath.DebugDrawModes;
+import com.bulletphysics.linearmath.IDebugDraw;
 
 /**
  * @author jezek2

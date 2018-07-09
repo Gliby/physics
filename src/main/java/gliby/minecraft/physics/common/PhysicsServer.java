@@ -28,7 +28,6 @@ public class PhysicsServer implements IPhysicsProxy {
 	public void postInit(FMLPostInitializationEvent event) {
 	}
 
-	// TODO Replace this with a game tick based event.
 	@SubscribeEvent
 	public void playerJoinEvent(final PlayerLoggedInEvent event) {
 		MinecraftServer.getServer().addScheduledTask(new Runnable() {
@@ -48,8 +47,6 @@ public class PhysicsServer implements IPhysicsProxy {
 				Physics physics = Physics.getInstance();
 				physics.getDispatcher().sendTo(new PacketPlayerJoin(physics.getGameManager().getToolGunRegistry().getValueDefinitions()),
 						(EntityPlayerMP) event.player);
-				event.player
-						.addChatComponentMessage(new ChatComponentText("Running: " + System.getProperty("os.name")));
 			}
 
 		});

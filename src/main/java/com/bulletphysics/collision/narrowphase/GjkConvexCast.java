@@ -23,14 +23,14 @@
 
 package com.bulletphysics.collision.narrowphase;
 
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.collision.narrowphase.DiscreteCollisionDetectorInterface.ClosestPointInput;
 import com.bulletphysics.collision.shapes.ConvexShape;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.linearmath.VectorUtil;
 import com.bulletphysics.util.ObjectPool;
-
-import javax.vecmath.Vector3f;
 
 /**
  * GjkConvexCast performs a raycast on a convex object using support mapping.

@@ -23,16 +23,16 @@
 
 package com.bulletphysics.collision.shapes;
 
+import javax.vecmath.Matrix3f;
+import javax.vecmath.Vector3f;
+
+import org.apache.commons.math3.util.FastMath;
+
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.collision.broadphase.BroadphaseNativeType;
 import com.bulletphysics.linearmath.MatrixUtil;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.linearmath.VectorUtil;
-
-import javax.vecmath.Matrix3f;
-import javax.vecmath.Vector3f;
-
-import org.apache.commons.math3.util.FastMath;
 
 /**
  * CapsuleShape represents a capsule around the Y axis, there is also the

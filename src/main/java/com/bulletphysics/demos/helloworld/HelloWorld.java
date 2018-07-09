@@ -24,6 +24,8 @@
 
 package com.bulletphysics.demos.helloworld;
 
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.collision.broadphase.AxisSweep3;
 import com.bulletphysics.collision.dispatch.CollisionConfiguration;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
@@ -39,8 +41,6 @@ import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSo
 import com.bulletphysics.linearmath.DefaultMotionState;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.util.ObjectArrayList;
-
-import javax.vecmath.Vector3f;
 
 /**
  * This is a Hello World program for running a basic Bullet physics simulation.

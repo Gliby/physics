@@ -23,11 +23,11 @@
 
 package com.bulletphysics.linearmath;
 
+import java.util.Comparator;
+
 import com.bulletphysics.util.FloatArrayList;
 import com.bulletphysics.util.IntArrayList;
 import com.bulletphysics.util.ObjectArrayList;
-
-import java.util.Comparator;
 
 /**
  * Miscellaneous utility functions.

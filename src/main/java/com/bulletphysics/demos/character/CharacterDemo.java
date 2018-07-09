@@ -23,6 +23,8 @@
 
 package com.bulletphysics.demos.character;
 
+import org.lwjgl.input.Keyboard;
+
 import com.bulletphysics.collision.broadphase.AxisSweep3;
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
 import com.bulletphysics.collision.broadphase.CollisionFilterGroups;
@@ -47,12 +49,11 @@ import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.util.ObjectArrayList;
-import org.lwjgl.input.Keyboard;
-
-import javax.vecmath.Vector3f;
 
 import static com.bulletphysics.demos.opengl.IGL.GL_COLOR_BUFFER_BIT;
 import static com.bulletphysics.demos.opengl.IGL.GL_DEPTH_BUFFER_BIT;
+
+import javax.vecmath.Vector3f;
 
 /**
  * @author tomrbryn

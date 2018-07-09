@@ -23,11 +23,11 @@
 
 package com.bulletphysics.dynamics.vehicle;
 
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.collision.dispatch.CollisionWorld.ClosestRayResultCallback;
 import com.bulletphysics.dynamics.DynamicsWorld;
 import com.bulletphysics.dynamics.RigidBody;
-
-import javax.vecmath.Vector3f;
 
 /**
  * Default implementation of {@link VehicleRaycaster}.

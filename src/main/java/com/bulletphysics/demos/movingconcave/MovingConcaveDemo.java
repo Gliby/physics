@@ -23,6 +23,8 @@
 
 package com.bulletphysics.demos.movingconcave;
 
+import org.lwjgl.LWJGLException;
+
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
 import com.bulletphysics.collision.broadphase.DbvtBroadphase;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
@@ -44,13 +46,12 @@ import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSo
 import com.bulletphysics.extras.gimpact.GImpactCollisionAlgorithm;
 import com.bulletphysics.extras.gimpact.GImpactMeshShape;
 import com.bulletphysics.linearmath.Transform;
-import org.lwjgl.LWJGLException;
-
-import javax.vecmath.Quat4f;
-import javax.vecmath.Vector3f;
 
 import static com.bulletphysics.demos.opengl.IGL.GL_COLOR_BUFFER_BIT;
 import static com.bulletphysics.demos.opengl.IGL.GL_DEPTH_BUFFER_BIT;
+
+import javax.vecmath.Quat4f;
+import javax.vecmath.Vector3f;
 
 /**
  * @author jezek2

@@ -23,12 +23,12 @@
 
 package com.bulletphysics.linearmath;
 
-import com.bulletphysics.util.ObjectArrayList;
-
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
 import org.apache.commons.math3.util.FastMath;
+
+import com.bulletphysics.util.ObjectArrayList;
 
 /**
  * GeometryUtil helper class provides a few methods to convert between plane

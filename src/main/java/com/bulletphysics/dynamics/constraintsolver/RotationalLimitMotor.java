@@ -30,10 +30,10 @@ http://gimpact.sf.net
 
 package com.bulletphysics.dynamics.constraintsolver;
 
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.dynamics.RigidBody;
-
-import javax.vecmath.Vector3f;
 
 /**
  * Rotation limit structure for generic joints.

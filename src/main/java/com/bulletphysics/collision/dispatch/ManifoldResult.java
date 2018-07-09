@@ -23,14 +23,14 @@
 
 package com.bulletphysics.collision.dispatch;
 
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.collision.narrowphase.DiscreteCollisionDetectorInterface;
 import com.bulletphysics.collision.narrowphase.ManifoldPoint;
 import com.bulletphysics.collision.narrowphase.PersistentManifold;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.util.ObjectPool;
-
-import javax.vecmath.Vector3f;
 
 /**
  * ManifoldResult is helper class to manage contact results.

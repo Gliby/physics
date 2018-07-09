@@ -1,6 +1,3 @@
-/**
- * Copyright (c) 2015, Mine Fortress.
- */
 package gliby.minecraft.physics.common.game.events;
 
 import java.lang.reflect.Field;
@@ -40,7 +37,7 @@ public class EntityDeathHandler {
 
 	public EntityDeathHandler(PhysicsOverworld overworld) {
 		this.physicsOverworld = overworld;
-		// TODO Import from .json instead of this.
+		// TODO improvement: Import from .json instead of this.
 		RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
 		for (Object obj : renderManager.entityRenderMap.entrySet()) {
 			Map.Entry<Class<? extends Entity>, RenderLiving> entry = (Map.Entry<Class<? extends Entity>, RenderLiving>) obj;

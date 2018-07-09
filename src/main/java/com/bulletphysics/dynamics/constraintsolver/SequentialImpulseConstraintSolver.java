@@ -23,6 +23,11 @@
 
 package com.bulletphysics.dynamics.constraintsolver;
 
+import javax.vecmath.Matrix3f;
+import javax.vecmath.Vector3f;
+
+import org.apache.commons.math3.util.FastMath;
+
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.BulletStats;
 import com.bulletphysics.ContactDestroyedCallback;
@@ -38,11 +43,6 @@ import com.bulletphysics.linearmath.TransformUtil;
 import com.bulletphysics.util.IntArrayList;
 import com.bulletphysics.util.ObjectArrayList;
 import com.bulletphysics.util.ObjectPool;
-
-import javax.vecmath.Matrix3f;
-import javax.vecmath.Vector3f;
-
-import org.apache.commons.math3.util.FastMath;
 
 /**
  * SequentialImpulseConstraintSolver uses a Propagation Method and Sequentially applies impulses.

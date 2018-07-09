@@ -25,16 +25,16 @@
 
 package com.bulletphysics.linearmath.convexhull;
 
+import javax.vecmath.Vector3f;
+
+import org.apache.commons.math3.util.FastMath;
+
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.collision.shapes.ShapeHull;
 import com.bulletphysics.linearmath.MiscUtil;
 import com.bulletphysics.linearmath.VectorUtil;
 import com.bulletphysics.util.IntArrayList;
 import com.bulletphysics.util.ObjectArrayList;
-
-import javax.vecmath.Vector3f;
-
-import org.apache.commons.math3.util.FastMath;
 
 /**
  * HullLibrary class can create a convex hull from a collection of vertices, using
