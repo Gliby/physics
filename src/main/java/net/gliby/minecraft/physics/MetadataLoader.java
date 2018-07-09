@@ -1,6 +1,3 @@
-/**
- * Copyright (c) 2015, Mine Fortress.
- */
 package net.gliby.minecraft.physics;
 
 import java.io.IOException;

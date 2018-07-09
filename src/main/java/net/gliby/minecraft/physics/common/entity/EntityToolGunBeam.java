@@ -71,7 +71,7 @@ public class EntityToolGunBeam extends Entity implements IEntityAdditionalSpawnD
 					soundPosition.scale(MathHelper.clamp_float(distance, 0, 16));
 					soundPosition.add(clientOrigin != null ? clientOrigin : worldOrigin);
 					worldObj.playSound(soundPosition.x, soundPosition.y, soundPosition.z,
-							SoundHandler.getSoundByIdentifer("ToolGun.Beam"), 1.0F, 1.0F, false);
+							SoundHandler.getSoundByIdentifer("ToolGun.Beam"), 0.2F, 1.0F, false);
 				}
 			}
 			float val = MathHelper.clamp_float((System.currentTimeMillis() - timeCreated), 0, msUntilGone)
