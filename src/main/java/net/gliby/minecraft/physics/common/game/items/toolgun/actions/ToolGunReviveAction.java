@@ -40,7 +40,7 @@ public class ToolGunReviveAction implements IToolGunAction {
 
 	@Override
 	public String getName() {
-		return "Revive";
+		return "Reconstruct";
 	}
 
 }
