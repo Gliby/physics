@@ -23,6 +23,8 @@
 
 package com.bulletphysics.dynamics;
 
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.BulletStats;
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
@@ -55,7 +57,6 @@ import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.linearmath.TransformUtil;
 import com.bulletphysics.util.ObjectArrayList;
 
-import javax.vecmath.Vector3f;
 import java.util.Comparator;
 
 /**

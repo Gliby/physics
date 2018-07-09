@@ -23,6 +23,8 @@
 
 package com.bulletphysics.collision.dispatch;
 
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.collision.broadphase.CollisionAlgorithm;
 import com.bulletphysics.collision.broadphase.CollisionAlgorithmConstructionInfo;
@@ -32,8 +34,6 @@ import com.bulletphysics.collision.shapes.SphereShape;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.util.ObjectArrayList;
 import com.bulletphysics.util.ObjectPool;
-
-import javax.vecmath.Vector3f;
 
 /**
  * Provides collision detection between two spheres.

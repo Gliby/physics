@@ -24,6 +24,8 @@
 
 package com.bulletphysics.demos.dynamiccontrol;
 
+import org.lwjgl.LWJGLException;
+
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
 import com.bulletphysics.collision.broadphase.DbvtBroadphase;
@@ -42,13 +44,12 @@ import com.bulletphysics.dynamics.constraintsolver.HingeConstraint;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.util.ObjectArrayList;
-import org.lwjgl.LWJGLException;
-
-import javax.vecmath.Vector3f;
 
 import static com.bulletphysics.demos.opengl.IGL.GL_COLOR_BUFFER_BIT;
 import static com.bulletphysics.demos.opengl.IGL.GL_DEPTH_BUFFER_BIT;
 import static com.bulletphysics.demos.opengl.IGL.GL_LINES;
+
+import javax.vecmath.Vector3f;
 
 /**
  * @author LvR

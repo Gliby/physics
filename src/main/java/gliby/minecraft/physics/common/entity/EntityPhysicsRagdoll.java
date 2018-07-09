@@ -57,7 +57,6 @@ public class EntityPhysicsRagdoll extends EntityPhysicsBase implements IEntityAd
 		setPositionAndUpdate(x, y, z);
 	}
 
-	// TODO Physics: clean up this code.
 	*//**
 	 * 
 	 *//*

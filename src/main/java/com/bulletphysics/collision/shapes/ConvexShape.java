@@ -23,9 +23,9 @@
 
 package com.bulletphysics.collision.shapes;
 
-import com.bulletphysics.linearmath.Transform;
-
 import javax.vecmath.Vector3f;
+
+import com.bulletphysics.linearmath.Transform;
 
 /**
  * ConvexShape is an abstract shape class. It describes general convex shapes

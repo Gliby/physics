@@ -47,7 +47,6 @@ public class BounceMechanic extends RigidBodyMechanic {
 					float mass = rigidBody.getInvMass();
 					Vector3f impulse = new Vector3f(0, biggestDistance, 0);
 					impulse.scale(mass * 300);
-					// TODO Settings, max distance that object can rise.
 					impulse.setY(MathHelper.clamp_float(impulse.getY(), 0, 300));
 					rigidBody.applyCentralImpulse(impulse);
 					rigidBody.getProperties().put(EnumRigidBodyProperty.BIGGESTDISTANCE.getName(), 0.0F);

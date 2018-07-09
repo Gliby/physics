@@ -30,10 +30,10 @@ http://gimpact.sf.net
 
 package com.bulletphysics.dynamics.constraintsolver;
 
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.linearmath.VectorUtil;
-
-import javax.vecmath.Vector3f;
 
 /**
  * @author jezek2

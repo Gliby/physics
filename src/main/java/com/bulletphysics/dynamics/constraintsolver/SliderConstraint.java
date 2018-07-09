@@ -32,14 +32,14 @@ TODO:
 
 package com.bulletphysics.dynamics.constraintsolver;
 
-import com.bulletphysics.dynamics.RigidBody;
-import com.bulletphysics.linearmath.Transform;
-import com.bulletphysics.linearmath.VectorUtil;
-
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
 import org.apache.commons.math3.util.FastMath;
+
+import com.bulletphysics.dynamics.RigidBody;
+import com.bulletphysics.linearmath.Transform;
+import com.bulletphysics.linearmath.VectorUtil;
 
 // JAVA NOTE: SliderConstraint from 2.71
 

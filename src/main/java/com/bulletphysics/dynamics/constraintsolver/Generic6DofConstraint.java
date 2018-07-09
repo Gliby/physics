@@ -30,16 +30,16 @@ http://gimpact.sf.net
 
 package com.bulletphysics.dynamics.constraintsolver;
 
+import javax.vecmath.Matrix3f;
+import javax.vecmath.Vector3f;
+
+import org.apache.commons.math3.util.FastMath;
+
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.linearmath.MatrixUtil;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.linearmath.VectorUtil;
-
-import javax.vecmath.Matrix3f;
-import javax.vecmath.Vector3f;
-
-import org.apache.commons.math3.util.FastMath;
 
 ///
 /*!

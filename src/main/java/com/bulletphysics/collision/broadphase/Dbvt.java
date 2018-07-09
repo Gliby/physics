@@ -25,15 +25,15 @@
 
 package com.bulletphysics.collision.broadphase;
 
+import javax.vecmath.Vector3f;
+
+import org.apache.commons.math3.util.FastMath;
+
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.linearmath.MiscUtil;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.util.IntArrayList;
 import com.bulletphysics.util.ObjectArrayList;
-
-import javax.vecmath.Vector3f;
-
-import org.apache.commons.math3.util.FastMath;
 
 import java.util.Collections;
 
@@ -646,7 +646,9 @@ public class Dbvt {
             return null;
         } else {
             Node parent = leaf.parent;
-            Node prev = parent.parent;
+            Node prev = null;
+            if (parent.parent != null) 
+            	prev = parent.parent;
             Node sibling = parent.childs[1 - indexof(leaf)];
             if (prev != null) {
                 prev.childs[indexof(parent)] = sibling;

@@ -23,11 +23,11 @@
 
 package com.bulletphysics.dynamics.constraintsolver;
 
-import com.bulletphysics.BulletGlobals;
-import com.bulletphysics.linearmath.VectorUtil;
-
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
+
+import com.bulletphysics.BulletGlobals;
+import com.bulletphysics.linearmath.VectorUtil;
 
 //notes:
 // Another memory optimization would be to store m_1MinvJt in the remaining 3 w components

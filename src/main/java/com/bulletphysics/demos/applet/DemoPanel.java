@@ -20,11 +20,12 @@
 
 package com.bulletphysics.demos.applet;
 
+import org.lwjgl.input.Keyboard;
+
 import com.bulletphysics.BulletStats;
 import com.bulletphysics.demos.opengl.DemoApplication;
 import com.bulletphysics.demos.opengl.GLDebugDrawer;
 import com.bulletphysics.demos.opengl.IGL;
-import org.lwjgl.input.Keyboard;
 
 import javax.swing.*;
 import java.awt.*;

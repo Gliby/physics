@@ -23,10 +23,10 @@
 
 package com.bulletphysics;
 
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.linearmath.CProfileManager;
 import com.bulletphysics.linearmath.Clock;
-
-import javax.vecmath.Vector3f;
 
 /**
  * Bullet statistics and profile support.

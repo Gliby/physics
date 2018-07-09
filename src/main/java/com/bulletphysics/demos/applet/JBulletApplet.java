@@ -20,6 +20,9 @@
 
 package com.bulletphysics.demos.applet;
 
+import javax.swing.*;
+import javax.swing.border.BevelBorder;
+
 import com.bulletphysics.demos.basic.BasicDemo;
 import com.bulletphysics.demos.bsp.BspDemo;
 import com.bulletphysics.demos.character.CharacterDemo;
@@ -33,8 +36,6 @@ import com.bulletphysics.demos.opengl.DemoApplication;
 import com.bulletphysics.demos.opengl.IGL;
 import com.bulletphysics.demos.vehicle.VehicleDemo;
 
-import javax.swing.*;
-import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

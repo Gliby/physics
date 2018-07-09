@@ -23,12 +23,12 @@
 
 package com.bulletphysics.collision.narrowphase;
 
+import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
+
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.linearmath.VectorUtil;
-
-import javax.vecmath.Vector3f;
-import javax.vecmath.Vector4f;
 
 
 /**

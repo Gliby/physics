@@ -36,23 +36,20 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 /**
  *
  */
-public class RenderAdditionalWorld {
+public class RenderDebugAdditionalWorld {
 
 	private Physics physics;
 	private Minecraft mc;
 
-	public RenderAdditionalWorld(Physics physics) {
+	public RenderDebugAdditionalWorld(Physics physics) {
 		this.mc = Minecraft.getMinecraft();
 		this.physics = physics;
 	}
 
-	// TODO REDO
 
 	@SubscribeEvent
 	public void postRender(RenderWorldLastEvent event) {
 		// if (MineFortress.DEBUG_PHYSICS_RENDER)
-		//TODO Remove debug physics
-		//TODO Re-enable debug physics when needed
 //		if (Physics.getInstance().getPhysicsOverworld() != null)
 //			renderDebugPhysics(physics.getPhysicsOverworld(), event);
 		// event);

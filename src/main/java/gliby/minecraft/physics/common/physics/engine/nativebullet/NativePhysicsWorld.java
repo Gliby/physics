@@ -65,12 +65,12 @@ import sun.rmi.runtime.RuntimeUtil;
  *
  */
 
-// TODO Start disposing of every, and I mean EVERY native element.
-// TODO dispose on remove from world too.
-// FIXME Dispose of everything, we need to care of memory!
-// FIXME Stop using stupid Vector/Matrix/Transform conversions. Use IVector and
+// TODO NativePhysicsWorld: Start disposing of every, and I mean EVERY native element.
+// TODO NativePhysicsWorld: dispose on remove from world too.
+// FIXME NativePhysicsWorld: We need to care of memory!
+// FIXME NativePhysicsWorld: Stop using Vector/Matrix/Transform conversions. Use IVector and
 // IQuaternion, IMatrix, replace with custom vector stuff or MC Vec3.
-// TODO Add ability to run in non-thread.
+// TODO NativePhysicsWorld: Add ability to run in non-thread.
 public class NativePhysicsWorld extends PhysicsWorld {
 
 	static {
@@ -155,7 +155,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
 	private final Queue<Runnable> scheduledTasks = Queues.newArrayDeque();
 
-	boolean run = true;
+//	boolean run = true;
 
 	@Override
 	protected void update() {
@@ -167,7 +167,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 		}
 
 		float delta = getDelta();
-		if (dynamicsWorld != null && run)
+		if (dynamicsWorld != null)
 			dynamicsWorld.stepSimulation(1, Math.round(delta / 7));
 		super.update();
 	}
@@ -183,10 +183,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
 				(btCollisionShape) shape.getCollisionShape(), localInertia);
 		NativeRigidBody rigidBody = new NativeRigidBody(new btRigidBody(constructionInfo), owner);
 
-		// TODO dispose at diff time
-		/*
-		 * constructionInfo.dispose(); motionState.dispose();
-		 */
 		return rigidBody;
 	}
 
@@ -388,7 +384,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 		return toMatrix4(transform.getMatrix(new Matrix4f()));
 	}
 
-	// TODO Replace these.
+	// TODO NativePhysicsWorld: replace this hack.
 	private static Transform temp = new Transform();
 	private static Quat4f rotationTemp = new Quat4f();
 
@@ -416,10 +412,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 	static Vector3 tempVec = new Vector3();
 	static Quaternion tempQuat = new Quaternion();
 
-	// TODO Replace.
-	// Java vecmath to libgdx maths, you should be able to just set the values
-	// from one to another.
-	// FIXME Potential Memory Leak.
+	// FIXME NativePhysicsWorld: Potential Memory Leak.
 	static Matrix4f toMatrix4f(Matrix4 matrix4) {
 		Vector3 position = matrix4.getTranslation(tempVec);
 		Quaternion rotation = matrix4.getRotation(tempQuat);
@@ -502,28 +495,28 @@ public class NativePhysicsWorld extends PhysicsWorld {
 		return getClass().getSimpleName() + "[" + this.rigidBodies.size() + " rigid bodies" + "]";
 	}
 
-	// TODO Add rope support
+	// TODO NativePhysicsWorld: Add rope support
 
 	@Override
 	public void addRope(IRope object) {
-		// TODO fill
+		// TODO NativePhysicsWorld: rope feature
 	}
 
 	@Override
 	public List<IRope> getRopes() {
-		// TODO fill
+		// TODO NativePhysicsWorld: rope feature
 		return null;
 	}
 
 	@Override
 	public void removeRope(IRope rope) {
-		// TODO fill
+		// TODO NativePhysicsWorld: rope feature
 
 	}
 
 	@Override
 	public IRope createRope(Vector3f startPos, Vector3f endPos, int detail) {
-		// TODO fill
+		// TODO NativePhysicsWorld: rope feature
 		return null;
 	}
 
@@ -535,7 +528,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 		return shape;
 	}
 
-	// TODO Add slider constraint
+	// TODO NativePhysicsWorld: Add slider constraint
 	@Override
 	public IConstraintSlider createSliderConstraint(IRigidBody rbA, IRigidBody rbB, Transform frameInA,
 			Transform frameInB, boolean useLinearReferenceFrameA) {
@@ -563,8 +556,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
 	}
 
-	// TODO Stop using synchronize and start using tasks.
-	// TODO Make dispose actually dispose something.
+	// TODO NativePhysicsWorld: Make dispose actually dispose something.
 	@Override
 	public void dispose() {
 		scheduledTasks.add(new Runnable() {

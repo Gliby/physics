@@ -27,11 +27,11 @@
 
 package com.bulletphysics.extras.gimpact;
 
-import com.bulletphysics.linearmath.Transform;
-import com.bulletphysics.util.ObjectArrayList;
-
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
+
+import com.bulletphysics.linearmath.Transform;
+import com.bulletphysics.util.ObjectArrayList;
 
 /**
  * @author jezek2

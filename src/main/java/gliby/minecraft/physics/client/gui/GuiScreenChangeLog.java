@@ -100,7 +100,6 @@ public class GuiScreenChangeLog extends GuiScreen {
 		for (VersionChanges changes : versionChanges) {
 			formattedLog.add(new FormattedChangeLog(changes, fontRendererObj, WRAP));
 		}
-		// TODO disable next if there is only one changelog.
 		createButtons();
 	}
 

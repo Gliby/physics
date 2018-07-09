@@ -27,13 +27,13 @@
 
 package com.bulletphysics.extras.gimpact;
 
-import com.bulletphysics.BulletGlobals;
-import com.bulletphysics.linearmath.VectorUtil;
-
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
 import org.apache.commons.math3.util.FastMath;
+
+import com.bulletphysics.BulletGlobals;
+import com.bulletphysics.linearmath.VectorUtil;
 
 /**
  * @author jezek2

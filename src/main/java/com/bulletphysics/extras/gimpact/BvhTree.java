@@ -27,10 +27,10 @@
 
 package com.bulletphysics.extras.gimpact;
 
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.extras.gimpact.BoxCollision.AABB;
 import com.bulletphysics.linearmath.VectorUtil;
-
-import javax.vecmath.Vector3f;
 
 /**
  * @author jezek2

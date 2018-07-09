@@ -23,11 +23,11 @@
 
 package com.bulletphysics.dynamics;
 
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.collision.shapes.CollisionShape;
 import com.bulletphysics.linearmath.MotionState;
 import com.bulletphysics.linearmath.Transform;
-
-import javax.vecmath.Vector3f;
 
 /**
  * RigidBodyConstructionInfo provides information to create a rigid body.<p>

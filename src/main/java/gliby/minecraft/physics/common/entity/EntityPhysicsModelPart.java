@@ -24,7 +24,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  *
  */
-//TODO REWRITE
+//TODO improvement: needs rewrite
 public class EntityPhysicsModelPart extends EntityPhysicsBase implements IEntityAdditionalSpawnData {
 	/**
 	 * @param world

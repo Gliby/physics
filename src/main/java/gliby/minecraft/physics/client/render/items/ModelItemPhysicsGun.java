@@ -155,7 +155,6 @@ public class ModelItemPhysicsGun extends ModelBase {
 
 	@Override
 	public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) {
-		//TODO Lighting does not like players 2d name
 		
 		this.Shape1_29.render(f5);
 		this.Shape1_6.render(f5);

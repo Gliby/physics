@@ -23,9 +23,9 @@
 
 package com.bulletphysics.collision.shapes;
 
-import com.bulletphysics.util.ObjectArrayList;
-
 import java.nio.ByteBuffer;
+
+import com.bulletphysics.util.ObjectArrayList;
 
 /**
  * TriangleIndexVertexArray allows to use multiple meshes, by indexing into existing

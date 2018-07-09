@@ -20,9 +20,10 @@
 
 package com.bulletphysics.demos.applet;
 
+import javax.vecmath.Matrix4f;
+
 import com.bulletphysics.demos.opengl.IGL;
 
-import javax.vecmath.Matrix4f;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;

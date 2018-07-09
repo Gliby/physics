@@ -23,24 +23,24 @@
 
 package com.bulletphysics.collision.dispatch;
 
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.collision.broadphase.CollisionAlgorithm;
 import com.bulletphysics.collision.broadphase.CollisionAlgorithmConstructionInfo;
 import com.bulletphysics.collision.broadphase.DispatcherInfo;
 import com.bulletphysics.collision.narrowphase.ConvexCast;
 import com.bulletphysics.collision.narrowphase.ConvexPenetrationDepthSolver;
-import com.bulletphysics.collision.narrowphase.DiscreteCollisionDetectorInterface.ClosestPointInput;
 import com.bulletphysics.collision.narrowphase.GjkConvexCast;
 import com.bulletphysics.collision.narrowphase.GjkPairDetector;
 import com.bulletphysics.collision.narrowphase.PersistentManifold;
 import com.bulletphysics.collision.narrowphase.SimplexSolverInterface;
 import com.bulletphysics.collision.narrowphase.VoronoiSimplexSolver;
+import com.bulletphysics.collision.narrowphase.DiscreteCollisionDetectorInterface.ClosestPointInput;
 import com.bulletphysics.collision.shapes.ConvexShape;
 import com.bulletphysics.collision.shapes.SphereShape;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.util.ObjectArrayList;
 import com.bulletphysics.util.ObjectPool;
-
-import javax.vecmath.Vector3f;
 
 /**
  * ConvexConvexAlgorithm collision algorithm implements time of impact, convex

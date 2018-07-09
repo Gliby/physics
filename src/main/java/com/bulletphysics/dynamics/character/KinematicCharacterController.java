@@ -23,6 +23,10 @@
 
 package com.bulletphysics.dynamics.character;
 
+import javax.vecmath.Vector3f;
+
+import org.apache.commons.math3.util.FastMath;
+
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.collision.broadphase.BroadphasePair;
 import com.bulletphysics.collision.dispatch.CollisionObject;
@@ -36,10 +40,6 @@ import com.bulletphysics.dynamics.ActionInterface;
 import com.bulletphysics.linearmath.IDebugDraw;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.util.ObjectArrayList;
-
-import javax.vecmath.Vector3f;
-
-import org.apache.commons.math3.util.FastMath;
 
 /**
  * KinematicCharacterController is an object that supports a sliding motion in

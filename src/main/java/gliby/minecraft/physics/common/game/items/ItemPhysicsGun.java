@@ -1,6 +1,3 @@
-/**
- * Copyright (c) 2015, Mine Fortress.
- */
 package gliby.minecraft.physics.common.game.items;
 
 import javax.vecmath.Vector3f;
@@ -33,10 +30,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 
-//TODO doesn't attach sometimes
-/**
- *
- */
 public class ItemPhysicsGun extends RawItem {
 
 	public ItemPhysicsGun(Physics physics) {

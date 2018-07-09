@@ -48,7 +48,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  */
 
-// TODO Remove ability to spawn tile-entites.
+// TODO improvement: Remove ability to spawn tile-entites.
 public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAdditionalSpawnData {
 
 	public EntityPhysicsBlock(World world) {
@@ -157,7 +157,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 		this.defaultCollisionShape = metadataExists ? metadata.defaultCollisionShape : false;
 		this.collisionEnabled = metadataExists ? metadata.collisionEnabled : true;
 
-		// TODO Introduce block bounding box caching.
+		// TODO feature: Introduce block bounding box caching.
 		try {
 			if (this.defaultCollisionShape)
 				this.collisionShape = physicsWorld.createBoxShape(new Vector3f(0.5f, 0.5f, 0.5f));
@@ -265,13 +265,11 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 			// Set location and angles, so client could have proper bounding
 			// boxes.
 			setLocationAndAngles(position.x + 0.5f, position.y, position.z + 0.5f, 0, 0);
-			// TODO Remove != null
 			// Check if rigidBody is active, and if the last written postion
 			// and rotation has changed.
 			if (isDirty()) {
 				if (watchablePosition != null && (!watchablePosition.lastWrote.equals(position)
 						|| !watchableRotation.lastWrote.equals(rotation))) {
-					// TODO Write postion, rotation to dataWatcher.
 					watchableRotation.write(rotation);
 					watchablePosition.write(position);
 				}

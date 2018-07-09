@@ -23,6 +23,8 @@
 
 package com.bulletphysics.demos.opengl;
 
+import org.lwjgl.input.Keyboard;
+
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.BulletStats;
 import com.bulletphysics.collision.dispatch.CollisionObject;
@@ -42,12 +44,6 @@ import com.bulletphysics.linearmath.DefaultMotionState;
 import com.bulletphysics.linearmath.QuaternionUtil;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.linearmath.VectorUtil;
-import org.lwjgl.input.Keyboard;
-
-import javax.vecmath.Color3f;
-import javax.vecmath.Matrix3f;
-import javax.vecmath.Quat4f;
-import javax.vecmath.Vector3f;
 
 import static com.bulletphysics.demos.opengl.IGL.GL_AMBIENT;
 import static com.bulletphysics.demos.opengl.IGL.GL_DEPTH_TEST;
@@ -61,6 +57,11 @@ import static com.bulletphysics.demos.opengl.IGL.GL_POSITION;
 import static com.bulletphysics.demos.opengl.IGL.GL_PROJECTION;
 import static com.bulletphysics.demos.opengl.IGL.GL_SMOOTH;
 import static com.bulletphysics.demos.opengl.IGL.GL_SPECULAR;
+
+import javax.vecmath.Color3f;
+import javax.vecmath.Matrix3f;
+import javax.vecmath.Quat4f;
+import javax.vecmath.Vector3f;
 
 /**
  * @author jezek2

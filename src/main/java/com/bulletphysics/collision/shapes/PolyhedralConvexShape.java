@@ -23,13 +23,13 @@
 
 package com.bulletphysics.collision.shapes;
 
-import com.bulletphysics.linearmath.AabbUtil2;
-import com.bulletphysics.linearmath.Transform;
-import com.bulletphysics.linearmath.VectorUtil;
-
 import javax.vecmath.Vector3f;
 
 import org.apache.commons.math3.util.FastMath;
+
+import com.bulletphysics.linearmath.AabbUtil2;
+import com.bulletphysics.linearmath.Transform;
+import com.bulletphysics.linearmath.VectorUtil;
 
 /**
  * PolyhedralConvexShape is an internal interface class for polyhedral convex shapes.

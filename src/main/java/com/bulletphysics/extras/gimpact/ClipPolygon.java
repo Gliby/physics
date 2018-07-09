@@ -27,13 +27,13 @@
 
 package com.bulletphysics.extras.gimpact;
 
+import javax.vecmath.Vector3f;
+import javax.vecmath.Vector4f;
+
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.linearmath.VectorUtil;
 import com.bulletphysics.util.ArrayPool;
 import com.bulletphysics.util.ObjectArrayList;
-
-import javax.vecmath.Vector3f;
-import javax.vecmath.Vector4f;
 
 /**
  * @author jezek2

@@ -23,6 +23,12 @@
 
 package com.bulletphysics.demos.concaveconvexcast;
 
+import static com.bulletphysics.demos.opengl.IGL.GL_LIGHTING;
+import static com.bulletphysics.demos.opengl.IGL.GL_LINES;
+
+import javax.vecmath.Quat4f;
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.collision.dispatch.CollisionWorld;
 import com.bulletphysics.collision.dispatch.CollisionWorld.ClosestConvexResultCallback;
 import com.bulletphysics.collision.shapes.BoxShape;
@@ -32,12 +38,6 @@ import com.bulletphysics.linearmath.QuaternionUtil;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.linearmath.TransformUtil;
 import com.bulletphysics.linearmath.VectorUtil;
-
-import javax.vecmath.Quat4f;
-import javax.vecmath.Vector3f;
-
-import static com.bulletphysics.demos.opengl.IGL.GL_LIGHTING;
-import static com.bulletphysics.demos.opengl.IGL.GL_LINES;
 
 /**
  * Scrolls back and forth over terrain.

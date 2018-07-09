@@ -23,10 +23,10 @@
 
 package com.bulletphysics.dynamics.vehicle;
 
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.linearmath.Transform;
-
-import javax.vecmath.Vector3f;
 
 /**
  * WheelInfo contains information per wheel about friction and suspension.

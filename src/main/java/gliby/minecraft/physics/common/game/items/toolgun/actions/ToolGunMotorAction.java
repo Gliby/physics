@@ -99,8 +99,6 @@ public class ToolGunMotorAction implements IToolGunAction, IToolGunTickable {
 		return true;
 	}
 
-	// TODO Hit's map should not be tool unique, only one is required per
-	// user...
 
 	@Override
 	public void stoppedUsing(PhysicsWorld world, EntityPlayerMP player) {

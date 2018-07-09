@@ -36,7 +36,6 @@ public class ExplosionHandler {
 				(float) event.explosion.getPosition().yCoord, (float) event.explosion.getPosition().zCoord);
 
 		for (int i = 0; i < event.getAffectedBlocks().size(); i++) {
-			// TODO How much of tnt will spawn?
 			BlockPos pos = event.getAffectedBlocks().get(i);
 			IBlockState blockState = event.world.getBlockState(pos);
 			PhysicsBlockMetadata metadata = physics.getBlockManager().getPhysicsBlockMetadata()
@@ -50,7 +49,7 @@ public class ExplosionHandler {
 			}
 		}
 
-		float force = Physics.getInstance().getSettings().getFloatSetting("Game.ExplosionImpulseForce").getFloatValue();
+		float force = Physics.getInstance().getSettings().getFloatSetting("Game.ExplosionImpulseForce").getFloatValue()*20;
 		for (int i = 0; i < physicsWorld.getRigidBodies().size(); i++) {
 			IRigidBody body = physicsWorld.getRigidBodies().get(i);
 			Vector3f centerOfMass = body.getCenterOfMassPosition(new Vector3f());

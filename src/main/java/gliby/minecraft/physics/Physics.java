@@ -88,8 +88,6 @@ public class Physics {
 		return gman;
 	}
 
-	// TODO Move some pre-init actions into separate functions.
-	// Reason: Organization, the pre-init method is getting a bit crowded.
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -100,21 +98,21 @@ public class Physics {
 		File dir = new File(event.getModConfigurationDirectory(), MOD_ID);
 		if (!dir.exists())
 			dir.mkdir();
-		// TODO Fix settings.
+		
 		settings = new SettingsHandler(dir, new File(dir, "Settings.ini"));
 
-		// TODO Add on client
-		settings.registerBoolean("PhysicsEngine", "UseJavaPhysics", false, Setting.Side.SERVER);
+		settings.registerBoolean("PhysicsEngine", "UseJavaPhysics", true, Setting.Side.SERVER);
 
 		settings.registerObject("PhysicsEntities", "EntityColliderBlacklist", new String[] {
 				IEntityPhysics.class.getName(), EntityToolGunBeam.class.getName(), EntityItem.class.getName() },
 				Setting.Side.SERVER);
-
+		settings.registerInteger("PhysicsEngine", "TickRate", 30, Setting.Side.SERVER);
+		settings.registerFloat("PhysicsEngine", "GravityForce", -9.8f, Setting.Side.SERVER);
 		settings.registerFloat("PhysicsEntities", "InactivityDeathTime", 30, Setting.Side.SERVER);
 		settings.registerFloat("PhysicsEntities", "EntityColliderCleanupTime", 0.25f, Setting.Side.SERVER);
 		settings.registerFloat("Game", "ProjectileImpulseForce", 30, Setting.Side.SERVER);
 		settings.registerFloat("Game", "ExplosionImpulseRadius", 16, Setting.Side.SERVER);
-		settings.registerFloat("Game", "ExplosionImpulseForce", 150, Setting.Side.SERVER);
+		settings.registerFloat("Game", "ExplosionImpulseForce", 300, Setting.Side.SERVER);
 		settings.registerInteger("Tools", "AttractRadius", 16, Setting.Side.SERVER);
 		settings.registerInteger("Tools", "GravitizerRadius", 16, Setting.Side.SERVER);
 		settings.registerInteger("Tools", "GravitizerForce", 10, Setting.Side.SERVER);
@@ -173,7 +171,8 @@ public class Physics {
 
 		physicsOverworld = new PhysicsOverworld(this);
 		blockManager = new BlockManager(this);
-		mobModelManager = new MobModelManager(this);
+		// TODO feature: finish this, would help with server-side ragdolls.
+		//mobModelManager = new MobModelManager(this);
 
 		FMLCommonHandler.instance().bus().register(this);
 		proxy.preInit(this, event);

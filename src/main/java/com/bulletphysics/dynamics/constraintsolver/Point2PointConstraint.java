@@ -23,12 +23,12 @@
 
 package com.bulletphysics.dynamics.constraintsolver;
 
+import javax.vecmath.Matrix3f;
+import javax.vecmath.Vector3f;
+
 import com.bulletphysics.dynamics.RigidBody;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.linearmath.VectorUtil;
-
-import javax.vecmath.Matrix3f;
-import javax.vecmath.Vector3f;
 
 /**
  * Point to point constraint between two rigid bodies each with a pivot point that

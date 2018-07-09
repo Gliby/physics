@@ -55,10 +55,9 @@ public class KeyFireEvent extends KeyEvent {
 			if (mc.currentScreen == null) {
 				// Minecraft.getMinecraft().displayGuiScreen(new
 				// GuiScreenPhysicsCreator(null));
-				debugSpawn(world);
+				//debugSpawn(world);
 
 			}
-			// TODO Remove client debug physics.
 			// Physics.getInstance().getClientProxy().getPhysicsOverWorld().debugSpawn(world);
 			// debugSpawn(Minecraft.getMinecraft().theWorld);
 		}
@@ -72,7 +71,6 @@ public class KeyFireEvent extends KeyEvent {
 		List<ModelCubeGroup> cubeGroups = physics.getMobModelManager().getModelRegistry().get(EntityPig.class)
 				.getCubeGroups();
 		float scale = 1.0F / 16.0F;
-		// TODO Finish
 		for (ModelCubeGroup group : cubeGroups) {
 			Random rand = new Random();
 			Vector3f localPosition = new Vector3f(rand.nextInt(5), rand.nextInt(5), rand.nextInt(5));

@@ -23,6 +23,8 @@
 
 package com.bulletphysics.demos.concave;
 
+import org.lwjgl.LWJGLException;
+
 import com.bulletphysics.BulletGlobals;
 import com.bulletphysics.BulletStats;
 import com.bulletphysics.ContactAddedCallback;
@@ -51,10 +53,13 @@ import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSo
 import com.bulletphysics.linearmath.QuaternionUtil;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.util.ObjectArrayList;
-import org.lwjgl.LWJGLException;
 
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
+
+import static com.bulletphysics.demos.opengl.IGL.GL_COLOR_BUFFER_BIT;
+import static com.bulletphysics.demos.opengl.IGL.GL_DEPTH_BUFFER_BIT;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -65,9 +70,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-
-import static com.bulletphysics.demos.opengl.IGL.GL_COLOR_BUFFER_BIT;
-import static com.bulletphysics.demos.opengl.IGL.GL_DEPTH_BUFFER_BIT;
 
 // JAVA TODO: update for 2.70b1
 

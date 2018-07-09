@@ -147,7 +147,7 @@ public class GuiScreenBlockCreator extends GuiScreenCreator implements GuiYesNoC
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}
-				// TODO Expand, and add skip option
+				// TODO improvement: Expand Block Creation Algorithm, and add skip option
 				while (itr.hasNext()) {
 					final Block block = itr.next();
 					UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(block);

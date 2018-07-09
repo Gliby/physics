@@ -27,9 +27,9 @@
 
 package com.bulletphysics.extras.gimpact;
 
-import com.bulletphysics.extras.gimpact.BoxCollision.AABB;
-
 import javax.vecmath.Vector3f;
+
+import com.bulletphysics.extras.gimpact.BoxCollision.AABB;
 
 /**
  * @author jezek2

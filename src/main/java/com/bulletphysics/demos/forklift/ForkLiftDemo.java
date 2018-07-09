@@ -23,6 +23,9 @@
 
 package com.bulletphysics.demos.forklift;
 
+import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Keyboard;
+
 import com.bulletphysics.collision.broadphase.BroadphaseInterface;
 import com.bulletphysics.collision.broadphase.DbvtBroadphase;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
@@ -54,15 +57,14 @@ import com.bulletphysics.linearmath.DebugDrawModes;
 import com.bulletphysics.linearmath.MatrixUtil;
 import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.util.ObjectArrayList;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Keyboard;
 
 import javax.vecmath.Vector3f;
+
+import static com.bulletphysics.demos.opengl.IGL.GL_LIGHTING;
+
 import java.awt.event.KeyEvent;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-
-import static com.bulletphysics.demos.opengl.IGL.GL_LIGHTING;
 
 /**
  * @author jezek2
