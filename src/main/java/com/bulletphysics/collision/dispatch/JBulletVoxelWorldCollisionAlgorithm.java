@@ -47,7 +47,7 @@ import com.bulletphysics.linearmath.Transform;
 import com.bulletphysics.util.ObjectArrayList;
 import com.bulletphysics.util.ObjectPool;
 
-import net.gliby.minecraft.physics.common.physics.BlockCollisionInfo;
+import gliby.minecraft.physics.common.physics.BlockCollisionInfo;
 
 /**
  * @author Immortius

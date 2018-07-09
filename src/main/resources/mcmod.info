@@ -5,7 +5,7 @@
   "description": "In development.",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "http://www.gliby.net/",
+  "url": "",
   "updateUrl": "",
   "authorList": ["Gliby"],
   "credits": "@Immortius, Bullet Team.",
