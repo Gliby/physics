@@ -1,6 +1,3 @@
-/**
- * 
- */
 package gliby.minecraft.gman.settings;
 
 import com.google.gson.Gson;

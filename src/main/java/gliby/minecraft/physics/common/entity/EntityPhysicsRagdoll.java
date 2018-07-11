@@ -1,6 +1,5 @@
 package gliby.minecraft.physics.common.entity;
 /**
- * Copyright (c) 2015, Mine Fortress.
  *//*
 package net.gliby.physics.common.entity;
 

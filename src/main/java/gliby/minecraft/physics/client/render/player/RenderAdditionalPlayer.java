@@ -1,6 +1,3 @@
-/**
- * 
- */
 package gliby.minecraft.physics.client.render.player;
 
 import net.minecraftforge.client.event.RenderPlayerEvent;
