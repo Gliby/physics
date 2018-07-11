@@ -3,9 +3,10 @@
   "modid": "glibysphysics",
   "name": "Gliby's Physics",
   "description": "Early access physics mod.",
+  "version": "${version}",
   "mcversion": "${mcversion}",
   "authorList": ["Gliby"],
-  "credits": "@Immortius, Bullet Team.",
+  "credits": "@Immortius, LibGDX, Mojang, JBullet",
   "logoFile": "logo.png",
   "screenshots": []
 }

@@ -1,1 +1,1 @@
-Gliby's Awesome Physics MOD!
+Gliby's Physics MOD!
