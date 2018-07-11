@@ -1,6 +1,3 @@
-/**
- * 
- */
 package gliby.minecraft.gman.settings;
 
 import gliby.minecraft.gman.settings.INIProperties.INIPropertiesReadFailure;

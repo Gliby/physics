@@ -1,6 +1,3 @@
-/**
- * Copyright (c) 2015, Mine Fortress.
- */
 package gliby.minecraft.physics.common.physics.engine.nativebullet;
 
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;

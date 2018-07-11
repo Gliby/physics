@@ -1,6 +1,3 @@
-/**
- * Copyright (c) 2015, Mine Fortress.
- */
 package gliby.minecraft.gman.item;
 
 import java.util.ArrayList;

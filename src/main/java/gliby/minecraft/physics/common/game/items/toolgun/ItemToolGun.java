@@ -1,6 +1,3 @@
-/**
- * Copyright (c) 2015, Mine Fortress.
- */
 package gliby.minecraft.physics.common.game.items.toolgun;
 
 import javax.vecmath.Vector3f;

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package gliby.minecraft.gman.settings;
 
 import java.io.File;

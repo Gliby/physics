@@ -1,6 +1,3 @@
-/**
- * 
- */
 package gliby.minecraft.gman.settings;
 
 import net.minecraftforge.fml.relauncher.Side;

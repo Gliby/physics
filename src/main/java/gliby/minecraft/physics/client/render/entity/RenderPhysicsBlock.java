@@ -1,6 +1,3 @@
-/**
- * Copyright (c) 2015, Mine Fortress.
- */
 package gliby.minecraft.physics.client.render.entity;
 
 import static org.lwjgl.opengl.GL11.glMultMatrix;
