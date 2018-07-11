@@ -1,6 +1,6 @@
 package gliby.minecraft.physics.common.physics.engine.javabullet;
 
-import com.bulletphysics.dynamics.constraintsolver.SliderConstraint;
+import com.bulletphysicsx.dynamics.constraintsolver.SliderConstraint;
 
 import gliby.minecraft.physics.common.physics.engine.IConstraintSlider;
 

@@ -3,9 +3,9 @@
  */
 package gliby.minecraft.physics.common.physics.engine.javabullet;
 
-import com.bulletphysics.collision.dispatch.PairCachingGhostObject;
-import com.bulletphysics.collision.shapes.CollisionShape;
-import com.bulletphysics.linearmath.Transform;
+import com.bulletphysicsx.collision.dispatch.PairCachingGhostObject;
+import com.bulletphysicsx.collision.shapes.CollisionShape;
+import com.bulletphysicsx.linearmath.Transform;
 
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import gliby.minecraft.physics.common.physics.engine.IGhostObject;

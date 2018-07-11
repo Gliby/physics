@@ -18,7 +18,7 @@ buildscript {
 apply plugin: 'forge'
 
 version = "14"
-group= "net.gliby.minecraft" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group= "gliby.minecraft" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "glibysphysics"
 
 minecraft {
@@ -38,10 +38,7 @@ minecraft {
 }
 
 dependencies {
-    compile files('lib/vecmath.jar')
 	compile files('lib/commons-math.jar')
-	compile files('lib/DynamicLights_NoModules.jar')
-	compile files('lib/AtomicStrykerLightingModule.jar')
 	compile files('lib/gdx-bullet.jar')
 	compile files('lib/gdx-bullet-natives.jar')
 	compile files('lib/gdx.jar')
@@ -66,9 +63,7 @@ processResources
         exclude 'mcmod.info'
     }
 	def outputDir = file("${buildDir}/unpacked/dist")
-	
-    from zipTree(file('lib/vecmath.jar'))
-    into outputDir
+
 	
 	from zipTree(file('lib/commons-math.jar'))
 	into outputDir
@@ -79,10 +74,6 @@ processResources
 	from zipTree(file('lib/gdx-bullet-natives.jar'))
 	into outputDir
 
-		
-	from zipTree(file('lib/AtomicStrykerLightingModule.jar'))
-	into outputDir
-	
 	from zipTree(file('lib/gdx.jar'))
 	into outputDir
 	

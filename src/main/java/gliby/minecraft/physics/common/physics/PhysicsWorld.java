@@ -11,7 +11,7 @@ import java.util.Map;
 
 import javax.vecmath.Vector3f;
 
-import com.bulletphysics.linearmath.Transform;
+import com.bulletphysicsx.linearmath.Transform;
 import com.google.gson.annotations.SerializedName;
 
 import gliby.minecraft.gman.WorldUtility;

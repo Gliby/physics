@@ -34,6 +34,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+// TODO feature implement proper collision detection/response, stop using minecraft AABB
 //TODO feature: Replace death timer with physics object limit.
 
 /**
@@ -172,6 +173,9 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 	 */
 	public abstract IRigidBody getRigidBody();
 
+	
+	// TODO bug: entity tracker has a hard time keeping up with physics base entities and eventually crashes the game.
+	
 	@Override
 	public void readEntityFromNBT(NBTTagCompound tagCompound) {
 		if (!worldObj.isRemote) {
@@ -268,7 +272,8 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
 			if (getRigidBody() != null) {
 				if (getRigidBody().getProperties().containsKey(EnumRigidBodyProperty.DEAD.getName())) {
-					System.out.println("Set dead: " + getRigidBody().getProperties());
+					// TODO bug: pretty sure this crashes the physics engine.
+					//System.out.println("Set dead: " + getRigidBody().getProperties());
 					this.setDead();
 				}
 				if (getRigidBody().isActive())
@@ -283,7 +288,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 		// Update mechanics.
 		for (int i = 0; i < mechanics.size(); i++) {
 			RigidBodyMechanic mechanic = (RigidBodyMechanic) mechanics.get(i);
-			if (mechanic.isEnabled())
+			if (mechanic.isEnabled()) 
 				mechanic.update(getRigidBody(), physicsWorld, this, worldObj.isRemote ? Side.CLIENT : Side.SERVER);
 		}
 	}

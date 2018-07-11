@@ -67,7 +67,7 @@ public class Physics {
 
 	public static final String MOD_NAME = "Gliby's Physics";
 	public static final String MOD_ID = "glibysphysics";
-	public static final String MOD_VERSION = "0.1.4";
+	public static final String MOD_VERSION = "0.2";
 
 	@Instance
 	private static Physics instance;

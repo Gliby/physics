@@ -11,7 +11,7 @@ import javax.vecmath.Vector3f;
 
 import org.lwjgl.BufferUtils;
 
-import com.bulletphysics.linearmath.Transform;
+import com.bulletphysicsx.linearmath.Transform;
 
 import gliby.minecraft.physics.client.render.RenderHandler;
 import gliby.minecraft.physics.client.render.RenderUtilities;

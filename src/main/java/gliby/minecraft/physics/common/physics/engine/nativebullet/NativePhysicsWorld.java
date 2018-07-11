@@ -39,7 +39,7 @@ import com.badlogic.gdx.physics.bullet.dynamics.btSequentialImpulseConstraintSol
 import com.badlogic.gdx.physics.bullet.dynamics.btTypedConstraint;
 import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
 import com.badlogic.gdx.utils.Disposable;
-import com.bulletphysics.linearmath.Transform;
+import com.bulletphysicsx.linearmath.Transform;
 import com.google.common.collect.Queues;
 
 import gliby.minecraft.physics.Physics;

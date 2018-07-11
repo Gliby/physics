@@ -5,6 +5,7 @@
     "EnvironmentGravity",
     "EnvironmentResponse",
     "BlockInheritance",
-    "ClientBlockInheritance"
+    "ClientBlockInheritance",
+    "Bounce"
   ]
 }

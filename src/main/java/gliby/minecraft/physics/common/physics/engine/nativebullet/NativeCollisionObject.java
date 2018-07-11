@@ -5,7 +5,7 @@ package gliby.minecraft.physics.common.physics.engine.nativebullet;
 
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
-import com.bulletphysics.linearmath.Transform;
+import com.bulletphysicsx.linearmath.Transform;
 
 import gliby.minecraft.physics.common.physics.engine.ICollisionObject;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;

@@ -6,8 +6,8 @@ package gliby.minecraft.physics.common.entity;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
-import com.bulletphysics.collision.shapes.BoxShape;
-import com.bulletphysics.linearmath.Transform;
+import com.bulletphysicsx.collision.shapes.BoxShape;
+import com.bulletphysicsx.linearmath.Transform;
 
 import gliby.minecraft.gman.DataWatchableQuat4f;
 import gliby.minecraft.gman.DataWatchableVector3f;

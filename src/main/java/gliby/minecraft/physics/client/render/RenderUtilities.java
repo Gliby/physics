@@ -13,7 +13,7 @@ import java.nio.FloatBuffer;
 
 import javax.vecmath.Vector3f;
 
-import com.bulletphysics.linearmath.Transform;
+import com.bulletphysicsx.linearmath.Transform;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;

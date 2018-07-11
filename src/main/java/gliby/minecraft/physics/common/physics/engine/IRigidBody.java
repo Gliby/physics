@@ -7,7 +7,7 @@ import java.util.Map;
 
 import javax.vecmath.Vector3f;
 
-import com.bulletphysics.linearmath.Transform;
+import com.bulletphysicsx.linearmath.Transform;
 
 import net.minecraft.entity.Entity;
 

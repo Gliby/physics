@@ -54,9 +54,7 @@ public class PhysicsClient extends PhysicsServer {
 			if (event.side == Side.CLIENT && !init) {
 				final Minecraft mc = Minecraft.getMinecraft();
 				final Physics physics = Physics.getInstance();
-				if (physics.getSettings().isFirstTime()) {
-					mc.displayGuiScreen(new GuiScreenWelcome());
-				} else if (physics.getGMan().getProperties().containsKey("VersionChanges")) {
+				if (physics.getGMan().getProperties().containsKey("VersionChanges")) {
 					mc.displayGuiScreen(new GuiScreenChangeLog(
 							(ArrayList<VersionChanges>) physics.getGMan().getProperties().get("VersionChanges")));
 					physics.getGMan().getProperties().remove("VersionChanges");

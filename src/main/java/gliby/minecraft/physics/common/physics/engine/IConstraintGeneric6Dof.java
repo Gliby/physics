@@ -3,7 +3,7 @@
  */
 package gliby.minecraft.physics.common.physics.engine;
 
-import com.bulletphysics.linearmath.Transform;
+import com.bulletphysicsx.linearmath.Transform;
 
 /**
  *

@@ -140,6 +140,8 @@ public class PhysicsOverworld {
 	public PhysicsOverworld(Physics physics) {
 		MinecraftForge.EVENT_BUS.register(this);
 		this.physics = physics;
+		// Registers available mechanics.
+		// TODO finish: mechanics
 		getMechanicsMap().put("EnvironmentGravity", new EnvironmentGravityMechanic());
 		getMechanicsMap().put("EnvironmentResponse", new EnvironmentResponseMechanic());
 		getMechanicsMap().put("Bounce", new BounceMechanic());

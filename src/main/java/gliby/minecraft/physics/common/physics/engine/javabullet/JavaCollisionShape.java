@@ -8,12 +8,12 @@ import java.util.List;
 
 import javax.vecmath.Vector3f;
 
-import com.bulletphysics.collision.broadphase.BroadphaseNativeType;
-import com.bulletphysics.collision.shapes.BoxShape;
-import com.bulletphysics.collision.shapes.CollisionShape;
-import com.bulletphysics.collision.shapes.CompoundShape;
-import com.bulletphysics.collision.shapes.CompoundShapeChild;
-import com.bulletphysics.linearmath.Transform;
+import com.bulletphysicsx.collision.broadphase.BroadphaseNativeType;
+import com.bulletphysicsx.collision.shapes.BoxShape;
+import com.bulletphysicsx.collision.shapes.CollisionShape;
+import com.bulletphysicsx.collision.shapes.CompoundShape;
+import com.bulletphysicsx.collision.shapes.CompoundShapeChild;
+import com.bulletphysicsx.linearmath.Transform;
 
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShapeChildren;

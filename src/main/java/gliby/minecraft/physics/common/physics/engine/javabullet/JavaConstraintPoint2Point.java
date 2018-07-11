@@ -5,7 +5,7 @@ package gliby.minecraft.physics.common.physics.engine.javabullet;
 
 import javax.vecmath.Vector3f;
 
-import com.bulletphysics.dynamics.constraintsolver.Point2PointConstraint;
+import com.bulletphysicsx.dynamics.constraintsolver.Point2PointConstraint;
 
 import gliby.minecraft.physics.common.physics.engine.IConstraintPoint2Point;
 

@@ -30,6 +30,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
 
+/**
+ * BlockManager is responsible for blocks and their physics metadata.
+ *
+ */
 public class BlockManager {
 
 	private Physics physics;

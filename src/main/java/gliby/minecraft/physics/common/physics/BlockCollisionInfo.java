@@ -6,7 +6,7 @@ package gliby.minecraft.physics.common.physics;
 import javax.vecmath.Point3i;
 import javax.vecmath.Tuple3i;
 
-import com.bulletphysics.collision.broadphase.BroadphaseNativeType;
+import com.bulletphysicsx.collision.broadphase.BroadphaseNativeType;
 
 /**
  *
