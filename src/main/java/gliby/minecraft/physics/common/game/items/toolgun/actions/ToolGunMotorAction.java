@@ -10,7 +10,7 @@ import java.util.Map;
 
 import javax.vecmath.Vector3f;
 
-import com.bulletphysics.linearmath.Transform;
+import com.bulletphysicsx.linearmath.Transform;
 
 import gliby.minecraft.gman.EntityUtility;
 import gliby.minecraft.physics.common.entity.EnumRigidBodyProperty;

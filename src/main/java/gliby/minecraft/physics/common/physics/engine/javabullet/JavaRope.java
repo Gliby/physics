@@ -5,8 +5,8 @@ import java.util.List;
 
 import javax.vecmath.Vector3f;
 
-import com.bulletphysics.dynamics.constraintsolver.SliderConstraint;
-import com.bulletphysics.linearmath.Transform;
+import com.bulletphysicsx.dynamics.constraintsolver.SliderConstraint;
+import com.bulletphysicsx.linearmath.Transform;
 
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IConstraintSlider;

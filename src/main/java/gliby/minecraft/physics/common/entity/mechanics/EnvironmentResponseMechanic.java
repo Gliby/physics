@@ -28,7 +28,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**
- * Water flow, lava death, etc.
+ * Block Mechanic responsible for water flow, lava death, etc.
  */
 public class EnvironmentResponseMechanic extends RigidBodyMechanic {
 
@@ -37,7 +37,6 @@ public class EnvironmentResponseMechanic extends RigidBodyMechanic {
 		if (entity.isInLava() || entity.isBurning()) {
 			rigidBody.getOwner().setDead();
 		}
-		
 		
 		if (entity.isInWater()) {
 			Vector3f centerOfMass = rigidBody.getCenterOfMassPosition();
@@ -54,6 +53,7 @@ public class EnvironmentResponseMechanic extends RigidBodyMechanic {
 				Vec3 vec3 = getFlowVector(rigidBody.getOwner().worldObj, block.getBlockPosition(),
 						block.getBlockState().getBlock(), liquidMaterial);
 				Vector3f impulse = new Vector3f((float) vec3.xCoord, (float) vec3.yCoord, (float) vec3.zCoord);
+				// TODO improvement: add scalar 
 				impulse.scale(1.25f);
 				rigidBody.applyCentralImpulse(impulse);
 				rigidBody.activate();

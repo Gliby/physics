@@ -8,8 +8,8 @@ import java.util.Map;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
-import com.bulletphysics.linearmath.QuaternionUtil;
-import com.bulletphysics.linearmath.Transform;
+import com.bulletphysicsx.linearmath.QuaternionUtil;
+import com.bulletphysicsx.linearmath.Transform;
 
 import gliby.minecraft.physics.common.physics.ModelPart;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;

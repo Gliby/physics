@@ -3,8 +3,8 @@
  */
 package gliby.minecraft.physics.common.physics.engine.javabullet;
 
-import com.bulletphysics.dynamics.constraintsolver.Generic6DofConstraint;
-import com.bulletphysics.linearmath.Transform;
+import com.bulletphysicsx.dynamics.constraintsolver.Generic6DofConstraint;
+import com.bulletphysicsx.linearmath.Transform;
 
 import gliby.minecraft.physics.common.physics.engine.IConstraintGeneric6Dof;
 

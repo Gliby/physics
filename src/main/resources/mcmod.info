@@ -2,11 +2,11 @@
 {
   "modid": "glibysphysics",
   "name": "Gliby's Physics",
-  "description": "Early access physics mod",
+  "description": "Early access physics mod.",
   "mcversion": "${mcversion}",
   "authorList": ["Gliby"],
   "credits": "@Immortius, Bullet Team.",
   "logoFile": "logo.png",
-  "screenshots": [],
+  "screenshots": []
 }
 ]

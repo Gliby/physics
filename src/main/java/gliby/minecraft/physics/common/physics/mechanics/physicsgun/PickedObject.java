@@ -5,7 +5,7 @@ package gliby.minecraft.physics.common.physics.mechanics.physicsgun;
 
 import javax.vecmath.Vector3f;
 
-import com.bulletphysics.linearmath.Transform;
+import com.bulletphysicsx.linearmath.Transform;
 
 import gliby.minecraft.physics.common.physics.engine.IConstraint;
 import gliby.minecraft.physics.common.physics.engine.IRayResult;

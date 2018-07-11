@@ -98,10 +98,10 @@ public class RenderPhysicsRagdoll extends RenderPhysics {
 						.offset(model.getPosition().x, model.getPosition().y, model.getPosition().z);
 				if (pointBB.intersectsWith(modelBB)) {
 					if (point.bodyA == null) {
-						System.out.println("Body A set");
+						//System.out.println("Body A set");
 						point.setBodyA(model);
 					} else if (point.bodyB == null) {
-						System.out.println("Body B set");
+						//System.out.println("Body B set");
 						point.setBodyB(model);
 					}
 				}

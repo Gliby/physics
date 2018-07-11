@@ -9,10 +9,10 @@ import java.util.List;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
-import com.bulletphysics.collision.broadphase.CollisionFilterGroups;
-import com.bulletphysics.linearmath.QuaternionUtil;
-import com.bulletphysics.linearmath.Transform;
-import com.bulletphysics.linearmath.VectorUtil;
+import com.bulletphysicsx.collision.broadphase.CollisionFilterGroups;
+import com.bulletphysicsx.linearmath.QuaternionUtil;
+import com.bulletphysicsx.linearmath.Transform;
+import com.bulletphysicsx.linearmath.VectorUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -157,7 +157,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 		this.defaultCollisionShape = metadataExists ? metadata.defaultCollisionShape : false;
 		this.collisionEnabled = metadataExists ? metadata.collisionEnabled : true;
 
-		// TODO feature: Introduce block bounding box caching.
+		// TODO feature: introduce block bounding box caching.
 		try {
 			if (this.defaultCollisionShape)
 				this.collisionShape = physicsWorld.createBoxShape(new Vector3f(0.5f, 0.5f, 0.5f));

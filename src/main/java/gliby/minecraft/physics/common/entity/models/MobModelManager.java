@@ -24,6 +24,9 @@ import net.minecraft.util.StringUtils;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import scala.reflect.api.Internals.ReificationSupportApi.SyntacitcSingletonTypeExtractor;
 
+/**
+ * Loads mobs from generated JSONs.
+ **/
 public class MobModelManager {
 
 	//
@@ -98,7 +101,7 @@ public class MobModelManager {
 
 						if (mobModel != null) {
 							MobModel model;
-							System.out.println("loaded: " + entry.getValue());
+							//System.out.println("loaded: " + entry.getValue());
 							modelRegistry.put(entry.getValue(), model = gson.fromJson(mobModel, MobModel.class));
 							loaded++;
 						}

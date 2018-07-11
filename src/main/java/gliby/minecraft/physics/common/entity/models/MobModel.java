@@ -9,6 +9,7 @@ import net.minecraft.util.AxisAlignedBB;
 
 /**
  * Most important parts of a Model.
+ * Models are primarily used for rag dolls.
  * 
  */
 public class MobModel {

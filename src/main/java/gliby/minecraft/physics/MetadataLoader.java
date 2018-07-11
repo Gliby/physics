@@ -81,44 +81,35 @@ public abstract class MetadataLoader {
 							tempData.put(blockID, metadata);
 						}
 						/*
-						 * Gson gson = new
-						 * GsonBuilder().setPrettyPrinting().create();
+						 * Gson gson = new GsonBuilder().setPrettyPrinting().create();
 						 *
 						 * JsonObject writable = new JsonObject();
 						 *
 						 * float hardness = block.getBlockHardness(null, null);
-						 * writable.addProperty("mass",
-						 * MathHelper.clamp_float(hardness * 20, 1,
-						 * Float.MAX_VALUE)); writable.addProperty("friction",
-						 * (1 - block.slipperiness) * 5);
+						 * writable.addProperty("mass", MathHelper.clamp_float(hardness * 20, 1,
+						 * Float.MAX_VALUE)); writable.addProperty("friction", (1 - block.slipperiness)
+						 * * 5);
 						 *
-						 * if (block.getCollisionBoundingBox(null, new
-						 * BlockPos(0, 0, 0), null) == null) {
-						 * writable.addProperty("collisionEnabled", false); }
+						 * if (block.getCollisionBoundingBox(null, new BlockPos(0, 0, 0), null) == null)
+						 * { writable.addProperty("collisionEnabled", false); }
 						 *
 						 * if (block.getBlockState().getBaseState().
-						 * getPropertyNames().contains("explode") || hardness <
-						 * 0) { writable.addProperty("shouldSpawnInExplosion",
-						 * false); }
+						 * getPropertyNames().contains("explode") || hardness < 0) {
+						 * writable.addProperty("shouldSpawnInExplosion", false); }
 						 *
-						 * JsonArray mechanics = new JsonArray();
-						 * mechanics.add(new
-						 * JsonPrimitive("EnvironmentGravity"));
-						 * mechanics.add(new
+						 * JsonArray mechanics = new JsonArray(); mechanics.add(new
+						 * JsonPrimitive("EnvironmentGravity")); mechanics.add(new
 						 * JsonPrimitive("EnvironmentResponse"));
 						 *
-						 * if (hasMethod(block.getClass(),
-						 * "onEntityCollidedWithBlock")) { System.out.println(
-						 * "Has special method!"); mechanics.add(new
+						 * if (hasMethod(block.getClass(), "onEntityCollidedWithBlock")) {
+						 * System.out.println( "Has special method!"); mechanics.add(new
 						 * JsonPrimitive("BlockInheritance")); mechanics.add(new
 						 * JsonPrimitive("ClientBlockInheritance")); }
 						 *
-						 * writable.add("mechanics", mechanics); String fileName
-						 * = "C:/GenGSON/" + blockID + ".json"; try { FileWriter
-						 * writer = new FileWriter(fileName);
-						 * gson.toJson(writable, writer); // writer.flush();
-						 * writer.close(); } catch (IOException e) {
-						 * e.printStackTrace(); } return null;
+						 * writable.add("mechanics", mechanics); String fileName = "C:/GenGSON/" +
+						 * blockID + ".json"; try { FileWriter writer = new FileWriter(fileName);
+						 * gson.toJson(writable, writer); // writer.flush(); writer.close(); } catch
+						 * (IOException e) { e.printStackTrace(); } return null;
 						 */
 						return null;
 					}
@@ -149,7 +140,6 @@ public abstract class MetadataLoader {
 			if (json.containsKey("collisionEnabled")) {
 				metadata.collisionEnabled = (Boolean) json.get("collisionEnabled");
 			}
-
 			if (json.containsKey("mechanics")) {
 				ArrayList<String> mechanicNames = (ArrayList<String>) json.get("mechanics");
 				for (int i = 0; i < mechanicNames.size(); i++) {

@@ -10,9 +10,9 @@ import java.util.Map;
 
 import javax.vecmath.Vector3f;
 
-import com.bulletphysics.collision.broadphase.CollisionFilterGroups;
-import com.bulletphysics.collision.dispatch.CollisionFlags;
-import com.bulletphysics.linearmath.Transform;
+import com.bulletphysicsx.collision.broadphase.CollisionFilterGroups;
+import com.bulletphysicsx.collision.dispatch.CollisionFlags;
+import com.bulletphysicsx.linearmath.Transform;
 
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.entity.IEntityPhysics;

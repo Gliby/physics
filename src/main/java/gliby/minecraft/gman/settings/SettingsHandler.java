@@ -13,10 +13,12 @@ import com.google.gson.Gson;
 import gliby.minecraft.gman.settings.INIProperties.INIPropertiesReadFailure;
 import gliby.minecraft.gman.settings.Setting.Side;
 import net.minecraft.client.Minecraft;
+import net.minecraft.server.MinecraftServer;
 
 /**
  * 
  */
+// TODO improvement replace settings with json
 public class SettingsHandler {
 
 	private Map<String, Setting> settings;
@@ -79,8 +81,7 @@ public class SettingsHandler {
 
 	// TODO improvement: run in seperate worker thread
 	public void save() {
-		Minecraft mc = Minecraft.getMinecraft();
-		mc.addScheduledTask(new Runnable() {
+		new Thread(new Runnable() {
 			public void run() {
 				firstTime = !file.exists();
 				Iterator it = settings.entrySet().iterator();
@@ -101,12 +102,13 @@ public class SettingsHandler {
 
 				properties.updateFile();
 			}
-		});
+		}).start();
 	}
 
+	// TODO code improvement: replace this hacky IO threading
+	
 	public void read() {
-		Minecraft mc = Minecraft.getMinecraft();
-		mc.addScheduledTask(new Runnable() {
+		new Thread(new Runnable() {
 			public void run() {
 				Iterator it = settings.entrySet().iterator();
 				while (it.hasNext()) {
@@ -124,7 +126,7 @@ public class SettingsHandler {
 					}
 				}
 			}
-		});
+		}).start();;
 		// }
 
 		// });

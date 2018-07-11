@@ -5,10 +5,10 @@ import java.util.Map;
 
 import javax.vecmath.Vector3f;
 
-import com.bulletphysics.collision.shapes.CollisionShape;
-import com.bulletphysics.collision.shapes.voxel.VoxelInfo;
-import com.bulletphysics.collision.shapes.voxel.VoxelPhysicsWorld;
-import com.bulletphysics.linearmath.VectorUtil;
+import com.bulletphysicsx.collision.shapes.CollisionShape;
+import com.bulletphysicsx.collision.shapes.voxel.VoxelInfo;
+import com.bulletphysicsx.collision.shapes.voxel.VoxelPhysicsWorld;
+import com.bulletphysicsx.linearmath.VectorUtil;
 
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;

@@ -5,7 +5,7 @@ package gliby.minecraft.physics.common.physics.engine.javabullet;
 
 import javax.vecmath.Vector3f;
 
-import com.bulletphysics.collision.dispatch.CollisionWorld;
+import com.bulletphysicsx.collision.dispatch.CollisionWorld;
 
 import gliby.minecraft.physics.common.physics.engine.IRayResult;
 

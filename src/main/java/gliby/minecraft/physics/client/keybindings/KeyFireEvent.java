@@ -8,8 +8,8 @@ import java.util.Random;
 
 import javax.vecmath.Vector3f;
 
-import com.bulletphysics.linearmath.Transform;
-import com.bulletphysics.linearmath.VectorUtil;
+import com.bulletphysicsx.linearmath.Transform;
+import com.bulletphysicsx.linearmath.VectorUtil;
 
 import gliby.minecraft.gman.EntityUtility;
 import gliby.minecraft.physics.Physics;
