@@ -22,6 +22,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.StringUtils;
@@ -170,9 +171,9 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 	 */
 	public abstract IRigidBody getRigidBody();
 
-	
-	// TODO bug: entity tracker has a hard time keeping up with physics base entities and eventually crashes the game.
-	
+	// TODO bug: entity tracker has a hard time keeping up with physics base
+	// entities and eventually crashes the game.
+
 	@Override
 	public void readEntityFromNBT(NBTTagCompound tagCompound) {
 		if (!worldObj.isRemote) {
@@ -181,10 +182,10 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 			// TODO improvement: block property nbt saving
 
 			Gson gson = new Gson();
-	/*		if (tagCompound.hasKey("Properties")) {
-				this.getRigidBody().getProperties()
-						.putAll(gson.fromJson(tagCompound.getString("Properties"), Map.class));
-			}*/
+			/*
+			 * if (tagCompound.hasKey("Properties")) { this.getRigidBody().getProperties()
+			 * .putAll(gson.fromJson(tagCompound.getString("Properties"), Map.class)); }
+			 */
 
 			ArrayList<String> mechanicsByNames = gson.fromJson(tagCompound.getString("Mechanics"), ArrayList.class);
 			if (mechanicsByNames != null) {
@@ -198,17 +199,27 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 		}
 	}
 
-	public void writeEntityToNBT(NBTTagCompound tagCompound) {
-		ArrayList<String> mechanicsByNames = new ArrayList<String>();
-		for (int i = 0; i < mechanics.size(); i++) {
-			mechanicsByNames
-					.add(Physics.getInstance().getPhysicsOverworld().getMechanicsMap().inverse().get(mechanics.get(i)));
-		}
-		// TODO improvement: block property nbt saving
-		Gson gson = new Gson();
-/*		 tagCompound.setString("Properties",
-		 gson.toJson(this.getRigidBody().getProperties()));*/
-		tagCompound.setString("Mechanics", gson.toJson(mechanicsByNames));
+	public void writeEntityToNBT(final NBTTagCompound tagCompound) {
+		MinecraftServer server = MinecraftServer.getServer();
+		server.addScheduledTask(new Runnable() {
+
+			@Override
+			public void run() {
+				ArrayList<String> mechanicsByNames = new ArrayList<String>();
+				for (int i = 0; i < mechanics.size(); i++) {
+					mechanicsByNames.add(Physics.getInstance().getPhysicsOverworld().getMechanicsMap().inverse()
+							.get(mechanics.get(i)));
+				}
+				// TODO improvement: block property nbt saving
+				Gson gson = new Gson();
+				/*
+				 * tagCompound.setString("Properties",
+				 * gson.toJson(this.getRigidBody().getProperties()));
+				 */
+				tagCompound.setString("Mechanics", gson.toJson(mechanicsByNames));
+
+			}
+		});
 	}
 
 	@Override
@@ -270,7 +281,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 			if (getRigidBody() != null) {
 				if (getRigidBody().getProperties().containsKey(EnumRigidBodyProperty.DEAD.getName())) {
 					// TODO bug: pretty sure this crashes the physics engine.
-					//System.out.println("Set dead: " + getRigidBody().getProperties());
+					// System.out.println("Set dead: " + getRigidBody().getProperties());
 					this.setDead();
 				}
 				if (getRigidBody().isActive())
@@ -285,7 +296,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 		// Update mechanics.
 		for (int i = 0; i < mechanics.size(); i++) {
 			RigidBodyMechanic mechanic = (RigidBodyMechanic) mechanics.get(i);
-			if (mechanic.isEnabled()) 
+			if (mechanic.isEnabled())
 				mechanic.update(getRigidBody(), physicsWorld, this, worldObj.isRemote ? Side.CLIENT : Side.SERVER);
 		}
 	}

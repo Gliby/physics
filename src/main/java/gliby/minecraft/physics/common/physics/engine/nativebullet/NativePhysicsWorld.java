@@ -62,10 +62,12 @@ import sun.rmi.runtime.RuntimeUtil;
  *
  */
 
-// TODO NativePhysicsWorld: Start disposing of every, and I mean EVERY native element.
+// TODO NativePhysicsWorld: Start disposing of every, and I mean EVERY native
+// element.
 // TODO NativePhysicsWorld: dispose on remove from world too.
 // FIXME NativePhysicsWorld: We need to care of memory!
-// FIXME NativePhysicsWorld: Stop using Vector/Matrix/Transform conversions. Use IVector and
+// FIXME NativePhysicsWorld: Stop using Vector/Matrix/Transform conversions. Use
+// IVector and
 // IQuaternion, IMatrix, replace with custom vector stuff or MC Vec3.
 // TODO NativePhysicsWorld: Add ability to run in non-thread.
 public class NativePhysicsWorld extends PhysicsWorld {
@@ -150,23 +152,13 @@ public class NativePhysicsWorld extends PhysicsWorld {
 		super.create();
 	}
 
-	private final Queue<Runnable> scheduledTasks = Queues.newArrayDeque();
-
-//	boolean run = true;
-
 	@Override
 	protected void update() {
-		Queue queue = this.scheduledTasks;
-		synchronized (this.scheduledTasks) {
-			while (!this.scheduledTasks.isEmpty()) {
-				this.scheduledTasks.poll().run();
-			}
-		}
-
 		float delta = getDelta();
-		if (dynamicsWorld != null)
+		if (dynamicsWorld != null) {
 			dynamicsWorld.stepSimulation(1, Math.round(delta / 7));
-		super.update();
+			super.update();
+		}
 	}
 
 	@Override
@@ -178,7 +170,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 		btDefaultMotionState motionState = new btDefaultMotionState(fromTransformToMatrix4(transform));
 		btRigidBodyConstructionInfo constructionInfo = new btRigidBodyConstructionInfo(mass, motionState,
 				(btCollisionShape) shape.getCollisionShape(), localInertia);
-		NativeRigidBody rigidBody = new NativeRigidBody(new btRigidBody(constructionInfo), owner);
+		NativeRigidBody rigidBody = new NativeRigidBody(this, new btRigidBody(constructionInfo), owner);
 
 		return rigidBody;
 	}
@@ -189,13 +181,13 @@ public class NativePhysicsWorld extends PhysicsWorld {
 		btDefaultMotionState motionState = new btDefaultMotionState(fromTransformToMatrix4(transform));
 		btRigidBodyConstructionInfo constructionInfo = new btRigidBodyConstructionInfo(mass, motionState,
 				(btCollisionShape) shape.getCollisionShape());
-		NativeRigidBody rigidBody = new NativeRigidBody(new btRigidBody(constructionInfo), owner);
+		NativeRigidBody rigidBody = new NativeRigidBody(this, new btRigidBody(constructionInfo), owner);
 		return rigidBody;
 	}
 
 	@Override
 	public ICollisionShape createBoxShape(Vector3f extents) {
-		NativeCollisionShape shape = new NativeCollisionShape(new btBoxShape(toVector3(extents)));
+		NativeCollisionShape shape = new NativeCollisionShape(this, new btBoxShape(toVector3(extents)));
 		return shape;
 	}
 
@@ -288,10 +280,14 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public void rayTest(final Vector3f rayFromWorld, final Vector3f rayToWorld, final IRayResult resultCallback) {
-		synchronized (this) {
-			dynamicsWorld.rayTest(toVector3(rayFromWorld), toVector3(rayToWorld),
-					(RayResultCallback) resultCallback.getRayResultCallback());
-		}
+		scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				dynamicsWorld.rayTest(toVector3(rayFromWorld), toVector3(rayToWorld),
+						(RayResultCallback) resultCallback.getRayResultCallback());
+			}
+		});
 	}
 
 	@Override
@@ -422,7 +418,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 	@Override
 	public IGhostObject createPairCachingGhostObject() {
 		btPairCachingGhostObject nativePair;
-		NativePairCachingGhostObject pairCache = new NativePairCachingGhostObject(
+		NativePairCachingGhostObject pairCache = new NativePairCachingGhostObject(this,
 				nativePair = new btPairCachingGhostObject());
 		disposables.add(nativePair);
 		return pairCache;
@@ -443,7 +439,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 	@Override
 	public IConstraintPoint2Point createPoint2PointConstraint(IRigidBody rigidBody, Vector3f relativePivot) {
 		btPoint2PointConstraint nativeConstraint;
-		NativePoint2PointConstraint p2p = new NativePoint2PointConstraint(
+		NativePoint2PointConstraint p2p = new NativePoint2PointConstraint(this,
 				nativeConstraint = new btPoint2PointConstraint((btRigidBody) rigidBody.getBody(),
 						toVector3(relativePivot)));
 		return p2p;
@@ -520,7 +516,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 	@Override
 	public ICollisionShape createSphereShape(float radius) {
 		btSphereShape nativeSphere;
-		NativeCollisionShape shape = new NativeCollisionShape(nativeSphere = new btSphereShape(radius));
+		NativeCollisionShape shape = new NativeCollisionShape(this, nativeSphere = new btSphereShape(radius));
 		disposables.add(nativeSphere);
 		return shape;
 	}
@@ -548,7 +544,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 					(float) relativeBB.minZ + (float) relativeBB.maxZ - 0.5f);
 			compoundShape.addChildShape(fromTransformToMatrix4(transform), new btBoxShape(toVector3(extents)));
 		}
-		NativeCollisionShape collisionShape = new NativeCollisionShape(compoundShape);
+		NativeCollisionShape collisionShape = new NativeCollisionShape(this, compoundShape);
 		return collisionShape;
 
 	}

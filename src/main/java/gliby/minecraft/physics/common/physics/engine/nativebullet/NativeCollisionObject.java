@@ -2,8 +2,10 @@ package gliby.minecraft.physics.common.physics.engine.nativebullet;
 
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
+import com.bulletphysicsx.collision.shapes.CollisionShape;
 import com.bulletphysicsx.linearmath.Transform;
 
+import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.ICollisionObject;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import net.minecraft.entity.Entity;
@@ -14,18 +16,20 @@ import net.minecraft.entity.Entity;
 class NativeCollisionObject implements ICollisionObject {
 
 	private btCollisionObject object;
-
-	NativeCollisionObject(btCollisionObject object) {
-		this.object = object;
-	}
+	
+	protected PhysicsWorld physicsWorld;
 	
 	Entity owner;
-
-	NativeCollisionObject(Entity owner, btCollisionObject object) {
-		this.owner = owner;
+	
+	NativeCollisionObject(PhysicsWorld physicsWorld, btCollisionObject object) {
+		this.physicsWorld = physicsWorld;
 		this.object = object;
 	}
 
+	NativeCollisionObject(PhysicsWorld physicsWorld, Entity owner, btCollisionObject object) {
+		this(physicsWorld, object);
+		this.owner = owner;
+	}
 
 	@Override
 	public Object getCollisionObject() {
@@ -33,28 +37,58 @@ class NativeCollisionObject implements ICollisionObject {
 	}
 
 	@Override
-	public void setWorldTransform(Transform transform) {
-		object.setWorldTransform(NativePhysicsWorld.fromTransformToMatrix4(transform));
+	public void setWorldTransform(final Transform transform) {
+		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+			
+			@Override
+			public void run() {
+				object.setWorldTransform(NativePhysicsWorld.fromTransformToMatrix4(transform));
+			}
+		});
 	}
 
 	@Override
-	public void setCollisionShape(ICollisionShape shape) {
-		object.setCollisionShape((btCollisionShape) shape.getCollisionShape());
+	public void setCollisionShape(final ICollisionShape shape) {
+		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+			
+			@Override
+			public void run() {
+				object.setCollisionShape((btCollisionShape) shape.getCollisionShape());
+			}
+		});
 	}
 
 	@Override
-	public void setCollisionFlags(int characterObject) {
-		object.setCollisionFlags(characterObject);
+	public void setCollisionFlags(final int characterObject) {
+		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+			
+			@Override
+			public void run() {
+				object.setCollisionFlags(characterObject);
+			}
+		});
 	}
 
 	@Override
-	public void setInterpolationWorldTransform(Transform transform) {
-		object.setInterpolationWorldTransform(NativePhysicsWorld.fromTransformToMatrix4(transform));
+	public void setInterpolationWorldTransform(final Transform transform) {
+		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+			
+			@Override
+			public void run() {
+				object.setInterpolationWorldTransform(NativePhysicsWorld.fromTransformToMatrix4(transform));
+			}
+		});
 	}
 
 	@Override
 	public Entity getOwner() {
 		return owner;
+	}
+
+
+	@Override
+	public PhysicsWorld getPhysicsWorld() {
+		return physicsWorld;
 	}
 
 

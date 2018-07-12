@@ -4,11 +4,16 @@ import java.util.List;
 
 import javax.vecmath.Vector3f;
 
+import gliby.minecraft.physics.common.physics.PhysicsWorld;
+
 /**
  *
  */
 public interface ICollisionShape {
 
+	PhysicsWorld getPhysicsWorld();
+	
+	
 	/**
 	 * @return
 	 */

@@ -128,17 +128,8 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 		super.create();
 	}
 
-	private final Queue<Runnable> scheduledTasks = Queues.newArrayDeque();
-
 	@Override
 	public void update() {
-		Queue queue = this.scheduledTasks;
-		synchronized (this.scheduledTasks) {
-			while (!this.scheduledTasks.isEmpty()) {
-				this.scheduledTasks.poll().run();
-			}
-		}
-
 		float delta = getDelta();
 		if (dynamicsWorld != null)
 			dynamicsWorld.stepSimulation(1, Math.round(delta / 7));
@@ -146,11 +137,15 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 	}
 
 	@Override
-	public void addRigidBody(IRigidBody body) {
-		synchronized (this) {
-			this.dynamicsWorld.addRigidBody((RigidBody) body.getBody());
-			this.rigidBodies.add(body);
-		}
+	public void addRigidBody(final IRigidBody body) {
+		scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				dynamicsWorld.addRigidBody((RigidBody) body.getBody());
+				rigidBodies.add(body);
+			}
+		});
 	}
 
 	@Override
@@ -192,11 +187,16 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 	}
 
 	@Override
-	public void rayTest(Vector3f rayFromWorld, Vector3f rayToWorld, IRayResult resultCallback) {
-		synchronized (this) {
-			this.dynamicsWorld.rayTest(rayFromWorld, rayToWorld,
-					(RayResultCallback) resultCallback.getRayResultCallback());
-		}
+	public void rayTest(final Vector3f rayFromWorld, final Vector3f rayToWorld, final IRayResult resultCallback) {
+		scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				dynamicsWorld.rayTest(rayFromWorld, rayToWorld,
+						(RayResultCallback) resultCallback.getRayResultCallback());
+
+			}
+		});
 	}
 
 	@Override
@@ -305,12 +305,12 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 		RigidBodyConstructionInfo constructionInfo = new RigidBodyConstructionInfo(mass, motionState,
 				(CollisionShape) shape.getCollisionShape(), localInertia);
 		RigidBody body = new RigidBody(constructionInfo);
-		return new JavaRigidBody(body, owner);
+		return new JavaRigidBody(this, body, owner);
 	}
 
 	@Override
 	public ICollisionShape createBoxShape(final Vector3f extents) {
-		return new gliby.minecraft.physics.common.physics.engine.javabullet.JavaCollisionShape(new BoxShape(extents));
+		return new gliby.minecraft.physics.common.physics.engine.javabullet.JavaCollisionShape(this, new BoxShape(extents));
 	}
 
 	@Override
@@ -319,7 +319,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 	}
 
 	public IGhostObject createPairCachingGhostObject() {
-		return new JavaPairCachingGhostObject(new PairCachingGhostObject());
+		return new JavaPairCachingGhostObject(this, new PairCachingGhostObject());
 	}
 
 	@Override
@@ -336,23 +336,31 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public IConstraintPoint2Point createPoint2PointConstraint(IRigidBody rigidBody, Vector3f relativePivot) {
-		return new JavaConstraintPoint2Point(new Point2PointConstraint((RigidBody) rigidBody.getBody(), relativePivot));
+		return new JavaConstraintPoint2Point(this, new Point2PointConstraint((RigidBody) rigidBody.getBody(), relativePivot));
 	}
 
 	@Override
-	public void addConstraint(IConstraint constraint) {
-		synchronized (this) {
-			dynamicsWorld.addConstraint((TypedConstraint) constraint.getConstraint());
-			constraints.add(constraint);
-		}
+	public void addConstraint(final IConstraint constraint) {
+		scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				dynamicsWorld.addConstraint((TypedConstraint) constraint.getConstraint());
+				constraints.add(constraint);
+			}
+		});
 	}
 
 	@Override
-	public void removeConstraint(IConstraint constraint) {
-		synchronized (this) {
-			dynamicsWorld.removeConstraint((TypedConstraint) constraint.getConstraint());
-			constraints.remove(constraint);
-		}
+	public void removeConstraint(final IConstraint constraint) {
+		scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				dynamicsWorld.removeConstraint((TypedConstraint) constraint.getConstraint());
+				constraints.remove(constraint);
+			}
+		});
 	}
 
 	public String writeBlockCollisionShape(ICollisionShape collisionShape) {
@@ -386,7 +394,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 			CollisionPart part = (CollisionPart) collisionParts.get(i);
 			shape.addChildShape(part.transform, new BoxShape(part.extent));
 		}
-		return new JavaCollisionShape(shape);
+		return new JavaCollisionShape(this, shape);
 	}
 
 	@Override
@@ -432,7 +440,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public ICollisionShape createSphereShape(float radius) {
-		return new JavaCollisionShape(new SphereShape(radius));
+		return new JavaCollisionShape(this, new SphereShape(radius));
 	}
 
 	@Override
@@ -442,7 +450,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 		RigidBodyConstructionInfo constructionInfo = new RigidBodyConstructionInfo(mass, motionState,
 				(CollisionShape) shape.getCollisionShape());
 		RigidBody body = new RigidBody(constructionInfo);
-		return new JavaRigidBody(body, owner);
+		return new JavaRigidBody(this, body, owner);
 	}
 
 	@Override
@@ -475,6 +483,6 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 					(float) relativeBB.minZ + (float) relativeBB.maxZ - 0.5f);
 			compoundShape.addChildShape(transform, new BoxShape(extents));
 		}
-		return new JavaCollisionShape(compoundShape);
+		return new JavaCollisionShape(this, compoundShape);
 	}
 }

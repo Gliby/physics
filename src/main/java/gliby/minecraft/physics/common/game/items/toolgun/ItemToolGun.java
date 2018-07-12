@@ -140,7 +140,8 @@ public class ItemToolGun extends RawItem {
 					if (player.getCurrentEquippedItem() != null
 							&& player.getCurrentEquippedItem().getItem() instanceof ItemToolGun) {
 						IToolGunAction toolGunAction;
-						if ((toolGunAction = physics.getGameManager().getToolGunRegistry().getActions().get(packet.mode)) != null) {
+						if ((toolGunAction = physics.getGameManager().getToolGunRegistry().getActions()
+								.get(packet.mode)) != null) {
 							toolGunAction.stoppedUsing(physicsWorld, player);
 						}
 					}
@@ -150,8 +151,8 @@ public class ItemToolGun extends RawItem {
 		}
 		/*
 		 * GravityMagnetMechanic mechanic = (GravityMagnetMechanic)
-		 * physicsWorld.getMechanics().get("GravityMagnet"); if (mechanic !=
-		 * null) { if (!mechanic.gravityMagnetEntityExists(player)) {
+		 * physicsWorld.getMechanics().get("GravityMagnet"); if (mechanic != null) { if
+		 * (!mechanic.gravityMagnetEntityExists(player)) {
 		 * mechanic.addGravityMagnetEntity(player); } else {
 		 * mechanic.removeGravityMagnetEntity(player); } }
 		 */
@@ -198,10 +199,10 @@ public class ItemToolGun extends RawItem {
 					if (player.getCurrentEquippedItem() != null
 							&& player.getCurrentEquippedItem().getItem() instanceof ItemToolGun) {
 						IToolGunAction toolGunAction;
-						if ((toolGunAction = physics.getGameManager().getToolGunRegistry().getActions().get(packet.mode)) != null) {
+						if ((toolGunAction = physics.getGameManager().getToolGunRegistry().getActions()
+								.get(packet.mode)) != null) {
 							if (toolGunAction.use(physicsWorld, player, packet.lookAt)) {
-								EntityUtility.spawnEntitySynchronized(world,
-										new EntityToolGunBeam(world, player, packet.lookAt));
+								world.spawnEntityInWorld(new EntityToolGunBeam(world, player, packet.lookAt));
 							}
 						}
 					}
@@ -211,8 +212,8 @@ public class ItemToolGun extends RawItem {
 		}
 		/*
 		 * GravityMagnetMechanic mechanic = (GravityMagnetMechanic)
-		 * physicsWorld.getMechanics().get("GravityMagnet"); if (mechanic !=
-		 * null) { if (!mechanic.gravityMagnetEntityExists(player)) {
+		 * physicsWorld.getMechanics().get("GravityMagnet"); if (mechanic != null) { if
+		 * (!mechanic.gravityMagnetEntityExists(player)) {
 		 * mechanic.addGravityMagnetEntity(player); } else {
 		 * mechanic.removeGravityMagnetEntity(player); } }
 		 */
