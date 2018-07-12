@@ -13,6 +13,7 @@ import gliby.minecraft.physics.common.physics.engine.IConstraintSlider;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import gliby.minecraft.physics.common.physics.engine.IRope;
 
+// TODO JavaRope: implement decent rope algorithm
 public class JavaRope implements IRope {
 
 	JavaRope(Vector3f startPos, Vector3f endPos, int detail) {

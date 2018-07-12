@@ -4,6 +4,7 @@ import javax.vecmath.Vector3f;
 
 import com.badlogic.gdx.physics.bullet.dynamics.btPoint2PointConstraint;
 
+import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IConstraintPoint2Point;
 
 /**
@@ -12,24 +13,44 @@ import gliby.minecraft.physics.common.physics.engine.IConstraintPoint2Point;
 class NativePoint2PointConstraint implements IConstraintPoint2Point {
 
 	private btPoint2PointConstraint constraint;
+	protected PhysicsWorld physicsWorld;
 
-	NativePoint2PointConstraint(btPoint2PointConstraint constraint) {
+	NativePoint2PointConstraint(PhysicsWorld physicsWorld, btPoint2PointConstraint constraint) {
+		this.physicsWorld = physicsWorld;
 		this.constraint = constraint;
 	}
 
 	@Override
-	public void setImpulseClamp(float f) {
-		constraint.getSetting().setImpulseClamp(f);
+	public void setImpulseClamp(final float f) {
+		getPhysicsWorld().scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				constraint.getSetting().setImpulseClamp(f);
+			}
+		});
 	}
 
 	@Override
-	public void setTau(float f) {
-		constraint.getSetting().setTau(f);
+	public void setTau(final float f) {
+		getPhysicsWorld().scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				constraint.getSetting().setTau(f);
+			}
+		});
 	}
 
 	@Override
-	public void setPivotB(Vector3f newPos) {
-		constraint.setPivotB(NativePhysicsWorld.toVector3(newPos));
+	public void setPivotB(final Vector3f newPos) {
+		getPhysicsWorld().scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				constraint.setPivotB(NativePhysicsWorld.toVector3(newPos));
+			}
+		});
 	}
 
 	@Override
@@ -62,5 +83,10 @@ class NativePoint2PointConstraint implements IConstraintPoint2Point {
 	@Override
 	public boolean isSlider() {
 		return false;
+	}
+
+	@Override
+	public PhysicsWorld getPhysicsWorld() {
+		return physicsWorld;
 	}
 }

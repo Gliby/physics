@@ -11,10 +11,11 @@ import gliby.minecraft.physics.common.physics.engine.IConstraintGeneric6Dof;
 class NativeConstraintGeneric6Dof implements IConstraintGeneric6Dof {
 
 	private btGeneric6DofConstraint constraint;
+
 	NativeConstraintGeneric6Dof(btGeneric6DofConstraint constraint) {
 		this.constraint = constraint;
 	}
-	
+
 	@Override
 	public Object getConstraint() {
 		return constraint;

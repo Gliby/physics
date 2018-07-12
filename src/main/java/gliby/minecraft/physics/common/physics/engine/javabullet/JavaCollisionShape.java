@@ -12,6 +12,7 @@ import com.bulletphysicsx.collision.shapes.CompoundShape;
 import com.bulletphysicsx.collision.shapes.CompoundShapeChild;
 import com.bulletphysicsx.linearmath.Transform;
 
+import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShapeChildren;
 
@@ -22,7 +23,10 @@ public class JavaCollisionShape implements ICollisionShape {
 
 	private CollisionShape shape;
 
-	JavaCollisionShape(CollisionShape shape) {
+	protected PhysicsWorld physicsWorld;
+
+	JavaCollisionShape(PhysicsWorld physicsWorld, CollisionShape shape) {
+		this.physicsWorld = physicsWorld;
 		this.shape = shape;
 	}
 
@@ -47,8 +51,14 @@ public class JavaCollisionShape implements ICollisionShape {
 	}
 
 	@Override
-	public void calculateLocalInertia(float mass, Object localInertia) {
-		shape.calculateLocalInertia(mass, (Vector3f) localInertia);
+	public void calculateLocalInertia(final float mass, final Object localInertia) {
+		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				shape.calculateLocalInertia(mass, (Vector3f) localInertia);
+			}
+		});
 	}
 
 	@Override
@@ -70,7 +80,7 @@ public class JavaCollisionShape implements ICollisionShape {
 
 				@Override
 				public ICollisionShape getCollisionShape() {
-					return new JavaCollisionShape(child.childShape);
+					return new JavaCollisionShape(physicsWorld, child.childShape);
 				}
 
 			});
@@ -79,8 +89,19 @@ public class JavaCollisionShape implements ICollisionShape {
 	}
 
 	@Override
-	public void setLocalScaling(Vector3f localScaling) {
-		this.shape.setLocalScaling(localScaling);
+	public void setLocalScaling(final Vector3f localScaling) {
+		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				shape.setLocalScaling(localScaling);
+			}
+		});
+	}
+
+	@Override
+	public PhysicsWorld getPhysicsWorld() {
+		return physicsWorld;
 	}
 
 }

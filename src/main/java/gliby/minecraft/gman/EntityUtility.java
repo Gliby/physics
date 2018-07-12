@@ -29,7 +29,7 @@ public class EntityUtility {
 		return entityItem.getDataWatcher().getWatchableObjectItemStack(10);
 	}
 
-	public static Entity spawnEntitySynchronized(final World world, final Entity entity) {
+	public static Entity spawnEntityScheduled(final World world, final Entity entity) {
 		MinecraftServer.getServer().addScheduledTask(new Runnable() {
 
 			@Override

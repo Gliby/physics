@@ -101,25 +101,26 @@ public class Physics {
 		
 		settings = new SettingsHandler(dir, new File(dir, "Settings.ini"));
 
-		settings.registerBoolean("PhysicsEngine", "UseJavaPhysics", true, Setting.Side.SERVER);
+		settings.registerBoolean("PhysicsEngine", "UseJavaPhysics", true, Setting.Side.BOTH);
 
-		settings.registerObject("PhysicsEntities", "EntityColliderBlacklist", new String[] {
+		// TODO re-implement: entity blacklist
+/*		settings.registerObject("PhysicsEntities", "EntityColliderBlacklist", new String[] {
 				IEntityPhysics.class.getName(), EntityToolGunBeam.class.getName(), EntityItem.class.getName() },
-				Setting.Side.SERVER);
-		settings.registerInteger("PhysicsEngine", "TickRate", 30, Setting.Side.SERVER);
-		settings.registerFloat("PhysicsEngine", "GravityForce", -9.8f, Setting.Side.SERVER);
-		settings.registerFloat("PhysicsEntities", "InactivityDeathTime", 30, Setting.Side.SERVER);
-		settings.registerFloat("PhysicsEntities", "EntityColliderCleanupTime", 0.25f, Setting.Side.SERVER);
-		settings.registerFloat("Game", "ProjectileImpulseForce", 30, Setting.Side.SERVER);
-		settings.registerFloat("Game", "ExplosionImpulseRadius", 16, Setting.Side.SERVER);
-		settings.registerFloat("Game", "ExplosionImpulseForce", 300, Setting.Side.SERVER);
-		settings.registerInteger("Tools", "AttractRadius", 16, Setting.Side.SERVER);
-		settings.registerInteger("Tools", "GravitizerRadius", 16, Setting.Side.SERVER);
-		settings.registerInteger("Tools", "GravitizerForce", 10, Setting.Side.SERVER);
-		settings.registerInteger("Tools", "AttractForce", 10, Setting.Side.SERVER);
+				Setting.Side.BOTH);*/
+		settings.registerInteger("PhysicsEngine", "TickRate", 30, Setting.Side.BOTH);
+		settings.registerFloat("PhysicsEngine", "GravityForce", -9.8f, Setting.Side.BOTH);
+		settings.registerFloat("PhysicsEntities", "InactivityDeathTime", 30, Setting.Side.BOTH);
+		settings.registerFloat("PhysicsEntities", "EntityColliderCleanupTime", 0.25f, Setting.Side.BOTH);
+		settings.registerFloat("Game", "ProjectileImpulseForce", 30, Setting.Side.BOTH);
+		settings.registerFloat("Game", "ExplosionImpulseRadius", 16, Setting.Side.BOTH);
+		settings.registerFloat("Game", "ExplosionImpulseForce", 300, Setting.Side.BOTH);
+		settings.registerInteger("Tools", "AttractRadius", 16, Setting.Side.BOTH);
+		settings.registerInteger("Tools", "GravitizerRadius", 16, Setting.Side.BOTH);
+		settings.registerInteger("Tools", "GravitizerForce", 10, Setting.Side.BOTH);
+		settings.registerInteger("Tools", "AttractForce", 10, Setting.Side.BOTH);
 
 		settings.registerString("Miscellaneous", "LastVersion", MOD_VERSION, Setting.Side.BOTH);
-		settings.registerBoolean("Miscellaneous", "DisableAllowFlight", true, Setting.Side.SERVER);
+		settings.registerBoolean("Miscellaneous", "DisableAllowFlight", true, Setting.Side.BOTH);
 		settings.load();
 		gman = GMan.create(getLogger(), new ModInfo(MOD_ID, event.getModMetadata().updateUrl),
 				MinecraftForge.MC_VERSION, MOD_VERSION);

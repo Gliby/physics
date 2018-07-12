@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.bulletphysicsx.linearmath.Transform;
 
+import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import gliby.minecraft.physics.common.physics.engine.IQuaternion;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
@@ -26,16 +27,17 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 	private ICollisionShape collisionShape;
 	private Map<String, Object> properties;
 
-	public NativeRigidBody(btRigidBody rigidBody, Entity entity) {
-		super(entity, rigidBody);
+	public NativeRigidBody(PhysicsWorld physicsWorld, btRigidBody rigidBody, Entity entity) {
+		super(physicsWorld, entity, rigidBody);
+		this.physicsWorld = physicsWorld;
 		this.rigidBody = rigidBody;
-		this.collisionShape = new NativeCollisionShape(rigidBody.getCollisionShape());
+		this.collisionShape = new NativeCollisionShape(physicsWorld, rigidBody.getCollisionShape());
 		this.properties = new HashMap<String, Object>();
 		this.rotation = new NativeQuaternion(rigidBody.getOrientation());
 		this.vectorPosition = new Vector3();
 		this.position = new NativeVector3(vectorPosition);
 	}
-	
+
 	@Override
 	public Object getBody() {
 		return rigidBody;
@@ -84,33 +86,69 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 		return transform;
 	}
 
-	public void setWorldTransform(Transform transform) {
-		rigidBody.setWorldTransform(NativePhysicsWorld.fromTransformToMatrix4(transform));
+	public void setWorldTransform(final Transform transform) {
+		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				rigidBody.setWorldTransform(NativePhysicsWorld.fromTransformToMatrix4(transform));
+			}
+		});
 	}
 
 	@Override
-	public void setGravity(Vector3f acceleration) {
-		rigidBody.setGravity(NativePhysicsWorld.toVector3(acceleration));
+	public void setGravity(final Vector3f acceleration) {
+		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				rigidBody.setGravity(NativePhysicsWorld.toVector3(acceleration));
+			}
+		});
 	}
 
 	@Override
-	public void setFriction(float friction) {
-		rigidBody.setFriction(friction);
+	public void setFriction(final float friction) {
+		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				rigidBody.setFriction(friction);
+			}
+		});
 	}
 
 	@Override
-	public void setLinearVelocity(Vector3f linearVelocity) {
-		rigidBody.setLinearVelocity(NativePhysicsWorld.toVector3(linearVelocity));
+	public void setLinearVelocity(final Vector3f linearVelocity) {
+		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				rigidBody.setLinearVelocity(NativePhysicsWorld.toVector3(linearVelocity));
+			}
+		});
 	}
 
 	@Override
-	public void setAngularVelocity(Vector3f angularVelocity) {
-		rigidBody.setAngularVelocity(NativePhysicsWorld.toVector3(angularVelocity));
+	public void setAngularVelocity(final Vector3f angularVelocity) {
+		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				rigidBody.setAngularVelocity(NativePhysicsWorld.toVector3(angularVelocity));
+			}
+		});
 	}
 
 	@Override
-	public void applyCentralImpulse(Vector3f direction) {
-		rigidBody.applyCentralImpulse(NativePhysicsWorld.toVector3(direction));
+	public void applyCentralImpulse(final Vector3f direction) {
+		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				rigidBody.applyCentralImpulse(NativePhysicsWorld.toVector3(direction));
+			}
+		});
 	}
 
 	@Override
@@ -125,6 +163,13 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 
 	@Override
 	public void activate() {
+/*		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO NativeRigidBody bug: rigidBody.activate(); when called from scheduledTasks, crash.
+			}
+		});*/
 		rigidBody.activate();
 	}
 
@@ -148,8 +193,14 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 	}
 
 	@Override
-	public void applyCentralForce(Vector3f force) {
-		rigidBody.applyCentralForce(NativePhysicsWorld.toVector3(force));
+	public void applyCentralForce(final Vector3f force) {
+		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				rigidBody.applyCentralForce(NativePhysicsWorld.toVector3(force));
+			}
+		});
 	}
 
 	@Override
@@ -184,13 +235,25 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 	}
 
 	@Override
-	public void applyTorque(Vector3f vector) {
-		rigidBody.applyTorque(NativePhysicsWorld.toVector3(vector));
+	public void applyTorque(final Vector3f vector) {
+		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				rigidBody.applyTorque(NativePhysicsWorld.toVector3(vector));
+			}
+		});
 	}
 
 	@Override
-	public void applyTorqueImpulse(Vector3f vector) {
-		rigidBody.applyTorqueImpulse(NativePhysicsWorld.toVector3(vector));
+	public void applyTorqueImpulse(final Vector3f vector) {
+		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				rigidBody.applyTorqueImpulse(NativePhysicsWorld.toVector3(vector));
+			}
+		});
 	}
 
 }

@@ -6,13 +6,13 @@ import javax.vecmath.Vector3f;
 
 import com.bulletphysicsx.linearmath.Transform;
 
-import net.minecraft.entity.Entity;
+import gliby.minecraft.physics.common.physics.PhysicsWorld;
 
 /**
  *
  */
 public interface IRigidBody extends ICollisionObject {
-
+	
 	/**
 	 * @return
 	 */

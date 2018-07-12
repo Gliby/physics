@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCompoundShape;
 import com.bulletphysicsx.linearmath.Transform;
 
+import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShapeChildren;
 
@@ -22,7 +23,10 @@ class NativeCollisionShape implements ICollisionShape {
 
 	private btCollisionShape shape;
 
-	NativeCollisionShape(btCollisionShape shape) {
+	protected PhysicsWorld physicsWorld;
+
+	NativeCollisionShape(PhysicsWorld physicsWorld, btCollisionShape shape) {
+		this.physicsWorld = physicsWorld;
 		this.shape = shape;
 	}
 
@@ -47,8 +51,14 @@ class NativeCollisionShape implements ICollisionShape {
 	}
 
 	@Override
-	public void calculateLocalInertia(float mass, Object localInertia) {
-		shape.calculateLocalInertia(mass, (Vector3) localInertia);
+	public void calculateLocalInertia(final float mass, final Object localInertia) {
+		getPhysicsWorld().scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				shape.calculateLocalInertia(mass, (Vector3) localInertia);
+			}
+		});
 	}
 
 	@Override
@@ -73,7 +83,7 @@ class NativeCollisionShape implements ICollisionShape {
 
 				@Override
 				public ICollisionShape getCollisionShape() {
-					return new NativeCollisionShape(compoundShape.getChildShape(index));
+					return new NativeCollisionShape(physicsWorld, compoundShape.getChildShape(index));
 				}
 
 			});
@@ -82,8 +92,19 @@ class NativeCollisionShape implements ICollisionShape {
 	}
 
 	@Override
-	public void setLocalScaling(Vector3f localScaling) {
-		this.shape.setLocalScaling(NativePhysicsWorld.toVector3(localScaling));
+	public void setLocalScaling(final Vector3f localScaling) {
+		getPhysicsWorld().scheduledTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				shape.setLocalScaling(NativePhysicsWorld.toVector3(localScaling));
+			}
+		});
+	}
+
+	@Override
+	public PhysicsWorld getPhysicsWorld() {
+		return physicsWorld;
 	}
 
 }

@@ -16,16 +16,16 @@ import net.minecraft.util.MovingObjectPosition;
  */
 public class ToolGunReviveAction implements IToolGunAction {
 
-	public boolean use(PhysicsWorld world, EntityPlayerMP player, Vector3f lookAt) {
+	public boolean use(PhysicsWorld physicsWorld, EntityPlayerMP player, Vector3f lookAt) {
 		MovingObjectPosition position = EntityUtility.rayTrace(player, 64);
 		if (position.getBlockPos() != null) {
 			IBlockState state = player.worldObj.getBlockState(position.getBlockPos());
 			state = state.getBlock().getActualState(state, player.worldObj, position.getBlockPos());
-			EntityPhysicsBlock block = new EntityPhysicsBlock(player.worldObj, world, state,
+			EntityPhysicsBlock block = new EntityPhysicsBlock(player.worldObj, physicsWorld, state,
 					position.getBlockPos().getX(), position.getBlockPos().getY(), position.getBlockPos().getZ())
 							.setDropItem(new ItemStack(Item.getItemFromBlock(state.getBlock())));
 			player.worldObj.setBlockToAir(position.getBlockPos());
-			EntityUtility.spawnEntitySynchronized(player.worldObj, block);
+			player.worldObj.spawnEntityInWorld(block);
 			return true;
 		}
 		return false;

@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import javax.vecmath.Vector3f;
 
 import com.bulletphysicsx.linearmath.Transform;
+import com.google.common.collect.Queues;
 import com.google.gson.annotations.SerializedName;
 
 import gliby.minecraft.gman.WorldUtility;
@@ -92,7 +94,17 @@ public abstract class PhysicsWorld implements Runnable {
 
 	protected int tick;
 
+	public final Queue<Runnable> scheduledTasks = Queues.newArrayDeque();
+
+	
 	protected void update() {
+		Queue queue = this.scheduledTasks;
+		synchronized (this.scheduledTasks) {
+			while (!this.scheduledTasks.isEmpty()) {
+				this.scheduledTasks.poll().run();
+			}
+		}
+		
 		if (tick >= getPhysicsConfiguration().getTicksPerSecond())
 			tick = 0;
 		tick++;
