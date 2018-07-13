@@ -30,7 +30,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
@@ -296,48 +295,39 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
 	@Override
 	public void writeEntityToNBT(final NBTTagCompound tagCompound) {
-		MinecraftServer server = MinecraftServer.getServer();
-		server.addScheduledTask(new Runnable() {
+		ResourceLocation resourcelocation = (ResourceLocation) Block.blockRegistry
+				.getNameForObject(blockState.getBlock());
+		tagCompound.setString("Block", resourcelocation == null ? "" : resourcelocation.toString());
+		tagCompound.setByte("Data", (byte) blockState.getBlock().getMetaFromState(blockState));
 
-			@Override
-			public void run() {
-				ResourceLocation resourcelocation = (ResourceLocation) Block.blockRegistry
-						.getNameForObject(blockState.getBlock());
-				tagCompound.setString("Block", resourcelocation == null ? "" : resourcelocation.toString());
-				tagCompound.setByte("Data", (byte) blockState.getBlock().getMetaFromState(blockState));
+		tagCompound.setFloat("Mass", mass);
+		tagCompound.setFloat("Friction", friction);
 
-				tagCompound.setFloat("Mass", mass);
-				tagCompound.setFloat("Friction", friction);
+		if (defaultCollisionShape)
+			tagCompound.setBoolean("DefaultCollisionShape", defaultCollisionShape);
+		if (!collisionEnabled)
+			tagCompound.setBoolean("CollisionEnabled", collisionEnabled);
+		if (collisionBBs != null)
+			tagCompound.setString("CollisionShape", new Gson().toJson(collisionBBs));
+		// Remove original tags.
+		tagCompound.removeTag("Pos");
+		tagCompound.removeTag("Rotation");
 
-				if (defaultCollisionShape)
-					tagCompound.setBoolean("DefaultCollisionShape", defaultCollisionShape);
-				if (!collisionEnabled)
-					tagCompound.setBoolean("CollisionEnabled", collisionEnabled);
-				if (collisionBBs != null)
-					tagCompound.setString("CollisionShape", new Gson().toJson(collisionBBs));
-				// Remove original tags.
-				tagCompound.removeTag("Pos");
-				tagCompound.removeTag("Rotation");
+		// Add removed tags, but with additional values.
+		tagCompound.setTag("Pos", newDoubleNBTList(new double[] { position.x, position.y, position.z }));
+		tagCompound.setTag("Rotation", newFloatNBTList(new float[] { rotation.x, rotation.y, rotation.z, rotation.w }));
 
-				// Add removed tags, but with additional values.
-				tagCompound.setTag("Pos", newDoubleNBTList(new double[] { position.x, position.y, position.z }));
-				tagCompound.setTag("Rotation",
-						newFloatNBTList(new float[] { rotation.x, rotation.y, rotation.z, rotation.w }));
+		Vector3f linearVelocity = rigidBody.getLinearVelocity(new Vector3f());
+		tagCompound.setTag("LinearVelocity",
+				newFloatNBTList(new float[] { linearVelocity.x, linearVelocity.y, linearVelocity.z }));
+		Vector3f angularVelocity = rigidBody.getAngularVelocity(new Vector3f());
+		tagCompound.setTag("AngularVelocity",
+				newFloatNBTList(new float[] { angularVelocity.x, angularVelocity.y, angularVelocity.z }));
 
-				Vector3f linearVelocity = rigidBody.getLinearVelocity(new Vector3f());
-				tagCompound.setTag("LinearVelocity",
-						newFloatNBTList(new float[] { linearVelocity.x, linearVelocity.y, linearVelocity.z }));
-				Vector3f angularVelocity = rigidBody.getAngularVelocity(new Vector3f());
-				tagCompound.setTag("AngularVelocity",
-						newFloatNBTList(new float[] { angularVelocity.x, angularVelocity.y, angularVelocity.z }));
-
-				if (dropItem != null) {
-					NBTTagCompound compound = dropItem.writeToNBT(new NBTTagCompound());
-					tagCompound.setTag("DropItem", compound);
-				}
-
-			}
-		});
+		if (dropItem != null) {
+			NBTTagCompound compound = dropItem.writeToNBT(new NBTTagCompound());
+			tagCompound.setTag("DropItem", compound);
+		}
 		super.writeEntityToNBT(tagCompound);
 
 	}

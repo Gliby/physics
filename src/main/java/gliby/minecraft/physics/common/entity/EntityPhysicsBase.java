@@ -2,7 +2,6 @@ package gliby.minecraft.physics.common.entity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.vecmath.Vector3f;
 
@@ -25,7 +24,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.StringUtils;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -204,26 +202,18 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 	}
 
 	public void writeEntityToNBT(final NBTTagCompound tagCompound) {
-		MinecraftServer server = MinecraftServer.getServer();
-		server.addScheduledTask(new Runnable() {
-
-			@Override
-			public void run() {
-				ArrayList<String> mechanicsByNames = new ArrayList<String>();
-				for (int i = 0; i < mechanics.size(); i++) {
-					mechanicsByNames.add(Physics.getInstance().getPhysicsOverworld().getMechanicsMap().inverse()
-							.get(mechanics.get(i)));
-				}
-				// TODO improvement: block property nbt saving
-				Gson gson = new Gson();
-				/*
-				 * tagCompound.setString("Properties",
-				 * gson.toJson(this.getRigidBody().getProperties()));
-				 */
-				tagCompound.setString("Mechanics", gson.toJson(mechanicsByNames));
-
-			}
-		});
+		ArrayList<String> mechanicsByNames = new ArrayList<String>();
+		for (int i = 0; i < mechanics.size(); i++) {
+			mechanicsByNames
+					.add(Physics.getInstance().getPhysicsOverworld().getMechanicsMap().inverse().get(mechanics.get(i)));
+		}
+		// TODO improvement: block property nbt saving
+		Gson gson = new Gson();
+		/*
+		 * tagCompound.setString("Properties",
+		 * gson.toJson(this.getRigidBody().getProperties()));
+		 */
+		tagCompound.setString("Mechanics", gson.toJson(mechanicsByNames));
 	}
 
 	@Override
@@ -294,7 +284,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 				if (getRigidBody().isActive())
 					lastTickActive = ticksExisted;
 
-				if ( (ticksExisted - lastTickActive) / TICKS_PER_SECOND > Physics.getInstance().getSettings()
+				if ((ticksExisted - lastTickActive) / TICKS_PER_SECOND > Physics.getInstance().getSettings()
 						.getFloatSetting("PhysicsEntities.InactivityDeathTime").getFloatValue()) {
 					this.setDead();
 				}

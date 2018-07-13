@@ -6,7 +6,7 @@
   "version": "${version}",
   "mcversion": "${mcversion}",
   "authorList": ["Gliby"],
-  "credits": "@Immortius, LibGDX, Mojang, JBullet",
+  "credits": "@Immortius, LibGDX, Bullet, JBullet, TeraBullet, Modeler",
   "logoFile": "logo.png",
   "screenshots": []
 }

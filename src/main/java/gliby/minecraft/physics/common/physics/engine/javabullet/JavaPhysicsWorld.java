@@ -129,7 +129,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 	}
 
 	@Override
-	protected void update() {
+	protected synchronized void update() {
 		float delta = getDelta();
 		if (dynamicsWorld != null)
 			dynamicsWorld.stepSimulation(1, Math.round(delta / 7));

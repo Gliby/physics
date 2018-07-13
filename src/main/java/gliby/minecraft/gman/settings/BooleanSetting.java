@@ -12,32 +12,38 @@ import gliby.minecraft.gman.settings.INIProperties.INIPropertiesReadFailure;
 public class BooleanSetting extends Setting {
 
 	private Object lastData;
-
+	
+	// this is basically a way to fix a dumb bug.
+	private boolean booleanValue;
+	
 	/**
 	 * @param data
 	 * @param setting
 	 */
-	public BooleanSetting(String category, String name, Boolean data, Side side) {
-		super(category, name, data, side);
+	public BooleanSetting(String category, String name, boolean booleanValue, Side side) {
+		super(category, name, booleanValue, side);
+		this.booleanValue = booleanValue;
 	}
 
 	@Override
 	public void read(INIProperties ini) throws INIPropertiesReadFailure {
-		data = new Boolean(ini.readBoolean(category, name, ((Boolean) data).booleanValue()));
+		booleanValue = ini.readBoolean(category, name, booleanValue);
+		data = booleanValue;
 	}
 
 	@Override
 	public void write(INIProperties ini) {
-		ini.writeBoolean(category, name, ((Boolean) data).booleanValue());
+		ini.writeBoolean(category, name, booleanValue);
 		this.lastData = data;
 	}
 
 	public boolean getBooleanValue() {
-		return ((Boolean) data).booleanValue();
+		return booleanValue;
 	}
 
 	public void setBooleanValue(boolean value) {
-		this.data = new Boolean(value);
+		this.booleanValue = value;
+		this.data = new Boolean(booleanValue);
 	}
 
 	@Override

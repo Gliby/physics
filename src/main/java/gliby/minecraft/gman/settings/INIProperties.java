@@ -508,16 +508,17 @@ public class INIProperties extends ArrayList {
 	 * cases, WriteBool creates the section and key and sets its initial value
 	 * to value.
 	 *
-	 * @param Section
+	 * @param section
 	 *            the section name
 	 * @param key
 	 *            the key name
 	 * @param value
 	 *            the value
 	 */
-	void writeBoolean(String Section, String key, boolean value) {
+	void writeBoolean(String section, String key, boolean value) {
 		final String s = key + "=" + Boolean.toString(value);
-		this.addToList(Section, key, s);
+		System.out.printf("wrote boolean %s.%s: %s", section, key, value);
+		this.addToList(section, key, s);
 	}
 
 	/**
