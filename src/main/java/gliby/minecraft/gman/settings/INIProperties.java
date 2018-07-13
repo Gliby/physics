@@ -517,7 +517,6 @@ public class INIProperties extends ArrayList {
 	 */
 	void writeBoolean(String section, String key, boolean value) {
 		final String s = key + "=" + Boolean.toString(value);
-		System.out.printf("wrote boolean %s.%s: %s", section, key, value);
 		this.addToList(section, key, s);
 	}
 
