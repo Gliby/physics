@@ -66,6 +66,7 @@ public class Physics {
 	public static Class[] entityBlacklistClassCache;
 
 	public static final String VERSION = "@VERSION@";
+
 	public static final String NAME = "Gliby's Physics";
 	public static final String ID = "glibysphysics";
 
@@ -125,11 +126,12 @@ public class Physics {
 		settings.registerBoolean("Miscellaneous", "DisableAllowFlight", true, Setting.Side.BOTH);
 		settings.load();
 		gman = GMan.create(getLogger(), new ModInfo(ID, event.getModMetadata().updateUrl), MinecraftForge.MC_VERSION,
-				VERSION);
-
-		if (!VERSION.contains("@")) {
-			StringSetting lastVersion = settings.getStringSetting("Miscellaneous.LastVersion");
-			final boolean modUpdated = !lastVersion.getString().equals(VERSION);
+				VERSION, !isDevelopment());
+		
+		if (!isDevelopment()) {
+			StringSetting lastVersionSetting = settings.getStringSetting("Miscellaneous.LastVersion");
+			final String lastVersion = settings.getStringSetting("Miscellaneous.LastVersion").getString();
+			final boolean modUpdated = !lastVersion.equals(VERSION);
 			if (modUpdated) {
 				getLogger().info("Version change detected, gathering change logs!");
 				gman.request(new GMan.CustomRequest() {
@@ -142,11 +144,11 @@ public class Physics {
 							public void run() {
 								Map<String, Object> json = gman.getJSONMap("news/index.json");
 								final ArrayList<String> index = (ArrayList<String>) json.get("Versions");
-								String versions[] = gman.getVersionsBetween(VERSION,
+								String versions[] = gman.getVersionsBetween(lastVersion,
 										gman.getModInfo().getLatestVersion(), new Predicate<String>() {
 											@Override
 											public boolean apply(String input) {
-												return index.contains(input) && !input.equals(VERSION);
+												return index.contains(input) && !input.equals(lastVersion);
 											}
 										});
 								ArrayList<VersionChanges> changes = new ArrayList<VersionChanges>();
@@ -159,14 +161,18 @@ public class Physics {
 											changes.add(versionChanges.setVersion(s)
 													.setImage(gman.getImage("news/" + s + ".png")));
 								}
-								gman.getProperties().put("VersionChanges", changes);
+								if (!changes.isEmpty())
+									gman.getProperties().put("VersionChanges", changes);
+								else 
+									getLogger().info("No version changes.");
 							}
 						}, "GMAN Update/News").start();
 					}
 				});
 			}
-
-			lastVersion.setString(VERSION);
+			lastVersionSetting.setString(VERSION);
+		} else {
+			getLogger().info("Development environment detected.");
 		}
 		settings.save();
 		gameManager = new GameManager(this);
@@ -274,5 +280,9 @@ public class Physics {
 
 	public GameManager getGameManager() {
 		return gameManager;
+	}
+	
+	public static boolean isDevelopment() {
+		return VERSION.contains("@");
 	}
 }

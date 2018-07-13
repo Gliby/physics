@@ -17,7 +17,6 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.base.Predicate;
 import com.google.gson.Gson;
 
-
 public class GMan {
 
 	public HashMap<String, Object> properties;
@@ -33,8 +32,9 @@ public class GMan {
 			if (numberedVersion.length() <= 3) {
 				String version = numberedVersion.substring(0, 1) + "." + numberedVersion.substring(1, 2) + "."
 						+ numberedVersion.substring(2, 3);
-				if (predicate.apply(version))
+				if (predicate.apply(version)) {
 					list.add(version);
+				}
 			}
 
 		}
@@ -73,7 +73,7 @@ public class GMan {
 	}
 
 	public static GMan create(final Logger logger, ModInfo modInfo, final String minecraftVersion,
-			final String modVersion) {
+			final String modVersion, boolean checkVersion) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(LOCATION);
 		builder.append(modInfo.modId);
@@ -88,13 +88,13 @@ public class GMan {
 			logger.warn("Failed to retrieve mod info, either mod doesn't exist or host(" + builder.toString()
 					+ ") is down?");
 		}
-		if (reader != null) {
+		if (reader != null && checkVersion) {
 			final ModInfo externalInfo = gson.fromJson(reader, ModInfo.class);
 			modInfo.donateURL = externalInfo.donateURL;
 			modInfo.updateURL = externalInfo.updateURL;
 			modInfo.versions = externalInfo.versions;
 			modInfo.determineUpdate(modVersion, minecraftVersion);
-			logger.info(modInfo.isUpdated() ? "Mod is up-to-date."
+			logger.info(modInfo.isUpdated() ? String.format("Mod is up-to-date. (%s)", modVersion)
 					: "Mod is outdated, download latest at " + modInfo.updateURL);
 		}
 		return new GMan(logger, modInfo, minecraftVersion, modVersion);
@@ -111,7 +111,6 @@ public class GMan {
 		builder.append(modInfo.modId);
 		builder.append("/");
 		builder.append(filePath);
-
 		Reader reader = null;
 		try {
 			reader = new InputStreamReader(new URL(builder.toString()).openStream());

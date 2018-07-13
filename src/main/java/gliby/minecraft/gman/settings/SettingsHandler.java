@@ -76,7 +76,7 @@ public class SettingsHandler {
 
 	boolean firstTime;
 
-	// TODO improvement: run in seperate worker thread
+	// TODO improvement: run in separate worker thread
 	public void save() {
 		new Thread(new Runnable() {
 			public void run() {

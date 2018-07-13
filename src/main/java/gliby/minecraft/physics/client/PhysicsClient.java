@@ -1,24 +1,16 @@
 package gliby.minecraft.physics.client;
 
 import java.util.ArrayList;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 import gliby.minecraft.gman.item.ItemHandler;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.VersionChanges;
-import gliby.minecraft.physics.client.gui.GuiDebug;
 import gliby.minecraft.physics.client.gui.GuiScreenChangeLog;
-import gliby.minecraft.physics.client.gui.GuiScreenWelcome;
-import gliby.minecraft.physics.client.gui.creator.GuiScreenPhysicsCreator;
 import gliby.minecraft.physics.client.keybindings.KeyManager;
 import gliby.minecraft.physics.client.render.RenderHandler;
 import gliby.minecraft.physics.common.PhysicsServer;
-import gliby.minecraft.physics.common.physics.PhysicsOverworld;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.world.WorldEvent;
-import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -32,7 +24,8 @@ public class PhysicsClient extends PhysicsServer {
 
 	@Override
 	public void preInit(Physics physics, FMLPreInitializationEvent event) {
-		MinecraftForge.EVENT_BUS.register(new GuiDebug());
+		// TODO debug: re-add GuiDebug
+		//MinecraftForge.EVENT_BUS.register(new GuiDebug());
 		this.keyManager = new KeyManager();
 		keyManager.init();
 	}
@@ -58,6 +51,7 @@ public class PhysicsClient extends PhysicsServer {
 					mc.displayGuiScreen(new GuiScreenChangeLog(
 							(ArrayList<VersionChanges>) physics.getGMan().getProperties().get("VersionChanges")));
 					physics.getGMan().getProperties().remove("VersionChanges");
+					Physics.getLogger().info("Displayed change logs.");
 				}
 				init = true;
 			}
@@ -77,7 +71,7 @@ public class PhysicsClient extends PhysicsServer {
 
 		itemHandler.addAlwaysUsedItem(physics.getGameManager().itemPhysicsGun, false, false);
 		itemHandler.addAlwaysUsedItem(physics.getGameManager().itemToolgun, false, false);
-		MinecraftForge.EVENT_BUS.register(this);
+		FMLCommonHandler.instance().bus().register(this);
 		// TODO unfinished: EntityDeathHandler
 		// MinecraftForge.EVENT_BUS.register(new
 		// EntityDeathHandler(physicsWorld));
