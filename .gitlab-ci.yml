@@ -3,8 +3,8 @@ image: java:7-jdk-alpine
 stages:
   - build
 
-
 build:
+  stage: build
   script:
     - ./gradlew build
   artifacts:
