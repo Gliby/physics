@@ -58,7 +58,7 @@ public class SettingsHandler {
 	public Setting registerBoolean(String category, String name, boolean defaultValue, Setting.Side side) {
 		Setting setting;
 		settings.put(category + "." + name,
-				setting = new BooleanSetting(category, name, new Boolean(defaultValue), side));
+				setting = new BooleanSetting(category, name, defaultValue, side));
 		return setting;
 	}
 
