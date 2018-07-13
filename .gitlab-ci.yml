@@ -1,6 +1,8 @@
-before_script:
-  - which java
-  - which javac
+image: java:7-jdk-alpine
+
+stages:
+  - build
+
 
 build:
   script:
