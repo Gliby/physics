@@ -56,7 +56,6 @@ public class ExplosionHandler {
 						.getFloatValue();
 				float force = Physics.getInstance().getSettings().getFloatSetting("Game.ExplosionImpulseForce")
 						.getFloatValue() * 20;
-				System.out.println("explode before");
 				for (int i = 0; i < physicsWorld.getRigidBodies().size(); i++) {
 					IRigidBody body = physicsWorld.getRigidBodies().get(i);
 					Vector3f centerOfMass = body.getCenterOfMassPosition(new Vector3f());
