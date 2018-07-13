@@ -32,7 +32,7 @@ public class ToolGunActionRegistry {
 
 	public void registerAction(IToolGunAction action, String modID) {
 		if (!MinecraftForge.EVENT_BUS
-				.post(new ToolGunActionEvent.Register(action, modID != null ? modID.equals(Physics.MOD_ID) : false))) {
+				.post(new ToolGunActionEvent.Register(action, modID != null ? modID.equals(Physics.ID) : false))) {
 			actions.put(actionIndex++, action);
 			valueDefinitions.add(action.getName());
 		}

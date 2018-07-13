@@ -83,7 +83,7 @@ public class BlockManager {
 				}
 				String text = IOUtils.toString(
 						MinecraftResourceLoader.getResource(Physics.getLogger(), FMLCommonHandler.instance().getSide(),
-								new ResourceLocation(Physics.MOD_ID, "blocks/" + name + ".json")));
+								new ResourceLocation(Physics.ID, "blocks/" + name + ".json")));
 				if (text != null) {
 					Map<String, Object> json = new Gson().fromJson(text, Map.class);
 					return json;

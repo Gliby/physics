@@ -140,6 +140,11 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 		this.position.set(x, y, z);
 		QuaternionUtil.setEuler(rotation, 0, 0, 0);
 		this.rotation.set(rotation);
+		
+		if (world.isRemote) {
+			this.renderPosition = new Vector3f(position);
+			this.renderRotation = new Quat4f(rotation);
+		}
 
 		Physics physics = Physics.getInstance();
 
@@ -174,7 +179,6 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 				this.mechanics.addAll(metadata.mechanics);
 		}
 		setLocationAndAngles(position.x, position.y, position.z, 0, 0);
-
 	}
 
 	private Vector3f linearVelocity, angularVelocity;

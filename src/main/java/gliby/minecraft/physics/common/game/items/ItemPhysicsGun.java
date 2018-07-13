@@ -13,6 +13,7 @@ import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import gliby.minecraft.physics.common.physics.mechanics.physicsgun.OwnedPickedObject;
 import gliby.minecraft.physics.common.physics.mechanics.physicsgun.PickUpMechanic;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,6 +30,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemPhysicsGun extends RawItem {
 
@@ -42,6 +44,11 @@ public class ItemPhysicsGun extends RawItem {
 		physics.registerPacket(PacketPhysicsGunPick.class, PacketPhysicsGunPick.class, Side.SERVER);
 	}
 
+	/*
+	 * @Override public float getStrVsBlock(ItemStack stack, Block block) { return
+	 * 0; }
+	 */
+
 	public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player) {
 		return true;
 	}
@@ -51,8 +58,10 @@ public class ItemPhysicsGun extends RawItem {
 		return 0;
 	}
 
+	@SideOnly(Side.CLIENT)
 	private boolean holdingDown;
 
+	@SideOnly(Side.CLIENT)
 	@SubscribeEvent
 	public void onMouseEvent(MouseEvent event) {
 		Minecraft mc = Minecraft.getMinecraft();
@@ -68,13 +77,14 @@ public class ItemPhysicsGun extends RawItem {
 			if (event.button == 0) {
 				holdingDown = event.buttonstate;
 				Physics.getDispatcher().sendToServer(new PacketPhysicsGunPick(event.buttonstate));
+				event.setCanceled(true);
 			}
 		}
 	}
 
 	/**
-	 * returns the action that specifies what animation to play when the items
-	 * is being used
+	 * returns the action that specifies what animation to play when the items is
+	 * being used
 	 */
 	@Override
 	public EnumAction getItemUseAction(ItemStack stack) {

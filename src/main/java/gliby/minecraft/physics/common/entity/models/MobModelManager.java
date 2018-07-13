@@ -89,7 +89,7 @@ public class MobModelManager {
 							try {
 								InputStream stream = MinecraftResourceLoader.getResource(Physics.getLogger(),
 										FMLCommonHandler.instance().getSide(),
-										new ResourceLocation(Physics.MOD_ID, "mobs/" + uniqueEntityId + ".json"));
+										new ResourceLocation(Physics.ID, "mobs/" + uniqueEntityId + ".json"));
 								if (stream != null) {
 									mobModel = IOUtils.toString(stream);
 									stream.close();

@@ -36,8 +36,8 @@ public class RenderItemToolGun extends RawItemRenderer {
 	}
 
 	private ModelItemToolGun modelToolGun = new ModelItemToolGun();
-	private ResourceLocation modelTexture = new ResourceLocation(Physics.MOD_ID, "textures/tool_gun.png");
-	private ResourceLocation screenTexture = new ResourceLocation(Physics.MOD_ID, "textures/tool_gunScreen.png");
+	private ResourceLocation modelTexture = new ResourceLocation(Physics.ID, "textures/tool_gun.png");
+	private ResourceLocation screenTexture = new ResourceLocation(Physics.ID, "textures/tool_gunScreen.png");
 
 	// TODO When not held, use super low resolution textures.
 	@Override

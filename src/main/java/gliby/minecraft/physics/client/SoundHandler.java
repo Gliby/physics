@@ -26,7 +26,7 @@ public class SoundHandler {
 	}
 
 	public static String getSoundByIdentifer(String soundName) {
-		return Physics.MOD_ID + ":" + soundRegistry.get(soundName);
+		return Physics.ID + ":" + soundRegistry.get(soundName);
 	}
 
 	public static void playLocalSound(Minecraft mc, String sound) {
