@@ -1,8 +1,10 @@
 package gliby.minecraft.physics.common.game.events;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.vecmath.Vector3f;
 
-import gliby.minecraft.gman.EntityUtility;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.blocks.PhysicsBlockMetadata;
 import gliby.minecraft.physics.common.entity.EntityPhysicsBlock;
@@ -25,7 +27,7 @@ public class ExplosionHandler {
 	public ExplosionHandler(Physics physics) {
 		this.physics = physics;
 	}
-	
+
 	// TODO bug: fix explosions
 	@SubscribeEvent
 	public void handleEvent(final ExplosionEvent.Detonate event) {
@@ -39,6 +41,7 @@ public class ExplosionHandler {
 				Vector3f explosion = new Vector3f((float) event.explosion.getPosition().xCoord,
 						(float) event.explosion.getPosition().yCoord, (float) event.explosion.getPosition().zCoord);
 
+				List<EntityPhysicsBlock> affectedEntities = new ArrayList<EntityPhysicsBlock>();
 				for (int i = 0; i < event.getAffectedBlocks().size(); i++) {
 					BlockPos pos = event.getAffectedBlocks().get(i);
 					IBlockState blockState = event.world.getBlockState(pos);
@@ -50,22 +53,22 @@ public class ExplosionHandler {
 						EntityPhysicsBlock analog = new EntityPhysicsBlock(event.world, physicsWorld, blockState,
 								pos.getX(), pos.getY(), pos.getZ());
 						event.world.spawnEntityInWorld(analog);
+						affectedEntities.add(analog);
 					}
 				}
 				float explosionRadius = physics.getSettings().getFloatSetting("Game.ExplosionImpulseRadius")
 						.getFloatValue();
 				float force = Physics.getInstance().getSettings().getFloatSetting("Game.ExplosionImpulseForce")
-						.getFloatValue() * 20;
-				for (int i = 0; i < physicsWorld.getRigidBodies().size(); i++) {
-					IRigidBody body = physicsWorld.getRigidBodies().get(i);
+						.getFloatValue();
+				for (int i = 0; i < affectedEntities.size(); i++) {
+					IRigidBody body = affectedEntities.get(i).getRigidBody();
 					Vector3f centerOfMass = body.getCenterOfMassPosition(new Vector3f());
 					Vector3f direction = new Vector3f();
 					direction.sub(centerOfMass, explosion);
 					float distance = direction.length();
 					if (distance <= explosionRadius) {
 						direction.normalize();
-						float forceMultiplier = force * (explosionRadius - distance);
-						direction.scale(Math.abs(forceMultiplier));
+						direction.scale(Math.abs(force));
 						body.applyCentralImpulse(direction);
 					}
 				}

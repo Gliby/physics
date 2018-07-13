@@ -116,7 +116,7 @@ public class Physics {
 		settings.registerFloat("PhysicsEntities", "EntityColliderCleanupTime", 0.25f, Setting.Side.BOTH);
 		settings.registerFloat("Game", "ProjectileImpulseForce", 30, Setting.Side.BOTH);
 		settings.registerFloat("Game", "ExplosionImpulseRadius", 16, Setting.Side.BOTH);
-		settings.registerFloat("Game", "ExplosionImpulseForce", 500, Setting.Side.BOTH);
+		settings.registerFloat("Game", "ExplosionImpulseForce", 4, Setting.Side.BOTH);
 		settings.registerInteger("Tools", "AttractRadius", 16, Setting.Side.BOTH);
 		settings.registerInteger("Tools", "GravitizerRadius", 16, Setting.Side.BOTH);
 		settings.registerInteger("Tools", "GravitizerForce", 10, Setting.Side.BOTH);
