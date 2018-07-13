@@ -125,7 +125,7 @@ public class PhysicsOverworld {
 	public RigidBodyMechanic getMechanicFromName(String string) {
 		RigidBodyMechanic mechanic = mechanicsMap.get(string);
 		if (mechanic == null)
-			Physics.getLogger().error("Mechanic: " + string + " doesn't exists, or is misspelled.");
+			Physics.getLogger().debug("Mechanic: " + string + " doesn't exists, or is misspelled.");
 		return mechanic;
 	}
 
@@ -145,9 +145,11 @@ public class PhysicsOverworld {
 		getMechanicsMap().put("EnvironmentGravity", new EnvironmentGravityMechanic());
 		getMechanicsMap().put("EnvironmentResponse", new EnvironmentResponseMechanic());
 		getMechanicsMap().put("Bounce", new BounceMechanic());
-		getMechanicsMap().put("ActivateRedstone", new ActivateRedstoneMechanic());
-		getMechanicsMap().put("BlockInheritance", new BlockInheritanceMechanic());
-		getMechanicsMap().put("ClientBlockInheritance", new ClientBlockInheritanceMechanic().setCommon(true));
+		
+		// TODO feature: get these mechanics working properly
+		//getMechanicsMap().put("ActivateRedstone", new ActivateRedstoneMechanic());
+		//getMechanicsMap().put("BlockInheritance", new BlockInheritanceMechanic());
+		//getMechanicsMap().put("ClientBlockInheritance", new ClientBlockInheritanceMechanic().setCommon(true));
 	}
 
 	public interface IPhysicsWorldConfiguration {

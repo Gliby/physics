@@ -52,13 +52,17 @@ public class JavaCollisionShape implements ICollisionShape {
 
 	@Override
 	public void calculateLocalInertia(final float mass, final Object localInertia) {
-		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
-
-			@Override
-			public void run() {
-				shape.calculateLocalInertia(mass, (Vector3f) localInertia);
-			}
-		});
+		/*
+		 * this.getPhysicsWorld().physicsTasks.add(new Runnable() {
+		 * 
+		 * @Override public void run() {
+		 */
+		synchronized (physicsWorld) {
+			shape.calculateLocalInertia(mass, (Vector3f) localInertia);
+		}
+		/*
+		 * } });
+		 */
 	}
 
 	@Override
@@ -68,29 +72,31 @@ public class JavaCollisionShape implements ICollisionShape {
 
 	@Override
 	public List<ICollisionShapeChildren> getChildren() {
-		ArrayList<ICollisionShapeChildren> shapeList = new ArrayList<ICollisionShapeChildren>();
-		final CompoundShape compoundShape = (CompoundShape) shape;
-		for (int i = 0; i < compoundShape.getChildList().size(); i++) {
-			final CompoundShapeChild child = compoundShape.getChildList().get(i);
-			shapeList.add(new ICollisionShapeChildren() {
-				@Override
-				public Transform getTransform() {
-					return child.transform;
-				}
+		synchronized (physicsWorld) {
+			ArrayList<ICollisionShapeChildren> shapeList = new ArrayList<ICollisionShapeChildren>();
+			final CompoundShape compoundShape = (CompoundShape) shape;
+			for (int i = 0; i < compoundShape.getChildList().size(); i++) {
+				final CompoundShapeChild child = compoundShape.getChildList().get(i);
+				shapeList.add(new ICollisionShapeChildren() {
+					@Override
+					public Transform getTransform() {
+						return child.transform;
+					}
 
-				@Override
-				public ICollisionShape getCollisionShape() {
-					return new JavaCollisionShape(physicsWorld, child.childShape);
-				}
+					@Override
+					public ICollisionShape getCollisionShape() {
+						return new JavaCollisionShape(physicsWorld, child.childShape);
+					}
 
-			});
+				});
+			}
+			return shapeList;
 		}
-		return shapeList;
 	}
 
 	@Override
 	public void setLocalScaling(final Vector3f localScaling) {
-		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+		this.getPhysicsWorld().physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {

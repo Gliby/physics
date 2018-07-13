@@ -98,20 +98,24 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
 	@Override
 	public void setDead() {
-		spawnRemoveParticle();
-		for (int i = 0; i < mechanics.size(); i++) {
-			mechanics.get(i).dispose();
-		}
-		this.mechanics.clear();
+		MinecraftServer.getServer().addScheduledTask(new Runnable() {
+			public void run() {
+				spawnRemoveParticle();
+				for (int i = 0; i < mechanics.size(); i++) {
+					mechanics.get(i).dispose();
+				}
+				mechanics.clear();
 
-		if (!worldObj.isRemote) {
-			if (doesPhysicsObjectExist()) {
-				Vector3f minBB = new Vector3f(), maxBB = new Vector3f();
-				this.getRigidBody().getAabb(minBB, maxBB);
-				physicsWorld.awakenArea(minBB, maxBB);
+				if (!worldObj.isRemote) {
+					if (doesPhysicsObjectExist()) {
+						Vector3f minBB = new Vector3f(), maxBB = new Vector3f();
+						getRigidBody().getAabb(minBB, maxBB);
+						physicsWorld.awakenArea(minBB, maxBB);
+					}
+					dispose();
+				}
 			}
-			this.dispose();
-		}
+		});
 		super.setDead();
 	}
 
@@ -235,6 +239,9 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
 	}
 
+	public static final int TICKS_PER_SECOND = 20;
+	private int lastTickActive;
+
 	@Override
 	public final void onUpdate() {
 		super.onUpdate();
@@ -280,13 +287,14 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
 			if (getRigidBody() != null) {
 				if (getRigidBody().getProperties().containsKey(EnumRigidBodyProperty.DEAD.getName())) {
-					// TODO bug: pretty sure this crashes the physics engine.
 					// System.out.println("Set dead: " + getRigidBody().getProperties());
-					this.setDead();
+					// Physics.getLogger().warn("Killed physics entity through properties.");
+					// this.setDead();
 				}
 				if (getRigidBody().isActive())
-					lastTimeActive = System.currentTimeMillis();
-				if ((System.currentTimeMillis() - lastTimeActive) / 1000 > Physics.getInstance().getSettings()
+					lastTickActive = ticksExisted;
+
+				if ( (ticksExisted - lastTickActive) / TICKS_PER_SECOND > Physics.getInstance().getSettings()
 						.getFloatSetting("PhysicsEntities.InactivityDeathTime").getFloatValue()) {
 					this.setDead();
 				}

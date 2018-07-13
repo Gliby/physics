@@ -28,7 +28,6 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
 
 	private Map<String, Object> properties;
 
-
 	public JavaRigidBody(PhysicsWorld physicsWorld, RigidBody body, Entity owner) {
 		super(physicsWorld, owner, body);
 		this.rigidBody = body;
@@ -78,8 +77,8 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
 
 	@Override
 	public void setWorldTransform(final Transform transform) {
-		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
-			
+		this.getPhysicsWorld().physicsTasks.add(new Runnable() {
+
 			@Override
 			public void run() {
 				rigidBody.setWorldTransform(transform);
@@ -89,8 +88,8 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
 
 	@Override
 	public void setGravity(final Vector3f acceleration) {
-		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
-			
+		this.getPhysicsWorld().physicsTasks.add(new Runnable() {
+
 			@Override
 			public void run() {
 				rigidBody.setGravity(acceleration);
@@ -100,8 +99,8 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
 
 	@Override
 	public void setFriction(final float friction) {
-		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
-			
+		this.getPhysicsWorld().physicsTasks.add(new Runnable() {
+
 			@Override
 			public void run() {
 				rigidBody.setFriction(friction);
@@ -111,8 +110,8 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
 
 	@Override
 	public void setLinearVelocity(final Vector3f linearVelocity) {
-		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
-			
+		this.getPhysicsWorld().physicsTasks.add(new Runnable() {
+
 			@Override
 			public void run() {
 				rigidBody.setLinearVelocity(linearVelocity);
@@ -122,8 +121,8 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
 
 	@Override
 	public void setAngularVelocity(final Vector3f angularVelocity) {
-		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
-			
+		this.getPhysicsWorld().physicsTasks.add(new Runnable() {
+
 			@Override
 			public void run() {
 				rigidBody.setAngularVelocity(angularVelocity);
@@ -133,18 +132,16 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
 
 	@Override
 	public void applyCentralImpulse(final Vector3f direction) {
-		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
-			
-			@Override
-			public void run() {
-				rigidBody.applyCentralImpulse(direction);
-			}
-		});
+		synchronized (physicsWorld) {
+			rigidBody.applyCentralImpulse(direction);
+		}
 	}
 
 	@Override
 	public boolean hasContactResponse() {
-		return rigidBody.hasContactResponse();
+		synchronized (physicsWorld) {
+			return rigidBody.hasContactResponse();
+		}
 	}
 
 	@Override
@@ -154,23 +151,23 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
 
 	@Override
 	public void activate() {
-		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
-			
-			@Override
-			public void run() {
-				rigidBody.activate();
-			}
-		});
+		synchronized (physicsWorld) {
+			rigidBody.activate();
+		}
 	}
 
 	@Override
 	public void getAabb(Vector3f aabbMin, Vector3f aabbMax) {
-		rigidBody.getAabb(aabbMin, aabbMax);
+		synchronized (physicsWorld) {
+			rigidBody.getAabb(aabbMin, aabbMax);
+		}
 	}
 
 	@Override
 	public Transform getCenterOfMassTransform(Transform transform) {
-		return rigidBody.getCenterOfMassTransform(transform);
+		synchronized (physicsWorld) {
+			return rigidBody.getCenterOfMassTransform(transform);
+		}
 	}
 
 	@Override
@@ -180,28 +177,28 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
 
 	@Override
 	public void applyCentralForce(final Vector3f force) {
-		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
-			
-			@Override
-			public void run() {
-				rigidBody.applyCentralForce(force);
-			}
-		});
+		synchronized (physicsWorld) {
+			rigidBody.applyCentralForce(force);
+		}
 	}
 
 	@Override
 	public Vector3f getGravity(Vector3f vector3f) {
-		return rigidBody.getGravity(vector3f);
+		synchronized (physicsWorld) {
+			return rigidBody.getGravity(vector3f);
+		}
 	}
 
 	private Vector3f centerOfMass;
 
 	@Override
 	public Vector3f getCenterOfMassPosition() {
-		if (centerOfMass == null)
-			centerOfMass = new Vector3f();
-		this.rigidBody.getCenterOfMassPosition(centerOfMass);
-		return centerOfMass;
+		synchronized (physicsWorld) {
+			if (centerOfMass == null)
+				centerOfMass = new Vector3f();
+			this.rigidBody.getCenterOfMassPosition(centerOfMass);
+			return centerOfMass;
+		}
 	}
 
 	private Quat4f quatRotation;
@@ -209,7 +206,9 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
 
 	@Override
 	public IQuaternion getRotation() {
-		return rotation.set(rigidBody.getOrientation(quatRotation));
+		synchronized (physicsWorld) {
+			return rotation.set(rigidBody.getOrientation(quatRotation));
+		}
 	}
 
 	private Transform worldTransform;
@@ -217,29 +216,23 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
 
 	@Override
 	public IVector3 getPosition() {
-		return position.set(rigidBody.getWorldTransform(worldTransform).origin);
+		synchronized (physicsWorld) {
+			return position.set(rigidBody.getWorldTransform(worldTransform).origin);
+		}
 	}
 
 	@Override
 	public void applyTorque(final Vector3f vector) {
-		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
-			
-			@Override
-			public void run() {
-				rigidBody.applyTorque(vector);
-			}
-		});
+		synchronized (physicsWorld) {
+			rigidBody.applyTorque(vector);
+		}
 	}
 
 	@Override
 	public void applyTorqueImpulse(final Vector3f vector) {
-		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
-			
-			@Override
-			public void run() {
-				rigidBody.applyTorqueImpulse(vector);
-			}
-		});
+		synchronized (physicsWorld) {
+			rigidBody.applyTorqueImpulse(vector);
+		}
 	}
 
 }

@@ -30,14 +30,14 @@ public class ExplosionHandler {
 	public void handleEvent(final ExplosionEvent.Detonate event) {
 		MinecraftServer server = MinecraftServer.getServer();
 		server.addScheduledTask(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				Physics physics = Physics.getInstance();
 				PhysicsWorld physicsWorld = physics.getPhysicsOverworld().getPhysicsByWorld(event.world);
 				Vector3f explosion = new Vector3f((float) event.explosion.getPosition().xCoord,
 						(float) event.explosion.getPosition().yCoord, (float) event.explosion.getPosition().zCoord);
-				
+
 				for (int i = 0; i < event.getAffectedBlocks().size(); i++) {
 					BlockPos pos = event.getAffectedBlocks().get(i);
 					IBlockState blockState = event.world.getBlockState(pos);
@@ -46,27 +46,30 @@ public class ExplosionHandler {
 					boolean shouldSpawnInExplosions = metadata != null ? metadata.spawnInExplosions : true;
 					if (blockState.getBlock().getMaterial() != Material.air && shouldSpawnInExplosions) {
 						blockState = blockState.getBlock().getActualState(blockState, event.world, pos);
-						EntityPhysicsBlock analog = new EntityPhysicsBlock(event.world, physicsWorld, blockState, pos.getX(),
-								pos.getY(), pos.getZ());
+						EntityPhysicsBlock analog = new EntityPhysicsBlock(event.world, physicsWorld, blockState,
+								pos.getX(), pos.getY(), pos.getZ());
 						event.world.spawnEntityInWorld(analog);
 					}
 				}
-				
-				float force = Physics.getInstance().getSettings().getFloatSetting("Game.ExplosionImpulseForce").getFloatValue()*20;
+
+				float force = Physics.getInstance().getSettings().getFloatSetting("Game.ExplosionImpulseForce")
+						.getFloatValue() * 20;
 				for (int i = 0; i < physicsWorld.getRigidBodies().size(); i++) {
 					IRigidBody body = physicsWorld.getRigidBodies().get(i);
 					Vector3f centerOfMass = body.getCenterOfMassPosition(new Vector3f());
 					Vector3f direction = new Vector3f();
 					direction.sub(centerOfMass, explosion);
 					float distance = direction.length();
-					if (distance <= physics.getSettings().getFloatSetting("Game.ExplosionImpulseRadius").getFloatValue()) {
+					if (distance <= physics.getSettings().getFloatSetting("Game.ExplosionImpulseRadius")
+							.getFloatValue()) {
 						direction.normalize();
-						direction.scale(force * (distance
-								/ physics.getSettings().getFloatSetting("Game.ExplosionImpulseRadius").getFloatValue()));
+						direction.scale(Math.abs(force
+								* (physics.getSettings().getFloatSetting("Game.ExplosionImpulseRadius").getFloatValue())
+								- distance));
 						body.applyCentralImpulse(direction);
 					}
 				}
-				
+
 			}
 		});
 	}

@@ -42,7 +42,7 @@ public class JavaPairCachingGhostObject implements IGhostObject {
 
 	@Override
 	public void setWorldTransform(final Transform entityTransform) {
-		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+		this.getPhysicsWorld().physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -53,7 +53,7 @@ public class JavaPairCachingGhostObject implements IGhostObject {
 
 	@Override
 	public void setCollisionShape(final ICollisionShape colllisionShape) {
-		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+		this.getPhysicsWorld().physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -64,7 +64,7 @@ public class JavaPairCachingGhostObject implements IGhostObject {
 
 	@Override
 	public void setCollisionFlags(final int characterObject) {
-		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+		this.getPhysicsWorld().physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -75,7 +75,7 @@ public class JavaPairCachingGhostObject implements IGhostObject {
 
 	@Override
 	public void setInterpolationWorldTransform(final Transform entityTransform) {
-		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+		this.getPhysicsWorld().physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {

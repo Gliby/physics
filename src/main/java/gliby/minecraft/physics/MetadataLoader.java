@@ -144,7 +144,8 @@ public abstract class MetadataLoader {
 				ArrayList<String> mechanicNames = (ArrayList<String>) json.get("mechanics");
 				for (int i = 0; i < mechanicNames.size(); i++) {
 					RigidBodyMechanic mechanic = overworld.getMechanicFromName(mechanicNames.get(i));
-					metadata.mechanics.add(mechanic);
+					if (mechanic != null)
+						metadata.mechanics.add(mechanic);
 
 				}
 			}
