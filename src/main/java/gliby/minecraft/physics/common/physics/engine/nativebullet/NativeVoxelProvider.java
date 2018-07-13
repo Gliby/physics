@@ -39,17 +39,18 @@ class NativeVoxelProvider extends btVoxelContentProvider {
 
 	@Override
 	public btVoxelInfo getVoxel(int x, int y, int z) {
-		if (!world.playerEntities.isEmpty()) {
-			final BlockPos blockPosition = new BlockPos(x, y, z);
-			final IBlockState state = world.getBlockState(blockPosition);
-			info.setTracable(false);
-			info.setBlocking(state.getBlock().getMaterial().isSolid());
-			info.setCollisionShape((btCollisionShape) physics.getBlockManager().getBlockCache()
-					.getShape(physicsWorld, world, blockPosition, state).getCollisionShape());
-			info.setFriction((1 - state.getBlock().slipperiness) * 5);
+		synchronized (MinecraftServer.getServer()) {
+			if (!world.playerEntities.isEmpty()) {
+				final BlockPos blockPosition = new BlockPos(x, y, z);
+				final IBlockState state = world.getBlockState(blockPosition);
+				info.setTracable(false);
+				info.setBlocking(state.getBlock().getMaterial().isSolid());
+				info.setCollisionShape((btCollisionShape) physics.getBlockManager().getBlockCache()
+						.getShape(physicsWorld, world, blockPosition, state).getCollisionShape());
+				info.setFriction((1 - state.getBlock().slipperiness) * 5);
+			}
+			return info;
 		}
-		return info;
-
 	}
 
 }

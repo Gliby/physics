@@ -80,8 +80,7 @@ public class GuiScreenChangeLog extends GuiScreen {
 
 	private final static String PREFIX_TITLE = "!title";
 
-	private static final ResourceLocation BACKGROUND = new ResourceLocation(Physics.ID,
-			"textures/gui/changelog.png");
+	private static final ResourceLocation BACKGROUND = new ResourceLocation(Physics.ID, "textures/gui/changelog.png");
 
 	private static final ResourceLocation NO_IMAGE = new ResourceLocation(Physics.ID,
 			"textures/gui/defaultchangelog.png");
@@ -129,53 +128,56 @@ public class GuiScreenChangeLog extends GuiScreen {
 		drawModalRectWithCustomSizedTexture(width / 2 - 152 - 37, height / 2 - 105, 0, 0, DRAW_WIDTH, DRAW_HEIGHT,
 				DRAW_WIDTH + 100, DRAW_HEIGHT);
 		FormattedChangeLog changes = getCurrentLog();
-		Page page = changes.getPages().get(0);
-		/*
-		 * drawString(fontRendererObj, EnumChatFormatting.BOLD + page.category,
-		 * textX, height / 2 - 97 + ((page.blockSizeSum *
-		 * fontRendererObj.FONT_HEIGHT) * pageIndex), -1);
-		 */
+		if (changes != null) {
+			Page page = changes.getPages().get(0);
+			/*
+			 * drawString(fontRendererObj, EnumChatFormatting.BOLD + page.category, textX,
+			 * height / 2 - 97 + ((page.blockSizeSum * fontRendererObj.FONT_HEIGHT) *
+			 * pageIndex), -1);
+			 */
 
-		if (changes.changes.getVersionImage(mc.getTextureManager()) != null)
-			mc.renderEngine.bindTexture(changes.changes.getVersionImage(mc.getTextureManager()));
-		else
-			mc.renderEngine.bindTexture(NO_IMAGE);
-		final float scale = 0.54f;
-		final float scaleY = 0.53845f;
-		GlStateManager.pushMatrix();
-		GlStateManager.translate(width / 2 + 2F, height / 2 - 104F, 0);
-		drawModalRectWithCustomSizedTexture(0, 0, 0, 0, (int) (344 * scale), (int) (377 * scaleY), (int) (344 * scale),
-				(int) (377 * scaleY));
-		GlStateManager.popMatrix();
-		int boundX = width / 2 - 184;
-		int boundY = height / 2 - 100;
-		int boundWidth = boundX + 185;
-		int boundHeight = boundY + 154;
-		String version = EnumChatFormatting.BOLD + changes.changes.version;
-		drawString(fontRendererObj, version, boundWidth - (15 + (fontRendererObj.getStringWidth(version) / 2)),
-				boundY + 6, -1);
+			if (changes.changes.getVersionImage(mc.getTextureManager()) != null)
+				mc.renderEngine.bindTexture(changes.changes.getVersionImage(mc.getTextureManager()));
+			else
+				mc.renderEngine.bindTexture(NO_IMAGE);
+			final float scale = 0.54f;
+			final float scaleY = 0.53845f;
+			GlStateManager.pushMatrix();
+			GlStateManager.translate(width / 2 + 2F, height / 2 - 104F, 0);
+			drawModalRectWithCustomSizedTexture(0, 0, 0, 0, (int) (344 * scale), (int) (377 * scaleY),
+					(int) (344 * scale), (int) (377 * scaleY));
+			GlStateManager.popMatrix();
+			int boundX = width / 2 - 184;
+			int boundY = height / 2 - 100;
+			int boundWidth = boundX + 185;
+			int boundHeight = boundY + 154;
+			String version = EnumChatFormatting.BOLD + changes.changes.version;
+			drawString(fontRendererObj, version, boundWidth - (15 + (fontRendererObj.getStringWidth(version) / 2)),
+					boundY + 6, -1);
+			if (page != null) {
+				for (int textIndex = 0; textIndex < page.texts.size(); textIndex++) {
+					String text = page.texts.get(textIndex);
+					int textX = width / 2 - 175;
+					int textY = height / 2 - 90 + (textIndex * fontRendererObj.FONT_HEIGHT) + scrollY;
+					if (inBounds(textX, textY, boundX, boundY, boundWidth, boundHeight)) {
+						if (text.startsWith(PREFIX_TITLE)) {
+							text = text.substring(PREFIX_TITLE.length(), text.length());
+							textX -= 4;
+							textY -= 4;
+						}
 
-		for (int textIndex = 0; textIndex < page.texts.size(); textIndex++) {
-			String text = page.texts.get(textIndex);
-			int textX = width / 2 - 175;
-			int textY = height / 2 - 90 + (textIndex * fontRendererObj.FONT_HEIGHT) + scrollY;
-			if (inBounds(textX, textY, boundX, boundY, boundWidth, boundHeight)) {
-				if (text.startsWith(PREFIX_TITLE)) {
-					text = text.substring(PREFIX_TITLE.length(), text.length());
-					textX -= 4;
-					textY -= 4;
+						/*
+						 * int textY = height / 2 + ((pageIndex * page.blockSizeSum) *
+						 * fontRendererObj.FONT_HEIGHT) + ((text.blockSize * textIndex) *
+						 * fontRendererObj.FONT_HEIGHT) - 85;
+						 */
+						fontRendererObj.drawSplitString(text, textX + 1, textY + 1, WRAP, 0);
+						fontRendererObj.drawSplitString(text, textX, textY, WRAP, -1);
+					}
 				}
-
-				/*
-				 * int textY = height / 2 + ((pageIndex * page.blockSizeSum) *
-				 * fontRendererObj.FONT_HEIGHT) + ((text.blockSize * textIndex)
-				 * * fontRendererObj.FONT_HEIGHT) - 85;
-				 */
-				fontRendererObj.drawSplitString(text, textX + 1, textY + 1, WRAP, 0);
-				fontRendererObj.drawSplitString(text, textX, textY, WRAP, -1);
 			}
 		}
-		drawCenteredString(fontRendererObj, I18n.format("gui.changelog.title"), width / 2, height / 2 - 120, -1);
+		drawCenteredString(fontRendererObj, I18n.format("gui.changelog.title"), width / 2, 4, -1);
 		super.drawScreen(mouseX, mouseY, partialTicks);
 	}
 
@@ -202,7 +204,13 @@ public class GuiScreenChangeLog extends GuiScreen {
 	}
 
 	private FormattedChangeLog getCurrentLog() {
-		return formattedLog.get(currentPage);
+		try {
+			return formattedLog.get(currentPage);
+		} catch (IndexOutOfBoundsException e) {
+			//Physics.getLogger().error("No formatted log change found.");
+			// e.printStackTrace();
+		}
+		return null;
 	}
 
 	public boolean inBounds(int x, int y, int boundX, int boundY, int boundWidth, int boundHeight) {

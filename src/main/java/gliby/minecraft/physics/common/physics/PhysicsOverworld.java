@@ -30,6 +30,8 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+// TODO FIXME PhysicsWorld: create ability to choose between multi-thread of single thread physics world, should solve crashes relating to concurrency.
+
 public class PhysicsOverworld {
 
 	/**

@@ -15,7 +15,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'com.github.johnrengelman.shadow'
 
-version = "0.3"
+version = "0.3.0"
 group= "gliby.minecraft" 
 archivesBaseName = "glibysphysics"
 

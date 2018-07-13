@@ -25,7 +25,8 @@ public class ExplosionHandler {
 	public ExplosionHandler(Physics physics) {
 		this.physics = physics;
 	}
-
+	
+	// TODO bug: fix explosions
 	@SubscribeEvent
 	public void handleEvent(final ExplosionEvent.Detonate event) {
 		MinecraftServer server = MinecraftServer.getServer();
@@ -51,21 +52,21 @@ public class ExplosionHandler {
 						event.world.spawnEntityInWorld(analog);
 					}
 				}
-
+				float explosionRadius = physics.getSettings().getFloatSetting("Game.ExplosionImpulseRadius")
+						.getFloatValue();
 				float force = Physics.getInstance().getSettings().getFloatSetting("Game.ExplosionImpulseForce")
 						.getFloatValue() * 20;
+				System.out.println("explode before");
 				for (int i = 0; i < physicsWorld.getRigidBodies().size(); i++) {
 					IRigidBody body = physicsWorld.getRigidBodies().get(i);
 					Vector3f centerOfMass = body.getCenterOfMassPosition(new Vector3f());
 					Vector3f direction = new Vector3f();
 					direction.sub(centerOfMass, explosion);
 					float distance = direction.length();
-					if (distance <= physics.getSettings().getFloatSetting("Game.ExplosionImpulseRadius")
-							.getFloatValue()) {
+					if (distance <= explosionRadius) {
 						direction.normalize();
-						direction.scale(Math.abs(force
-								* (physics.getSettings().getFloatSetting("Game.ExplosionImpulseRadius").getFloatValue())
-								- distance));
+						float forceMultiplier = force * (explosionRadius - distance);
+						direction.scale(Math.abs(forceMultiplier));
 						body.applyCentralImpulse(direction);
 					}
 				}
