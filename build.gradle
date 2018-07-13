@@ -15,7 +15,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'com.github.johnrengelman.shadow'
 
-version = "0.2"
+version = "0.3"
 group= "gliby.minecraft" 
 archivesBaseName = "glibysphysics"
 
@@ -23,11 +23,13 @@ minecraft {
     version = "1.8-11.14.4.1577"
     runDir = "run"
     mappings = "snapshot_20141130"
+    
     makeObfSourceJar = false 
 
     replace '@VERSION@', project.version
     replace '@MC_VERSION@', version
 }
+
 
 processResources
 {
@@ -64,7 +66,8 @@ artifacts {
 }
 
 dependencies {
-    shadow group: 'org.apache.commons', name: 'commons-math3', version: '3.0'    
+    shadow group: 'org.apache.commons', name: 'commons-math3', version: '3.0'
+    shadow group: 'javax.vecmath', name: 'vecmath', version: '1.5.2'
     shadow files('lib/gdx-bullet.jar')
     shadow files('lib/gdx-bullet-natives.jar')
     shadow files('lib/gdx.jar')

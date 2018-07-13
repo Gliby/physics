@@ -80,10 +80,10 @@ public class GuiScreenChangeLog extends GuiScreen {
 
 	private final static String PREFIX_TITLE = "!title";
 
-	private static final ResourceLocation BACKGROUND = new ResourceLocation(Physics.MOD_ID,
+	private static final ResourceLocation BACKGROUND = new ResourceLocation(Physics.ID,
 			"textures/gui/changelog.png");
 
-	private static final ResourceLocation NO_IMAGE = new ResourceLocation(Physics.MOD_ID,
+	private static final ResourceLocation NO_IMAGE = new ResourceLocation(Physics.ID,
 			"textures/gui/defaultchangelog.png");
 
 	private static final int WRAP = 175;

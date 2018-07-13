@@ -35,12 +35,12 @@ public class GameManager {
 		MinecraftForge.EVENT_BUS.register(itemToolgun);
 
 		toolGunRegistry = new ToolGunActionRegistry();
-		toolGunRegistry.registerAction(new ToolGunReviveAction(), Physics.MOD_ID);
-		toolGunRegistry.registerAction(new ToolGunAttachAction(), Physics.MOD_ID);
-		toolGunRegistry.registerAction(new ToolGunAlignAction(), Physics.MOD_ID);
-		toolGunRegistry.registerAction(new ToolGunAttractAction(), Physics.MOD_ID);
-		toolGunRegistry.registerAction(new ToolGunChangeGravityAction(), Physics.MOD_ID);
-		toolGunRegistry.registerAction(new ToolGunRemoveAction(), Physics.MOD_ID);
+		toolGunRegistry.registerAction(new ToolGunReviveAction(), Physics.ID);
+		toolGunRegistry.registerAction(new ToolGunAttachAction(), Physics.ID);
+		toolGunRegistry.registerAction(new ToolGunAlignAction(), Physics.ID);
+		toolGunRegistry.registerAction(new ToolGunAttractAction(), Physics.ID);
+		toolGunRegistry.registerAction(new ToolGunChangeGravityAction(), Physics.ID);
+		toolGunRegistry.registerAction(new ToolGunRemoveAction(), Physics.ID);
 		// toolGunRegistry.registerAction(new ToolGunMotorAction(),
 		// Physics.MOD_ID);
 	}

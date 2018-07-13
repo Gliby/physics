@@ -71,6 +71,7 @@ public class ItemToolGun extends RawItem {
 				if (event.button == 0) {
 					Physics.getDispatcher().sendToServer(new PacketToolGunUse(currentMode,
 							EntityUtility.toVector3f(EntityUtility.rayTrace(mc.thePlayer, 64).hitVec)));
+					event.setCanceled(true);
 				} else if (event.button == 1) {
 					if (currentMode < physics.getGameManager().getToolGunRegistry().getValueDefinitions().size() - 1) {
 						currentMode++;
@@ -79,6 +80,7 @@ public class ItemToolGun extends RawItem {
 					if (lastMode != currentMode) {
 						SoundHandler.playLocalSound(mc, "ToolGun.Scroll");
 						Physics.getDispatcher().sendToServer(new PacketToolGunStoppedUsing(lastMode));
+						event.setCanceled(true);
 					}
 					lastMode = currentMode;
 				}

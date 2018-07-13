@@ -57,7 +57,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = Physics.MOD_ID, name = Physics.MOD_NAME, version = Physics.MOD_VERSION, guiFactory = "gliby.minecraft.physics.client.gui.options.GuiFactory")
+@Mod(modid = Physics.ID, name = Physics.NAME, guiFactory = "gliby.minecraft.physics.client.gui.options.GuiFactory")
 public class Physics {
 
 	/**
@@ -65,16 +65,16 @@ public class Physics {
 	 */
 	public static Class[] entityBlacklistClassCache;
 
-	public static final String MOD_NAME = "Gliby's Physics";
-	public static final String MOD_ID = "glibysphysics";
-	public static final String MOD_VERSION = "0.2";
+	public static final String VERSION = "@VERSION@";
+	public static final String NAME = "Gliby's Physics";
+	public static final String ID = "glibysphysics";
 
 	@Instance
 	private static Physics instance;
 
 	@SidedProxy(serverSide = "gliby.minecraft.physics.common.PhysicsServer", clientSide = "gliby.minecraft.physics.client.PhysicsClient")
 	private static PhysicsServer proxy;
-	
+
 	/**
 	 * Manages anything game related, e.g items.
 	 */
@@ -88,25 +88,27 @@ public class Physics {
 		return gman;
 	}
 
-
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		this.instance = this;
+
 		registerEntity(EntityPhysicsBlock.class, "PhysicsBlock", 64, 1, false);
 		registerEntity(EntityPhysicsModelPart.class, "Model Part Entity", 64, 1, false);
 		registerEntity(EntityToolGunBeam.class, "Tool Gun Beam", 64, 1, false);
-		File dir = new File(event.getModConfigurationDirectory(), MOD_ID);
+		File dir = new File(event.getModConfigurationDirectory(), ID);
 		if (!dir.exists())
 			dir.mkdir();
-		
+
 		settings = new SettingsHandler(dir, new File(dir, "Settings.ini"));
 
 		settings.registerBoolean("PhysicsEngine", "UseJavaPhysics", true, Setting.Side.BOTH);
 
 		// TODO re-implement: entity blacklist
-/*		settings.registerObject("PhysicsEntities", "EntityColliderBlacklist", new String[] {
-				IEntityPhysics.class.getName(), EntityToolGunBeam.class.getName(), EntityItem.class.getName() },
-				Setting.Side.BOTH);*/
+		/*
+		 * settings.registerObject("PhysicsEntities", "EntityColliderBlacklist", new
+		 * String[] { IEntityPhysics.class.getName(), EntityToolGunBeam.class.getName(),
+		 * EntityItem.class.getName() }, Setting.Side.BOTH);
+		 */
 		settings.registerInteger("PhysicsEngine", "TickRate", 30, Setting.Side.BOTH);
 		settings.registerFloat("PhysicsEngine", "GravityForce", -9.8f, Setting.Side.BOTH);
 		settings.registerFloat("PhysicsEntities", "InactivityDeathTime", 30, Setting.Side.BOTH);
@@ -119,51 +121,53 @@ public class Physics {
 		settings.registerInteger("Tools", "GravitizerForce", 10, Setting.Side.BOTH);
 		settings.registerInteger("Tools", "AttractForce", 10, Setting.Side.BOTH);
 
-		settings.registerString("Miscellaneous", "LastVersion", MOD_VERSION, Setting.Side.BOTH);
+		settings.registerString("Miscellaneous", "LastVersion", VERSION, Setting.Side.BOTH);
 		settings.registerBoolean("Miscellaneous", "DisableAllowFlight", true, Setting.Side.BOTH);
 		settings.load();
-		gman = GMan.create(getLogger(), new ModInfo(MOD_ID, event.getModMetadata().updateUrl),
-				MinecraftForge.MC_VERSION, MOD_VERSION);
+		gman = GMan.create(getLogger(), new ModInfo(ID, event.getModMetadata().updateUrl), MinecraftForge.MC_VERSION,
+				VERSION);
 
-		StringSetting lastVersion = settings.getStringSetting("Miscellaneous.LastVersion");
-		final boolean modUpdated = !lastVersion.getString().equals(MOD_VERSION);
-		if (modUpdated) {
-			getLogger().info("Version change detected, gathering change logs!");
-			gman.request(new GMan.CustomRequest() {
+		if (!VERSION.contains("@")) {
+			StringSetting lastVersion = settings.getStringSetting("Miscellaneous.LastVersion");
+			final boolean modUpdated = !lastVersion.getString().equals(VERSION);
+			if (modUpdated) {
+				getLogger().info("Version change detected, gathering change logs!");
+				gman.request(new GMan.CustomRequest() {
 
-				@Override
-				public void request(final GMan gman) {
-					new Thread(new Runnable() {
+					@Override
+					public void request(final GMan gman) {
+						new Thread(new Runnable() {
 
-						@Override
-						public void run() {
-							Map<String, Object> json = gman.getJSONMap("news/index.json");
-							final ArrayList<String> index = (ArrayList<String>) json.get("Versions");
-							String versions[] = gman.getVersionsBetween(MOD_VERSION,
-									gman.getModInfo().getLatestVersion(), new Predicate<String>() {
-										@Override
-										public boolean apply(String input) {
-											return index.contains(input) && !input.equals(MOD_VERSION);
-										}
-									});
-							ArrayList<VersionChanges> changes = new ArrayList<VersionChanges>();
-							for (String s : versions) {
-								VersionChanges versionChanges = (VersionChanges) gman.getJSON("news/" + s + ".json",
-										VersionChanges.class);
+							@Override
+							public void run() {
+								Map<String, Object> json = gman.getJSONMap("news/index.json");
+								final ArrayList<String> index = (ArrayList<String>) json.get("Versions");
+								String versions[] = gman.getVersionsBetween(VERSION,
+										gman.getModInfo().getLatestVersion(), new Predicate<String>() {
+											@Override
+											public boolean apply(String input) {
+												return index.contains(input) && !input.equals(VERSION);
+											}
+										});
+								ArrayList<VersionChanges> changes = new ArrayList<VersionChanges>();
+								for (String s : versions) {
+									VersionChanges versionChanges = (VersionChanges) gman.getJSON("news/" + s + ".json",
+											VersionChanges.class);
 
-								if (versionChanges != null)
-									if (versionChanges.getChanges() != null)
-										changes.add(versionChanges.setVersion(s)
-												.setImage(gman.getImage("news/" + s + ".png")));
+									if (versionChanges != null)
+										if (versionChanges.getChanges() != null)
+											changes.add(versionChanges.setVersion(s)
+													.setImage(gman.getImage("news/" + s + ".png")));
+								}
+								gman.getProperties().put("VersionChanges", changes);
 							}
-							gman.getProperties().put("VersionChanges", changes);
-						}
-					}, "GMAN Update/News").start();
-				}
-			});
-		}
+						}, "GMAN Update/News").start();
+					}
+				});
+			}
 
-		lastVersion.setString(MOD_VERSION);
+			lastVersion.setString(VERSION);
+		}
 		settings.save();
 		gameManager = new GameManager(this);
 		gameManager.preInit();
@@ -173,7 +177,7 @@ public class Physics {
 		physicsOverworld = new PhysicsOverworld(this);
 		blockManager = new BlockManager(this);
 		// TODO feature: finish this, would help with server-side ragdolls.
-		//mobModelManager = new MobModelManager(this);
+		// mobModelManager = new MobModelManager(this);
 
 		FMLCommonHandler.instance().bus().register(this);
 		proxy.preInit(this, event);
@@ -192,7 +196,7 @@ public class Physics {
 		EntityRegistry.registerModEntity(clazz, name, entityIDIndex++, this, trackRange, trackFrequency, trackVelocity);
 	}
 
-	private static final SimpleNetworkWrapper DISPATCHER = NetworkRegistry.INSTANCE.newSimpleChannel(MOD_ID);
+	private static final SimpleNetworkWrapper DISPATCHER = NetworkRegistry.INSTANCE.newSimpleChannel(ID);
 
 	/**
 	 * @return the dispatcher

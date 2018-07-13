@@ -47,7 +47,7 @@ public class RenderItemPhysicsGun extends RawItemRenderer {
 	}
 
 	private ModelItemPhysicsGun model = new ModelItemPhysicsGun(0xFF87FFFF, 200);
-	private ResourceLocation textureColorable = new ResourceLocation(Physics.MOD_ID,
+	private ResourceLocation textureColorable = new ResourceLocation(Physics.ID,
 			"textures/physics_gun_colorable.png");
 
 	@Override

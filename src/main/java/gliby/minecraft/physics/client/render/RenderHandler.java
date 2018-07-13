@@ -89,9 +89,9 @@ public class RenderHandler {
 		// "extends RawItemRenderer".
 		// Register and bind to item!
 		itemRenderManager.registerItemRenderer(physics.getGameManager().itemPhysicsGun,
-				new RenderItemPhysicsGun(this, new ModelResourceLocation(Physics.MOD_ID, "physicsgun")));
+				new RenderItemPhysicsGun(this, new ModelResourceLocation(Physics.ID, "physicsgun")));
 		itemRenderManager.registerItemRenderer(physics.getGameManager().itemToolgun,
-				new RenderItemToolGun(new ModelResourceLocation(Physics.MOD_ID, "toolgun")));
+				new RenderItemToolGun(new ModelResourceLocation(Physics.ID, "toolgun")));
 
 	}
 }

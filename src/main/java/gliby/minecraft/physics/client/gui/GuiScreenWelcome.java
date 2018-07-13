@@ -6,7 +6,7 @@ import net.minecraft.util.ResourceLocation;
 
 public class GuiScreenWelcome extends GuiScreen {
 
-	ResourceLocation backgroundGui = new ResourceLocation(Physics.MOD_ID, "textures/gui/welcome_gui.png");
+	ResourceLocation backgroundGui = new ResourceLocation(Physics.ID, "textures/gui/welcome_gui.png");
 
 	public void initGui() {
 	}
