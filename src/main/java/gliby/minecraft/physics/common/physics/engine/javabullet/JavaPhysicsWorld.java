@@ -129,7 +129,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 	}
 
 	@Override
-	public void update() {
+	protected void update() {
 		float delta = getDelta();
 		if (dynamicsWorld != null)
 			dynamicsWorld.stepSimulation(1, Math.round(delta / 7));
@@ -138,7 +138,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public void addRigidBody(final IRigidBody body) {
-		scheduledTasks.add(new Runnable() {
+		physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -150,7 +150,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public void addRigidBody(final IRigidBody body, final short collisionFilterGroup, final short collisionFilterMask) {
-		scheduledTasks.add(new Runnable() {
+		physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -163,7 +163,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public void removeRigidBody(final IRigidBody body) {
-		scheduledTasks.add(new Runnable() {
+		physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -175,7 +175,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public void awakenArea(final Vector3f min, final Vector3f max) {
-		scheduledTasks.add(new Runnable() {
+		physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -188,20 +188,14 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public void rayTest(final Vector3f rayFromWorld, final Vector3f rayToWorld, final IRayResult resultCallback) {
-		scheduledTasks.add(new Runnable() {
-
-			@Override
-			public void run() {
-				dynamicsWorld.rayTest(rayFromWorld, rayToWorld,
-						(RayResultCallback) resultCallback.getRayResultCallback());
-
-			}
-		});
+		synchronized (this) {
+			dynamicsWorld.rayTest(rayFromWorld, rayToWorld, (RayResultCallback) resultCallback.getRayResultCallback());
+		}
 	}
 
 	@Override
 	public void removeCollisionObject(final ICollisionObject collisionObject) {
-		scheduledTasks.add(new Runnable() {
+		physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -212,7 +206,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public void setGravity(final Vector3f newGravity) {
-		scheduledTasks.add(new Runnable() {
+		physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -223,7 +217,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public void addCollisionObject(final ICollisionObject object) {
-		scheduledTasks.add(new Runnable() {
+		physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -235,7 +229,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 	@Override
 	public void addCollisionObject(final ICollisionObject object, final short collisionFilterGroup,
 			final short collisionFilterMask) {
-		scheduledTasks.add(new Runnable() {
+		physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -252,7 +246,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public void dispose() {
-		scheduledTasks.add(new Runnable() {
+		physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -297,20 +291,23 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public IRigidBody createRigidBody(final Entity owner, Transform transform, float mass, ICollisionShape shape) {
-		Vector3f localInertia = new Vector3f(0, 0, 0);
-		if (mass != 0) {
-			shape.calculateLocalInertia(mass, localInertia);
+		synchronized (this) {
+			Vector3f localInertia = new Vector3f(0, 0, 0);
+			if (mass != 0) {
+				shape.calculateLocalInertia(mass, localInertia);
+			}
+			DefaultMotionState motionState = new DefaultMotionState(transform);
+			RigidBodyConstructionInfo constructionInfo = new RigidBodyConstructionInfo(mass, motionState,
+					(CollisionShape) shape.getCollisionShape(), localInertia);
+			RigidBody body = new RigidBody(constructionInfo);
+			return new JavaRigidBody(this, body, owner);
 		}
-		DefaultMotionState motionState = new DefaultMotionState(transform);
-		RigidBodyConstructionInfo constructionInfo = new RigidBodyConstructionInfo(mass, motionState,
-				(CollisionShape) shape.getCollisionShape(), localInertia);
-		RigidBody body = new RigidBody(constructionInfo);
-		return new JavaRigidBody(this, body, owner);
 	}
 
 	@Override
 	public ICollisionShape createBoxShape(final Vector3f extents) {
-		return new gliby.minecraft.physics.common.physics.engine.javabullet.JavaCollisionShape(this, new BoxShape(extents));
+		return new gliby.minecraft.physics.common.physics.engine.javabullet.JavaCollisionShape(this,
+				new BoxShape(extents));
 	}
 
 	@Override
@@ -324,24 +321,27 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public IRigidBody upcastRigidBody(Object collisionObject) {
-		for (int i = 0; i < rigidBodies.size(); i++) {
-			IRigidBody body = rigidBodies.get(i);
-			if (body.getBody() == RigidBody.upcast((CollisionObject) collisionObject)) {
-				return body;
-			} else
-				continue;
+		synchronized (this) {
+			for (int i = 0; i < rigidBodies.size(); i++) {
+				IRigidBody body = rigidBodies.get(i);
+				if (body.getBody() == RigidBody.upcast((CollisionObject) collisionObject)) {
+					return body;
+				} else
+					continue;
+			}
+			return null;
 		}
-		return null;
 	}
 
 	@Override
 	public IConstraintPoint2Point createPoint2PointConstraint(IRigidBody rigidBody, Vector3f relativePivot) {
-		return new JavaConstraintPoint2Point(this, new Point2PointConstraint((RigidBody) rigidBody.getBody(), relativePivot));
+		return new JavaConstraintPoint2Point(this,
+				new Point2PointConstraint((RigidBody) rigidBody.getBody(), relativePivot));
 	}
 
 	@Override
 	public void addConstraint(final IConstraint constraint) {
-		scheduledTasks.add(new Runnable() {
+		physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -353,7 +353,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public void removeConstraint(final IConstraint constraint) {
-		scheduledTasks.add(new Runnable() {
+		physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -405,7 +405,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 	@Override
 	public IConstraintGeneric6Dof createGeneric6DofConstraint(IRigidBody rbA, IRigidBody rbB, Transform frameInA,
 			Transform frameInB, boolean useLinearReferenceFrameA) {
-		return new JavaConstraintGeneric6Dof(new Generic6DofConstraint((RigidBody) rbA.getBody(),
+		return new JavaConstraintGeneric6Dof(this, new Generic6DofConstraint((RigidBody) rbA.getBody(),
 				(RigidBody) rbB.getBody(), frameInA, frameInB, useLinearReferenceFrameA));
 	}
 

@@ -23,7 +23,7 @@ public class JavaConstraintPoint2Point implements IConstraintPoint2Point {
 
 	@Override
 	public void setImpulseClamp(final float f) {
-		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+		this.getPhysicsWorld().physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -34,7 +34,7 @@ public class JavaConstraintPoint2Point implements IConstraintPoint2Point {
 
 	@Override
 	public void setTau(final float f) {
-		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+		this.getPhysicsWorld().physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -45,7 +45,7 @@ public class JavaConstraintPoint2Point implements IConstraintPoint2Point {
 
 	@Override
 	public void setPivotB(final Vector3f newPos) {
-		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+		this.getPhysicsWorld().physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {

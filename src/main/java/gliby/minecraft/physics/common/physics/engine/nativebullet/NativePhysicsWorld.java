@@ -156,8 +156,8 @@ public class NativePhysicsWorld extends PhysicsWorld {
 	protected void update() {
 		float delta = getDelta();
 		if (dynamicsWorld != null) {
-			dynamicsWorld.stepSimulation(1, Math.round(delta / 7));
 			super.update();
+			dynamicsWorld.stepSimulation(1, Math.round(delta / 7));
 		}
 	}
 
@@ -210,7 +210,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public void addRigidBody(final IRigidBody body) {
-		scheduledTasks.add(new Runnable() {
+		physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -222,7 +222,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public void addRigidBody(final IRigidBody body, final short collisionFilterGroup, final short collisionFilterMask) {
-		scheduledTasks.add(new Runnable() {
+		physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -235,7 +235,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public void addConstraint(final IConstraint p2p) {
-		scheduledTasks.add(new Runnable() {
+		physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -248,7 +248,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 	// TODO NativePhysicsWorld: Dispose of object on remove.
 	@Override
 	public void removeRigidBody(final IRigidBody body) {
-		scheduledTasks.add(new Runnable() {
+		physicsTasks.add(new Runnable() {
 			@Override
 			public void run() {
 				btRigidBody nativeBody;
@@ -262,37 +262,37 @@ public class NativePhysicsWorld extends PhysicsWorld {
 	@Override
 	public void awakenArea(Vector3f min, Vector3f max) {
 		final AxisAlignedBB bb = AxisAlignedBB.fromBounds(min.x, min.y, min.z, max.x, max.y, max.z);
-		scheduledTasks.add(new Runnable() {
-
-			@Override
-			public void run() {
-				for (int i = 0; i < rigidBodies.size(); i++) {
-					IRigidBody body = rigidBodies.get(i);
-					Vector3f vec3 = body.getCenterOfMassPosition();
-					Vec3 centerOfMass = new Vec3(vec3.x, vec3.y, vec3.z);
-					if (bb.isVecInside(centerOfMass)) {
-						body.activate();
-					}
+		synchronized (this) {
+			for (int i = 0; i < rigidBodies.size(); i++) {
+				IRigidBody body = rigidBodies.get(i);
+				Vector3f vec3 = body.getCenterOfMassPosition();
+				Vec3 centerOfMass = new Vec3(vec3.x, vec3.y, vec3.z);
+				if (bb.isVecInside(centerOfMass)) {
+					body.activate();
 				}
 			}
-		});
+		}
 	}
 
 	@Override
 	public void rayTest(final Vector3f rayFromWorld, final Vector3f rayToWorld, final IRayResult resultCallback) {
-		scheduledTasks.add(new Runnable() {
+		/*
+		 * physicsTasks.add(new Runnable() {
+		 * 
+		 * @Override public void run() { } });
+		 * dynamicsWorld.rayTest(toVector3(rayFromWorld), toVector3(rayToWorld),
+		 * (RayResultCallback) resultCallback.getRayResultCallback());
+		 */
+		synchronized (this) {
+			dynamicsWorld.rayTest(toVector3(rayFromWorld), toVector3(rayToWorld),
+					(RayResultCallback) resultCallback.getRayResultCallback());
+		}
 
-			@Override
-			public void run() {
-				dynamicsWorld.rayTest(toVector3(rayFromWorld), toVector3(rayToWorld),
-						(RayResultCallback) resultCallback.getRayResultCallback());
-			}
-		});
 	}
 
 	@Override
 	public void removeCollisionObject(final ICollisionObject collisionObject) {
-		scheduledTasks.add(new Runnable() {
+		physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -308,7 +308,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public void setGravity(final Vector3f newGravity) {
-		scheduledTasks.add(new Runnable() {
+		physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -319,7 +319,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public void addCollisionObject(final ICollisionObject object) {
-		scheduledTasks.add(new Runnable() {
+		physicsTasks.add(new Runnable() {
 			@Override
 			public void run() {
 				dynamicsWorld.addCollisionObject((btCollisionObject) object.getCollisionObject());
@@ -331,7 +331,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 	@Override
 	public void addCollisionObject(final ICollisionObject object, final short collisionFilterGroup,
 			final short collisionFilterMask) {
-		scheduledTasks.add(new Runnable() {
+		physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -447,7 +447,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public void removeConstraint(final IConstraint constraint) {
-		scheduledTasks.add(new Runnable() {
+		physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -477,9 +477,10 @@ public class NativePhysicsWorld extends PhysicsWorld {
 	@Override
 	public IConstraintGeneric6Dof createGeneric6DofConstraint(IRigidBody rbA, IRigidBody rbB, Transform frameInA,
 			Transform frameInB, boolean useLinearReferenceFrameA) {
-		NativeConstraintGeneric6Dof constraint = new NativeConstraintGeneric6Dof(new btGeneric6DofConstraint(
-				(btRigidBody) rbA.getBody(), (btRigidBody) rbB.getBody(), this.fromTransformToMatrix4(frameInA),
-				this.fromTransformToMatrix4(frameInB), useLinearReferenceFrameA));
+		NativeConstraintGeneric6Dof constraint = new NativeConstraintGeneric6Dof(this,
+				new btGeneric6DofConstraint((btRigidBody) rbA.getBody(), (btRigidBody) rbB.getBody(),
+						this.fromTransformToMatrix4(frameInA), this.fromTransformToMatrix4(frameInB),
+						useLinearReferenceFrameA));
 		return constraint;
 	}
 
@@ -552,7 +553,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 	// TODO NativePhysicsWorld: Make dispose actually dispose something.
 	@Override
 	public void dispose() {
-		scheduledTasks.add(new Runnable() {
+		physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {

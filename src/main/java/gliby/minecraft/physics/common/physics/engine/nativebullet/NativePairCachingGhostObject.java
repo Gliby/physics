@@ -16,12 +16,12 @@ class NativePairCachingGhostObject implements IGhostObject {
 
 	private btPairCachingGhostObject ghostObject;
 
-	protected PhysicsWorld physicsWorld;
+	protected NativePhysicsWorld physicsWorld;
 
 	Entity owner;
 
 	NativePairCachingGhostObject(PhysicsWorld physicsWorld, btPairCachingGhostObject object) {
-		this.physicsWorld = physicsWorld;
+		this.physicsWorld = (NativePhysicsWorld) physicsWorld;
 		this.ghostObject = object;
 	}
 
@@ -42,30 +42,29 @@ class NativePairCachingGhostObject implements IGhostObject {
 
 	@Override
 	public void setWorldTransform(final Transform entityTransform) {
-		getPhysicsWorld().scheduledTasks.add(new Runnable() {
+		getPhysicsWorld().physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
-				ghostObject.setWorldTransform(NativePhysicsWorld.fromTransformToMatrix4(entityTransform));
+				ghostObject.setWorldTransform(physicsWorld.fromTransformToMatrix4(entityTransform));
 			}
 		});
 	}
 
 	@Override
 	public void setCollisionShape(final ICollisionShape collisionShape) {
-		getPhysicsWorld().scheduledTasks.add(new Runnable() {
+		getPhysicsWorld().physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
 				ghostObject.setCollisionShape((btCollisionShape) collisionShape.getCollisionShape());
 			}
 		});
-
 	}
 
 	@Override
 	public void setCollisionFlags(final int characterObject) {
-		getPhysicsWorld().scheduledTasks.add(new Runnable() {
+		getPhysicsWorld().physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -76,11 +75,11 @@ class NativePairCachingGhostObject implements IGhostObject {
 
 	@Override
 	public void setInterpolationWorldTransform(final Transform entityTransform) {
-		getPhysicsWorld().scheduledTasks.add(new Runnable() {
+		getPhysicsWorld().physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
-				ghostObject.setInterpolationWorldTransform(NativePhysicsWorld.fromTransformToMatrix4(entityTransform));
+				ghostObject.setInterpolationWorldTransform(physicsWorld.fromTransformToMatrix4(entityTransform));
 			}
 		});
 	}

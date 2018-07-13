@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.bullet.collision.btVoxelInfo;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
@@ -50,5 +51,5 @@ class NativeVoxelProvider extends btVoxelContentProvider {
 		return info;
 
 	}
-	
+
 }

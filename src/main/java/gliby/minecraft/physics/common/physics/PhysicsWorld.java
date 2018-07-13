@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.vecmath.Vector3f;
 
@@ -94,17 +95,10 @@ public abstract class PhysicsWorld implements Runnable {
 
 	protected int tick;
 
-	public final Queue<Runnable> scheduledTasks = Queues.newArrayDeque();
+	public final ConcurrentLinkedQueue<Runnable> physicsTasks = Queues.newConcurrentLinkedQueue();
 
 	
 	protected void update() {
-		Queue queue = this.scheduledTasks;
-		synchronized (this.scheduledTasks) {
-			while (!this.scheduledTasks.isEmpty()) {
-				this.scheduledTasks.poll().run();
-			}
-		}
-		
 		if (tick >= getPhysicsConfiguration().getTicksPerSecond())
 			tick = 0;
 		tick++;
@@ -115,6 +109,13 @@ public abstract class PhysicsWorld implements Runnable {
 				if (mechanic.getTicksPerSecond() % tick == 0) {
 					mechanic.call();
 				}
+			}
+		}
+
+		Queue queue = this.physicsTasks;
+		synchronized (this.physicsTasks) {
+			while (!this.physicsTasks.isEmpty()) {
+				this.physicsTasks.poll().run();
 			}
 		}
 	}

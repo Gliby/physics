@@ -37,7 +37,7 @@ public class JavaCollisionObject implements ICollisionObject {
 
 	@Override
 	public void setWorldTransform(final Transform transform) {
-		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+		this.getPhysicsWorld().physicsTasks.add(new Runnable() {
 			
 			@Override
 			public void run() {
@@ -48,7 +48,7 @@ public class JavaCollisionObject implements ICollisionObject {
 
 	@Override
 	public void setCollisionShape(final ICollisionShape iCollisionShape) {
-		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+		this.getPhysicsWorld().physicsTasks.add(new Runnable() {
 			
 			@Override
 			public void run() {
@@ -59,7 +59,7 @@ public class JavaCollisionObject implements ICollisionObject {
 
 	@Override
 	public void setCollisionFlags(final int characterObject) {
-		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+		this.getPhysicsWorld().physicsTasks.add(new Runnable() {
 			
 			@Override
 			public void run() {
@@ -70,7 +70,7 @@ public class JavaCollisionObject implements ICollisionObject {
 
 	@Override
 	public void setInterpolationWorldTransform(final Transform transform) {
-		this.getPhysicsWorld().scheduledTasks.add(new Runnable() {
+		this.getPhysicsWorld().physicsTasks.add(new Runnable() {
 			
 			@Override
 			public void run() {

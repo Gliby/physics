@@ -22,7 +22,7 @@ class NativePoint2PointConstraint implements IConstraintPoint2Point {
 
 	@Override
 	public void setImpulseClamp(final float f) {
-		getPhysicsWorld().scheduledTasks.add(new Runnable() {
+		getPhysicsWorld().physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -33,7 +33,7 @@ class NativePoint2PointConstraint implements IConstraintPoint2Point {
 
 	@Override
 	public void setTau(final float f) {
-		getPhysicsWorld().scheduledTasks.add(new Runnable() {
+		getPhysicsWorld().physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
@@ -44,7 +44,7 @@ class NativePoint2PointConstraint implements IConstraintPoint2Point {
 
 	@Override
 	public void setPivotB(final Vector3f newPos) {
-		getPhysicsWorld().scheduledTasks.add(new Runnable() {
+		getPhysicsWorld().physicsTasks.add(new Runnable() {
 
 			@Override
 			public void run() {
