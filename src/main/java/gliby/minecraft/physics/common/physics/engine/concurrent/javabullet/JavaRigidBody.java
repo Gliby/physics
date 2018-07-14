@@ -1,4 +1,4 @@
-package gliby.minecraft.physics.common.physics.engine.javabullet;
+package gliby.minecraft.physics.common.physics.engine.concurrent.javabullet;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,6 +15,7 @@ import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import gliby.minecraft.physics.common.physics.engine.IQuaternion;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import gliby.minecraft.physics.common.physics.engine.IVector3;
+import gliby.minecraft.physics.common.physics.engine.concurrent.ConcurrentPhysicsWorld;
 import net.minecraft.entity.Entity;
 
 /**
@@ -28,7 +29,7 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
 
 	private Map<String, Object> properties;
 
-	public JavaRigidBody(PhysicsWorld physicsWorld, RigidBody body, Entity owner) {
+	public JavaRigidBody(ConcurrentPhysicsWorld physicsWorld, RigidBody body, Entity owner) {
 		super(physicsWorld, owner, body);
 		this.rigidBody = body;
 		this.owner = owner;

@@ -1,4 +1,4 @@
-package gliby.minecraft.physics.common.physics.engine.javabullet;
+package gliby.minecraft.physics.common.physics.engine.concurrent.javabullet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,6 +55,7 @@ import gliby.minecraft.physics.common.physics.engine.IGhostObject;
 import gliby.minecraft.physics.common.physics.engine.IRayResult;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import gliby.minecraft.physics.common.physics.engine.IRope;
+import gliby.minecraft.physics.common.physics.engine.concurrent.ConcurrentPhysicsWorld;
 import gliby.minecraft.physics.common.physics.mechanics.PhysicsMechanic;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -62,7 +63,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
-public class JavaPhysicsWorld extends PhysicsWorld {
+public class JavaPhysicsWorld extends ConcurrentPhysicsWorld {
 
 	private List<IRigidBody> rigidBodies;
 	private List<IConstraint> constraints;
@@ -81,10 +82,10 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 	}
 
 	@Override
-	public void run() {
+	public void tick() {
 		getDelta();
 		lastFPS = getTime();
-		while (running) {
+		while (enabled) {
 			synchronized (this) {
 				try {
 					wait(1000 / getPhysicsConfiguration().getTicksPerSecond());
@@ -92,14 +93,14 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 					Physics.getLogger().catching(e);
 				}
 				if (getPhysicsConfiguration().shouldSimulate(getPhysicsConfiguration().getWorld(), this))
-					update();
+					simulate();
 				updateFPS();
 			}
 		}
 	}
 
 	@Override
-	public void create() {
+	public void init() {
 		ropes = new ArrayList<IRope>();
 		rigidBodies = new ArrayList<IRigidBody>();
 		constraints = new ArrayList<IConstraint>();
@@ -125,15 +126,15 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 		RigidBody blockCollisionBody = new RigidBody(blockConsInf);
 		blockCollisionBody.setCollisionFlags(CollisionFlags.STATIC_OBJECT | blockCollisionBody.getCollisionFlags());
 		dynamicsWorld.addRigidBody(blockCollisionBody);
-		super.create();
+		super.init();
 	}
 
 	@Override
-	protected synchronized void update() {
+	protected synchronized void simulate() {
 		float delta = getDelta();
 		if (dynamicsWorld != null)
 			dynamicsWorld.stepSimulation(1, Math.round(delta / 7));
-		super.update();
+		super.simulate();
 	}
 
 	@Override
@@ -306,7 +307,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public ICollisionShape createBoxShape(final Vector3f extents) {
-		return new gliby.minecraft.physics.common.physics.engine.javabullet.JavaCollisionShape(this,
+		return new gliby.minecraft.physics.common.physics.engine.concurrent.javabullet.JavaCollisionShape(this,
 				new BoxShape(extents));
 	}
 
@@ -435,7 +436,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + "[ " + this.rigidBodies.size() + " rigid bodies" + "]";
+		return getClass().getSimpleName() + "[" + this.rigidBodies.size() + " rigid bodies" + "]";
 	}
 
 	@Override

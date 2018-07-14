@@ -5,13 +5,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.vecmath.Vector3f;
 
 import com.bulletphysicsx.linearmath.Transform;
-import com.google.common.collect.Queues;
 import com.google.gson.annotations.SerializedName;
 
 import gliby.minecraft.gman.WorldUtility;
@@ -28,6 +25,7 @@ import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import gliby.minecraft.physics.common.physics.engine.IRope;
 import gliby.minecraft.physics.common.physics.mechanics.PhysicsMechanic;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.texture.ITickable;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
@@ -36,7 +34,9 @@ import net.minecraft.world.World;
 /**
  *
  */
-public abstract class PhysicsWorld implements Runnable {
+public abstract class PhysicsWorld {
+
+	public abstract void tick();
 
 	private IPhysicsWorldConfiguration physicsConfiguration;
 
@@ -50,7 +50,7 @@ public abstract class PhysicsWorld implements Runnable {
 		return physicsConfiguration;
 	}
 
-	protected boolean running;
+	protected boolean enabled;
 	protected HashMap<String, PhysicsMechanic> physicsMechanics;
 
 	public Map<String, PhysicsMechanic> getMechanics() {
@@ -62,10 +62,10 @@ public abstract class PhysicsWorld implements Runnable {
 		this.physicsMechanics = new HashMap<String, PhysicsMechanic>();
 		this.gravityDirection = new Vector3f(physicsConfiguration.getRegularGravity());
 		this.gravityDirection.normalize();
-		this.running = true;
+		this.enabled = true;
 	}
 
-	public void create() {
+	public void init() {
 		Iterator it = physicsMechanics.entrySet().iterator();
 		while (it.hasNext()) {
 			PhysicsMechanic mechanic = ((Map.Entry<String, PhysicsMechanic>) it.next()).getValue();
@@ -90,15 +90,12 @@ public abstract class PhysicsWorld implements Runnable {
 	}
 
 	public void dispose() {
-		running = false;
+		enabled = false;
 	}
 
 	protected int tick;
 
-	public final ConcurrentLinkedQueue<Runnable> physicsTasks = Queues.newConcurrentLinkedQueue();
-
-	
-	protected void update() {
+	protected void simulate() {
 		if (tick >= getPhysicsConfiguration().getTicksPerSecond())
 			tick = 0;
 		tick++;
@@ -109,13 +106,6 @@ public abstract class PhysicsWorld implements Runnable {
 				if (mechanic.getTicksPerSecond() % tick == 0) {
 					mechanic.call();
 				}
-			}
-		}
-
-		Queue queue = this.physicsTasks;
-		synchronized (this.physicsTasks) {
-			while (!this.physicsTasks.isEmpty()) {
-				this.physicsTasks.poll().run();
 			}
 		}
 	}

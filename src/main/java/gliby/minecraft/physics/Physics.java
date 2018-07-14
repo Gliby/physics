@@ -110,6 +110,7 @@ public class Physics {
 		 * String[] { IEntityPhysics.class.getName(), EntityToolGunBeam.class.getName(),
 		 * EntityItem.class.getName() }, Setting.Side.BOTH);
 		 */
+		settings.registerBoolean("PhysicsEngine", "MultiThread", false, Setting.Side.BOTH);
 		settings.registerInteger("PhysicsEngine", "TickRate", 30, Setting.Side.BOTH);
 		settings.registerFloat("PhysicsEngine", "GravityForce", -9.8f, Setting.Side.BOTH);
 		settings.registerFloat("PhysicsEntities", "InactivityDeathTime", 30, Setting.Side.BOTH);
@@ -121,13 +122,12 @@ public class Physics {
 		settings.registerInteger("Tools", "GravitizerRadius", 16, Setting.Side.BOTH);
 		settings.registerInteger("Tools", "GravitizerForce", 10, Setting.Side.BOTH);
 		settings.registerInteger("Tools", "AttractForce", 10, Setting.Side.BOTH);
-
 		settings.registerString("Miscellaneous", "LastVersion", VERSION, Setting.Side.BOTH);
 		settings.registerBoolean("Miscellaneous", "DisableAllowFlight", true, Setting.Side.BOTH);
 		settings.load();
 		gman = GMan.create(getLogger(), new ModInfo(ID, event.getModMetadata().updateUrl), MinecraftForge.MC_VERSION,
 				VERSION, !isDevelopment());
-		
+
 		if (!isDevelopment()) {
 			StringSetting lastVersionSetting = settings.getStringSetting("Miscellaneous.LastVersion");
 			final String lastVersion = settings.getStringSetting("Miscellaneous.LastVersion").getString();
@@ -163,7 +163,7 @@ public class Physics {
 								}
 								if (!changes.isEmpty())
 									gman.getProperties().put("VersionChanges", changes);
-								else 
+								else
 									getLogger().info("No version changes.");
 							}
 						}, "GMAN Update/News").start();
@@ -281,7 +281,7 @@ public class Physics {
 	public GameManager getGameManager() {
 		return gameManager;
 	}
-	
+
 	public static boolean isDevelopment() {
 		return VERSION.contains("@");
 	}

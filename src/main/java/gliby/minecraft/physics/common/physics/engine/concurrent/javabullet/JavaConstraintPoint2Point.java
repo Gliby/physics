@@ -1,11 +1,11 @@
-package gliby.minecraft.physics.common.physics.engine.javabullet;
+package gliby.minecraft.physics.common.physics.engine.concurrent.javabullet;
 
 import javax.vecmath.Vector3f;
 
 import com.bulletphysicsx.dynamics.constraintsolver.Point2PointConstraint;
 
-import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IConstraintPoint2Point;
+import gliby.minecraft.physics.common.physics.engine.concurrent.ConcurrentPhysicsWorld;
 
 /**
  *
@@ -14,9 +14,9 @@ public class JavaConstraintPoint2Point implements IConstraintPoint2Point {
 
 	private Point2PointConstraint constraint;
 
-	protected PhysicsWorld physicsWorld;
+	protected ConcurrentPhysicsWorld physicsWorld;
 
-	JavaConstraintPoint2Point(PhysicsWorld physicsWorld, Point2PointConstraint constraint) {
+	JavaConstraintPoint2Point(ConcurrentPhysicsWorld physicsWorld, Point2PointConstraint constraint) {
 		this.physicsWorld = physicsWorld;
 		this.constraint = constraint;
 	}
@@ -85,7 +85,7 @@ public class JavaConstraintPoint2Point implements IConstraintPoint2Point {
 	}
 
 	@Override
-	public PhysicsWorld getPhysicsWorld() {
+	public ConcurrentPhysicsWorld getPhysicsWorld() {
 		return physicsWorld;
 	}
 

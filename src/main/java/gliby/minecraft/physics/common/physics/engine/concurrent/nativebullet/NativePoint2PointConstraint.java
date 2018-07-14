@@ -1,11 +1,11 @@
-package gliby.minecraft.physics.common.physics.engine.nativebullet;
+package gliby.minecraft.physics.common.physics.engine.concurrent.nativebullet;
 
 import javax.vecmath.Vector3f;
 
 import com.badlogic.gdx.physics.bullet.dynamics.btPoint2PointConstraint;
 
-import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IConstraintPoint2Point;
+import gliby.minecraft.physics.common.physics.engine.concurrent.ConcurrentPhysicsWorld;
 
 /**
  *
@@ -13,26 +13,44 @@ import gliby.minecraft.physics.common.physics.engine.IConstraintPoint2Point;
 class NativePoint2PointConstraint implements IConstraintPoint2Point {
 
 	private btPoint2PointConstraint constraint;
-	protected PhysicsWorld physicsWorld;
+	protected ConcurrentPhysicsWorld physicsWorld;
 
-	NativePoint2PointConstraint(PhysicsWorld physicsWorld, btPoint2PointConstraint constraint) {
+	NativePoint2PointConstraint(ConcurrentPhysicsWorld physicsWorld, btPoint2PointConstraint constraint) {
 		this.physicsWorld = physicsWorld;
 		this.constraint = constraint;
 	}
 
 	@Override
 	public void setImpulseClamp(final float f) {
-		constraint.getSetting().setImpulseClamp(f);
+		getPhysicsWorld().physicsTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				constraint.getSetting().setImpulseClamp(f);
+			}
+		});
 	}
 
 	@Override
 	public void setTau(final float f) {
-		constraint.getSetting().setTau(f);
+		getPhysicsWorld().physicsTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				constraint.getSetting().setTau(f);
+			}
+		});
 	}
 
 	@Override
 	public void setPivotB(final Vector3f newPos) {
-		constraint.setPivotB(NativePhysicsWorld.toVector3(newPos));
+		getPhysicsWorld().physicsTasks.add(new Runnable() {
+
+			@Override
+			public void run() {
+				constraint.setPivotB(NativePhysicsWorld.toVector3(newPos));
+			}
+		});
 	}
 
 	@Override
@@ -68,7 +86,7 @@ class NativePoint2PointConstraint implements IConstraintPoint2Point {
 	}
 
 	@Override
-	public PhysicsWorld getPhysicsWorld() {
+	public ConcurrentPhysicsWorld getPhysicsWorld() {
 		return physicsWorld;
 	}
 }

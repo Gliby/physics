@@ -1,12 +1,12 @@
-package gliby.minecraft.physics.common.physics.engine.javabullet;
+package gliby.minecraft.physics.common.physics.engine.concurrent.javabullet;
 
 import com.bulletphysicsx.collision.dispatch.CollisionObject;
 import com.bulletphysicsx.collision.shapes.CollisionShape;
 import com.bulletphysicsx.linearmath.Transform;
 
-import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.ICollisionObject;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
+import gliby.minecraft.physics.common.physics.engine.concurrent.ConcurrentPhysicsWorld;
 import net.minecraft.entity.Entity;
 
 /**
@@ -15,17 +15,17 @@ import net.minecraft.entity.Entity;
 public class JavaCollisionObject implements ICollisionObject {
 
 	private CollisionObject object;
-	
-	protected PhysicsWorld physicsWorld;
-	
-	JavaCollisionObject(PhysicsWorld physicsWorld, CollisionObject object) {
+
+	protected ConcurrentPhysicsWorld physicsWorld;
+
+	JavaCollisionObject(ConcurrentPhysicsWorld physicsWorld, CollisionObject object) {
 		this.physicsWorld = physicsWorld;
 		this.object = object;
 	}
-	
+
 	Entity owner;
-	
-	JavaCollisionObject(PhysicsWorld physicsWorld, Entity owner, CollisionObject object) {
+
+	JavaCollisionObject(ConcurrentPhysicsWorld physicsWorld, Entity owner, CollisionObject object) {
 		this(physicsWorld, object);
 		this.owner = owner;
 	}
@@ -38,7 +38,7 @@ public class JavaCollisionObject implements ICollisionObject {
 	@Override
 	public void setWorldTransform(final Transform transform) {
 		this.getPhysicsWorld().physicsTasks.add(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				object.setWorldTransform(transform);
@@ -49,7 +49,7 @@ public class JavaCollisionObject implements ICollisionObject {
 	@Override
 	public void setCollisionShape(final ICollisionShape iCollisionShape) {
 		this.getPhysicsWorld().physicsTasks.add(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				object.setCollisionShape((CollisionShape) iCollisionShape.getCollisionShape());
@@ -60,7 +60,7 @@ public class JavaCollisionObject implements ICollisionObject {
 	@Override
 	public void setCollisionFlags(final int characterObject) {
 		this.getPhysicsWorld().physicsTasks.add(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				object.setCollisionFlags(characterObject);
@@ -71,7 +71,7 @@ public class JavaCollisionObject implements ICollisionObject {
 	@Override
 	public void setInterpolationWorldTransform(final Transform transform) {
 		this.getPhysicsWorld().physicsTasks.add(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				object.setInterpolationWorldTransform(transform);
@@ -85,7 +85,7 @@ public class JavaCollisionObject implements ICollisionObject {
 	}
 
 	@Override
-	public PhysicsWorld getPhysicsWorld() {
+	public ConcurrentPhysicsWorld getPhysicsWorld() {
 		return physicsWorld;
 	}
 }

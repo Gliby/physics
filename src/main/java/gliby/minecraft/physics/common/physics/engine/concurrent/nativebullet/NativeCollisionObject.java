@@ -1,4 +1,4 @@
-package gliby.minecraft.physics.common.physics.engine.nativebullet;
+package gliby.minecraft.physics.common.physics.engine.concurrent.nativebullet;
 
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
@@ -37,22 +37,30 @@ class NativeCollisionObject implements ICollisionObject {
 
 	@Override
 	public void setWorldTransform(final Transform transform) {
-		object.setWorldTransform(physicsWorld.fromTransformToMatrix4(transform));
+		synchronized(physicsWorld) {
+			object.setWorldTransform(physicsWorld.fromTransformToMatrix4(transform));
+		}
 	}
 
 	@Override
 	public void setCollisionShape(final ICollisionShape shape) {
-		object.setCollisionShape((btCollisionShape) shape.getCollisionShape());
+		synchronized(physicsWorld) {
+			object.setCollisionShape((btCollisionShape) shape.getCollisionShape());
+		}
 	}
 
 	@Override
 	public void setCollisionFlags(final int characterObject) {
-		object.setCollisionFlags(characterObject);
+		synchronized(physicsWorld) {
+			object.setCollisionFlags(characterObject);
+		}
 	}
 
 	@Override
 	public void setInterpolationWorldTransform(final Transform transform) {
-		object.setInterpolationWorldTransform(physicsWorld.fromTransformToMatrix4(transform));
+		synchronized(physicsWorld) {
+			object.setInterpolationWorldTransform(physicsWorld.fromTransformToMatrix4(transform));
+		}
 	}
 
 	@Override

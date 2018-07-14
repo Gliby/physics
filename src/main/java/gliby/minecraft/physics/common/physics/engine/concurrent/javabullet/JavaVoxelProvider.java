@@ -1,4 +1,4 @@
-package gliby.minecraft.physics.common.physics.engine.javabullet;
+package gliby.minecraft.physics.common.physics.engine.concurrent.javabullet;
 
 import java.util.HashMap;
 import java.util.Map;

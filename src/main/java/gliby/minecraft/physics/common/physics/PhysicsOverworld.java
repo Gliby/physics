@@ -1,7 +1,9 @@
 package gliby.minecraft.physics.common.physics;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.vecmath.Vector3f;
@@ -10,14 +12,11 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
 import gliby.minecraft.physics.Physics;
-import gliby.minecraft.physics.common.entity.mechanics.ActivateRedstoneMechanic;
-import gliby.minecraft.physics.common.entity.mechanics.BlockInheritanceMechanic;
 import gliby.minecraft.physics.common.entity.mechanics.BounceMechanic;
-import gliby.minecraft.physics.common.entity.mechanics.ClientBlockInheritanceMechanic;
 import gliby.minecraft.physics.common.entity.mechanics.EnvironmentGravityMechanic;
 import gliby.minecraft.physics.common.entity.mechanics.EnvironmentResponseMechanic;
 import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
-import gliby.minecraft.physics.common.physics.engine.javabullet.JavaPhysicsWorld;
+import gliby.minecraft.physics.common.physics.engine.concurrent.javabullet.JavaPhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.nativebullet.NativePhysicsWorld;
 import gliby.minecraft.physics.common.physics.mechanics.PhysicsMechanic;
 import gliby.minecraft.physics.common.physics.mechanics.ToolMechanics;
@@ -28,11 +27,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
-// TODO FIXME PhysicsWorld: create ability to choose between multi-thread of single thread physics world, should solve crashes relating to concurrency.
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 
 public class PhysicsOverworld {
+
+	List<PhysicsWorld> tickableWorlds;
 
 	/**
 	 * @return
@@ -40,10 +42,14 @@ public class PhysicsOverworld {
 	public PhysicsWorld getPhysicsByWorld(final World access) {
 		PhysicsWorld physicsWorld = getPhysicsWorldMap().get(access);
 		if (physicsWorld == null) {
-			final Vector3f gravity = new Vector3f(0, physics.getSettings().getFloatSetting("PhysicsEngine.GravityForce").getFloatValue(), 0);
-			physicsWorld = createPhysicsWorld(
+			boolean multiThread = physics.getSettings().getBooleanSetting("PhysicsEngine.MultiThread")
+					.getBooleanValue();
+
+			final Vector3f gravity = new Vector3f(0,
+					physics.getSettings().getFloatSetting("PhysicsEngine.GravityForce").getFloatValue(), 0);
+			final PhysicsWorld createdPhysicsWorld = getCorrectPhysicsWorld(
 					!physics.getSettings().getBooleanSetting("PhysicsEngine.UseJavaPhysics").getBooleanValue(),
-					new IPhysicsWorldConfiguration() {
+					multiThread, new IPhysicsWorldConfiguration() {
 
 						@Override
 						public boolean shouldSimulate(World world, PhysicsWorld physicsWorld) {
@@ -65,6 +71,8 @@ public class PhysicsOverworld {
 							return gravity;
 						}
 					});
+			physicsWorld = createdPhysicsWorld;
+			// TODO concurrency bug might happen here, because of threaded mechanics.
 			physicsWorld.getMechanics().put("PickUp", new PickUpMechanic(physicsWorld, true, 20));
 			physicsWorld.getMechanics().put("GravityMagnet", new GravityModifierMechanic(physicsWorld, false, 20));
 			physicsWorld.getMechanics().put("ToolMan",
@@ -73,11 +81,20 @@ public class PhysicsOverworld {
 			// new EntityCollisionResponseMechanic(world, worldStepSimulator,
 			// true,
 			// 20));
-			physicsWorld.create();
-			Thread thread = new Thread(physicsWorld, physicsWorld.toString());
-			thread.start();
+			physicsWorld.init();
+			if (multiThread) {
+				Thread thread = new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						createdPhysicsWorld.tick();
+					}
+				}, physicsWorld.toString());
+				thread.start();
+			} else
+				tickableWorlds.add(physicsWorld);
 			getPhysicsWorldMap().put(access, physicsWorld);
-			physics.getLogger().info("Started running new physics world on thread: " + thread.toString());
+			physics.getLogger().info("Started running new physics world: " + physicsWorld.toString());
 		}
 
 		return physicsWorld;
@@ -96,6 +113,16 @@ public class PhysicsOverworld {
 			}
 			getPhysicsWorldMap().remove(event.world);
 			Physics.getLogger().info("Destroyed " + event.world.getWorldInfo().getWorldName() + " physics world.");
+		}
+	}
+
+	@SubscribeEvent
+	public void onWorldTick(TickEvent.WorldTickEvent event) {
+		if (event.phase == Phase.START) {
+			for (int i = 0; i < tickableWorlds.size(); i++) {
+				PhysicsWorld physicsWorld = tickableWorlds.get(i);
+				physicsWorld.tick();
+			}
 		}
 	}
 
@@ -140,18 +167,21 @@ public class PhysicsOverworld {
 	private Physics physics;
 
 	public PhysicsOverworld(Physics physics) {
+		FMLCommonHandler.instance().bus().register(this);
 		MinecraftForge.EVENT_BUS.register(this);
 		this.physics = physics;
+		this.tickableWorlds = new ArrayList<PhysicsWorld>();
 		// Registers available mechanics.
 		// TODO finish: mechanics
 		getMechanicsMap().put("EnvironmentGravity", new EnvironmentGravityMechanic());
 		getMechanicsMap().put("EnvironmentResponse", new EnvironmentResponseMechanic());
 		getMechanicsMap().put("Bounce", new BounceMechanic());
-		
+
 		// TODO feature: get these mechanics working properly
-		//getMechanicsMap().put("ActivateRedstone", new ActivateRedstoneMechanic());
-		//getMechanicsMap().put("BlockInheritance", new BlockInheritanceMechanic());
-		//getMechanicsMap().put("ClientBlockInheritance", new ClientBlockInheritanceMechanic().setCommon(true));
+		// getMechanicsMap().put("ActivateRedstone", new ActivateRedstoneMechanic());
+		// getMechanicsMap().put("BlockInheritance", new BlockInheritanceMechanic());
+		// getMechanicsMap().put("ClientBlockInheritance", new
+		// ClientBlockInheritanceMechanic().setCommon(true));
 	}
 
 	public interface IPhysicsWorldConfiguration {
@@ -163,13 +193,23 @@ public class PhysicsOverworld {
 		public World getWorld();
 
 		public Vector3f getRegularGravity();
+
 	}
 
 	static int world;
 
-	private PhysicsWorld createPhysicsWorld(boolean useNative, IPhysicsWorldConfiguration physicsConfig) {
-		PhysicsWorld physicsWorld = useNative ? new NativePhysicsWorld(physics, this, physicsConfig)
-				: new JavaPhysicsWorld(physics, this, physicsConfig);
-		return physicsWorld;
+	private PhysicsWorld getCorrectPhysicsWorld(boolean useNative, boolean useMultithread,
+			IPhysicsWorldConfiguration physicsConfig) {
+		if (useNative)
+			return useMultithread
+					? new gliby.minecraft.physics.common.physics.engine.concurrent.nativebullet.NativePhysicsWorld(
+							physics, this, physicsConfig)
+					: new NativePhysicsWorld(physics, this, physicsConfig);
+		else
+			return useMultithread
+					? new gliby.minecraft.physics.common.physics.engine.concurrent.javabullet.JavaPhysicsWorld(physics,
+							this, physicsConfig)
+					: new JavaPhysicsWorld(physics, this, physicsConfig);
+
 	}
 }

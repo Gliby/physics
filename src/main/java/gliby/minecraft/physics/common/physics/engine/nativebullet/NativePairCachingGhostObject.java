@@ -42,46 +42,22 @@ class NativePairCachingGhostObject implements IGhostObject {
 
 	@Override
 	public void setWorldTransform(final Transform entityTransform) {
-		getPhysicsWorld().physicsTasks.add(new Runnable() {
-
-			@Override
-			public void run() {
-				ghostObject.setWorldTransform(physicsWorld.fromTransformToMatrix4(entityTransform));
-			}
-		});
+		ghostObject.setWorldTransform(physicsWorld.fromTransformToMatrix4(entityTransform));
 	}
 
 	@Override
 	public void setCollisionShape(final ICollisionShape collisionShape) {
-		getPhysicsWorld().physicsTasks.add(new Runnable() {
-
-			@Override
-			public void run() {
-				ghostObject.setCollisionShape((btCollisionShape) collisionShape.getCollisionShape());
-			}
-		});
+		ghostObject.setCollisionShape((btCollisionShape) collisionShape.getCollisionShape());
 	}
 
 	@Override
 	public void setCollisionFlags(final int characterObject) {
-		getPhysicsWorld().physicsTasks.add(new Runnable() {
-
-			@Override
-			public void run() {
-				ghostObject.setCollisionFlags(characterObject);
-			}
-		});
+		ghostObject.setCollisionFlags(characterObject);
 	}
 
 	@Override
 	public void setInterpolationWorldTransform(final Transform entityTransform) {
-		getPhysicsWorld().physicsTasks.add(new Runnable() {
-
-			@Override
-			public void run() {
-				ghostObject.setInterpolationWorldTransform(physicsWorld.fromTransformToMatrix4(entityTransform));
-			}
-		});
+		ghostObject.setInterpolationWorldTransform(physicsWorld.fromTransformToMatrix4(entityTransform));
 	}
 
 	@Override

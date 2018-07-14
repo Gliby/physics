@@ -1,15 +1,14 @@
-package gliby.minecraft.physics.common.physics.engine.javabullet;
+package gliby.minecraft.physics.common.physics.engine.concurrent.nativebullet;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.vecmath.Vector3f;
 
-import com.bulletphysicsx.collision.broadphase.BroadphaseNativeType;
-import com.bulletphysicsx.collision.shapes.BoxShape;
-import com.bulletphysicsx.collision.shapes.CollisionShape;
-import com.bulletphysicsx.collision.shapes.CompoundShape;
-import com.bulletphysicsx.collision.shapes.CompoundShapeChild;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
+import com.badlogic.gdx.physics.bullet.collision.btCompoundShape;
 import com.bulletphysicsx.linearmath.Transform;
 
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
@@ -19,13 +18,14 @@ import gliby.minecraft.physics.common.physics.engine.ICollisionShapeChildren;
 /**
  *
  */
-public class JavaCollisionShape implements ICollisionShape {
+class NativeCollisionShape implements ICollisionShape {
+	private static final int BOX_SHAPE = 0;
 
-	private CollisionShape shape;
+	private btCollisionShape shape;
 
 	protected PhysicsWorld physicsWorld;
 
-	JavaCollisionShape(PhysicsWorld physicsWorld, CollisionShape shape) {
+	NativeCollisionShape(PhysicsWorld physicsWorld, btCollisionShape shape) {
 		this.physicsWorld = physicsWorld;
 		this.shape = shape;
 	}
@@ -37,12 +37,12 @@ public class JavaCollisionShape implements ICollisionShape {
 
 	@Override
 	public int getShapeType() {
-		return shape.getShapeType().ordinal();
+		return shape.getShapeType();
 	}
 
 	@Override
 	public boolean isBoxShape() {
-		return shape.getShapeType() == BroadphaseNativeType.BOX_SHAPE_PROXYTYPE;
+		return shape.getShapeType() == BOX_SHAPE;
 	}
 
 	@Override
@@ -53,39 +53,42 @@ public class JavaCollisionShape implements ICollisionShape {
 	@Override
 	public void calculateLocalInertia(final float mass, final Object localInertia) {
 		/*
-		 * this.getPhysicsWorld().physicsTasks.add(new Runnable() {
+		 * getPhysicsWorld().physicsTasks.add(new Runnable() {
 		 * 
 		 * @Override public void run() {
 		 */
 		synchronized (physicsWorld) {
-			shape.calculateLocalInertia(mass, (Vector3f) localInertia);
+			shape.calculateLocalInertia(mass, (Vector3) localInertia);
 		}
 		/*
-		 * } });
+		 * System.out.println("calculated inertia"); } });
 		 */
 	}
 
 	@Override
 	public void getHalfExtentsWithMargin(Vector3f halfExtent) {
-		((BoxShape) shape).getHalfExtentsWithMargin(halfExtent);
+		halfExtent.set(NativePhysicsWorld.toVector3f(((btBoxShape) shape).getHalfExtentsWithMargin()));
 	}
 
 	@Override
 	public List<ICollisionShapeChildren> getChildren() {
 		synchronized (physicsWorld) {
 			ArrayList<ICollisionShapeChildren> shapeList = new ArrayList<ICollisionShapeChildren>();
-			final CompoundShape compoundShape = (CompoundShape) shape;
-			for (int i = 0; i < compoundShape.getChildList().size(); i++) {
-				final CompoundShapeChild child = compoundShape.getChildList().get(i);
+			final btCompoundShape compoundShape = (btCompoundShape) shape;
+			for (int i = 0; i < compoundShape.getNumChildShapes(); i++) {
+				final int index = i;
+				final Transform transform = new Transform();
+				transform.setIdentity();
+				transform.set(NativePhysicsWorld.toMatrix4f(compoundShape.getChildTransform(index)));
 				shapeList.add(new ICollisionShapeChildren() {
 					@Override
 					public Transform getTransform() {
-						return child.transform;
+						return transform;
 					}
 
 					@Override
 					public ICollisionShape getCollisionShape() {
-						return new JavaCollisionShape(physicsWorld, child.childShape);
+						return new NativeCollisionShape(physicsWorld, compoundShape.getChildShape(index));
 					}
 
 				});
@@ -96,13 +99,9 @@ public class JavaCollisionShape implements ICollisionShape {
 
 	@Override
 	public void setLocalScaling(final Vector3f localScaling) {
-		this.getPhysicsWorld().physicsTasks.add(new Runnable() {
-
-			@Override
-			public void run() {
-				shape.setLocalScaling(localScaling);
-			}
-		});
+		synchronized (physicsWorld) {
+			shape.setLocalScaling(NativePhysicsWorld.toVector3(localScaling));
+		}
 	}
 
 	@Override
