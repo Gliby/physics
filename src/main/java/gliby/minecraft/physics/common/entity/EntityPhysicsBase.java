@@ -276,16 +276,14 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 			}
 
 			if (getRigidBody() != null) {
-				if (getRigidBody().getProperties().containsKey(EnumRigidBodyProperty.DEAD.getName())) {
-					// System.out.println("Set dead: " + getRigidBody().getProperties());
-					// Physics.getLogger().warn("Killed physics entity through properties.");
-					// this.setDead();
-				}
+				boolean propertyDead = getRigidBody().getProperties().containsKey(EnumRigidBodyProperty.DEAD.getName());
+				boolean deathByAge = (ticksExisted - lastTickActive) / TICKS_PER_SECOND > Physics.getInstance()
+						.getSettings().getFloatSetting("PhysicsEntities.InactivityDeathTime").getFloatValue();
+
 				if (getRigidBody().isActive())
 					lastTickActive = ticksExisted;
 
-				if ((ticksExisted - lastTickActive) / TICKS_PER_SECOND > Physics.getInstance().getSettings()
-						.getFloatSetting("PhysicsEntities.InactivityDeathTime").getFloatValue()) {
+				if (propertyDead || deathByAge) {
 					this.setDead();
 				}
 			}

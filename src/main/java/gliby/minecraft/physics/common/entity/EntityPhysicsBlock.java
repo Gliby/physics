@@ -140,7 +140,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 		this.position.set(x, y, z);
 		QuaternionUtil.setEuler(rotation, 0, 0, 0);
 		this.rotation.set(rotation);
-		
+
 		if (world.isRemote) {
 			this.renderPosition = new Vector3f(position);
 			this.renderRotation = new Quat4f(rotation);
@@ -504,7 +504,9 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 	@Override
 	protected void dispose() {
 		// Drops item.
-		if (dropItem != null) {
+		boolean propertyDead = getRigidBody().getProperties().containsKey(EnumRigidBodyProperty.DEAD.getName());
+		// Shouldn't drop item if death by property.
+		if (dropItem != null && !propertyDead) {
 			entityDropItem(dropItem, 0);
 			/*
 			 * Vector3f centerOfMass = rigidBody.getCenterOfMassPosition();
