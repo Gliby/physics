@@ -9,7 +9,8 @@ public class NativeQuaternion implements IQuaternion {
 	private Quaternion quaternion;
 
 	public NativeQuaternion(Quaternion quaternion) {
-		this.quaternion = quaternion;
+		this.quaternion = new Quaternion();
+		this.quaternion.set(quaternion);
 	}
 	
 	public IQuaternion set(Quaternion quaternion) {

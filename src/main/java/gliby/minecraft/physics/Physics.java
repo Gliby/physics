@@ -102,7 +102,7 @@ public class Physics {
 
 		settings = new SettingsHandler(dir, new File(dir, "Settings.ini"));
 
-		settings.registerBoolean("PhysicsEngine", "UseJavaPhysics", true, Setting.Side.BOTH);
+		settings.registerBoolean("PhysicsEngine", "UseJavaPhysics", false, Setting.Side.BOTH);
 
 		// TODO re-implement: entity blacklist
 		/*

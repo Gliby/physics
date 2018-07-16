@@ -31,6 +31,7 @@ public class NativeVector3 implements IVector3 {
 	Vector3 vector3;
 
 	public NativeVector3(Vector3 vector3) {
-		this.vector3 = vector3;
+		this.vector3 = new Vector3();
+		this.vector3.set(vector3);
 	}
 }

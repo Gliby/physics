@@ -16,7 +16,6 @@ import gliby.minecraft.physics.common.entity.mechanics.BounceMechanic;
 import gliby.minecraft.physics.common.entity.mechanics.EnvironmentGravityMechanic;
 import gliby.minecraft.physics.common.entity.mechanics.EnvironmentResponseMechanic;
 import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
-import gliby.minecraft.physics.common.physics.engine.concurrent.javabullet.JavaPhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.nativebullet.NativePhysicsWorld;
 import gliby.minecraft.physics.common.physics.mechanics.PhysicsMechanic;
 import gliby.minecraft.physics.common.physics.mechanics.ToolMechanics;
@@ -200,16 +199,7 @@ public class PhysicsOverworld {
 
 	private PhysicsWorld getCorrectPhysicsWorld(boolean useNative, boolean useMultithread,
 			IPhysicsWorldConfiguration physicsConfig) {
-		if (useNative)
-			return useMultithread
-					? new gliby.minecraft.physics.common.physics.engine.concurrent.nativebullet.NativePhysicsWorld(
-							physics, this, physicsConfig)
-					: new NativePhysicsWorld(physics, this, physicsConfig);
-		else
-			return useMultithread
-					? new gliby.minecraft.physics.common.physics.engine.concurrent.javabullet.JavaPhysicsWorld(physics,
-							this, physicsConfig)
-					: new JavaPhysicsWorld(physics, this, physicsConfig);
+		return new NativePhysicsWorld(physics, this, physicsConfig);
 
 	}
 }
