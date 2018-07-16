@@ -1,6 +1,6 @@
 package gliby.minecraft.physics.common.physics.mechanics.physicsgun;
 
-import javax.vecmath.Vector3f;
+import com.badlogic.gdx.math.Vector3;
 
 import gliby.minecraft.physics.common.physics.engine.IRayResult;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
@@ -25,7 +25,7 @@ public class OwnedPickedObject extends PickedObject {
 	 * @param rayFromWorld
 	 * @param rayToWorld
 	 */
-	public OwnedPickedObject(IRigidBody body, Entity owner, IRayResult rayCallback, Vector3f rayFromWorld, Vector3f rayToWorld) {
+	public OwnedPickedObject(IRigidBody body, Entity owner, IRayResult rayCallback, Vector3 rayFromWorld, Vector3 rayToWorld) {
 		super(body, rayCallback, rayFromWorld, rayToWorld);
 		this.owner = owner;
 	}

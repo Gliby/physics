@@ -1,6 +1,7 @@
 package gliby.minecraft.physics.common.physics.engine;
 
-import javax.vecmath.Vector3f;
+
+import com.badlogic.gdx.math.Vector3;
 
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 
@@ -15,9 +16,9 @@ public interface IConstraintPoint2Point extends IConstraint {
 
 	public void setTau(float f);
 
-	public void setPivotB(Vector3f newPos);
+	public void setPivotB(Vector3 newPos);
 
-	public Vector3f getPivotInA(Vector3f vector3f);
+	public Vector3 getPivotInA(Vector3 vector3);
 
-	public Vector3f getPivotInB(Vector3f vector3f);
+	public Vector3 getPivotInB(Vector3 vector3);
 }

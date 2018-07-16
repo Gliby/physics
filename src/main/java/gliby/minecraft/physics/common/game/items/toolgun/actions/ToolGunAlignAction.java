@@ -1,6 +1,7 @@
 package gliby.minecraft.physics.common.game.items.toolgun.actions;
 
-import javax.vecmath.Vector3f;
+
+import com.badlogic.gdx.math.Vector3;
 
 import gliby.minecraft.gman.EntityUtility;
 import gliby.minecraft.physics.common.entity.EntityPhysicsBlock;
@@ -22,12 +23,12 @@ public class ToolGunAlignAction implements IToolGunAction {
 	}
 
 	@Override
-	public boolean use(PhysicsWorld physicsWorld, EntityPlayerMP player, Vector3f otherlookAt) {
-		Vector3f offset = new Vector3f(0.5f, 0.5f, 0.5f);
-		Vector3f eyePos = EntityUtility.getPositionEyes(player);
-		Vector3f eyeLook = EntityUtility.toVector3f(player.getLook(1));
-		Vector3f lookAt = new Vector3f(eyePos);
-		eyeLook.scale(64);
+	public boolean use(PhysicsWorld physicsWorld, EntityPlayerMP player, Vector3 otherlookAt) {
+		Vector3 offset = new Vector3(0.5f, 0.5f, 0.5f);
+		Vector3 eyePos = EntityUtility.getPositionEyes(player);
+		Vector3 eyeLook = EntityUtility.toVector3(player.getLook(1));
+		Vector3 lookAt = new Vector3(eyePos);
+		eyeLook.scl(64);
 		lookAt.add(eyeLook);
 		eyePos.sub(offset);
 		lookAt.sub(offset);

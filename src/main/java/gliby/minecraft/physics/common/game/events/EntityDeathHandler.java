@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.vecmath.Quat4f;
-import javax.vecmath.Vector3f;
-
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 import com.bulletphysicsx.linearmath.QuaternionUtil;
 import com.bulletphysicsx.linearmath.Transform;
 
@@ -58,30 +58,29 @@ public class EntityDeathHandler {
 		if (modelParts != null) {
 			for (int i = 0; i < modelParts.size(); i++) {
 				ModelPart model = modelParts.get(i);
-				Transform transform = new Transform();
-				transform.setIdentity();
-				transform.origin.add(new Vector3f(model.getModelBox().posX1 + model.getModelBox().posX2,
+				Vector3 origin = new Vector3();
+				Quaternion rotation = new Quaternion();
+				rotation.idt();
+				
+				origin.add(new Vector3(model.getModelBox().posX1 + model.getModelBox().posX2,
 						model.getModelBox().posY1 + model.getModelBox().posY2,
 						model.getModelBox().posZ1 + model.getModelBox().posZ2));
-				transform.origin.scale(0.5f);
-				transform.origin.add(model.getPosition());
-				transform.origin.scale(-0.0625f);
+				origin.scl(0.5f);
+				origin.add(model.getPosition());
+				origin.scl(-0.0625f);
+				origin.add(new Vector3(-0.5f, event.entity.getEyeHeight(), -0.5f));
 				// Place in world.
-				Vector3f extent = new Vector3f(model.getModelBox().posX2 - model.getModelBox().posX1,
+				Vector3 extent = new Vector3(model.getModelBox().posX2 - model.getModelBox().posX1,
 						model.getModelBox().posY2 - model.getModelBox().posY1,
 						model.getModelBox().posZ2 - model.getModelBox().posZ1);
 				// Adjust to minecraft's scale.
-				extent.scale(0.0625f);
-				extent.scale(0.5f);
-				transform.origin.add(new Vector3f(-0.5f, event.entity.getEyeHeight(), -0.5f));
+				extent.scl(0.0625f);
+				extent.scl(0.5f);
 				ICollisionShape shape = physicsWorld.createBoxShape(extent);
 				if (event.entityLiving != null) {
 					float yaw = event.entityLiving.rotationYaw;
-					Quat4f rotation = new Quat4f();
-					QuaternionUtil.setEuler(rotation, yaw, 0, 0);
 					// QuaternionUtil.quatRotate(rotation, transform.origin,
 					// transform.origin);
-					transform.setRotation(rotation);
 				}
 
 				float width = (float) event.entity.getEntityBoundingBox().maxX
@@ -91,9 +90,12 @@ public class EntityDeathHandler {
 				float length = (float) event.entity.getEntityBoundingBox().maxZ
 						- (float) event.entity.getEntityBoundingBox().minZ;
 
-				transform.origin.add(
-						new Vector3f((float) event.entity.posX, (float) event.entity.posY, (float) event.entity.posZ));
-				transform.origin.sub(new Vector3f(width / 2, height / 2, length / 2));
+				origin.add(
+						new Vector3((float) event.entity.posX, (float) event.entity.posY, (float) event.entity.posZ));
+				origin.sub(new Vector3(width / 2, height / 2, length / 2));
+				Matrix4 transform = new Matrix4();
+				transform.idt();
+				transform.set(origin, rotation);
 				IRigidBody rigidBody = physicsWorld.createRigidBody(null, transform, 10, shape);
 				physicsWorld.addRigidBody(rigidBody);
 				event.entity.setDead();
@@ -102,12 +104,12 @@ public class EntityDeathHandler {
 		}
 	}
 
-	protected final Vector3f getVectorForRotation(float pitch, float yaw) {
+	protected final Vector3 getVectorForRotation(float pitch, float yaw) {
 		float f2 = MathHelper.cos(-yaw * 0.017453292F - (float) Math.PI);
 		float f3 = MathHelper.sin(-yaw * 0.017453292F - (float) Math.PI);
 		float f4 = -MathHelper.cos(-pitch * 0.017453292F);
 		float f5 = MathHelper.sin(-pitch * 0.017453292F);
-		return new Vector3f((f3 * f4), f5, (f2 * f4));
+		return new Vector3((f3 * f4), f5, (f2 * f4));
 	}
 
 	public ArrayList<ModelPart> generateModelParts(Object modelBase) {
@@ -126,7 +128,7 @@ public class EntityDeathHandler {
 				ModelRenderer modelRenderer = (ModelRenderer) obj;
 				for (int i1 = 0; i1 < modelRenderer.cubeList.size(); i1++) {
 					ModelBox box = (ModelBox) modelRenderer.cubeList.get(i1);
-					proxyList.add(new ModelPart(new Vector3f(modelRenderer.rotationPointX, modelRenderer.rotationPointY,
+					proxyList.add(new ModelPart(new Vector3(modelRenderer.rotationPointX, modelRenderer.rotationPointY,
 							modelRenderer.rotationPointZ), box));
 				}
 			}

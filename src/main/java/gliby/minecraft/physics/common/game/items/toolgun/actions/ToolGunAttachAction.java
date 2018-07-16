@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.vecmath.Vector3f;
 
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 import com.bulletphysicsx.linearmath.Transform;
 
 import gliby.minecraft.gman.EntityUtility;
@@ -22,12 +24,12 @@ public class ToolGunAttachAction implements IToolGunAction {
 	private Map<Integer, ToolGunHit> hits = new HashMap<Integer, ToolGunHit>();
 
 	@Override
-	public boolean use(PhysicsWorld physicsWorld, EntityPlayerMP player, Vector3f blockLookAt) {
-		Vector3f offset = new Vector3f(0.5f, 0.5f, 0.5f);
-		Vector3f eyePos = EntityUtility.getPositionEyes(player);
-		Vector3f eyeLook = EntityUtility.toVector3f(player.getLook(1));
-		Vector3f lookAt = new Vector3f(eyePos);
-		eyeLook.scale(64);
+	public boolean use(PhysicsWorld physicsWorld, EntityPlayerMP player, Vector3 blockLookAt) {
+		Vector3 offset = new Vector3(0.5f, 0.5f, 0.5f);
+		Vector3 eyePos = EntityUtility.getPositionEyes(player);
+		Vector3 eyeLook = EntityUtility.toVector3(player.getLook(1));
+		Vector3 lookAt = new Vector3(eyePos);
+		eyeLook.scl(64);
 		lookAt.add(eyeLook);
 		eyePos.sub(offset);
 		lookAt.sub(offset);
@@ -37,20 +39,20 @@ public class ToolGunAttachAction implements IToolGunAction {
 		if (ray.getCollisionObject() != null && ray.hasHit()) {
 			IRigidBody body = physicsWorld.upcastRigidBody(ray.getCollisionObject());
 			if (body != null) {
-				Transform centerOfMassTransform = body.getCenterOfMassTransform(new Transform());
-				centerOfMassTransform.inverse();
-				Vector3f relativePivot = new Vector3f(ray.getHitPointWorld());
-				centerOfMassTransform.transform(relativePivot);
+				Matrix4 centerOfMassTransform = body.getCenterOfMassTransform(new Matrix4());
+				centerOfMassTransform.inv();
+				Vector3 relativePivot = new Vector3(ray.getHitPointWorld());
+				// TODO possible bug: possible bug
+				centerOfMassTransform.translate(relativePivot);
 		
 				
 				ToolGunHit hit;
 				if ((hit = hits.get(player.getEntityId())) != null) {
-					Transform transformA = new Transform();
-					transformA.setIdentity();
-					transformA.origin.set(relativePivot);
-					Transform transformB = new Transform();
-					transformB.setIdentity();
-					transformB.origin.set(hit.getLastHitNormal());
+					Matrix4 transformA = new Matrix4();
+					transformA.idt();
+					Matrix4 transformB = new Matrix4();
+					transformB.idt();
+					transformB.setTranslation(hit.getLastHitNormal());
 
 					body.activate();
 					hit.getLastBody().activate();

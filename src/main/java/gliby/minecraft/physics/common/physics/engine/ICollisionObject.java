@@ -1,6 +1,6 @@
 package gliby.minecraft.physics.common.physics.engine;
 
-import com.bulletphysicsx.linearmath.Transform;
+import com.badlogic.gdx.math.Matrix4;
 
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import net.minecraft.entity.Entity;
@@ -20,7 +20,7 @@ public interface ICollisionObject {
 	/**
 	 * @param entityTransform
 	 */
-	public void setWorldTransform(Transform entityTransform);
+	public void setWorldTransform(Matrix4 entityTransform);
 
 	/**
 	 * @param iCollisionShape
@@ -35,6 +35,6 @@ public interface ICollisionObject {
 	/**
 	 * @param entityTransform
 	 */
-	public void setInterpolationWorldTransform(Transform entityTransform);
+	public void setInterpolationWorldTransform(Matrix4 entityTransform);
 	
 }

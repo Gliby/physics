@@ -1,6 +1,7 @@
 package gliby.minecraft.physics.common.game.items.toolgun.actions;
 
-import javax.vecmath.Vector3f;
+
+import com.badlogic.gdx.math.Vector3;
 
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 
@@ -12,17 +13,17 @@ public class ToolGunHit {
 	 * @param lastHitNormal
 	 * @param lastBody
 	 */
-	public ToolGunHit(Vector3f lastHitNormal, IRigidBody lastBody) {
+	public ToolGunHit(Vector3 lastHitNormal, IRigidBody lastBody) {
 		this.lastHitNormal = lastHitNormal;
 		this.lastBody = lastBody;
 	}
 
-	private Vector3f lastHitNormal;
+	private Vector3 lastHitNormal;
 
 	/**
 	 * @return the lastHitNormal
 	 */
-	public Vector3f getLastHitNormal() {
+	public Vector3 getLastHitNormal() {
 		return lastHitNormal;
 	}
 
@@ -30,7 +31,7 @@ public class ToolGunHit {
 	 * @param lastHitNormal
 	 *            the lastHitNormal to set
 	 */
-	public void setLastHitNormal(Vector3f lastHitNormal) {
+	public void setLastHitNormal(Vector3 lastHitNormal) {
 		this.lastHitNormal = lastHitNormal;
 	}
 

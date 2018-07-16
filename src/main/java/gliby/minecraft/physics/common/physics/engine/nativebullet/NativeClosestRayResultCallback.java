@@ -37,16 +37,16 @@ class NativeClosestRayResultCallback implements IRayResult {
 	}
 
 	@Override
-	public Vector3f getHitPointWorld() {
+	public Vector3 getHitPointWorld() {
 		Vector3 vec = new Vector3();
 		callback.getHitPointWorld(vec);
-		return NativePhysicsWorld.toVector3f(vec);
+		return vec;
 	}
 
 	@Override
-	public Vector3f getHitPointNormal() {
-		Vector3 vector = new Vector3();
-		callback.getHitNormalWorld(vector);
-		return NativePhysicsWorld.toVector3f(vector);
+	public Vector3 getHitPointNormal() {
+		Vector3 vec = new Vector3();
+		callback.getHitNormalWorld(vec);
+		return vec;
 	}
 }

@@ -3,7 +3,7 @@ package gliby.minecraft.physics.common.game.items.toolgun.actions;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.vecmath.Vector3f;
+import com.badlogic.gdx.math.Vector3;
 
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
@@ -24,7 +24,7 @@ public class ToolGunAttractAction implements IToolGunAction {
 	private Map<Integer, GravityMagnet> attractionHandlers = new HashMap<Integer, GravityMagnet>();
 
 	@Override
-	public boolean use(PhysicsWorld world, EntityPlayerMP player, Vector3f lookAt) {
+	public boolean use(PhysicsWorld world, EntityPlayerMP player, Vector3 lookAt) {
 		GravityModifierMechanic mechanic;
 		if ((mechanic = (GravityModifierMechanic) world.getMechanics().get("GravityMagnet")) != null) {
 			GravityMagnet gravityMagnet = attractionHandlers.get(player.getEntityId());

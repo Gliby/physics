@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.vecmath.Vector3f;
-
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 import com.bulletphysicsx.linearmath.Transform;
 
 import gliby.minecraft.gman.EntityUtility;
@@ -39,51 +39,43 @@ public class PickUpMechanic extends PhysicsMechanic {
 			PickedObject pickObj = pickedObjects.get(i);
 			if (pickObj instanceof OwnedPickedObject) {
 				OwnedPickedObject ownedPicked = (OwnedPickedObject) pickObj;
-				Vector3f offset = new Vector3f(-0.5f, -0.5f, -0.5f);
-				Vector3f playerPosition = new Vector3f((float) ownedPicked.getOwner().posX,
+				Vector3 offset = new Vector3(-0.5f, -0.5f, -0.5f);
+				Vector3 playerPosition = new Vector3((float) ownedPicked.getOwner().posX,
 						(float) ownedPicked.getOwner().posY + ownedPicked.getOwner().getEyeHeight(),
 						(float) ownedPicked.getOwner().posZ);
 				playerPosition.add(offset);
-				Vector3f pickRaw = EntityUtility.calculateRay(ownedPicked.getOwner(), 64, offset);
+				Vector3 pickRaw = EntityUtility.calculateRay(ownedPicked.getOwner(), 64, offset);
 				pickRaw.add(offset);
 
-				Vector3f newRayTo = new Vector3f(pickRaw);
-				Vector3f eyePos = new Vector3f(playerPosition);
-				Vector3f dir = new Vector3f();
-				dir.sub(newRayTo, eyePos);
-				dir.normalize();
-				dir.scale(ownedPicked.getPickDistance());
-				Vector3f newPos = new Vector3f();
-				newPos.add(eyePos, dir);
+				Vector3 newRayTo = new Vector3(pickRaw);
+				Vector3 eyePos = new Vector3(playerPosition);
+				Vector3 dir = new Vector3();
+				dir = newRayTo.sub(eyePos);
+				dir.nor();
+				dir.scl(ownedPicked.getPickDistance());
+				Vector3 newPos = new Vector3();
+				newPos = eyePos.add(dir);
 				IConstraintPoint2Point p2pConstraint = (IConstraintPoint2Point) ownedPicked.getConstraint();
 				p2pConstraint.setPivotB(newPos);
 				float size = 1.75f;
 				final AxisAlignedBB bb = new AxisAlignedBB(-size, -size, -size, size, size, size).offset(newPos.x,
 						newPos.y, newPos.z);
-				physicsWorld.awakenArea(new Vector3f((float) bb.minX, (float) bb.minY, (float) bb.minZ),
-						new Vector3f((float) bb.maxX, (float) bb.maxY, (float) bb.maxZ));
+				physicsWorld.awakenArea(new Vector3((float) bb.minX, (float) bb.minY, (float) bb.minZ),
+						new Vector3((float) bb.maxX, (float) bb.maxY, (float) bb.maxZ));
 				/*
-				 * Vector3f directionOffset = new Vector3f();
-				 * directionOffset.sub(pickRaw, eyePos);
-				 * directionOffset.normalize(); Transform transform = new
-				 * Transform();
-				 * ownedPicked.getRigidBody().getCenterOfMassTransform
-				 * (transform); // transform.basis.set(ownedPicked.
-				 * getOriginalCenterOfMassTransform ().basis);
+				 * Vector3f directionOffset = new Vector3f(); directionOffset.sub(pickRaw,
+				 * eyePos); directionOffset.normalize(); Transform transform = new Transform();
+				 * ownedPicked.getRigidBody().getCenterOfMassTransform (transform); //
+				 * transform.basis.set(ownedPicked. getOriginalCenterOfMassTransform ().basis);
 				 * 
-				 * //
-				 * ownedPicked.getRigidBody().setCenterOfMassTransform(transform
-				 * ); // ownedPicked.getRigidBody().setAngularVelocity(new
-				 * Vector3f(0, // 0, 0)); //
-				 * ownedPicked.getRigidBody().setLinearVelocity(new Vector3f(0,
-				 * // 0, 0));
+				 * // ownedPicked.getRigidBody().setCenterOfMassTransform(transform ); //
+				 * ownedPicked.getRigidBody().setAngularVelocity(new Vector3f(0, // 0, 0)); //
+				 * ownedPicked.getRigidBody().setLinearVelocity(new Vector3f(0, // 0, 0));
 				 * 
-				 * float size = 1.75f; final AxisAlignedBB bb = new
-				 * AxisAlignedBB(-size, -size, -size, size, size,
-				 * size).offset(newPos.x, newPos.y, newPos.z);
-				 * this.awakenArea(new Vector3f((float) bb.minX, (float)
-				 * bb.minY, (float) bb.minZ), new Vector3f((float) bb.maxX,
-				 * (float) bb.maxY, (float) bb.maxZ));
+				 * float size = 1.75f; final AxisAlignedBB bb = new AxisAlignedBB(-size, -size,
+				 * -size, size, size, size).offset(newPos.x, newPos.y, newPos.z);
+				 * this.awakenArea(new Vector3f((float) bb.minX, (float) bb.minY, (float)
+				 * bb.minZ), new Vector3f((float) bb.maxX, (float) bb.maxY, (float) bb.maxZ));
 				 */
 			}
 		}
@@ -102,18 +94,19 @@ public class PickUpMechanic extends PhysicsMechanic {
 	 */
 	public synchronized void addPickedObject(PickedObject object) {
 		if (object.getRigidBody() != null) {
-			Vector3f pickPosition = new Vector3f(object.getRayCallback().getHitPointWorld());
-			Transform centerOfMassTransform = object.getRigidBody().getCenterOfMassTransform(new Transform());
-			centerOfMassTransform.inverse();
-			Vector3f relativePivot = new Vector3f(pickPosition);
-			centerOfMassTransform.transform(relativePivot);
+			Vector3 pickPosition = new Vector3(object.getRayCallback().getHitPointWorld());
+			Matrix4 centerOfMassTransform = object.getRigidBody().getCenterOfMassTransform(new Matrix4());
+			centerOfMassTransform.inv();
+			Vector3 relativePivot = new Vector3(pickPosition);
+			// TODO bug: needs transform
+			centerOfMassTransform.translate(relativePivot);
 
 			IConstraintPoint2Point p2p = physicsWorld.createPoint2PointConstraint(object.getRigidBody(), relativePivot);
 			object.setConstraint(p2p);
-			Vector3f posToEye = new Vector3f();
-			posToEye.sub(pickPosition, object.getRayFromWorld());
-			object.setPickDistance(posToEye.length());
-			object.setOriginalCenterOfMassTransform(object.getRigidBody().getCenterOfMassTransform(new Transform()));
+			Vector3 posToEye = new Vector3();
+			posToEye = pickPosition.sub(object.getRayFromWorld());
+			object.setPickDistance(posToEye.len());
+			object.setOriginalCenterOfMassTransform(object.getRigidBody().getCenterOfMassTransform(new Matrix4()));
 			// p2p.setImpulseClamp(3.0f);
 			p2p.setTau(0.1f);
 			this.physicsWorld.addConstraint(p2p);
@@ -151,8 +144,7 @@ public class PickUpMechanic extends PhysicsMechanic {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * net.gliby.physics.common.physics.worldmechanics.PhysicsMechanic#init()
+	 * @see net.gliby.physics.common.physics.worldmechanics.PhysicsMechanic#init()
 	 */
 	@Override
 	public void init() {

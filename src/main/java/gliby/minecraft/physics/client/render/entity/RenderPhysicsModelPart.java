@@ -13,11 +13,11 @@ import static org.lwjgl.opengl.GL11.glTranslatef;
 
 import java.nio.FloatBuffer;
 
-import javax.vecmath.Vector3f;
 
 import org.lwjgl.BufferUtils;
 
-import com.bulletphysicsx.linearmath.Transform;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 
 import gliby.minecraft.physics.client.render.RenderHandler;
 import gliby.minecraft.physics.client.render.RenderUtilities;
@@ -40,14 +40,14 @@ public class RenderPhysicsModelPart extends RenderPhysics {
 	 */
 	public RenderPhysicsModelPart(RenderHandler renderHandler, RenderManager renderManager) {
 		super(renderHandler, renderManager);
-		entityTransform = new Transform();
+		entityTransform = new Matrix4();
 		rotatableBlockModelRenderer = new CustomModelRenderer();
 		tessellator = Tessellator.getInstance();
 		worldRenderer = tessellator.getWorldRenderer();
 		renderMatrix = BufferUtils.createFloatBuffer(16);
 	}
 
-	private Transform entityTransform;
+	private Matrix4 entityTransform;
 	private CustomModelRenderer rotatableBlockModelRenderer;
 	private Tessellator tessellator;
 	private WorldRenderer worldRenderer;
@@ -56,10 +56,9 @@ public class RenderPhysicsModelPart extends RenderPhysics {
 	protected void draw(Entity castEntity, double entityX, double entityY, double entityZ, float partialTick, int color, boolean outline) {
 		EntityPhysicsModelPart entity = (EntityPhysicsModelPart) castEntity;
 		// Logic
-		Vector3f worldTranslation = RenderUtilities.getWorldTranslation(mc, partialTick);
-		entityTransform.setIdentity();
-		entityTransform.setRotation(entity.renderRotation);
-		entityTransform.origin.set(entity.renderPosition);
+		Vector3 worldTranslation = RenderUtilities.getWorldTranslation(mc, partialTick);
+		entityTransform.idt();
+		entityTransform.set(entity.renderPosition, entity.renderRotation);
 		RenderUtilities.setBufferFromTransform(renderMatrix, entityTransform);
 
 		// Render
@@ -89,12 +88,12 @@ public class RenderPhysicsModelPart extends RenderPhysics {
 	 * (net.gliby.physics.common.entity.EntityPhysicsBase, float)
 	 */
 	@Override
-	public Vector3f getRenderHitPoint(EntityPhysicsBase entity, float partialTick) {
+	public Vector3 getRenderHitPoint(EntityPhysicsBase entity, float partialTick) {
 		EntityPhysicsModelPart entityBlock = (EntityPhysicsModelPart) entity;
-		Vector3f worldTranslation = RenderUtilities.getWorldTranslation(Minecraft.getMinecraft(), partialTick);
-		Vector3f hitPoint = new Vector3f(entityBlock.renderPosition);
+		Vector3 worldTranslation = RenderUtilities.getWorldTranslation(Minecraft.getMinecraft(), partialTick);
+		Vector3 hitPoint = new Vector3(entityBlock.renderPosition);
 		hitPoint.add(entity.pickLocalHit);
-		hitPoint.add(new Vector3f(0.5f, 0.5f, 0.5f));
+		hitPoint.add(new Vector3(0.5f, 0.5f, 0.5f));
 		hitPoint.sub(worldTranslation);
 		return hitPoint;
 	}

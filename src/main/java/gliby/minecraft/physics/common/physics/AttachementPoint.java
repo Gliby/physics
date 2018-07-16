@@ -1,13 +1,14 @@
 package gliby.minecraft.physics.common.physics;
 
-import javax.vecmath.Vector3f;
+
+import com.badlogic.gdx.math.Vector3;
 
 /**
  *
  */
 public class AttachementPoint {
 
-	private final Vector3f position;
+	private final Vector3 position;
 	public ModelPart bodyA, bodyB;
 
 	/**
@@ -15,11 +16,11 @@ public class AttachementPoint {
 	 * @param bodyA
 	 * @param bodyB
 	 */
-	public AttachementPoint(Vector3f point) {
+	public AttachementPoint(Vector3 point) {
 		this.position = point;
 	}
 
-	public Vector3f getPosition() {
+	public Vector3 getPosition() {
 		return position;
 	}
 

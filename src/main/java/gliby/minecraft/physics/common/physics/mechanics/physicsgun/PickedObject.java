@@ -1,8 +1,9 @@
 package gliby.minecraft.physics.common.physics.mechanics.physicsgun;
 
-import javax.vecmath.Vector3f;
+import org.lwjgl.util.vector.Matrix;
 
-import com.bulletphysicsx.linearmath.Transform;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 
 import gliby.minecraft.physics.common.physics.engine.IConstraint;
 import gliby.minecraft.physics.common.physics.engine.IRayResult;
@@ -13,12 +14,12 @@ import gliby.minecraft.physics.common.physics.engine.IRigidBody;
  */
 public class PickedObject {
 
-	private Transform centerOfMassTransform;
+	private Matrix4 centerOfMassTransform;
 
 	/**
 	 * @return the angularVelocity
 	 */
-	public Transform getOriginalCenterOfMassTransform() {
+	public Matrix4 getOriginalCenterOfMassTransform() {
 		return centerOfMassTransform;
 	}
 
@@ -26,7 +27,7 @@ public class PickedObject {
 	 * @param angularVelocity
 	 *            the angularVelocity to set
 	 */
-	public void setOriginalCenterOfMassTransform(Transform angularVelocity) {
+	public void setOriginalCenterOfMassTransform(Matrix4 angularVelocity) {
 		this.centerOfMassTransform = angularVelocity;
 	}
 
@@ -68,7 +69,7 @@ public class PickedObject {
 	/**
 	 * Raw rays, for the actual pick result use rayCallback.
 	 */
-	private final Vector3f rayFromWorld, rayToWorld;
+	private final Vector3 rayFromWorld, rayToWorld;
 	private final IRigidBody rigidBody;
 
 	/**
@@ -83,7 +84,7 @@ public class PickedObject {
 	 * @param rayFromWorld
 	 * @param rayToWorld
 	 */
-	PickedObject(IRigidBody body, IRayResult rayCallback2, Vector3f rayFromWorld, Vector3f rayToWorld) {
+	PickedObject(IRigidBody body, IRayResult rayCallback2, Vector3 rayFromWorld, Vector3 rayToWorld) {
 		this.rigidBody = body;
 		this.rayCallback = rayCallback2;
 		this.rayFromWorld = rayFromWorld;
@@ -100,14 +101,14 @@ public class PickedObject {
 	/**
 	 * @return the rayFromWorld
 	 */
-	public Vector3f getRayFromWorld() {
+	public Vector3 getRayFromWorld() {
 		return rayFromWorld;
 	}
 
 	/**
 	 * @return the rayToWorld
 	 */
-	public Vector3f getRayToWorld() {
+	public Vector3 getRayToWorld() {
 		return rayToWorld;
 	}
 }

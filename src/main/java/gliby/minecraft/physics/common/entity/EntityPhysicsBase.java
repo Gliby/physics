@@ -3,11 +3,11 @@ package gliby.minecraft.physics.common.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.vecmath.Vector3f;
 
+import com.badlogic.gdx.math.Vector3;
 import com.google.gson.Gson;
 
-import gliby.minecraft.gman.DataWatchableVector3f;
+import gliby.minecraft.gman.DataWatchableVector3;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
 import gliby.minecraft.physics.common.game.items.ItemPhysicsGun;
@@ -46,7 +46,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 	public EntityPlayer pickerEntity;
 
 	// Shared
-	public Vector3f pickLocalHit = new Vector3f(0, 0, 0);
+	public Vector3 pickLocalHit = new Vector3(0, 0, 0);
 
 	/**
 	 * Client or Load constructor.
@@ -106,7 +106,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
 				if (!worldObj.isRemote) {
 					if (doesPhysicsObjectExist()) {
-						Vector3f minBB = new Vector3f(), maxBB = new Vector3f();
+						Vector3 minBB = new Vector3(), maxBB = new Vector3();
 						getRigidBody().getAabb(minBB, maxBB);
 						physicsWorld.awakenArea(minBB, maxBB);
 					}
@@ -118,9 +118,9 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 	}
 
 	private int watchablePickerId;
-	private DataWatchableVector3f watchablePickHit;
+	private DataWatchableVector3 watchablePickHit;
 
-	public void pick(Entity picker, Vector3f pickPoint) {
+	public void pick(Entity picker, Vector3 pickPoint) {
 		this.pickerEntity = (EntityPlayer) picker;
 		this.pickerId = picker.getEntityId();
 		this.pickLocalHit = pickPoint;
@@ -131,7 +131,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 	public void unpick() {
 		this.pickerEntity = null;
 		this.pickerId = -1;
-		this.pickLocalHit = new Vector3f();
+		this.pickLocalHit = new Vector3();
 		dataWatcher.updateObject(watchablePickerId, this.pickerId);
 	}
 
@@ -218,7 +218,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
 	@Override
 	public final void entityInit() {
-		this.watchablePickHit = new DataWatchableVector3f(this, pickLocalHit = new Vector3f());
+		this.watchablePickHit = new DataWatchableVector3(this, pickLocalHit = new Vector3());
 		this.watchablePickerId = watchablePickHit.getNextIndex();
 		this.dataWatcher.addObject(watchablePickerId, pickerId);
 		onCommonInit();
@@ -242,7 +242,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 				if (entity instanceof EntityPlayer) {
 					this.pickerEntity = (EntityPlayer) entity;
 					if (this.pickerEntity != null) {
-						watchablePickHit.read(this.pickLocalHit = new Vector3f());
+						watchablePickHit.read(this.pickLocalHit = new Vector3());
 					} else {
 						this.pickLocalHit = null;
 					}
@@ -338,7 +338,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 		}
 
 		this.pickerEntity = (EntityPlayer) this.worldObj.getEntityByID(buffer.readInt());
-		Vector3f readPick = new Vector3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+		Vector3 readPick = new Vector3(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
 		if (pickerEntity != null)
 			this.pickLocalHit = readPick;
 	}

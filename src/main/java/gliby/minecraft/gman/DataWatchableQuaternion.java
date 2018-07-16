@@ -1,6 +1,6 @@
 package gliby.minecraft.gman;
 
-import javax.vecmath.Quat4f;
+import com.badlogic.gdx.math.Quaternion;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Rotations;
@@ -8,28 +8,28 @@ import net.minecraft.util.Rotations;
 /**
  *
  */
-public class DataWatchableQuat4f extends DataWatchableObject {
+public class DataWatchableQuaternion extends DataWatchableObject {
 
-	public Quat4f lastWrote;
+	public Quaternion lastWrote;
 	private int indexRotation, indexW;
 	private Rotations rotation;
 
 	/**
 	 * @param entity
-	 * @param quat4
+	 * @param quat
 	 */
-	public DataWatchableQuat4f(Entity entity, Quat4f quat4) {
+	public DataWatchableQuaternion(Entity entity, Quaternion quat) {
 		super(entity);
 		indexRotation = ++dataWatcherIndex;
 		indexW = ++dataWatcherIndex;
-		entity.getDataWatcher().addObject(indexRotation, rotation = new Rotations(quat4.x, quat4.y, quat4.z));
-		entity.getDataWatcher().addObject(indexW, quat4.w);
-		lastWrote = new Quat4f();
+		entity.getDataWatcher().addObject(indexRotation, rotation = new Rotations(quat.x, quat.y, quat.z));
+		entity.getDataWatcher().addObject(indexW, quat.w);
+		lastWrote = new Quaternion();
 	}
 
 	@Override
 	public void write(Object... obj) {
-		Quat4f quat4 = (Quat4f) obj[0];
+		Quaternion quat4 = (Quaternion) obj[0];
 		lastWrote.set(quat4);
 		rotation = new Rotations(quat4.x, quat4.y, quat4.z);
 		entity.getDataWatcher().updateObject(indexRotation, rotation);
@@ -38,7 +38,7 @@ public class DataWatchableQuat4f extends DataWatchableObject {
 
 	@Override
 	public void read(Object... obj) {
-		Quat4f quat = (Quat4f) obj[0];
+		Quaternion quat = (Quaternion) obj[0];
 		rotation = entity.getDataWatcher().getWatchableObjectRotations(indexRotation);
 		quat.set(rotation.getX(), rotation.getY(), rotation.getZ(),
 				entity.getDataWatcher().getWatchableObjectFloat(indexW));

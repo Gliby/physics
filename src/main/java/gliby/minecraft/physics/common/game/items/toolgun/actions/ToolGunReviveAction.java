@@ -1,6 +1,7 @@
 package gliby.minecraft.physics.common.game.items.toolgun.actions;
 
-import javax.vecmath.Vector3f;
+
+import com.badlogic.gdx.math.Vector3;
 
 import gliby.minecraft.gman.EntityUtility;
 import gliby.minecraft.physics.common.entity.EntityPhysicsBlock;
@@ -16,7 +17,7 @@ import net.minecraft.util.MovingObjectPosition;
  */
 public class ToolGunReviveAction implements IToolGunAction {
 
-	public boolean use(PhysicsWorld physicsWorld, EntityPlayerMP player, Vector3f lookAt) {
+	public boolean use(PhysicsWorld physicsWorld, EntityPlayerMP player, Vector3 lookAt) {
 		MovingObjectPosition position = EntityUtility.rayTrace(player, 64);
 		if (position.getBlockPos() != null) {
 			IBlockState state = player.worldObj.getBlockState(position.getBlockPos());

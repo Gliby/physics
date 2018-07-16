@@ -2,11 +2,11 @@ package gliby.minecraft.physics.common.physics.engine;
 
 import java.util.Map;
 
-import javax.vecmath.Vector3f;
 
-import com.bulletphysicsx.linearmath.Transform;
-
-import gliby.minecraft.physics.common.physics.PhysicsWorld;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  *
@@ -29,35 +29,35 @@ public interface IRigidBody extends ICollisionObject {
 	 * @param vector3f
 	 * @return
 	 */
-	public Vector3f getAngularVelocity(Vector3f vector3f);
+	public Vector3 getAngularVelocity(Vector3 vector3f);
 
 	/**
 	 * @param vector3f
 	 * @return
 	 */
-	public Vector3f getLinearVelocity(Vector3f vector3f);
+	public Vector3 getLinearVelocity(Vector3 vector3f);
 
 	/**
 	 * @param centerOfMass
 	 * @return
 	 */
-	public Vector3f getCenterOfMassPosition(Vector3f centerOfMass);
+	public Vector3 getCenterOfMassPosition(Vector3 centerOfMass);
 
 	/**
 	 * @param transform
 	 * @return
 	 */
-	public Transform getWorldTransform(Transform transform);
+	public Matrix4 getWorldTransform(Matrix4 transform);
 
 	/**
 	 * @param transform
 	 */
-	public void setWorldTransform(Transform transform);
+	public void setWorldTransform(Matrix4 transform);
 
 	/**
 	 * @param vector3f
 	 */
-	public void setGravity(Vector3f vector3f);
+	public void setGravity(Vector3 vector3f);
 
 	/**
 	 * @param friction
@@ -67,17 +67,17 @@ public interface IRigidBody extends ICollisionObject {
 	/**
 	 * @param linearVelocity
 	 */
-	public void setLinearVelocity(Vector3f linearVelocity);
+	public void setLinearVelocity(Vector3 linearVelocity);
 
 	/**
 	 * @param angularVelocity
 	 */
-	public void setAngularVelocity(Vector3f angularVelocity);
+	public void setAngularVelocity(Vector3 angularVelocity);
 
 	/**
 	 * @param direction
 	 */
-	public void applyCentralImpulse(Vector3f direction);
+	public void applyCentralImpulse(Vector3 direction);
 
 	/**
 	 * @return
@@ -98,13 +98,13 @@ public interface IRigidBody extends ICollisionObject {
 	 * @param vector3f
 	 * @param vector3f2
 	 */
-	public void getAabb(Vector3f vector3f, Vector3f vector3f2);
+	public void getAabb(Vector3 min, Vector3 max);
 
 	/**
 	 * @param transform
 	 * @return
 	 */
-	public Transform getCenterOfMassTransform(Transform transform);
+	public Matrix4 getCenterOfMassTransform(Matrix4 transform);
 
 	/**
 	 * @return
@@ -120,22 +120,16 @@ public interface IRigidBody extends ICollisionObject {
 	 * 
 	 * @param force
 	 */
-	public void applyCentralForce(Vector3f force);
+	public void applyCentralForce(Vector3 force);
 
 	/**
 	 * 
 	 * @param gravity
 	 * @return
 	 */
-	public Vector3f getGravity(Vector3f gravity);
+	public Vector3 getGravity(Vector3 gravity);
 
-	public Vector3f getCenterOfMassPosition();
+	public void applyTorque(Vector3 vector);
 
-	public IQuaternion getRotation();
-
-	public IVector3 getPosition();
-
-	public void applyTorque(Vector3f vector);
-
-	public void applyTorqueImpulse(Vector3f vector);
+	public void applyTorqueImpulse(Vector3 vector);
 }

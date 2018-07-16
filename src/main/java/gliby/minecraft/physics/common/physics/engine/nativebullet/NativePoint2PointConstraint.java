@@ -1,7 +1,6 @@
 package gliby.minecraft.physics.common.physics.engine.nativebullet;
 
-import javax.vecmath.Vector3f;
-
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.dynamics.btPoint2PointConstraint;
 
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
@@ -31,8 +30,8 @@ class NativePoint2PointConstraint implements IConstraintPoint2Point {
 	}
 
 	@Override
-	public void setPivotB(final Vector3f newPos) {
-		constraint.setPivotB(NativePhysicsWorld.toVector3(newPos));
+	public void setPivotB(final Vector3 newPos) {
+		constraint.setPivotB(newPos);
 	}
 
 	@Override
@@ -46,14 +45,14 @@ class NativePoint2PointConstraint implements IConstraintPoint2Point {
 	}
 
 	@Override
-	public Vector3f getPivotInA(Vector3f out) {
-		out.set(NativePhysicsWorld.toVector3f(constraint.getPivotInA()));
+	public Vector3 getPivotInA(Vector3 out) {
+		out.set(constraint.getPivotInA());
 		return out;
 	}
 
 	@Override
-	public Vector3f getPivotInB(Vector3f out) {
-		out.set(NativePhysicsWorld.toVector3f(constraint.getPivotInB()));
+	public Vector3 getPivotInB(Vector3 out) {
+		out.set(constraint.getPivotInB());
 		return out;
 	}
 

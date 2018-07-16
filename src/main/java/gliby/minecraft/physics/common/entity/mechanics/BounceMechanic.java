@@ -2,6 +2,8 @@ package gliby.minecraft.physics.common.entity.mechanics;
 
 import javax.vecmath.Vector3f;
 
+import com.badlogic.gdx.math.Vector3;
+
 import gliby.minecraft.physics.common.entity.EnumRigidBodyProperty;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
@@ -20,8 +22,7 @@ public class BounceMechanic extends RigidBodyMechanic {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * net.gliby.physics.common.physics.entitymechanics.RigidBodyMechanic#update
-	 * ()
+	 * net.gliby.physics.common.physics.entitymechanics.RigidBodyMechanic#update ()
 	 */
 	// TODO bug: bounce code needs a rework
 	@Override
@@ -35,7 +36,8 @@ public class BounceMechanic extends RigidBodyMechanic {
 				float dist = (float) startRay.distanceTo(pos.hitVec);
 				float biggestDistance = 0;
 				if (rigidBody.getProperties().containsKey(EnumRigidBodyProperty.BIGGESTDISTANCE.getName()))
-					biggestDistance = (Float) rigidBody.getProperties().get(EnumRigidBodyProperty.BIGGESTDISTANCE.getName());
+					biggestDistance = (Float) rigidBody.getProperties()
+							.get(EnumRigidBodyProperty.BIGGESTDISTANCE.getName());
 				if (dist >= 1) {
 					if (dist > biggestDistance) {
 						rigidBody.getProperties().put(EnumRigidBodyProperty.BIGGESTDISTANCE.getName(), dist);
@@ -43,9 +45,9 @@ public class BounceMechanic extends RigidBodyMechanic {
 					}
 				} else if (biggestDistance > 1 && rigidBody.hasContactResponse()) {
 					float mass = rigidBody.getInvMass();
-					Vector3f impulse = new Vector3f(0, biggestDistance, 0);
-					impulse.scale(mass * 300);
-					impulse.setY(MathHelper.clamp_float(impulse.getY(), 0, 300));
+					Vector3 impulse = new Vector3(0, biggestDistance, 0);
+					impulse.scl(mass * 300);
+					impulse.y = (MathHelper.clamp_float(impulse.y, 0, 300));
 					rigidBody.applyCentralImpulse(impulse);
 					rigidBody.getProperties().put(EnumRigidBodyProperty.BIGGESTDISTANCE.getName(), 0.0F);
 					biggestDistance = 0;

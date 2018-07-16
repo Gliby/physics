@@ -6,9 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.vecmath.Vector3f;
-
-import com.bulletphysicsx.linearmath.Transform;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 import com.google.gson.annotations.SerializedName;
 
 import gliby.minecraft.gman.WorldUtility;
@@ -25,7 +24,6 @@ import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import gliby.minecraft.physics.common.physics.engine.IRope;
 import gliby.minecraft.physics.common.physics.mechanics.PhysicsMechanic;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.texture.ITickable;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
@@ -40,9 +38,9 @@ public abstract class PhysicsWorld {
 
 	private IPhysicsWorldConfiguration physicsConfiguration;
 
-	private Vector3f gravityDirection;
+	private Vector3 gravityDirection;
 
-	public Vector3f getGravityDirection() {
+	public Vector3 getGravityDirection() {
 		return gravityDirection;
 	}
 
@@ -60,8 +58,8 @@ public abstract class PhysicsWorld {
 	public PhysicsWorld(IPhysicsWorldConfiguration physicsConfiguration) {
 		this.physicsConfiguration = physicsConfiguration;
 		this.physicsMechanics = new HashMap<String, PhysicsMechanic>();
-		this.gravityDirection = new Vector3f(physicsConfiguration.getRegularGravity());
-		this.gravityDirection.normalize();
+		this.gravityDirection = new Vector3(physicsConfiguration.getRegularGravity());
+		this.gravityDirection.nor();
 		this.enabled = true;
 	}
 
@@ -81,11 +79,11 @@ public abstract class PhysicsWorld {
 			List<AxisAlignedBB> collisionBBs = new ArrayList<AxisAlignedBB>();
 			blockState.getBlock().addCollisionBoxesToList(worldObj, blockPos, blockState, WorldUtility.MAX_BB,
 					collisionBBs, null);
-			return buildCollisionShape(collisionBBs, new Vector3f(blockPos.getX(), blockPos.getY(), blockPos.getZ()));
+			return buildCollisionShape(collisionBBs, new Vector3(blockPos.getX(), blockPos.getY(), blockPos.getZ()));
 		}
-		Vector3f blockPosition = new Vector3f((float) blockState.getBlock().getBlockBoundsMaxX(),
+		Vector3 blockPosition = new Vector3((float) blockState.getBlock().getBlockBoundsMaxX(),
 				(float) blockState.getBlock().getBlockBoundsMaxY(), (float) blockState.getBlock().getBlockBoundsMaxZ());
-		blockPosition.scale(0.5f);
+		blockPosition.scl(0.5f);
 		return createBoxShape(blockPosition);
 	}
 
@@ -110,16 +108,16 @@ public abstract class PhysicsWorld {
 		}
 	}
 
-	public abstract ICollisionShape buildCollisionShape(List<AxisAlignedBB> bbs, Vector3f offset);
+	public abstract ICollisionShape buildCollisionShape(List<AxisAlignedBB> bbs, Vector3 offset);
 
-	public abstract IRigidBody createRigidBody(Entity owner, Transform transform, float mass, ICollisionShape shape);
+	public abstract IRigidBody createRigidBody(Entity owner, Matrix4 transform, float mass, ICollisionShape shape);
 
-	public abstract IRigidBody createInertiallessRigidBody(Entity owner, Transform transform, float mass,
+	public abstract IRigidBody createInertiallessRigidBody(Entity owner, Matrix4 transform, float mass,
 			ICollisionShape shape);
 
-	public abstract ICollisionShape createBoxShape(Vector3f extents);
+	public abstract ICollisionShape createBoxShape(Vector3 extents);
 
-	public abstract IRayResult createClosestRayResultCallback(Vector3f rayFromWorld, Vector3f rayToWorld);
+	public abstract IRayResult createClosestRayResultCallback(Vector3 rayFromWorld, Vector3 rayToWorld);
 
 	public abstract void addRope(IRope object);
 
@@ -129,13 +127,13 @@ public abstract class PhysicsWorld {
 
 	public abstract void removeRigidBody(final IRigidBody body);
 
-	public abstract void awakenArea(final Vector3f min, final Vector3f max);
+	public abstract void awakenArea(final Vector3 min, final Vector3 max);
 
-	public abstract void rayTest(final Vector3f rayFromWorld, final Vector3f rayToWorld, IRayResult resultCallback);
+	public abstract void rayTest(final Vector3 rayFromWorld, final Vector3 rayToWorld, IRayResult resultCallback);
 
 	public abstract void removeCollisionObject(final ICollisionObject collisionObject);
 
-	public abstract void setGravity(final Vector3f newGravity);
+	public abstract void setGravity(final Vector3 newGravity);
 
 	public abstract void addCollisionObject(ICollisionObject object);
 
@@ -153,7 +151,7 @@ public abstract class PhysicsWorld {
 	 * @param detail
 	 * @return
 	 */
-	public abstract IRope createRope(Vector3f startPos, Vector3f endPos, int detail);
+	public abstract IRope createRope(Vector3 startPos, Vector3 endPos, int detail);
 
 	/**
 	 * @return
@@ -171,7 +169,7 @@ public abstract class PhysicsWorld {
 	 * @param pivot
 	 * @return
 	 */
-	public abstract IConstraintPoint2Point createPoint2PointConstraint(IRigidBody rigidBody, Vector3f pivot);
+	public abstract IConstraintPoint2Point createPoint2PointConstraint(IRigidBody rigidBody, Vector3 pivot);
 
 	/**
 	 * @param constraint
@@ -211,7 +209,7 @@ public abstract class PhysicsWorld {
 		 * @param transform
 		 * @param extent
 		 */
-		public CollisionPart(boolean compoundShape, Transform transform, Vector3f extent) {
+		public CollisionPart(boolean compoundShape, Matrix4 transform, Vector3 extent) {
 			this.compoundShape = compoundShape;
 			this.transform = transform;
 			this.extent = extent;
@@ -221,10 +219,10 @@ public abstract class PhysicsWorld {
 		public boolean compoundShape;
 
 		@SerializedName("Transform")
-		public Transform transform;
+		public Matrix4 transform;
 
 		@SerializedName("Extent")
-		public Vector3f extent;
+		public Vector3 extent;
 	}
 
 	/**
@@ -232,14 +230,14 @@ public abstract class PhysicsWorld {
 	 */
 	public abstract List<IConstraint> getConstraints();
 
-	public abstract IConstraintSlider createSliderConstraint(IRigidBody rbA, IRigidBody rbB, Transform frameInA,
-			Transform frameInB, boolean useLinearReferenceFrameA);
+	public abstract IConstraintSlider createSliderConstraint(IRigidBody rbA, IRigidBody rbB, Matrix4 frameInA,
+			Matrix4 frameInB, boolean useLinearReferenceFrameA);
 
 	/**
 	 * @return
 	 */
 	public abstract IConstraintGeneric6Dof createGeneric6DofConstraint(IRigidBody rbA, IRigidBody rbB,
-			Transform frameInA, Transform frameInB, boolean useLinearReferenceFrameA);
+			Matrix4 frameInA, Matrix4 frameInB, boolean useLinearReferenceFrameA);
 
 	public abstract ICollisionShape createSphereShape(float radius);
 

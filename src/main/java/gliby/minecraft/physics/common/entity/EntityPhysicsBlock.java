@@ -3,19 +3,16 @@ package gliby.minecraft.physics.common.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.vecmath.Quat4f;
-import javax.vecmath.Vector3f;
-
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 import com.bulletphysicsx.collision.broadphase.CollisionFilterGroups;
-import com.bulletphysicsx.linearmath.QuaternionUtil;
-import com.bulletphysicsx.linearmath.Transform;
-import com.bulletphysicsx.linearmath.VectorUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import gliby.minecraft.gman.BlockUtility;
-import gliby.minecraft.gman.DataWatchableQuat4f;
-import gliby.minecraft.gman.DataWatchableVector3f;
+import gliby.minecraft.gman.DataWatchableQuaternion;
+import gliby.minecraft.gman.DataWatchableVector3;
 import gliby.minecraft.gman.WorldUtility;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.client.render.RenderHandler;
@@ -70,12 +67,12 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 	 * Client-side render position, basically a smoothed position.
 	 */
 	@SideOnly(Side.CLIENT)
-	public Vector3f renderPosition;
+	public Vector3 renderPosition;
 	/**
 	 * Client-side render rotation, basically a smoothed rotation.
 	 */
 	@SideOnly(Side.CLIENT)
-	public Quat4f renderRotation;
+	public Quaternion renderRotation;
 
 	/**
 	 * Block bounding boxes, this only gets generated when you create a new
@@ -86,11 +83,11 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 	/**
 	 * Common variable, physics object's absolute position.
 	 */
-	private Vector3f position = new Vector3f();
+	private Vector3 position = new Vector3();
 	/**
 	 * Common variable, physics object's absolute rotation.
 	 */
-	private Quat4f rotation = new Quat4f();
+	private Quaternion rotation = new Quaternion();
 
 	/**
 	 * Reference to block's built rigid body.
@@ -138,12 +135,14 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
 		this.blockState = blockState;
 		this.position.set(x, y, z);
-		QuaternionUtil.setEuler(rotation, 0, 0, 0);
+		// Q.setEuler(rotation, 0, 0, 0);
+
 		this.rotation.set(rotation);
-		
+		this.rotation.setEulerAngles(0, 0, 0);
+
 		if (world.isRemote) {
-			this.renderPosition = new Vector3f(position);
-			this.renderRotation = new Quat4f(rotation);
+			this.renderPosition = new Vector3(position);
+			this.renderRotation = new Quaternion(rotation);
 		}
 
 		Physics physics = Physics.getInstance();
@@ -160,17 +159,17 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 		// TODO feature: introduce block bounding box caching.
 		try {
 			if (this.defaultCollisionShape)
-				this.collisionShape = physicsWorld.createBoxShape(new Vector3f(0.5f, 0.5f, 0.5f));
+				this.collisionShape = physicsWorld.createBoxShape(new Vector3(0.5f, 0.5f, 0.5f));
 			else {
 				blockState.getBlock().addCollisionBoxesToList(worldObj, new BlockPos(x, y, z), blockState,
 						WorldUtility.MAX_BB, collisionBBs = new ArrayList<AxisAlignedBB>(), this);
 				for (int i = 0; i < collisionBBs.size(); i++) {
 					collisionBBs.set(i, collisionBBs.get(i).offset(-x, -y, -z));
 				}
-				this.collisionShape = physicsWorld.buildCollisionShape(collisionBBs, VectorUtil.IDENTITY);
+				this.collisionShape = physicsWorld.buildCollisionShape(collisionBBs, new Vector3(0, 0, 0));
 			}
 		} catch (IllegalArgumentException e) {
-			this.collisionShape = physicsWorld.createBoxShape(new Vector3f(0.5f, 0.5f, 0.5f));
+			this.collisionShape = physicsWorld.createBoxShape(new Vector3(0.5f, 0.5f, 0.5f));
 			Physics.getLogger().error("Block doesn't exist, couldn't create collision shape");
 		}
 		createPhysicsObject(physicsWorld);
@@ -181,18 +180,17 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 		setLocationAndAngles(position.x, position.y, position.z, 0, 0);
 	}
 
-	private Vector3f linearVelocity, angularVelocity;
+	private Vector3 linearVelocity, angularVelocity;
 
 	@Override
 	protected void createPhysicsObject(PhysicsWorld physicsWorld) {
 
-		this.watchablePosition = new DataWatchableVector3f(this, position);
-		this.watchableRotation = new DataWatchableQuat4f(this, rotation);
+		this.watchablePosition = new DataWatchableVector3(this, position);
+		this.watchableRotation = new DataWatchableQuaternion(this, rotation);
 
-		Transform transform = new Transform();
-		transform.setIdentity();
-		transform.origin.set(this.position);
-		transform.setRotation(this.rotation);
+		Matrix4 transform = new Matrix4();
+		transform.idt();
+		transform.set(position, rotation);
 		rigidBody = physicsWorld.createRigidBody(this, transform, Math.abs(mass), collisionShape);
 		rigidBody.getProperties().put(EnumRigidBodyProperty.BLOCKSTATE.getName(), blockState);
 
@@ -208,7 +206,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 					(short) (CollisionFilterGroups.ALL_FILTER));
 
 		if (mass < 0)
-			rigidBody.setGravity(new Vector3f());
+			rigidBody.setGravity(new Vector3());
 		rigidBody.setFriction(friction);
 		if (linearVelocity != null)
 			rigidBody.setLinearVelocity(linearVelocity);
@@ -216,8 +214,8 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 			rigidBody.setAngularVelocity(angularVelocity);
 	}
 
-	private DataWatchableVector3f watchablePosition;
-	private DataWatchableQuat4f watchableRotation;
+	private DataWatchableVector3 watchablePosition;
+	private DataWatchableQuaternion watchableRotation;
 
 	@Override
 	public void onCommonUpdate() {
@@ -254,15 +252,15 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 		}
 	}
 
+	Matrix4 worldTransform = new Matrix4();
+
 	@Override
 	public void onServerUpdate() {
 		if (rigidBody != null) {
-			// Update position from given rigid body.
-			position.set(rigidBody.getPosition().getX(), rigidBody.getPosition().getY(),
-					rigidBody.getPosition().getZ());
-			// Update rotation from given rigid body.
-			rotation.set(rigidBody.getRotation().getX(), rigidBody.getRotation().getY(), rigidBody.getRotation().getZ(),
-					rigidBody.getRotation().getW());
+			rigidBody.getWorldTransform(worldTransform);
+			worldTransform.getTranslation(this.position);
+			worldTransform.getRotation(this.rotation);
+
 			// Set location and angles, so client could have proper bounding
 			// boxes.
 			setLocationAndAngles(position.x + 0.5f, position.y, position.z + 0.5f, 0, 0);
@@ -321,10 +319,10 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 		tagCompound.setTag("Pos", newDoubleNBTList(new double[] { position.x, position.y, position.z }));
 		tagCompound.setTag("Rotation", newFloatNBTList(new float[] { rotation.x, rotation.y, rotation.z, rotation.w }));
 
-		Vector3f linearVelocity = rigidBody.getLinearVelocity(new Vector3f());
+		Vector3 linearVelocity = rigidBody.getLinearVelocity(new Vector3());
 		tagCompound.setTag("LinearVelocity",
 				newFloatNBTList(new float[] { linearVelocity.x, linearVelocity.y, linearVelocity.z }));
-		Vector3f angularVelocity = rigidBody.getAngularVelocity(new Vector3f());
+		Vector3 angularVelocity = rigidBody.getAngularVelocity(new Vector3());
 		tagCompound.setTag("AngularVelocity",
 				newFloatNBTList(new float[] { angularVelocity.x, angularVelocity.y, angularVelocity.z }));
 
@@ -360,9 +358,9 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 			collisionBBs = new Gson().fromJson(tagCompound.getString("CollisionShape"),
 					new TypeToken<List<AxisAlignedBB>>() {
 					}.getType());
-			this.collisionShape = physicsWorld.buildCollisionShape(collisionBBs, VectorUtil.IDENTITY);
+			this.collisionShape = physicsWorld.buildCollisionShape(collisionBBs, new Vector3());
 		} else
-			this.collisionShape = physicsWorld.createBoxShape(new Vector3f(0.5F, 0.5F, 0.5F));
+			this.collisionShape = physicsWorld.createBoxShape(new Vector3(0.5F, 0.5F, 0.5F));
 
 		this.position.set((float) posX, (float) posY, (float) posZ);
 		if (tagCompound.hasKey("Rotation")) {
@@ -373,13 +371,13 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
 		if (tagCompound.hasKey("LinearVelocity")) {
 			NBTTagList linearVelocity = tagCompound.getTagList("LinearVelocity", 5);
-			this.linearVelocity = new Vector3f(linearVelocity.getFloat(0), linearVelocity.getFloat(1),
+			this.linearVelocity = new Vector3(linearVelocity.getFloat(0), linearVelocity.getFloat(1),
 					linearVelocity.getFloat(2));
 		}
 
 		if (tagCompound.hasKey("AngularVelocity")) {
 			NBTTagList angularVelocity = tagCompound.getTagList("AngularVelocity", 5);
-			this.linearVelocity = new Vector3f(angularVelocity.getFloat(0), angularVelocity.getFloat(1),
+			this.linearVelocity = new Vector3(angularVelocity.getFloat(0), angularVelocity.getFloat(1),
 					angularVelocity.getFloat(2));
 		}
 
@@ -400,15 +398,14 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
 	@Override
 	protected void updatePhysicsObject(PhysicsWorld physicsWorld) {
-		Transform transform = new Transform();
-		transform.setIdentity();
-		transform.origin.set(this.position);
-		transform.setRotation(this.rotation);
+		Matrix4 transform = new Matrix4();
+		transform.idt();
+		transform.set(this.position, this.rotation);
 		rigidBody.setWorldTransform(transform);
 		// Used for specific block mechanics.
 		rigidBody.getProperties().put(EnumRigidBodyProperty.BLOCKSTATE.getName(), blockState);
 		if (mass < 0)
-			rigidBody.setGravity(new Vector3f());
+			rigidBody.setGravity(new Vector3());
 		rigidBody.setFriction(friction);
 		if (linearVelocity != null)
 			rigidBody.setLinearVelocity(linearVelocity);
@@ -437,15 +434,15 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 	public void readSpawnData(ByteBuf buffer) {
 		super.readSpawnData(buffer);
 		if (watchablePosition == null) {
-			watchablePosition = new DataWatchableVector3f(this, position);
-			watchableRotation = new DataWatchableQuat4f(this, rotation);
+			watchablePosition = new DataWatchableVector3(this, position);
+			watchableRotation = new DataWatchableQuaternion(this, rotation);
 		}
 		this.blockState = BlockUtility.deserializeBlockState(buffer);
 		this.collisionEnabled = buffer.readBoolean();
-		this.position = new Vector3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
-		this.rotation = new Quat4f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
-		this.renderPosition = new Vector3f(position);
-		this.renderRotation = new Quat4f(rotation);
+		this.position = new Vector3(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+		this.rotation = new Quaternion(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+		this.renderPosition = new Vector3(position);
+		this.renderRotation = new Quaternion(rotation);
 		// Create dynamic light source if we can!
 		if (blockState.getBlock().getLightValue() > 0 && !hasLight) {
 			RenderHandler.getLightHandler().create(this, blockState.getBlock().getLightValue());
@@ -520,8 +517,8 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
 	@Override
 	public void interpolate() {
-		this.renderPosition.interpolate(position, 0.15f);
-		this.renderRotation.interpolate(rotation, 0.15f);
+		this.renderPosition.lerp(position, 0.15f);
+		this.renderRotation.slerp(rotation, 0.15f);
 	}
 
 	@Override

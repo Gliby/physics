@@ -1,6 +1,6 @@
 package gliby.minecraft.physics.common.physics.engine;
 
-import javax.vecmath.Vector3f;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  *
@@ -22,11 +22,11 @@ public interface IRayResult {
 	/**
 	 * @return
 	 */
-	public Vector3f getHitPointWorld();
+	public Vector3 getHitPointWorld();
 
 	/**
 	 * @return
 	 */
-	public Vector3f getHitPointNormal();
+	public Vector3 getHitPointNormal();
 	
 }

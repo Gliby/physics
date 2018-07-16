@@ -4,6 +4,8 @@ import javax.vecmath.Vector3f;
 
 import org.lwjgl.opengl.GL11;
 
+import com.badlogic.gdx.math.Vector3;
+
 import gliby.minecraft.physics.client.render.RenderHandler;
 import gliby.minecraft.physics.client.render.RenderUtilities;
 import gliby.minecraft.physics.common.entity.EntityPhysicsBase;
@@ -26,7 +28,7 @@ public abstract class RenderPhysics extends Render {
 
 	private final int DEFAULT_PHYSICS_COLOR = 0xFF87FFFF;
 
-	public abstract Vector3f getRenderHitPoint(EntityPhysicsBase entity, float partialTick);
+	public abstract Vector3 getRenderHitPoint(EntityPhysicsBase entity, float partialTick);
 
 	protected Minecraft mc;
 	private RenderHandler renderHandler;
@@ -65,7 +67,7 @@ public abstract class RenderPhysics extends Render {
 		drawBeam: if (entity.pickerEntity != null) {
 			Item item = entity.pickerEntity.getHeldItem() != null ? entity.pickerEntity.getHeldItem().getItem() : null;
 			if (item instanceof ItemPhysicsGun) {
-				Vector3f hitPoint = getRenderHitPoint(entity, partialTick);
+				Vector3 hitPoint = getRenderHitPoint(entity, partialTick);
 				Vec3 firstPersonOffset = new Vec3(-0.22D, -0.08D, 0.35D);
 				firstPersonOffset = firstPersonOffset.rotatePitch(-(entity.pickerEntity.prevRotationPitch
 						+ (entity.pickerEntity.rotationPitch - entity.pickerEntity.prevRotationPitch) * partialTick)
@@ -86,7 +88,7 @@ public abstract class RenderPhysics extends Render {
 
 				if (this.renderManager.options.thirdPersonView != 0 || entity.pickerEntity != mc.thePlayer) {
 					Vec3 beamStart = RenderUtilities.calculateRay(entity.pickerEntity, 1.0f, partialTick,
-							new Vector3f(-0.1f, -0.25F, 0));
+							new Vector3(-0.1f, -0.25F, 0));
 					d3 = beamStart.xCoord;
 					d4 = beamStart.yCoord;
 					d5 = beamStart.zCoord;

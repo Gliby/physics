@@ -1,6 +1,7 @@
 package gliby.minecraft.physics.common.game.items;
 
-import javax.vecmath.Vector3f;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 
 import gliby.minecraft.gman.EntityUtility;
 import gliby.minecraft.gman.RawItem;
@@ -136,11 +137,11 @@ public class ItemPhysicsGun extends RawItem {
 						if (packet.picking) {
 							if (player.getCurrentEquippedItem() != null
 									&& player.getCurrentEquippedItem().getItem() instanceof ItemPhysicsGun) {
-								Vector3f offset = new Vector3f(0.5f, 0.5f, 0.5f);
-								Vector3f eyePos = EntityUtility.getPositionEyes(player);
-								Vector3f eyeLook = EntityUtility.toVector3f(player.getLook(1));
-								Vector3f lookAt = new Vector3f(eyePos);
-								eyeLook.scale(64);
+								Vector3 offset = new Vector3(0.5f, 0.5f, 0.5f);
+								Vector3 eyePos = EntityUtility.getPositionEyes(player);
+								Vector3 eyeLook = EntityUtility.toVector3(player.getLook(1));
+								Vector3 lookAt = new Vector3(eyePos);
+								eyeLook.scl(64);
 								lookAt.add(eyeLook);
 								eyePos.sub(offset);
 								lookAt.sub(offset);
@@ -151,9 +152,11 @@ public class ItemPhysicsGun extends RawItem {
 								if (rayCallback.hasHit() && mechanic.getOwnedPickedObject(player) == null) {
 									IRigidBody body = physicsWorld.upcastRigidBody(rayCallback.getCollisionObject());
 									if (body != null && player.canEntityBeSeen(body.getOwner())) {
-										Vector3f localHit = new Vector3f(rayCallback.getHitPointWorld());
-										localHit.sub(new Vector3f(body.getPosition().getX(), body.getPosition().getY(),
-												body.getPosition().getZ()));
+										Vector3 localHit = new Vector3(rayCallback.getHitPointWorld());
+										Matrix4 bodyTransform = body.getWorldTransform(new Matrix4());
+										Vector3 bodyPosition = bodyTransform.getTranslation(new Vector3());
+
+										localHit.sub(new Vector3(bodyPosition.x, bodyPosition.y, bodyPosition.z));
 										((EntityPhysicsBase) body.getOwner()).pick(player, localHit);
 										mechanic.addOwnedPickedObject(player,
 												new OwnedPickedObject(body, player, rayCallback, eyePos, eyeLook));

@@ -2,7 +2,7 @@ package gliby.minecraft.physics.common.physics.engine;
 
 import java.util.List;
 
-import javax.vecmath.Vector3f;
+import com.badlogic.gdx.math.Vector3;
 
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 
@@ -34,7 +34,7 @@ public interface ICollisionShape {
 	 */
 	boolean isCompoundShape();
 
-	void setLocalScaling(Vector3f localScaling);
+	void setLocalScaling(Vector3 localScaling);
 	
 	/**
 	 * @param mass
@@ -47,11 +47,13 @@ public interface ICollisionShape {
 	 * 
 	 * @param halfExtent
 	 */
-	void getHalfExtentsWithMargin(Vector3f halfExtent);
+	void getHalfExtentsWithMargin(Vector3 halfExtent);
 
 	/**
 	 * @return
 	 */
 	List<ICollisionShapeChildren> getChildren();
+
+
 
 }

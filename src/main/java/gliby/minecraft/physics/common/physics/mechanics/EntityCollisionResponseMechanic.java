@@ -5,11 +5,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.vecmath.Vector3f;
-
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 import com.bulletphysicsx.collision.broadphase.CollisionFilterGroups;
 import com.bulletphysicsx.collision.dispatch.CollisionFlags;
-import com.bulletphysicsx.linearmath.Transform;
 
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.entity.IEntityPhysics;
@@ -42,7 +41,7 @@ public class EntityCollisionResponseMechanic extends PhysicsMechanic {
 	private Map<Integer, Long> timeAdded = new HashMap<Integer, Long>();
 	private Map<Integer, IGhostObject> ghostObjects = new HashMap<Integer, IGhostObject>();
 
-	private Transform entityTransform = new Transform();
+	private Matrix4 entityTransform = new Matrix4();
 
 	@Override
 	public void update() {
@@ -50,9 +49,9 @@ public class EntityCollisionResponseMechanic extends PhysicsMechanic {
 			IRigidBody rigidBody = physicsWorld.getRigidBodies().get(i);
 			Entity entityBody = rigidBody.getOwner();
 
-			Vector3f minBB, maxBB;
+			Vector3 minBB, maxBB;
 			// Get rigidBody BB.
-			rigidBody.getAabb(minBB = new Vector3f(), maxBB = new Vector3f());
+			rigidBody.getAabb(minBB = new Vector3(), maxBB = new Vector3());
 			// Create AABB, and offset.
 			AxisAlignedBB axisAlignedBB = AxisAlignedBB.fromBounds(minBB.x, minBB.y, minBB.z, maxBB.x, maxBB.y, maxBB.z)
 					.offset(0.5f, 0.5f, 0.5f);
@@ -64,18 +63,16 @@ public class EntityCollisionResponseMechanic extends PhysicsMechanic {
 			}
 
 			for (Entity entity : intersectingEntites) {
-				entityTransform.setIdentity();
-				entityTransform.origin.set(new Vector3f((float) entity.posX - 0.5f, (float) entity.posY + 0.25f,
+				entityTransform.idt();
+				entityTransform.setTranslation(new Vector3((float) entity.posX - 0.5f, (float) entity.posY + 0.25f,
 						(float) entity.posZ - 0.5f));
 
 				if (entity instanceof IProjectile) {
-					Vector3f direction = new Vector3f();
-					direction.setX((float) (entity.motionX));
-					direction.setY((float) (entity.motionY));
-					direction.setZ((float) (entity.motionZ));
-					boolean moving = direction.length() > 0;
+					Vector3 direction = new Vector3();
+					direction.set((float) entity.motionX, (float) entity.motionY, (float) entity.motionZ);
+					boolean moving = direction.len() > 0;
 					if (moving) {
-						direction.scale(Physics.getInstance().getSettings().getFloatSetting("ProjectileImpulseForce")
+						direction.scl(Physics.getInstance().getSettings().getFloatSetting("ProjectileImpulseForce")
 								.getFloatValue());
 						rigidBody.applyCentralImpulse(direction);
 						rigidBody.activate();
@@ -94,11 +91,11 @@ public class EntityCollisionResponseMechanic extends PhysicsMechanic {
 					ghostObject.setInterpolationWorldTransform(entityTransform);
 					ghostObject.setWorldTransform(entityTransform);
 					// Create ghost object
-					Vector3f bb = new Vector3f(
+					Vector3 bb = new Vector3(
 							(float) entity.getEntityBoundingBox().maxX - (float) entity.getEntityBoundingBox().minX,
 							(float) entity.getEntityBoundingBox().maxY - (float) entity.getEntityBoundingBox().minY,
 							(float) entity.getEntityBoundingBox().maxZ - (float) entity.getEntityBoundingBox().minZ);
-					bb.scale(0.5f);
+					bb.scl(0.5f);
 
 					ghostObject.setCollisionShape(physicsWorld.createBoxShape(bb));
 					ghostObject.setCollisionFlags(CollisionFlags.CHARACTER_OBJECT);
@@ -132,8 +129,7 @@ public class EntityCollisionResponseMechanic extends PhysicsMechanic {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * net.gliby.physics.common.physics.worldmechanics.PhysicsMechanic#init()
+	 * @see net.gliby.physics.common.physics.worldmechanics.PhysicsMechanic#init()
 	 */
 	@Override
 	public void init() {

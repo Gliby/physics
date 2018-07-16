@@ -2,6 +2,8 @@ package gliby.minecraft.gman;
 
 import javax.vecmath.Vector3f;
 
+import com.badlogic.gdx.math.Vector3;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -16,11 +18,11 @@ import net.minecraft.world.World;
  */
 public class EntityUtility {
 
-	public static Vector3f calculateRay(Entity base, float distance, Vector3f offset) {
+	public static Vector3 calculateRay(Entity base, float distance, Vector3 offset) {
 		Vec3 vec3 = base.getPositionVector();
 		Vec3 vec31 = base.getLook(1);
 		Vec3 vec32 = vec3.addVector(vec31.xCoord * distance, vec31.yCoord * distance, vec31.zCoord * distance);
-		Vector3f lookAt = new Vector3f((float) vec32.xCoord, (float) vec32.yCoord, (float) vec32.zCoord);
+		Vector3 lookAt = new Vector3((float) vec32.xCoord, (float) vec32.yCoord, (float) vec32.zCoord);
 		lookAt.sub(offset);
 		return lookAt;
 	}
@@ -45,12 +47,12 @@ public class EntityUtility {
 	 * @param pos
 	 * @return
 	 */
-	public static Vector3f toVector3f(Vec3 pos) {
-		return new Vector3f((float) pos.xCoord, (float) pos.yCoord, (float) pos.zCoord);
+	public static Vector3 toVector3(Vec3 pos) {
+		return new Vector3((float) pos.xCoord, (float) pos.yCoord, (float) pos.zCoord);
 	}
 
-	public static Vector3f getPositionEyes(Entity base) {
-		return new Vector3f((float) base.posX, (float) base.posY + base.getEyeHeight(), (float) base.posZ);
+	public static Vector3 getPositionEyes(Entity base) {
+		return new Vector3((float) base.posX, (float) base.posY + base.getEyeHeight(), (float) base.posZ);
 	}
 
 	public static MovingObjectPosition rayTrace(Entity base, double distance) {

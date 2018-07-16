@@ -1,5 +1,6 @@
 package gliby.minecraft.physics.common.physics.engine.nativebullet;
 
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.bulletphysicsx.linearmath.Transform;
@@ -36,8 +37,8 @@ class NativeCollisionObject implements ICollisionObject {
 	}
 
 	@Override
-	public void setWorldTransform(final Transform transform) {
-		object.setWorldTransform(physicsWorld.fromTransformToMatrix4(transform));
+	public void setWorldTransform(Matrix4 transform) {
+		object.setWorldTransform(transform);
 	}
 
 	@Override
@@ -51,8 +52,8 @@ class NativeCollisionObject implements ICollisionObject {
 	}
 
 	@Override
-	public void setInterpolationWorldTransform(final Transform transform) {
-		object.setInterpolationWorldTransform(physicsWorld.fromTransformToMatrix4(transform));
+	public void setInterpolationWorldTransform(Matrix4 transform) {
+		object.setInterpolationWorldTransform(transform);
 	}
 
 	@Override

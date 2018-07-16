@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.vecmath.Vector3f;
 
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
@@ -64,8 +65,8 @@ class NativeCollisionShape implements ICollisionShape {
 	}
 
 	@Override
-	public void getHalfExtentsWithMargin(Vector3f halfExtent) {
-		halfExtent.set(NativePhysicsWorld.toVector3f(((btBoxShape) shape).getHalfExtentsWithMargin()));
+	public void getHalfExtentsWithMargin(Vector3 halfExtent) {
+		halfExtent.set( ((btBoxShape) shape).getHalfExtentsWithMargin());
 	}
 
 	@Override
@@ -74,12 +75,12 @@ class NativeCollisionShape implements ICollisionShape {
 		final btCompoundShape compoundShape = (btCompoundShape) shape;
 		for (int i = 0; i < compoundShape.getNumChildShapes(); i++) {
 			final int index = i;
-			final Transform transform = new Transform();
-			transform.setIdentity();
-			transform.set(NativePhysicsWorld.toMatrix4f(compoundShape.getChildTransform(index)));
+			final Matrix4 transform = new Matrix4();
+			transform.idt();
+			transform.set(compoundShape.getChildTransform(index));
 			shapeList.add(new ICollisionShapeChildren() {
 				@Override
-				public Transform getTransform() {
+				public Matrix4 getTransform() {
 					return transform;
 				}
 
@@ -94,8 +95,8 @@ class NativeCollisionShape implements ICollisionShape {
 	}
 
 	@Override
-	public void setLocalScaling(final Vector3f localScaling) {
-		shape.setLocalScaling(NativePhysicsWorld.toVector3(localScaling));
+	public void setLocalScaling(final Vector3 localScaling) {
+		shape.setLocalScaling(localScaling);
 	}
 
 	@Override

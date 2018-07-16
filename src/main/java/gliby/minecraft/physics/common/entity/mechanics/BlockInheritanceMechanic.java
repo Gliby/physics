@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.vecmath.Vector3f;
 
+import com.badlogic.gdx.math.Vector3;
+
 import gliby.minecraft.physics.common.entity.EnumRigidBodyProperty;
 import gliby.minecraft.physics.common.entity.IEntityPhysics;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
@@ -21,8 +23,9 @@ public class BlockInheritanceMechanic extends RigidBodyMechanic {
 	public void update(IRigidBody rigidBody, PhysicsWorld physicsWorld, Entity entity, Side side) {
 		IBlockState blockState;
 		if (side.isServer()) {
-			if ((blockState = (IBlockState) rigidBody.getProperties().get(EnumRigidBodyProperty.BLOCKSTATE.getName())) != null) {
-				Vector3f bbMin = new Vector3f(), bbMax = new Vector3f();
+			if ((blockState = (IBlockState) rigidBody.getProperties()
+					.get(EnumRigidBodyProperty.BLOCKSTATE.getName())) != null) {
+				Vector3 bbMin = new Vector3(), bbMax = new Vector3();
 				rigidBody.getAabb(bbMin, bbMax);
 				AxisAlignedBB bb = AxisAlignedBB.fromBounds(bbMin.x, bbMin.y, bbMin.z, bbMax.x, bbMax.y, bbMax.z)
 						.offset(0.5f, 0.5f, 0.5f);

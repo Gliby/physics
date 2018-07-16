@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.vecmath.Vector3f;
 
-import com.bulletphysicsx.linearmath.Transform;
+
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 
 import gliby.minecraft.gman.EntityUtility;
-import gliby.minecraft.physics.common.entity.EnumRigidBodyProperty;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IConstraintGeneric6Dof;
 import gliby.minecraft.physics.common.physics.engine.IRayResult;
@@ -50,12 +50,12 @@ public class ToolGunMotorAction implements IToolGunAction, IToolGunTickable {
 	}
 
 	@Override
-	public boolean use(PhysicsWorld physicsWorld, EntityPlayerMP player, Vector3f blockLookAt) {
-		Vector3f offset = new Vector3f(0.5f, 0.5f, 0.5f);
-		Vector3f eyePos = EntityUtility.getPositionEyes(player);
-		Vector3f eyeLook = EntityUtility.toVector3f(player.getLook(1));
-		Vector3f lookAt = new Vector3f(eyePos);
-		eyeLook.scale(64);
+	public boolean use(PhysicsWorld physicsWorld, EntityPlayerMP player, Vector3 blockLookAt) {
+		Vector3 offset = new Vector3(0.5f, 0.5f, 0.5f);
+		Vector3 eyePos = EntityUtility.getPositionEyes(player);
+		Vector3 eyeLook = EntityUtility.toVector3(player.getLook(1));
+		Vector3 lookAt = new Vector3(eyePos);
+		eyeLook.scl(64);
 		lookAt.add(eyeLook);
 		eyePos.sub(offset);
 		lookAt.sub(offset);
@@ -65,20 +65,21 @@ public class ToolGunMotorAction implements IToolGunAction, IToolGunTickable {
 		if (ray.getCollisionObject() != null && ray.hasHit()) {
 			IRigidBody body = physicsWorld.upcastRigidBody(ray.getCollisionObject());
 			if (body != null) {
-				Transform centerOfMassTransform = body.getCenterOfMassTransform(new Transform());
+				Matrix4 centerOfMassTransform = body.getCenterOfMassTransform(new Matrix4());
 
-				centerOfMassTransform.inverse();
-				Vector3f relativePivot = new Vector3f(ray.getHitPointWorld());
-				centerOfMassTransform.transform(relativePivot);
+				centerOfMassTransform.inv();
+				Vector3 relativePivot = new Vector3(ray.getHitPointWorld());
+				// possible bug
+				centerOfMassTransform.translate(relativePivot);
 
 				ToolGunHit hit;
 				if ((hit = hits.get(player.getEntityId())) != null) {
-					Transform transformA = new Transform();
-					transformA.setIdentity();
-					transformA.origin.set(relativePivot);
-					Transform transformB = new Transform();
-					transformB.setIdentity();
-					transformB.origin.set(hit.getLastHitNormal());
+					Matrix4 transformA = new Matrix4();
+					transformA.idt();
+					transformA.setTranslation(relativePivot);
+					Matrix4 transformB = new Matrix4();
+					transformB.idt();
+					transformB.setTranslation(hit.getLastHitNormal());
 
 					body.activate();
 					hit.getLastBody().activate();
@@ -96,7 +97,6 @@ public class ToolGunMotorAction implements IToolGunAction, IToolGunTickable {
 		return true;
 	}
 
-
 	@Override
 	public void stoppedUsing(PhysicsWorld world, EntityPlayerMP player) {
 		hits.remove(player.getEntityId());
@@ -112,21 +112,23 @@ public class ToolGunMotorAction implements IToolGunAction, IToolGunTickable {
 		for (int i = 0; i < motors.size(); i++) {
 			Motor motor = motors.get(i);
 
-			Vector3f forward = new Vector3f(
-					motor.getMotorized().getPosition().getX() - motor.getAttached().getPosition().getX(), motor.getMotorized().getPosition().getY() - motor.getAttached().getPosition().getY(), motor.getMotorized().getPosition().getZ() - motor.getAttached().getPosition().getZ());
-			forward.normalize();
-			
+			Vector3 motorizedTransform = motor.getMotorized().getWorldTransform(new Matrix4())
+					.getTranslation(new Vector3());
+			Vector3 attachedTransform = motor.getAttached().getWorldTransform(new Matrix4())
+					.getTranslation(new Vector3());
+
+			Vector3 forward = motorizedTransform.sub(attachedTransform);
+			forward.nor();
 
 			// First we get normalized gravity.
-			Vector3f up = new Vector3f(physicsWorld.getGravityDirection());
-			up.scale(-1);
+			Vector3 up = new Vector3(physicsWorld.getGravityDirection());
+			up.scl(-1);
 			// Up vector is inverted gravity direction;
-			Vector3f direction = new Vector3f();
-			direction.cross(forward, up);
-			direction.scale(50);
+			Vector3 direction = new Vector3();
+			direction = forward.crs(up);
+			direction.scl(50);
 			motor.getMotorized().applyTorqueImpulse(direction);
-			
-			
+
 		}
 	}
 }

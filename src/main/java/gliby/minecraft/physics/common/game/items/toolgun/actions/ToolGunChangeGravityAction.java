@@ -5,6 +5,8 @@ import java.util.Map;
 
 import javax.vecmath.Vector3f;
 
+import com.badlogic.gdx.math.Vector3;
+
 import gliby.minecraft.gman.EntityUtility;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
@@ -19,7 +21,7 @@ public class ToolGunChangeGravityAction implements IToolGunAction {
 
 	private Map<Integer, GravityMagnet> magnetOwners = new HashMap<Integer, GravityMagnet>();
 
-	public boolean use(PhysicsWorld world, EntityPlayerMP player, Vector3f lookAt) {
+	public boolean use(PhysicsWorld world, EntityPlayerMP player, Vector3 lookAt) {
 		GravityModifierMechanic mechanic;
 		if ((mechanic = (GravityModifierMechanic) world.getMechanics().get("GravityMagnet")) != null) {
 			GravityMagnet gravityMagnet = magnetOwners.get(player.getEntityId());
@@ -27,10 +29,10 @@ public class ToolGunChangeGravityAction implements IToolGunAction {
 				mechanic.removeGravityMagnet(gravityMagnet);
 				magnetOwners.remove(player.getEntityId());
 			}
-			Vector3f otherLookAt = new Vector3f(lookAt);
-			Vector3f eyes = EntityUtility.getPositionEyes(player);
+			Vector3 otherLookAt = new Vector3(lookAt);
+			Vector3 eyes = EntityUtility.getPositionEyes(player);
 			otherLookAt.sub(eyes);
-			otherLookAt.normalize();
+			otherLookAt.nor();
 			magnetOwners.put(player.getEntityId(),
 					mechanic.addGravityMagnet(new GravityMagnet(lookAt, otherLookAt,
 							Physics.getInstance().getSettings().getIntegerSetting("Tools.GravitizerRadius").getIntValue(),

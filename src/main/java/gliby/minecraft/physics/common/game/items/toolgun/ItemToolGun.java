@@ -1,6 +1,7 @@
 package gliby.minecraft.physics.common.game.items.toolgun;
 
-import javax.vecmath.Vector3f;
+
+import com.badlogic.gdx.math.Vector3;
 
 import gliby.minecraft.gman.EntityUtility;
 import gliby.minecraft.gman.RawItem;
@@ -70,7 +71,7 @@ public class ItemToolGun extends RawItem {
 			if (event.buttonstate) {
 				if (event.button == 0) {
 					Physics.getDispatcher().sendToServer(new PacketToolGunUse(currentMode,
-							EntityUtility.toVector3f(EntityUtility.rayTrace(mc.thePlayer, 64).hitVec)));
+							EntityUtility.toVector3(EntityUtility.rayTrace(mc.thePlayer, 64).hitVec)));
 					event.setCanceled(true);
 				} else if (event.button == 1) {
 					if (currentMode < physics.getGameManager().getToolGunRegistry().getValueDefinitions().size() - 1) {
@@ -163,13 +164,13 @@ public class ItemToolGun extends RawItem {
 	public static class PacketToolGunUse extends MinecraftPacket
 			implements IMessageHandler<PacketToolGunUse, IMessage> {
 
-		private Vector3f lookAt;
+		private Vector3 lookAt;
 		private int mode;
 
 		public PacketToolGunUse() {
 		}
 
-		public PacketToolGunUse(int mode, Vector3f lookAt) {
+		public PacketToolGunUse(int mode, Vector3 lookAt) {
 			this.mode = mode;
 			this.lookAt = lookAt;
 		}
@@ -177,7 +178,7 @@ public class ItemToolGun extends RawItem {
 		@Override
 		public void fromBytes(ByteBuf buf) {
 			this.mode = buf.readInt();
-			this.lookAt = new Vector3f(buf.readFloat(), buf.readFloat(), buf.readFloat());
+			this.lookAt = new Vector3(buf.readFloat(), buf.readFloat(), buf.readFloat());
 		}
 
 		@Override

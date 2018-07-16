@@ -5,6 +5,8 @@ import java.util.ArrayList;
 
 import javax.vecmath.Vector3f;
 
+import com.badlogic.gdx.math.Vector3;
+
 import gliby.minecraft.physics.client.render.RenderHandler;
 import gliby.minecraft.physics.common.entity.EntityPhysicsBase;
 import gliby.minecraft.physics.common.physics.AttachementPoint;
@@ -72,7 +74,7 @@ public class RenderPhysicsRagdoll extends RenderPhysics {
 				ModelRenderer modelRenderer = (ModelRenderer) obj;
 				for (int i1 = 0; i1 < modelRenderer.cubeList.size(); i1++) {
 					ModelBox box = (ModelBox) modelRenderer.cubeList.get(i1);
-					Vector3f rotationPoint = new Vector3f(modelRenderer.rotationPointX, modelRenderer.rotationPointY,
+					Vector3 rotationPoint = new Vector3(modelRenderer.rotationPointX, modelRenderer.rotationPointY,
 							modelRenderer.rotationPointZ);
 					proxyList.add(new ModelPart(rotationPoint, box));
 					points.add(new AttachementPoint(rotationPoint));
@@ -115,7 +117,7 @@ public class RenderPhysicsRagdoll extends RenderPhysics {
 	 * net.gliby.physics.common.entity.EntityPhysicsBase, float)
 	 */
 	@Override
-	public Vector3f getRenderHitPoint(EntityPhysicsBase entity, float partialTick) {
+	public Vector3 getRenderHitPoint(EntityPhysicsBase entity, float partialTick) {
 		return null;
 	}
 }

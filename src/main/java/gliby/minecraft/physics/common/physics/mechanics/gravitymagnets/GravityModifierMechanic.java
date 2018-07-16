@@ -2,7 +2,9 @@ package gliby.minecraft.physics.common.physics.mechanics.gravitymagnets;
 
 import java.util.ArrayList;
 
-import javax.vecmath.Vector3f;
+import org.lwjgl.util.vector.Matrix;
+
+import com.badlogic.gdx.math.Vector3;
 
 import gliby.minecraft.physics.common.entity.EnumRigidBodyProperty;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
@@ -27,25 +29,25 @@ public class GravityModifierMechanic extends PhysicsMechanic {
 	public void update() {
 		for (int i = 0; i < gravityMagnets.size(); i++) {
 			GravityMagnet magnet = (GravityMagnet) gravityMagnets.get(i);
-			Vector3f magnetPosition = magnet.getPosition();
+			Vector3 magnetPosition = magnet.getPosition();
 			for (int j = 0; j < physicsWorld.getRigidBodies().size(); j++) {
 				IRigidBody body = physicsWorld.getRigidBodies().get(j);
-				Vector3f centerOfMassPosition = body.getCenterOfMassPosition();
-				Vector3f distance = new Vector3f();
-				distance.sub(centerOfMassPosition, magnetPosition);
-				float dist = distance.length();
-				if (distance.length() <= magnet.getAttractionDistance()) {
+				Vector3 centerOfMassPosition = body.getCenterOfMassPosition(new Vector3());
+				Vector3 distance = new Vector3();
+				distance = centerOfMassPosition.sub(magnetPosition);
+				float dist = distance.len();
+				if (distance.len() <= magnet.getAttractionDistance()) {
 					if (magnet.onlyChangeDirection) {
-						Vector3f direction = new Vector3f(magnet.gravityDirection);
-						direction.scale(magnet.getAttractionPower());
+						Vector3 direction = new Vector3(magnet.gravityDirection);
+						direction.scl(magnet.getAttractionPower());
 						if (!body.isActive())
 							body.activate();
 						body.setGravity(direction);
 					} else {
-						Vector3f direction = new Vector3f();
-						direction.sub(magnetPosition, centerOfMassPosition);
-						direction.normalize();
-						direction.scale(magnet.getAttractionPower());
+						Vector3 direction = new Vector3();
+						direction = magnetPosition.sub(centerOfMassPosition);
+						direction.nor();
+						direction.scl(magnet.getAttractionPower());
 						if (!body.isActive())
 							body.activate();
 						body.setGravity(direction);
@@ -114,15 +116,15 @@ public class GravityModifierMechanic extends PhysicsMechanic {
 		 * @param attractionDistance
 		 * @param attractionPower
 		 */
-		public GravityMagnet(Vector3f position, int attractionDistance, float attractionPower) {
+		public GravityMagnet(Vector3 position, int attractionDistance, float attractionPower) {
 			this.position = position;
 			this.attractionDistance = attractionDistance;
 			this.attractionPower = attractionPower;
 		}
 
-		private Vector3f gravityDirection;
+		private Vector3 gravityDirection;
 
-		public GravityMagnet(Vector3f position, Vector3f gravity, int attractionDistance, float attractionPower) {
+		public GravityMagnet(Vector3 position, Vector3 gravity, int attractionDistance, float attractionPower) {
 			this.position = position;
 			this.gravityDirection = gravity;
 			this.attractionDistance = attractionDistance;
@@ -130,13 +132,13 @@ public class GravityModifierMechanic extends PhysicsMechanic {
 			this.onlyChangeDirection = true;
 		}
 
-		private Vector3f position;
+		private Vector3 position;
 		private int attractionDistance;
 
 		/**
 		 * @return the position
 		 */
-		public Vector3f getPosition() {
+		public Vector3 getPosition() {
 			return position;
 		}
 
@@ -144,7 +146,7 @@ public class GravityModifierMechanic extends PhysicsMechanic {
 		 * @param position
 		 *            the position to set
 		 */
-		public void setPosition(Vector3f position) {
+		public void setPosition(Vector3 position) {
 			this.position = position;
 		}
 

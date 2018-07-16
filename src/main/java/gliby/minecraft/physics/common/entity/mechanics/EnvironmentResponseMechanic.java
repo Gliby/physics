@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.vecmath.Vector3f;
 
+import com.badlogic.gdx.math.Vector3;
+
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import net.minecraft.block.Block;
@@ -34,11 +36,11 @@ public class EnvironmentResponseMechanic extends RigidBodyMechanic {
 		if (entity.isInLava() || entity.isBurning()) {
 			rigidBody.getOwner().setDead();
 		}
-		
+
 		if (entity.isInWater()) {
-			Vector3f centerOfMass = rigidBody.getCenterOfMassPosition();
+			Vector3 centerOfMass = rigidBody.getCenterOfMassPosition(new Vector3());
 			float size = 0.5f;
-			Vector3f bbPos = new Vector3f((centerOfMass.x + (size / 2)), (centerOfMass.y + (size / 2)),
+			Vector3 bbPos = new Vector3((centerOfMass.x + (size / 2)), (centerOfMass.y + (size / 2)),
 					(centerOfMass.z + (size / 2)));
 			AxisAlignedBB blockBB = new AxisAlignedBB(bbPos.x, bbPos.y, bbPos.z, bbPos.x + size, bbPos.y + size,
 					bbPos.z + size);
@@ -49,9 +51,9 @@ public class EnvironmentResponseMechanic extends RigidBodyMechanic {
 				BlockDynamicLiquid liquidBlock = BlockLiquid.getFlowingBlock(liquidMaterial);
 				Vec3 vec3 = getFlowVector(rigidBody.getOwner().worldObj, block.getBlockPosition(),
 						block.getBlockState().getBlock(), liquidMaterial);
-				Vector3f impulse = new Vector3f((float) vec3.xCoord, (float) vec3.yCoord, (float) vec3.zCoord);
-				// TODO improvement: add scalar 
-				impulse.scale(1.25f);
+				Vector3 impulse = new Vector3((float) vec3.xCoord, (float) vec3.yCoord, (float) vec3.zCoord);
+				// TODO improvement: add scalar
+				impulse.scl(1.25f);
 				rigidBody.applyCentralImpulse(impulse);
 				rigidBody.activate();
 			}
@@ -68,7 +70,8 @@ public class EnvironmentResponseMechanic extends RigidBodyMechanic {
 	 */
 	protected int getLevel(IBlockAccess worldIn, BlockPos pos, Material blockMaterial) {
 		return worldIn.getBlockState(pos).getBlock().getMaterial() == blockMaterial
-				? ((Integer) worldIn.getBlockState(pos).getValue(LEVEL)).intValue() : -1;
+				? ((Integer) worldIn.getBlockState(pos).getValue(LEVEL)).intValue()
+				: -1;
 	}
 
 	protected int getEffectiveFlowDecay(IBlockAccess worldIn, BlockPos pos, Material blockMaterial) {

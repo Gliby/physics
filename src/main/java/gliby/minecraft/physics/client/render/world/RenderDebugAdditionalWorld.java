@@ -5,12 +5,11 @@ import static org.lwjgl.opengl.GL11.*;
 import java.nio.FloatBuffer;
 import java.util.List;
 
-import javax.vecmath.Vector3f;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
-import com.bulletphysicsx.linearmath.Transform;
+import com.badlogic.gdx.math.Vector3;
 
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.client.render.RenderUtilities;
@@ -52,21 +51,21 @@ public class RenderDebugAdditionalWorld {
 		// event);
 	}
 
-	private static Transform physicsTransform = new Transform();
-	private static FloatBuffer physicsFloatBufferMatrix4x4 = BufferUtils.createFloatBuffer(16);
-	private static float[] physicsFloatMatrix4x4 = new float[16];
+//	private static Transform physicsTransform = new Transform();
+//	private static FloatBuffer physicsFloatBufferMatrix4x4 = BufferUtils.createFloatBuffer(16);
+//	private static float[] physicsFloatMatrix4x4 = new float[16];
 
 	/**
 	 * Draws debug physics world with inefficient rendering.
 	 */
 	private void renderDebugPhysics(PhysicsOverworld overworld, RenderWorldLastEvent event) {
-		boolean renderConstraint = false;
+		/*boolean renderConstraint = false;
 		boolean renderRopeJoints = true;
 
 		PhysicsWorld physicsWorld = overworld.getPhysicsByWorld(mc.theWorld);
 		if (physicsWorld != null) {
 
-			Vector3f world = RenderUtilities.getWorldTranslation(mc, event.partialTicks);
+			Vector3 world = RenderUtilities.getWorldTranslation(mc, event.partialTicks);
 			glEnable(GL_LINE_SMOOTH);
 			glDisable(GL_TEXTURE_2D);
 			glEnable(GL_BLEND);
@@ -107,7 +106,7 @@ public class RenderDebugAdditionalWorld {
 						glPopMatrix();
 					}
 				}
-			}
+			}*/
 
 			// for (int i = 0; i < physicsWorld.getRopes().size(); i++) {
 			// IRope rope = physicsWorld.getRopes().get(i);
@@ -142,7 +141,7 @@ public class RenderDebugAdditionalWorld {
 			// glPopMatrix();
 			// }
 
-			for (int i = 0; i < physicsWorld.getRigidBodies().size(); i++) {
+		/*	for (int i = 0; i < physicsWorld.getRigidBodies().size(); i++) {
 				glPushMatrix();
 				IRigidBody rigidBody = physicsWorld.getRigidBodies().get(i);
 				// Get's world Transform.
@@ -157,7 +156,7 @@ public class RenderDebugAdditionalWorld {
 				physicsFloatBufferMatrix4x4.flip(); // Apply transformation.
 				glMultMatrix(physicsFloatBufferMatrix4x4);
 				if (rigidBody.getCollisionShape().isBoxShape()) {
-					Vector3f halfExtent = new Vector3f();
+					Vector3 halfExtent = new Vector3();
 					rigidBody.getCollisionShape().getHalfExtentsWithMargin(halfExtent);
 					glScalef(2f * halfExtent.x, 2f * halfExtent.y, 2f * halfExtent.z);
 					glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -178,7 +177,7 @@ public class RenderDebugAdditionalWorld {
 
 							glPushMatrix();
 							glMultMatrix(physicsFloatBufferMatrix4x4);
-							Vector3f halfExtent = new Vector3f();
+							Vector3 halfExtent = new Vector3();
 							shape.getCollisionShape().getHalfExtentsWithMargin(halfExtent);
 							glScalef(2f * halfExtent.x, 2f * halfExtent.y, 2f * halfExtent.z);
 							glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -195,7 +194,7 @@ public class RenderDebugAdditionalWorld {
 			glPopMatrix();
 			glDisable(GL_LINE_SMOOTH);
 			glEnable(GL_TEXTURE_2D);
-		}
+		}*/
 
 	}
 

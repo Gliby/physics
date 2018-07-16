@@ -3,12 +3,11 @@ package gliby.minecraft.physics.common.physics.engine.nativebullet;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.vecmath.Vector3f;
-
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
-import com.bulletphysicsx.linearmath.Transform;
 
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
@@ -33,10 +32,7 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 		this.rigidBody = rigidBody;
 		this.collisionShape = new NativeCollisionShape(physicsWorld, rigidBody.getCollisionShape());
 		this.properties = new HashMap<String, Object>();
-		this.rotation = new NativeQuaternion(rigidBody.getOrientation());
-		this.vectorPosition = new Vector3();
-		this.position = new NativeVector3(vectorPosition);
-		this.centerOfMass = new Vector3();
+
 	}
 
 	@Override
@@ -55,69 +51,6 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 	}
 
 	@Override
-	public Vector3f getAngularVelocity(Vector3f vector3f) {
-		vector3f.set(rigidBody.getAngularVelocity().x, rigidBody.getAngularVelocity().y,
-				rigidBody.getAngularVelocity().z);
-		return vector3f;
-	}
-
-	@Override
-	public Vector3f getLinearVelocity(Vector3f vector3f) {
-		vector3f.set(rigidBody.getLinearVelocity().x, rigidBody.getLinearVelocity().y, rigidBody.getLinearVelocity().z);
-		return vector3f;
-	}
-
-	@Override
-	public Vector3f getCenterOfMassPosition(Vector3f centerOfMass) {
-		Vector3 localCenter = new Vector3();
-		localCenter.set(rigidBody.getCenterOfMassPosition());
-		centerOfMass.set(localCenter.x, localCenter.y, localCenter.z);
-		return centerOfMass;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see net.gliby.physics.common.physics.IRigidBody#getWorldTransform(com.
-	 * bulletphysics.linearmath.Transform)
-	 */
-	@Override
-	public Transform getWorldTransform(Transform transform) {
-		Matrix4 worldMatrix4 = rigidBody.getWorldTransform();
-		transform.set(NativePhysicsWorld.toMatrix4f(worldMatrix4));
-		return transform;
-	}
-
-	public void setWorldTransform(final Transform transform) {
-		rigidBody.setWorldTransform(physicsWorld.fromTransformToMatrix4(transform));
-	}
-
-	@Override
-	public void setGravity(final Vector3f acceleration) {
-		rigidBody.setGravity(NativePhysicsWorld.toVector3(acceleration));
-	}
-
-	@Override
-	public void setFriction(final float friction) {
-		rigidBody.setFriction(friction);
-	}
-
-	@Override
-	public void setLinearVelocity(final Vector3f linearVelocity) {
-		rigidBody.setLinearVelocity(NativePhysicsWorld.toVector3(linearVelocity));
-	}
-
-	@Override
-	public void setAngularVelocity(final Vector3f angularVelocity) {
-		rigidBody.setAngularVelocity(NativePhysicsWorld.toVector3(angularVelocity));
-	}
-
-	@Override
-	public void applyCentralImpulse(final Vector3f direction) {
-		rigidBody.applyCentralImpulse(NativePhysicsWorld.toVector3(direction));
-	}
-
-	@Override
 	public boolean hasContactResponse() {
 		return rigidBody.hasContactResponse();
 	}
@@ -133,65 +66,96 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 	}
 
 	@Override
-	public void getAabb(Vector3f aabbMin, Vector3f aabbMax) {
-		Vector3 min = new Vector3(), max = new Vector3();
-		rigidBody.getAabb(min, max);
-		aabbMin.set(NativePhysicsWorld.toVector3f(min));
-		aabbMin.set(NativePhysicsWorld.toVector3f(max));
-	}
-
-	@Override
-	public Transform getCenterOfMassTransform(Transform transform) {
-		transform.set(NativePhysicsWorld.toMatrix4f(rigidBody.getCenterOfMassTransform()));
-		return transform;
-	}
-
-	@Override
 	public Map<String, Object> getProperties() {
 		return properties;
 	}
 
 	@Override
-	public void applyCentralForce(final Vector3f force) {
-		rigidBody.applyCentralForce(NativePhysicsWorld.toVector3(force));
+	public Vector3 getAngularVelocity(Vector3 vector) {
+		vector.set(this.rigidBody.getAngularVelocity());
+		return vector;
 	}
 
 	@Override
-	public Vector3f getGravity(Vector3f vector3f) {
-		vector3f.set(NativePhysicsWorld.toVector3f(rigidBody.getGravity()));
-		return vector3f;
-	}
-
-	private Vector3 centerOfMass;
-
-	@Override
-	public Vector3f getCenterOfMassPosition() {
-		centerOfMass.set(rigidBody.getCenterOfMassPosition());
-		return NativePhysicsWorld.toStaticVector3f(centerOfMass);
-	}
-
-	private NativeQuaternion rotation;
-
-	@Override
-	public IQuaternion getRotation() {
-		return rotation.set(rigidBody.getOrientation());
-	}
-
-	private NativeVector3 position;
-	private Vector3 vectorPosition;
-
-	@Override
-	public IVector3 getPosition() {
-		return position.set(rigidBody.getWorldTransform().getTranslation(vectorPosition));
+	public Vector3 getLinearVelocity(Vector3 vector) {
+		vector.set(this.rigidBody.getLinearVelocity());
+		return vector;
 	}
 
 	@Override
-	public void applyTorque(final Vector3f vector) {
-		rigidBody.applyTorque(NativePhysicsWorld.toVector3(vector));
+	public Vector3 getCenterOfMassPosition(Vector3 vector) {
+		vector.set(this.rigidBody.getCenterOfMassPosition());
+		return vector;
 	}
 
 	@Override
-	public void applyTorqueImpulse(final Vector3f vector) {
-		rigidBody.applyTorqueImpulse(NativePhysicsWorld.toVector3(vector));
+	public Matrix4 getWorldTransform(Matrix4 transform) {
+		rigidBody.getWorldTransform(transform);
+		return transform;
+	}
+
+	@Override
+	public void setWorldTransform(Matrix4 transform) {
+		rigidBody.setWorldTransform(transform);
+	}
+
+	@Override
+	public void setGravity(Vector3 vector) {
+		rigidBody.setGravity(vector);
+
+	}
+
+	@Override
+	public void setFriction(float friction) {
+		rigidBody.setFriction(friction);
+	}
+
+	@Override
+	public void setLinearVelocity(Vector3 linearVelocity) {
+		rigidBody.setLinearVelocity(linearVelocity);
+	}
+
+	@Override
+	public void setAngularVelocity(Vector3 angularVelocity) {
+		rigidBody.setAngularVelocity(angularVelocity);
+
+	}
+
+	@Override
+	public void applyCentralImpulse(Vector3 direction) {
+		rigidBody.applyCentralImpulse(direction);
+
+	}
+
+	@Override
+	public void getAabb(Vector3 min, Vector3 max) {
+		rigidBody.getAabb(min, max);
+	}
+
+	@Override
+	public Matrix4 getCenterOfMassTransform(Matrix4 transform) {
+		transform.set(rigidBody.getCenterOfMassTransform());
+		return transform;
+	}
+
+	@Override
+	public void applyCentralForce(Vector3 force) {
+		rigidBody.applyCentralForce(force);
+	}
+
+	@Override
+	public Vector3 getGravity(Vector3 gravity) {
+		gravity.set(rigidBody.getGravity());
+		return gravity;
+	}
+
+	@Override
+	public void applyTorque(Vector3 torque) {
+		rigidBody.applyTorque(torque);
+	}
+
+	@Override
+	public void applyTorqueImpulse(Vector3 torque) {
+		rigidBody.applyTorqueImpulse(torque);
 	}
 }

@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.vecmath.Vector3f;
 
+import com.badlogic.gdx.math.Vector3;
+
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.blocks.PhysicsBlockMetadata;
 import gliby.minecraft.physics.common.entity.EntityPhysicsBlock;
@@ -38,7 +40,7 @@ public class ExplosionHandler {
 			public void run() {
 				Physics physics = Physics.getInstance();
 				PhysicsWorld physicsWorld = physics.getPhysicsOverworld().getPhysicsByWorld(event.world);
-				Vector3f explosion = new Vector3f((float) event.explosion.getPosition().xCoord,
+				Vector3 explosion = new Vector3((float) event.explosion.getPosition().xCoord,
 						(float) event.explosion.getPosition().yCoord, (float) event.explosion.getPosition().zCoord);
 
 				List<EntityPhysicsBlock> affectedEntities = new ArrayList<EntityPhysicsBlock>();
@@ -62,14 +64,14 @@ public class ExplosionHandler {
 						.getFloatValue();
 				for (int i = 0; i < affectedEntities.size(); i++) {
 					IRigidBody body = affectedEntities.get(i).getRigidBody();
-					Vector3f centerOfMass = body.getCenterOfMassPosition(new Vector3f());
-					Vector3f direction = new Vector3f();
-					direction.sub(centerOfMass, explosion);
-					float distance = direction.length();
+					Vector3 centerOfMass = body.getCenterOfMassPosition(new Vector3());
+					Vector3 direction = new Vector3();
+					direction = centerOfMass.sub(explosion);
+					float distance = direction.len();
 					if (distance <= explosionRadius) {
-						direction.normalize();
+						direction.nor();
 						float forceMultiplier = explosionRadius / (1 + explosionRadius - distance);
-						direction.scale(Math.abs(force * forceMultiplier));
+						direction.scl(Math.abs(force * forceMultiplier));
 						body.applyCentralImpulse(direction);
 					}
 				}

@@ -8,7 +8,8 @@ import javax.vecmath.Vector3f;
 
 import org.lwjgl.BufferUtils;
 
-import com.bulletphysicsx.linearmath.Transform;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 
 import gliby.minecraft.physics.client.render.RenderHandler;
 import gliby.minecraft.physics.client.render.RenderUtilities;
@@ -40,7 +41,7 @@ public class RenderPhysicsBlock extends RenderPhysics {
 		super(renderHandler, renderManager);
 	}
 
-	private static Transform entityTransform = new Transform();
+	private static Matrix4 entityTransform = new Matrix4();
 	private static CustomModelRenderer rotatableBlockModelRenderer = new CustomModelRenderer();
 	private static Tessellator tessellator = Tessellator.getInstance();
 	private static WorldRenderer worldrenderer = tessellator.getWorldRenderer();
@@ -53,13 +54,12 @@ public class RenderPhysicsBlock extends RenderPhysics {
 		// Logic
 		IBlockState state = entity.getBlockState();
 		Block block = state.getBlock();
-		Vector3f worldTranslation = RenderUtilities.getWorldTranslation(mc, partialTick);
+		Vector3 worldTranslation = RenderUtilities.getWorldTranslation(mc, partialTick);
 		BlockRendererDispatcher blockrendererdispatcher = mc.getBlockRendererDispatcher();
 		IBakedModel ibakedmodel = blockrendererdispatcher.getModelFromBlockState(state, entity.getEntityWorld(),
 				(BlockPos) null);
-		entityTransform.setIdentity();
-		entityTransform.setRotation(entity.renderRotation);
-		entityTransform.origin.set(entity.renderPosition);
+		entityTransform.idt();
+		entityTransform.set(entity.renderPosition, entity.renderRotation);
 		RenderUtilities.setBufferFromTransform(renderMatrix, entityTransform);
 		// Render
 		GlStateManager.pushMatrix();
@@ -91,12 +91,12 @@ public class RenderPhysicsBlock extends RenderPhysics {
 	 * net.gliby.physics.client.render.entity.RenderPhysics#getWorldHitPoint()
 	 */
 	@Override
-	public Vector3f getRenderHitPoint(EntityPhysicsBase entity, float partialTick) {
+	public Vector3 getRenderHitPoint(EntityPhysicsBase entity, float partialTick) {
 		EntityPhysicsBlock entityBlock = (EntityPhysicsBlock) entity;
-		Vector3f worldTranslation = RenderUtilities.getWorldTranslation(Minecraft.getMinecraft(), partialTick);
-		Vector3f hitPoint = new Vector3f(entityBlock.renderPosition);
+		Vector3 worldTranslation = RenderUtilities.getWorldTranslation(Minecraft.getMinecraft(), partialTick);
+		Vector3 hitPoint = new Vector3(entityBlock.renderPosition);
 		hitPoint.add(entity.pickLocalHit);
-		hitPoint.add(new Vector3f(0.5f, 0.5f, 0.5f));
+		hitPoint.add(new Vector3(0.5f, 0.5f, 0.5f));
 		hitPoint.sub(worldTranslation);
 		return hitPoint;
 	}

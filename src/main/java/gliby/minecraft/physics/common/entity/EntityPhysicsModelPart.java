@@ -1,13 +1,12 @@
 package gliby.minecraft.physics.common.entity;
 
-import javax.vecmath.Quat4f;
-import javax.vecmath.Vector3f;
-
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 import com.bulletphysicsx.collision.shapes.BoxShape;
-import com.bulletphysicsx.linearmath.Transform;
 
-import gliby.minecraft.gman.DataWatchableQuat4f;
-import gliby.minecraft.gman.DataWatchableVector3f;
+import gliby.minecraft.gman.DataWatchableQuaternion;
+import gliby.minecraft.gman.DataWatchableVector3;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import io.netty.buffer.ByteBuf;
@@ -21,7 +20,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  *
  */
-//TODO improvement: needs rewrite
+// TODO improvement: needs rewrite
 public class EntityPhysicsModelPart extends EntityPhysicsBase implements IEntityAdditionalSpawnData {
 	/**
 	 * @param world
@@ -33,34 +32,37 @@ public class EntityPhysicsModelPart extends EntityPhysicsBase implements IEntity
 	}
 
 	@SideOnly(Side.CLIENT)
-	public Vector3f renderPosition = new Vector3f();
+	public Vector3 renderPosition = new Vector3();
+	public Quaternion renderRotation = new Quaternion();
 	@SideOnly(Side.CLIENT)
-	public Quat4f renderRotation = new Quat4f();
+	private Vector3 networkPosition = new Vector3();
 	@SideOnly(Side.CLIENT)
-	private Vector3f networkPosition = new Vector3f();
+	private Quaternion networkRotation = new Quaternion();
 	@SideOnly(Side.CLIENT)
-	private Quat4f networkRotation = new Quat4f();
-	@SideOnly(Side.CLIENT)
-	public Vector3f renderExtent = new Vector3f();
+	public Vector3 renderExtent = new Vector3();
 
-	private Transform transform;
+	private Matrix4 transform;
 	private IRigidBody rigidBody;
 
-	public EntityPhysicsModelPart(World world, PhysicsWorld physicsWorld, Transform offset, Vector3f extent, float x, float y, float z, float rotationY) {
+	public EntityPhysicsModelPart(World world, PhysicsWorld physicsWorld, Matrix4 offset, Vector3 extent, float x,
+			float y, float z, float rotationY) {
 		super(world, physicsWorld);
 		setPositionAndUpdate(x, y, z);
-		transform = new Transform();
-		transform.setIdentity();
-		transform.origin.set(x, y, z);
-		transform.origin.add(offset.origin);
-		transform.basis.add(offset.basis);
+
+		Vector3 offsetTranslation = offset.getTranslation(new Vector3());
+		Quaternion offsetRotation = offset.getRotation(new Quaternion());
+
+		transform = new Matrix4();
+		transform.idt();
+		transform.set(new Vector3(x + offsetTranslation.x, y + offsetTranslation.y, z + offsetTranslation.z),
+				transform.getRotation(new Quaternion()).add(offsetRotation));
 		rigidBody = physicsWorld.createRigidBody(this, transform, 10, physicsWorld.createBoxShape(extent));
 		rigidBody.setWorldTransform(transform);
 		physicsWorld.addRigidBody(rigidBody);
 	}
 
-	private DataWatchableVector3f watchablePosition;
-	private DataWatchableQuat4f watchableRotation;
+	private DataWatchableVector3 watchablePosition;
+	private DataWatchableQuaternion watchableRotation;
 
 	@Override
 	public void onCommonInit() {
@@ -81,15 +83,15 @@ public class EntityPhysicsModelPart extends EntityPhysicsBase implements IEntity
 	@Override
 	public void onServerUpdate() {
 		rigidBody.getWorldTransform(transform);
-		Vector3f centerOfMass = new Vector3f();
+		Vector3 centerOfMass = new Vector3();
 		rigidBody.getCenterOfMassPosition(centerOfMass);
 
 		setPositionAndUpdate(centerOfMass.x, centerOfMass.y, centerOfMass.z);
 
 		if (isDirty()) {
 			if (watchableRotation != null) {
-				watchableRotation.write(transform.getRotation(new Quat4f()));
-				watchablePosition.write(transform.origin);
+				watchableRotation.write(transform.getRotation(new Quaternion()));
+				watchablePosition.write(transform.getTranslation(new Vector3()));
 			}
 		}
 	}
@@ -100,7 +102,8 @@ public class EntityPhysicsModelPart extends EntityPhysicsBase implements IEntity
 			watchablePosition.read(networkPosition);
 			watchableRotation.read(networkRotation);
 		}
-		this.setEntityBoundingBox(new AxisAlignedBB(renderPosition.x, renderPosition.y, renderPosition.z, renderPosition.x + 1.3f, renderPosition.y + +1.3f, renderPosition.z + +1.3f));
+		this.setEntityBoundingBox(new AxisAlignedBB(renderPosition.x, renderPosition.y, renderPosition.z,
+				renderPosition.x + 1.3f, renderPosition.y + +1.3f, renderPosition.z + +1.3f));
 	}
 
 	@Override
@@ -118,38 +121,40 @@ public class EntityPhysicsModelPart extends EntityPhysicsBase implements IEntity
 	public void writeSpawnData(ByteBuf buffer) {
 		super.writeSpawnData(buffer);
 		if (watchablePosition == null && watchableRotation == null) {
-			watchablePosition = new DataWatchableVector3f(this, transform.origin);
-			watchableRotation = new DataWatchableQuat4f(this, transform.getRotation(new Quat4f()));
+			watchablePosition = new DataWatchableVector3(this, transform.getTranslation(new Vector3()));
+			watchableRotation = new DataWatchableQuaternion(this, transform.getRotation(new Quaternion()));
 		}
-		Vector3f halfExtentsWithMargin = ((BoxShape) rigidBody.getCollisionShape().getCollisionShape()).getHalfExtentsWithMargin(new Vector3f());
-		buffer.writeFloat(halfExtentsWithMargin.x);
-		buffer.writeFloat(halfExtentsWithMargin.y);
-		buffer.writeFloat(halfExtentsWithMargin.z);
-
-		buffer.writeFloat(transform.origin.x);
-		buffer.writeFloat(transform.origin.y);
-		buffer.writeFloat(transform.origin.z);
-
-		Quat4f rotation = new Quat4f();
-		transform.getRotation(rotation);
-
-		buffer.writeFloat(rotation.x);
-		buffer.writeFloat(rotation.y);
-		buffer.writeFloat(rotation.z);
-		buffer.writeFloat(rotation.w);
+		// TODO re-implement body parts
+		/*
+		 * Vector3f halfExtentsWithMargin = ((BoxShape)
+		 * rigidBody.getCollisionShape().getCollisionShape())
+		 * .getHalfExtentsWithMargin(new Vector3());
+		 * buffer.writeFloat(halfExtentsWithMargin.x);
+		 * buffer.writeFloat(halfExtentsWithMargin.y);
+		 * buffer.writeFloat(halfExtentsWithMargin.z);
+		 * 
+		 * buffer.writeFloat(transform.origin.x); buffer.writeFloat(transform.origin.y);
+		 * buffer.writeFloat(transform.origin.z);
+		 * 
+		 * Quat4f rotation = new Quat4f(); transform.getRotation(rotation);
+		 * 
+		 * buffer.writeFloat(rotation.x); buffer.writeFloat(rotation.y);
+		 * buffer.writeFloat(rotation.z); buffer.writeFloat(rotation.w);
+		 */
 	}
 
 	@Override
 	public void readSpawnData(ByteBuf buffer) {
 		super.readSpawnData(buffer);
-		this.renderExtent = new Vector3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
-		this.networkPosition = new Vector3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
-		this.networkRotation = new Quat4f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
-		this.renderPosition = new Vector3f(networkPosition);
-		this.renderRotation = new Quat4f(networkRotation);
+		this.renderExtent = new Vector3(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+		this.networkPosition = new Vector3(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+		this.networkRotation = new Quaternion(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(),
+				buffer.readFloat());
+		this.renderPosition = new Vector3(networkPosition);
+		this.renderRotation = new Quaternion(networkRotation);
 		if (watchablePosition == null && watchableRotation == null) {
-			watchablePosition = new DataWatchableVector3f(this, networkPosition);
-			watchableRotation = new DataWatchableQuat4f(this, networkRotation);
+			watchablePosition = new DataWatchableVector3(this, networkPosition);
+			watchableRotation = new DataWatchableQuaternion(this, networkRotation);
 		}
 	}
 
@@ -195,8 +200,8 @@ public class EntityPhysicsModelPart extends EntityPhysicsBase implements IEntity
 
 	@Override
 	public void interpolate() {
-		this.renderPosition.interpolate(networkPosition, 0.15f);
-		this.renderRotation.interpolate(networkRotation, 0.15f);
+		this.renderPosition.lerp(networkPosition, 0.15f);
+		this.renderRotation.slerp(networkRotation, 0.15f);
 	}
 
 	@Override

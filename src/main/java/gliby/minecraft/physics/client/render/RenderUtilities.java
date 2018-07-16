@@ -8,8 +8,14 @@ import static org.lwjgl.opengl.GL11.glPolygonMode;
 
 import java.nio.FloatBuffer;
 
+import javax.vecmath.Matrix3f;
 import javax.vecmath.Vector3f;
 
+import org.lwjgl.util.vector.Matrix;
+
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
+import com.bulletphysicsx.linearmath.MatrixUtil;
 import com.bulletphysicsx.linearmath.Transform;
 
 import net.minecraft.client.Minecraft;
@@ -30,34 +36,42 @@ public class RenderUtilities {
 	 * @param delta
 	 * @returns javax.vecmath.Vector3f
 	 */
-	public static Vector3f getWorldTranslation(Minecraft mc, float delta) {
-		return new Vector3f((float) mc.thePlayer.prevPosX + (float) (mc.thePlayer.posX - mc.thePlayer.prevPosX) * (float) delta, (float) mc.thePlayer.prevPosY + (float) (mc.thePlayer.posY - (float) mc.thePlayer.prevPosY) * (float) delta, (float) mc.thePlayer.prevPosZ + (float) (mc.thePlayer.posZ - (float) mc.thePlayer.prevPosZ) * (float) delta);
+	public static Vector3 getWorldTranslation(Minecraft mc, float delta) {
+		return new Vector3(
+				(float) mc.thePlayer.prevPosX + (float) (mc.thePlayer.posX - mc.thePlayer.prevPosX) * (float) delta,
+				(float) mc.thePlayer.prevPosY
+						+ (float) (mc.thePlayer.posY - (float) mc.thePlayer.prevPosY) * (float) delta,
+				(float) mc.thePlayer.prevPosZ
+						+ (float) (mc.thePlayer.posZ - (float) mc.thePlayer.prevPosZ) * (float) delta);
 	}
 
-	public static Vector3f getSmoothedEntityPosition(Entity entity, float delta) {
-		return new Vector3f((float) entity.prevPosX + (float) (entity.posX - entity.prevPosX) * (float) delta, (float) entity.prevPosY + (float) (entity.posY - (float) entity.prevPosY) * (float) delta, (float) entity.prevPosZ + (float) (entity.posZ - (float) entity.prevPosZ) * (float) delta);
+	public static Vector3 getSmoothedEntityPosition(Entity entity, float delta) {
+		return new Vector3((float) entity.prevPosX + (float) (entity.posX - entity.prevPosX) * (float) delta,
+				(float) entity.prevPosY + (float) (entity.posY - (float) entity.prevPosY) * (float) delta,
+				(float) entity.prevPosZ + (float) (entity.posZ - (float) entity.prevPosZ) * (float) delta);
 	}
 
-	public static Vector3f toVector3f(Vec3 vec3) {
-		return new Vector3f((float) vec3.xCoord, (float) vec3.yCoord, (float) vec3.zCoord);
+	public static Vector3 toVector3(Vec3 vec3) {
+		return new Vector3((float) vec3.xCoord, (float) vec3.yCoord, (float) vec3.zCoord);
 	}
-	
-	public static Vec3 toVec3(Vector3f vec3) {
+
+	public static Vec3 toVec3(Vector3 vec3) {
 		return new Vec3((float) vec3.x, (float) vec3.y, (float) vec3.z);
 	}
 
 	private static float[] buffer = new float[16];
 
-	public static FloatBuffer setBufferFromTransform(FloatBuffer matrixBuffer, Transform transform) {
-		transform.getOpenGLMatrix(buffer);
+	// TODO possible bug rendering
+	public static FloatBuffer setBufferFromTransform(FloatBuffer matrixBuffer, Matrix4 transform) {
 		matrixBuffer.clear();
-		matrixBuffer.put(buffer);
+		matrixBuffer.put(transform.getValues());
 		matrixBuffer.flip();
 		return matrixBuffer;
 	}
-
 	
-	public static Vec3 calculateRay(Entity base, float distance, float partialTick, Vector3f offset) {
+   
+
+	public static Vec3 calculateRay(Entity base, float distance, float partialTick, Vector3 offset) {
 		Vec3 vec3 = toVec3(getSmoothedEntityPosition(base, partialTick)).add(toVec3(offset));
 		Vec3 vec31 = base.getLook(partialTick);
 		Vec3 vec32 = vec3.addVector(vec31.xCoord * distance, vec31.yCoord * distance, vec31.zCoord * distance);

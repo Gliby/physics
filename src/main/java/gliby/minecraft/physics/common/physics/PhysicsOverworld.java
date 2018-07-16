@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.vecmath.Vector3f;
 
+import com.badlogic.gdx.math.Vector3;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
@@ -44,7 +45,7 @@ public class PhysicsOverworld {
 			boolean multiThread = physics.getSettings().getBooleanSetting("PhysicsEngine.MultiThread")
 					.getBooleanValue();
 
-			final Vector3f gravity = new Vector3f(0,
+			final Vector3 gravity = new Vector3(0,
 					physics.getSettings().getFloatSetting("PhysicsEngine.GravityForce").getFloatValue(), 0);
 			final PhysicsWorld createdPhysicsWorld = getCorrectPhysicsWorld(
 					!physics.getSettings().getBooleanSetting("PhysicsEngine.UseJavaPhysics").getBooleanValue(),
@@ -66,7 +67,7 @@ public class PhysicsOverworld {
 						}
 
 						@Override
-						public Vector3f getRegularGravity() {
+						public Vector3 getRegularGravity() {
 							return gravity;
 						}
 					});
@@ -132,8 +133,8 @@ public class PhysicsOverworld {
 		PhysicsWorld physicsWorld;
 		if ((physicsWorld = getPhysicsWorldMap().get(event.world)) != null) {
 			AxisAlignedBB bb = BLOCK_BREAK_BB.offset(event.pos.getX(), event.pos.getY(), event.pos.getZ());
-			physicsWorld.awakenArea(new Vector3f((float) bb.minX, (float) bb.minY, (float) bb.minZ),
-					new Vector3f((float) bb.maxX, (float) bb.maxY, (float) bb.maxZ));
+			physicsWorld.awakenArea(new Vector3((float) bb.minX, (float) bb.minY, (float) bb.minZ),
+					new Vector3((float) bb.maxX, (float) bb.maxY, (float) bb.maxZ));
 		}
 	}
 
@@ -191,7 +192,7 @@ public class PhysicsOverworld {
 
 		public World getWorld();
 
-		public Vector3f getRegularGravity();
+		public Vector3 getRegularGravity();
 
 	}
 
