@@ -1,9 +1,0 @@
-{
-  "mass": -200,
-  "friction": 1.9999999,
-  "shouldSpawnInExplosion": false,
-  "mechanics": [
-    "EnvironmentGravity",
-    "EnvironmentResponse"
-  ]
-}
