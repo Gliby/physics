@@ -36,9 +36,11 @@ public class ToolGunRemoveAction implements IToolGunAction {
             IRigidBody body = physicsWorld.upcastRigidBody(ray.getCollisionObject());
             if (body != null) {
                 body.getProperties().put(EnumRigidBodyProperty.DEAD.getName(), System.currentTimeMillis());
+                physicsWorld.clearRayTest(ray);
                 return true;
             }
         }
+        physicsWorld.clearRayTest(ray);
         return false;
     }
 

@@ -8,7 +8,7 @@ import gliby.minecraft.physics.common.physics.PhysicsWorld;
 public abstract class PhysicsMechanic {
 
 
-    protected PhysicsWorld physicsWorld;
+    public PhysicsWorld physicsWorld;
     private boolean enabled = true;
     private int ticksPerSecond;
 

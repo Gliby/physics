@@ -271,6 +271,13 @@ public class NativePhysicsWorld extends PhysicsWorld {
     }
 
     @Override
+    public void clearRayTest(final IRayResult resultCallback) {
+        RayResultCallback rayCallback = (RayResultCallback) resultCallback.getRayResultCallback();
+        rayCallback.dispose();
+    }
+
+
+    @Override
     public void removeCollisionObject(final ICollisionObject collisionObject) {
 
         btCollisionObject nativeCollsionObject;

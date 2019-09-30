@@ -11,7 +11,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
- * @author Gliby, contact@gliby.net
+ * @author Gliby
  */
 public abstract class RawItem extends Item {
 

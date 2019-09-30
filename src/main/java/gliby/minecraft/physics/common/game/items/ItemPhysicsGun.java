@@ -157,6 +157,7 @@ public class ItemPhysicsGun extends RawItem {
                                                 new OwnedPickedObject(body, player, rayCallback, eyePos, eyeLook));
                                     }
                                 }
+                                physicsWorld.clearRayTest(rayCallback);
                             }
                         } else {
                             OwnedPickedObject object = null;

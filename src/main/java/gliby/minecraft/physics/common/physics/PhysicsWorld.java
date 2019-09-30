@@ -71,6 +71,7 @@ public abstract class PhysicsWorld {
             final PhysicsMechanic mechanic = ((Map.Entry<String, PhysicsMechanic>) it.next()).getValue();
             mechanic.dispose();
             mechanic.setEnabled(false);
+            mechanic.physicsWorld = null;
         }
         physicsMechanics.clear();
     }
@@ -113,6 +114,8 @@ public abstract class PhysicsWorld {
 
     public abstract void rayTest(final Vector3f rayFromWorld, final Vector3f rayToWorld, IRayResult resultCallback);
 
+    public abstract void clearRayTest(final IRayResult resultCallback);
+
     public abstract void removeCollisionObject(final ICollisionObject collisionObject);
 
     public abstract void setGravity(final Vector3f newGravity);
@@ -121,6 +124,7 @@ public abstract class PhysicsWorld {
 
     public abstract void addCollisionObject(ICollisionObject collisionObject, short collisionFilterGroup,
                                             short collisionFilterMask);
+
 
     public abstract List<IRigidBody> getRigidBodies();
 

@@ -114,6 +114,11 @@ public class JavaPhysicsWorld extends PhysicsWorld {
     }
 
     @Override
+    public void clearRayTest(IRayResult resultCallback) {
+
+    }
+
+    @Override
     public void removeCollisionObject(final ICollisionObject collisionObject) {
         dynamicsWorld.removeCollisionObject((CollisionObject) collisionObject.getCollisionObject());
     }

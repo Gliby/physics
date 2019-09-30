@@ -60,6 +60,7 @@ public class ToolGunAttachAction implements IToolGunAction {
                     hits.put(player.getEntityId(), new ToolGunHit(relativePivot, body));
             }
         }
+        physicsWorld.clearRayTest(ray);
         return true;
     }
 

@@ -39,9 +39,11 @@ public class ToolGunAlignAction implements IToolGunAction {
             if (body != null && body.getOwner() instanceof EntityPhysicsBlock) {
                 player.worldObj.setBlockState(new BlockPos(body.getOwner().posX, body.getOwner().posY + 0.5F, body.getOwner().posZ), ((EntityPhysicsBlock) body.getOwner()).getBlockState());
                 body.getProperties().put(EnumRigidBodyProperty.DEAD.getName(), System.currentTimeMillis());
+                physicsWorld.clearRayTest(ray);
                 return true;
             }
         }
+        physicsWorld.clearRayTest(ray);
         return false;
     }
 

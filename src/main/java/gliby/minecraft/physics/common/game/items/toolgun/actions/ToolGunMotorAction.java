@@ -65,6 +65,7 @@ public class ToolGunMotorAction implements IToolGunAction, IToolGunTickable {
                     hits.put(player.getEntityId(), new ToolGunHit(relativePivot, body));
             }
         }
+        physicsWorld.clearRayTest(ray);
         return true;
     }
 

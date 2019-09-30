@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Gliby, contact@gliby.net
+ * @author Gliby
  * <p>
  * Manages raw item renderer's.
  */
@@ -44,6 +44,7 @@ public class ItemRendererManager {
 
     @SubscribeEvent
     public void bakeModel(ModelBakeEvent event) {
+        System.out.println("baking model");
         for (int i = 0; i < itemRenderer.size(); i++) {
             RawItemRenderer itemRender = itemRenderer.get(i);
             event.modelRegistry.putObject(itemRender.resourceLocation, itemRender);

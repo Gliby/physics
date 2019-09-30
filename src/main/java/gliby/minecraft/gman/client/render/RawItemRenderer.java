@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * Credits: iChun
  *
- * @author Gliby, contact@gliby.net
+ * @author Gliby
  * <p>
  * Based on iChunUtil's own item renderer, but with a some of my own
  * spice. # Usage: # Simply extend this class, then register with
