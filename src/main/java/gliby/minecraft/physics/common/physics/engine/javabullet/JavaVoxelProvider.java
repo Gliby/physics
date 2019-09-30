@@ -10,10 +10,12 @@ import net.minecraft.world.World;
 
 import javax.vecmath.Vector3f;
 
-
 public class JavaVoxelProvider implements VoxelPhysicsWorld {
 
+
+
     BlockPos blockPos;
+
     IBlockState blockState;
     private World world;
     private JavaPhysicsWorld physicsWorld;
@@ -24,6 +26,7 @@ public class JavaVoxelProvider implements VoxelPhysicsWorld {
         this.physics = physics;
         this.physicsWorld = physicsWorld;
     }
+
 
     @Override
     public VoxelInfo getCollisionShapeAt(final int x, final int y, final int z) {

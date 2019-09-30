@@ -72,7 +72,7 @@ public class PhysicsOverworld {
 
                         @Override
                         public final int getTicksPerSecond() {
-                            return 20;
+                            return physics.getSettings().getIntegerSetting("PhysicsEngine.TickRate").getIntValue();
                         }
 
                         @Override
@@ -89,7 +89,7 @@ public class PhysicsOverworld {
             // 20));
             physicsWorld.create();
             getPhysicsWorldMap().put(access, physicsWorld);
-            Physics.getLogger().info(String.format("Started running new physics world on %s", physicsWorld.toString()));
+            Physics.getLogger().info(String.format("Started running new physics world on %s (%s tick(s) per second.)", physicsWorld.toString(), physicsWorld.getPhysicsConfiguration().getTicksPerSecond()));
         }
 
         return physicsWorld;

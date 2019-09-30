@@ -83,7 +83,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
     }
 
     static Matrix4 fromTransformToMatrix4(Transform transform) {
-        return toMatrix4(transform.getMatrix(new Matrix4f()));
+        return toMatrix4(transform.getMatrix(tempMatrix));
     }
 
     public static Matrix4 toMatrix4(Matrix4f matrix4f) {
@@ -105,6 +105,8 @@ public class NativePhysicsWorld extends PhysicsWorld {
         return staticVector;
     }
 
+    static Matrix4f tempMatrix = new Matrix4f();
+
     // FIXME NativePhysicsWorld: Potential Memory Leak.
     static Matrix4f toMatrix4f(Matrix4 matrix4) {
         Vector3 position = matrix4.getTranslation(tempVec);
@@ -112,7 +114,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
         rotationTemp.set(rotation.x, rotation.y, rotation.z, rotation.w);
         temp.setRotation(rotationTemp);
         temp.origin.set(position.x, position.y, position.z);
-        return temp.getMatrix(new Matrix4f());
+        return temp.getMatrix(tempMatrix);
     }
 
 //    @Override
@@ -162,8 +164,9 @@ public class NativePhysicsWorld extends PhysicsWorld {
     @Override
     protected void update(final int maxSubSteps) {
         if (dynamicsWorld != null) {
+            final float dt = getDeltaTimeMicroseconds() * 0.000001f;
+            dynamicsWorld.stepSimulation(dt, maxSubSteps, 1f / (float) getPhysicsConfiguration().getTicksPerSecond());
             super.update(maxSubSteps);
-            dynamicsWorld.stepSimulation(1, maxSubSteps);
         }
     }
 
@@ -182,8 +185,8 @@ public class NativePhysicsWorld extends PhysicsWorld {
     }
 
     @Override
-    public IRigidBody createInertiallessRigidBody(Entity owner, Transform transform, float mass,
-                                                  ICollisionShape shape) {
+    public IRigidBody createInertialessRigidbody(Entity owner, Transform transform, float mass,
+                                                 ICollisionShape shape) {
         btDefaultMotionState motionState = new btDefaultMotionState(fromTransformToMatrix4(transform));
         btRigidBodyConstructionInfo constructionInfo = new btRigidBodyConstructionInfo(mass, motionState,
                 (btCollisionShape) shape.getCollisionShape());
@@ -442,6 +445,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
                                                     Transform frameInB, boolean useLinearReferenceFrameA) {
         return null;
     }
+
 
     public ICollisionShape buildCollisionShape(List<AxisAlignedBB> bbs, Vector3f offset) {
         btCompoundShape compoundShape = new btCompoundShape();

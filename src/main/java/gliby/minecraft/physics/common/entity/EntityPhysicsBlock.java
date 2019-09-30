@@ -308,6 +308,9 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
         // Add removed tags, but with additional values.
         tagCompound.setTag("Pos", newDoubleNBTList(position.x, position.y, position.z));
+        // adjust actually position
+        setPosition(position.x, position.y, position.z);
+
         tagCompound.setTag("Rotation", newFloatNBTList(rotation.x, rotation.y, rotation.z, rotation.w));
 
         Vector3f linearVelocity = rigidBody.getLinearVelocity(new Vector3f());

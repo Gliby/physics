@@ -109,7 +109,8 @@ public class Physics {
          * String[] { IEntityPhysics.class.getName(), EntityToolGunBeam.class.getName(),
          * EntityItem.class.getName() }, Setting.Side.BOTH);
          */
-//        settings.registerInteger("PhysicsEngine", "TickRate", 30, Setting.Side.BOTH);
+
+        settings.registerInteger("PhysicsEngine", "TickRate", 25, Setting.Side.BOTH);
         settings.registerFloat("PhysicsEngine", "GravityForce", -9.8f, Setting.Side.BOTH);
         settings.registerFloat("PhysicsEntities", "InactivityDeathTime", 30, Setting.Side.BOTH);
         settings.registerFloat("PhysicsEntities", "EntityColliderCleanupTime", 0.25f, Setting.Side.BOTH);

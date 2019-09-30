@@ -90,7 +90,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
     protected void update(final int maxSubSteps) {
         if (dynamicsWorld != null) {
             final float dt = getDeltaTimeMicroseconds() * 0.000001f;
-            dynamicsWorld.stepSimulation(dt, maxSubSteps, 1f / 20f);
+            dynamicsWorld.stepSimulation(dt, maxSubSteps, 1f / (float) getPhysicsConfiguration().getTicksPerSecond());
             super.update(maxSubSteps);
         }
     }
@@ -318,8 +318,8 @@ public class JavaPhysicsWorld extends PhysicsWorld {
     }
 
     @Override
-    public IRigidBody createInertiallessRigidBody(final Entity owner, final Transform transform, final float mass,
-                                                  final ICollisionShape shape) {
+    public IRigidBody createInertialessRigidbody(final Entity owner, final Transform transform, final float mass,
+                                                 final ICollisionShape shape) {
         final DefaultMotionState motionState = new DefaultMotionState(transform);
         final RigidBodyConstructionInfo constructionInfo = new RigidBodyConstructionInfo(mass, motionState,
                 (CollisionShape) shape.getCollisionShape());

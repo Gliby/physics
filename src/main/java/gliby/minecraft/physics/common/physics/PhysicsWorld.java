@@ -94,8 +94,8 @@ public abstract class PhysicsWorld {
 
     public abstract IRigidBody createRigidBody(Entity owner, Transform transform, float mass, ICollisionShape shape);
 
-    public abstract IRigidBody createInertiallessRigidBody(Entity owner, Transform transform, float mass,
-                                                           ICollisionShape shape);
+    public abstract IRigidBody createInertialessRigidbody(Entity owner, Transform transform, float mass,
+                                                          ICollisionShape shape);
 
     public abstract ICollisionShape createBoxShape(Vector3f extents);
 
