@@ -17,13 +17,13 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "0.2"
+version = mod_version
 group= "gliby.minecraft" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "glibysphysics"
 
 minecraft {
     version = "1.8-11.14.3.1450"
-    if(file('../run').exists()) {
+     if(file('../run').exists()) {
         runDir = "../run/assets"
     } else {
         runDir = "assets"
