@@ -5,9 +5,9 @@ import gliby.minecraft.gman.settings.INIProperties.INIPropertiesReadFailure;
 import gliby.minecraft.gman.settings.Setting.Side;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  *
@@ -26,7 +26,7 @@ public class SettingsHandler {
         this.directory = directory;
         this.file = settingsFile;
         properties = new INIProperties(settingsFile);
-        settings = new ConcurrentHashMap<String, Setting>();
+        settings = new HashMap<String, Setting>();
     }
 
     public Map<String, Setting> getSettings() {

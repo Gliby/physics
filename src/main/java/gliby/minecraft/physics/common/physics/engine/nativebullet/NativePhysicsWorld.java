@@ -57,7 +57,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
     private List<IRigidBody> rigidBodies;
     private PhysicsOverworld physicsOverworld;
     private Physics physics;
-    private boolean shutdown = false;
     private btDbvtBroadphase broadphase;
     private btCollisionConfiguration collisionConfiguration;
     private btCollisionDispatcher collisionDispatcher;
@@ -70,10 +69,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
      */
 
     private List<Disposable> disposables;
-    private long lastFrame;
-    private int fps;
-    private long lastFPS;
-
 
     public NativePhysicsWorld(Physics physics, PhysicsOverworld physicsOverworld,
                               IPhysicsWorldConfiguration physicsConfig) {
@@ -237,10 +232,11 @@ public class NativePhysicsWorld extends PhysicsWorld {
     // TODO NativePhysicsWorld: Dispose of object on remove.
     @Override
     public void removeRigidBody(final IRigidBody body) {
+        rigidBodies.remove(body);
 
         btRigidBody nativeBody;
         dynamicsWorld.removeRigidBody(nativeBody = (btRigidBody) body.getBody());
-        rigidBodies.remove(body);
+        nativeBody.getCollisionShape().dispose();
         nativeBody.dispose();
 
     }
@@ -281,6 +277,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
         dynamicsWorld.removeCollisionObject(
                 nativeCollsionObject = (btCollisionObject) collisionObject.getCollisionObject());
         collisionObjects.remove(collisionObject);
+        nativeCollsionObject.getCollisionShape().dispose();
         nativeCollsionObject.dispose();
 
 
@@ -316,25 +313,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
         return rigidBodies;
     }
 
-    protected float getDelta() {
-        long time = getTime();
-        int delta = (int) (time - lastFrame);
-        lastFrame = time;
-        return delta;
-    }
-
-    protected void updateFPS() {
-        if (getTime() - lastFPS > 1000) {
-            // stepsPerSecond = fps;
-            fps = 0;
-            lastFPS += 1000;
-        }
-        fps++;
-    }
-
-    protected long getTime() {
-        return System.currentTimeMillis();
-    }
 
     @Override
     public IGhostObject createPairCachingGhostObject() {
@@ -349,10 +327,9 @@ public class NativePhysicsWorld extends PhysicsWorld {
     public IRigidBody upcastRigidBody(Object collisionObject) {
         for (int i = 0; i < rigidBodies.size(); i++) {
             IRigidBody body = rigidBodies.get(i);
-            if (body.getBody() == collisionObject) {
+            if (body.getBody() == collisionObject)
                 return body;
-            } else
-                continue;
+
         }
         return null;
     }
@@ -477,16 +454,10 @@ public class NativePhysicsWorld extends PhysicsWorld {
         voxelBody.dispose();
         voxelProvider.dispose();
 
-        for (int i = 0; i < disposables.size(); i++) {
-            Disposable disposable = disposables.get(i);
-            disposable.dispose();
-        }
-
         for (int i = 0; i < constraints.size(); i++) {
             // Get constraint
             IConstraint constraint = constraints.get(i);
             // Remove reference from list
-            constraints.remove(i);
 
             // Get native reference
             btTypedConstraint constraintRef = (btTypedConstraint) constraint.getConstraint();
@@ -497,29 +468,25 @@ public class NativePhysicsWorld extends PhysicsWorld {
             constraintRef.dispose();
         }
 
+        constraints.clear();
+
         for (int i = 0; i < collisionObjects.size(); i++) {
             ICollisionObject object = collisionObjects.get(i);
-            collisionObjects.remove(i);
             btCollisionObject objectRef = (btCollisionObject) object.getCollisionObject();
             dynamicsWorld.removeCollisionObject(objectRef);
             objectRef.dispose();
         }
 
+        collisionObjects.clear();
+
         for (int i = 0; i < rigidBodies.size(); i++) {
             // Get rigidBody
             IRigidBody rigidBody = rigidBodies.get(i);
             // Remove reference from list
-            rigidBodies.remove(i);
-
-            // Get native reference.
-            btRigidBody rigidBodyRef = (btRigidBody) rigidBody.getBody();
-            // Remove from world.
-            dynamicsWorld.removeRigidBody(rigidBodyRef);
-            // Dispose of native reference
-            rigidBodyRef.getCollisionShape().dispose();
-            rigidBodyRef.getMotionState().dispose();
-            rigidBodyRef.dispose();
+            removeRigidBody(rigidBody);
         }
+
+        rigidBodies.clear();
 
         broadphase.dispose();
         collisionDispatcher.dispose();
@@ -527,5 +494,11 @@ public class NativePhysicsWorld extends PhysicsWorld {
         sequentialSolver.dispose();
         dynamicsWorld.dispose();
         dynamicsWorld = null;
+
+        for (int i = 0; i < disposables.size(); i++) {
+            Disposable disposable = disposables.get(i);
+            if (disposable != null)
+                disposable.dispose();
+        }
     }
 }

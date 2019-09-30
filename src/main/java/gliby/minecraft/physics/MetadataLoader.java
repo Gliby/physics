@@ -14,7 +14,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -23,7 +22,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public abstract class MetadataLoader {
 
     private HashMap<String, PhysicsBlockMetadata> actualMap;
-    private ConcurrentHashMap<String, PhysicsBlockMetadata> tempData;
+    private HashMap<String, PhysicsBlockMetadata> tempData;
     private BlockManager blockManager;
     private Physics physics;
     private BlockingQueue<Callable> blockLoadQueue = new LinkedBlockingQueue<Callable>();
@@ -33,7 +32,7 @@ public abstract class MetadataLoader {
                           HashMap<String, PhysicsBlockMetadata> metadataMap) {
         this.physics = physics;
         this.actualMap = metadataMap;
-        this.tempData = new ConcurrentHashMap<String, PhysicsBlockMetadata>();
+        this.tempData = new HashMap<String, PhysicsBlockMetadata>();
         this.blockManager = blockManager;
         start();
     }

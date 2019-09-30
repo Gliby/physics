@@ -35,10 +35,6 @@ public class JavaPhysicsWorld extends PhysicsWorld {
     private List<IRigidBody> rigidBodies;
     private List<IConstraint> constraints;
     private DiscreteDynamicsWorld dynamicsWorld;
-    private long lastFrame;
-    private int fps;
-    private long lastFPS;
-    private float stepsPerSecond;
     private List<IRope> ropes;
 
     public JavaPhysicsWorld(final Physics physics, final PhysicsOverworld physicsOverworld,
@@ -46,14 +42,6 @@ public class JavaPhysicsWorld extends PhysicsWorld {
         super(physicsConfig);
         this.physics = physics;
         this.physicsOverworld = physicsOverworld;
-    }
-
-    private static Transform getTransform() {
-        return transform;
-    }
-
-    protected static long getTime() {
-        return System.currentTimeMillis();
     }
 
     @Override
@@ -155,23 +143,24 @@ public class JavaPhysicsWorld extends PhysicsWorld {
     @Override
     public void dispose() {
 
-        for (int i = 0; i < dynamicsWorld.getNumCollisionObjects(); i++) {
+        for (IRigidBody body : rigidBodies) {
+
+            dynamicsWorld.removeRigidBody((RigidBody) body.getBody());
+        }
+
+        final int numCollisionObjects = dynamicsWorld.getNumCollisionObjects();
+        for (int i = 0; i < numCollisionObjects; i++) {
             final CollisionObject disposedObject = dynamicsWorld.getCollisionObjectArray().get(i);
+
             dynamicsWorld.removeCollisionObject(disposedObject);
         }
 
+        dynamicsWorld.clearForces();
         dynamicsWorld.destroy();
-        rigidBodies.clear();
+
         constraints.clear();
         ropes.clear();
         super.dispose();
-    }
-
-    protected float getDelta() {
-        final long time = JavaPhysicsWorld.getTime();
-        final int delta = (int) (time - lastFrame);
-        lastFrame = time;
-        return delta;
     }
 
     @Override
