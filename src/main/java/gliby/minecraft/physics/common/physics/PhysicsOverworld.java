@@ -72,7 +72,7 @@ public class PhysicsOverworld {
 
                         @Override
                         public final int getTicksPerSecond() {
-                            return physics.getSettings().getIntegerSetting("PhysicsEngine.TickRate").getIntValue();
+                            return 20;
                         }
 
                         @Override

@@ -91,6 +91,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
         if (dynamicsWorld != null) {
             final float dt = getDeltaTimeMicroseconds() * 0.000001f;
             dynamicsWorld.stepSimulation(dt, maxSubSteps, 1f / 20f);
+            super.update(maxSubSteps);
         }
     }
 
@@ -205,10 +206,10 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
     @Override
     public IRigidBody upcastRigidBody(final Object collisionObject) {
-        final RigidBody upcasted = RigidBody.upcast((CollisionObject) collisionObject);
+        final RigidBody upCasted = RigidBody.upcast((CollisionObject) collisionObject);
         for (int i = 0; i < rigidBodies.size(); i++) {
             final IRigidBody body = rigidBodies.get(i);
-            if (body.getBody() == upcasted) {
+            if (body.getBody() == upCasted) {
                 return body;
             }
         }

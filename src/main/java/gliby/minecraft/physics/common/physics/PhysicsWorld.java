@@ -23,7 +23,6 @@ public abstract class PhysicsWorld {
     private final IPhysicsWorldConfiguration physicsConfiguration;
     private final Vector3f gravityDirection;
     protected HashMap<String, PhysicsMechanic> physicsMechanics;
-    protected int tick;
     protected Clock clock = new Clock();
 
     public PhysicsWorld(final IPhysicsWorldConfiguration physicsConfiguration) {
@@ -47,13 +46,10 @@ public abstract class PhysicsWorld {
 
     public void create() {
         final Iterator it = physicsMechanics.entrySet().iterator();
-//        while (it.hasNext()) {
-//            PhysicsMechanic mechanic = ((Map.Entry<String, PhysicsMechanic>) it.next()).getValue();
-//            if (mechanic.isThreaded()) {
-//                mechanic.init();
-//                new Thread(mechanic, mechanic.getName()).start();
-//            }
-//        }
+        while (it.hasNext()) {
+            PhysicsMechanic mechanic = ((Map.Entry<String, PhysicsMechanic>) it.next()).getValue();
+            mechanic.init();
+        }
     }
 
     public ICollisionShape createBlockShape(final World worldObj, final BlockPos blockPos, final IBlockState blockState) {
@@ -87,10 +83,6 @@ public abstract class PhysicsWorld {
 
 
     protected void update(final int maxSubSteps) {
-        if (tick >= getPhysicsConfiguration().getTicksPerSecond()) {
-            tick = 0;
-        }
-        tick++;
         final Iterator it = physicsMechanics.entrySet().iterator();
         while (it.hasNext()) {
             final PhysicsMechanic mechanic = ((Map.Entry<String, PhysicsMechanic>) it.next()).getValue();

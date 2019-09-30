@@ -51,7 +51,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     /**
      * Client or Load constructor.
      *
-     * @param worldIn
+     * @param world
      */
     public EntityPhysicsBase(World world) {
         super(world);
@@ -60,7 +60,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     /**
      * Server constructor.
      *
-     * @param worldIn
+     * @param world
      */
 
     public EntityPhysicsBase(World world, PhysicsWorld physicsWorld) {
