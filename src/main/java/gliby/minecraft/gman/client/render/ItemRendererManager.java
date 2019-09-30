@@ -44,7 +44,6 @@ public class ItemRendererManager {
 
     @SubscribeEvent
     public void bakeModel(ModelBakeEvent event) {
-        System.out.println("baking model");
         for (int i = 0; i < itemRenderer.size(); i++) {
             RawItemRenderer itemRender = itemRenderer.get(i);
             event.modelRegistry.putObject(itemRender.resourceLocation, itemRender);

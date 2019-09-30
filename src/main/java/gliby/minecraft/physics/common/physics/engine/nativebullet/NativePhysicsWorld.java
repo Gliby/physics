@@ -30,14 +30,9 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  */
 
-// TODO NativePhysicsWorld: Start disposing of every, and I mean EVERY native
-// element.
-// TODO NativePhysicsWorld: dispose on remove from world too.
-// FIXME NativePhysicsWorld: We need to care of memory!
 // FIXME NativePhysicsWorld: Stop using Vector/Matrix/Transform conversions. Use
 // IVector and
 // IQuaternion, IMatrix, replace with custom vector stuff or MC Vec3.
-// TODO NativePhysicsWorld: Add ability to run in non-thread.
 public class NativePhysicsWorld extends PhysicsWorld {
 
     static Vector3f staticVector = new Vector3f();
@@ -236,7 +231,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
         btRigidBody nativeBody;
         dynamicsWorld.removeRigidBody(nativeBody = (btRigidBody) body.getBody());
-        nativeBody.getCollisionShape().dispose();
         nativeBody.dispose();
 
     }
@@ -273,7 +267,8 @@ public class NativePhysicsWorld extends PhysicsWorld {
     @Override
     public void clearRayTest(final IRayResult resultCallback) {
         RayResultCallback rayCallback = (RayResultCallback) resultCallback.getRayResultCallback();
-        rayCallback.dispose();
+        if (rayCallback != null && !rayCallback.isDisposed())
+            rayCallback.dispose();
     }
 
 
@@ -284,7 +279,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
         dynamicsWorld.removeCollisionObject(
                 nativeCollsionObject = (btCollisionObject) collisionObject.getCollisionObject());
         collisionObjects.remove(collisionObject);
-        nativeCollsionObject.getCollisionShape().dispose();
         nativeCollsionObject.dispose();
 
 

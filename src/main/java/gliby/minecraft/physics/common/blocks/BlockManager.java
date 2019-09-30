@@ -132,8 +132,6 @@ public class BlockManager {
             if ((shape = cache.get(state)) == null) {
                 shape = physicsWorld.createBlockShape(world, pos, state);
                 cache.put(state, shape);
-                System.out.println("created new state");
-
             }
             return shape;
         }
