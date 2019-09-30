@@ -6,13 +6,13 @@ import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 //TODO feature: finish
 public class PhysicsMechanicEvent {
 
-	public static class TouchedEntity {
-		IRigidBody bodyA;
-		IRigidBody bodyB;
-		
-		public TouchedEntity(IRigidBody bodyA, IGhostObject ghostObject) {
-			
-		}
-	}
-	
+    public static class TouchedEntity {
+        IRigidBody bodyA;
+        IRigidBody bodyB;
+
+        public TouchedEntity(IRigidBody bodyA, IGhostObject ghostObject) {
+
+        }
+    }
+
 }

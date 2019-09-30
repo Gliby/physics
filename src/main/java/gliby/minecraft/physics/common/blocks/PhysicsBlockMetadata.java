@@ -1,54 +1,52 @@
 package gliby.minecraft.physics.common.blocks;
 
+import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.gson.annotations.SerializedName;
-
-import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
 
 /**
  *
  */
 public class PhysicsBlockMetadata {
 
-	/**
-	 * 
-	 */
-	// @SerializedName("shouldSpawnInExplosion")
-	public boolean spawnInExplosions = true;
+    /**
+     *
+     */
+    // @SerializedName("shouldSpawnInExplosion")
+    public boolean spawnInExplosions = true;
 
-	// @SerializedName("mass")
-	public float mass;
+    // @SerializedName("mass")
+    public float mass;
 
-	/**
-	 * value 0 would be friction-less
-	 */
-	// @SerializedName("friction")
-	public float friction;
+    /**
+     * value 0 would be friction-less
+     */
+    // @SerializedName("friction")
+    public float friction;
 
-	/**
-	 * Forces regular cube collision shape.
-	 */
-	// @SerializedName("defaultCollisionShape")
-	public boolean defaultCollisionShape;
+    /**
+     * Forces regular cube collision shape.
+     */
+    // @SerializedName("defaultCollisionShape")
+    public boolean defaultCollisionShape;
 
-	/**
-	 * Bouncy-ness.
-	 */
-	// @SerializedName("restitution")
-	public float restitution;
+    /**
+     * Bouncy-ness.
+     */
+    // @SerializedName("restitution")
+    public float restitution;
 
-	/**
-	 * RigidBodyMechanics!
-	 */
-	// @SerializedName("mechanics")
-	public List<RigidBodyMechanic> mechanics = new ArrayList<RigidBodyMechanic>();
+    /**
+     * RigidBodyMechanics!
+     */
+    // @SerializedName("mechanics")
+    public List<RigidBodyMechanic> mechanics = new ArrayList<RigidBodyMechanic>();
 
-	/**
-	 * Disables collision with player, used for stuff like web, and flowers.
-	 */
-	// @SerializedName("collisionEnabled")
-	public boolean collisionEnabled = true;
+    /**
+     * Disables collision with player, used for stuff like web, and flowers.
+     */
+    // @SerializedName("collisionEnabled")
+    public boolean collisionEnabled = true;
 
 }

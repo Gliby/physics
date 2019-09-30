@@ -1,12 +1,6 @@
 package gliby.minecraft.physics.common.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.vecmath.Vector3f;
-
 import com.google.gson.Gson;
-
 import gliby.minecraft.gman.DataWatchableVector3f;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
@@ -30,6 +24,10 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.vecmath.Vector3f;
+import java.util.ArrayList;
+import java.util.List;
+
 // TODO feature implement proper collision detection/response, stop using minecraft AABB
 //TODO feature: Replace death timer with physics object limit.
 
@@ -38,309 +36,303 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public abstract class EntityPhysicsBase extends Entity implements IEntityAdditionalSpawnData, IEntityPhysics {
 
-	public List<RigidBodyMechanic> mechanics = new ArrayList<RigidBodyMechanic>();
-	protected PhysicsWorld physicsWorld;
+    public static final int TICKS_PER_SECOND = 20;
+    public List<RigidBodyMechanic> mechanics = new ArrayList<RigidBodyMechanic>();
+    public EntityPlayer pickerEntity;
+    // Shared
+    public Vector3f pickLocalHit = new Vector3f(0, 0, 0);
+    protected PhysicsWorld physicsWorld;
+    private int pickerId = -1;
+    private long lastTimeActive;
+    private int watchablePickerId;
+    private DataWatchableVector3f watchablePickHit;
+    private int lastTickActive;
 
-	private int pickerId = -1;
+    /**
+     * Client or Load constructor.
+     *
+     * @param worldIn
+     */
+    public EntityPhysicsBase(World world) {
+        super(world);
+    }
 
-	public EntityPlayer pickerEntity;
+    /**
+     * Server constructor.
+     *
+     * @param worldIn
+     */
 
-	// Shared
-	public Vector3f pickLocalHit = new Vector3f(0, 0, 0);
+    public EntityPhysicsBase(World world, PhysicsWorld physicsWorld) {
+        super(world);
+        this.physicsWorld = physicsWorld;
+    }
 
-	/**
-	 * Client or Load constructor.
-	 * 
-	 * @param worldIn
-	 */
-	public EntityPhysicsBase(World world) {
-		super(world);
-	}
+    /**
+     * If true, entity network will be updated.
+     *
+     * @return
+     */
+    public abstract boolean isDirty();
 
-	/**
-	 * If true, entity network will be updated.
-	 * 
-	 * @return
-	 */
-	public abstract boolean isDirty();
+    public void spawnRemoveParticle() {
+        if (this.worldObj.isRemote) {
+            for (int i = 0; i < 20; ++i) {
+                double d0 = this.rand.nextGaussian() * 0.02D;
+                double d1 = this.rand.nextGaussian() * 0.02D;
+                double d2 = this.rand.nextGaussian() * 0.02D;
+                double d3 = 10.0D;
+                this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL,
+                        this.posX + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width
+                                - d0 * d3,
+                        this.posY + (double) (this.rand.nextFloat() * this.height) - d1 * d3, this.posZ
+                                + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width - d2 * d3,
+                        d0, d1, d2);
+            }
+        }
+    }
 
-	/**
-	 * Server constructor.
-	 * 
-	 * @param worldIn
-	 */
+    @Override
+    public void setDead() {
+        MinecraftServer.getServer().addScheduledTask(new Runnable() {
+            public void run() {
+                spawnRemoveParticle();
+                for (int i = 0; i < mechanics.size(); i++) {
+                    mechanics.get(i).dispose();
+                }
+                mechanics.clear();
 
-	public EntityPhysicsBase(World world, PhysicsWorld physicsWorld) {
-		super(world);
-		this.physicsWorld = physicsWorld;
-	}
+                if (!worldObj.isRemote) {
+                    if (doesPhysicsObjectExist()) {
+                        Vector3f minBB = new Vector3f(), maxBB = new Vector3f();
+                        getRigidBody().getAabb(minBB, maxBB);
+                        physicsWorld.awakenArea(minBB, maxBB);
+                    }
+                    dispose();
+                }
+            }
+        });
+        super.setDead();
+    }
 
-	private long lastTimeActive;
+    public void pick(Entity picker, Vector3f pickPoint) {
+        this.pickerEntity = (EntityPlayer) picker;
+        this.pickerId = picker.getEntityId();
+        this.pickLocalHit = pickPoint;
+        dataWatcher.updateObject(watchablePickerId, pickerId);
+        this.watchablePickHit.write(pickLocalHit);
+    }
 
-	public void spawnRemoveParticle() {
-		if (this.worldObj.isRemote) {
-			for (int i = 0; i < 20; ++i) {
-				double d0 = this.rand.nextGaussian() * 0.02D;
-				double d1 = this.rand.nextGaussian() * 0.02D;
-				double d2 = this.rand.nextGaussian() * 0.02D;
-				double d3 = 10.0D;
-				this.worldObj.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL,
-						this.posX + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width
-								- d0 * d3,
-						this.posY + (double) (this.rand.nextFloat() * this.height) - d1 * d3, this.posZ
-								+ (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width - d2 * d3,
-						d0, d1, d2, new int[0]);
-			}
-		}
-	}
+    public void unpick() {
+        this.pickerEntity = null;
+        this.pickerId = -1;
+        this.pickLocalHit = new Vector3f();
+        dataWatcher.updateObject(watchablePickerId, this.pickerId);
+    }
 
-	@Override
-	public void setDead() {
-		MinecraftServer.getServer().addScheduledTask(new Runnable() {
-			public void run() {
-				spawnRemoveParticle();
-				for (int i = 0; i < mechanics.size(); i++) {
-					mechanics.get(i).dispose();
-				}
-				mechanics.clear();
+    /**
+     *
+     */
+    protected abstract void dispose();
 
-				if (!worldObj.isRemote) {
-					if (doesPhysicsObjectExist()) {
-						Vector3f minBB = new Vector3f(), maxBB = new Vector3f();
-						getRigidBody().getAabb(minBB, maxBB);
-						physicsWorld.awakenArea(minBB, maxBB);
-					}
-					dispose();
-				}
-			}
-		});
-		super.setDead();
-	}
+    public abstract void onCommonInit();
 
-	private int watchablePickerId;
-	private DataWatchableVector3f watchablePickHit;
+    public abstract void onServerInit();
 
-	public void pick(Entity picker, Vector3f pickPoint) {
-		this.pickerEntity = (EntityPlayer) picker;
-		this.pickerId = picker.getEntityId();
-		this.pickLocalHit = pickPoint;
-		dataWatcher.updateObject(watchablePickerId, pickerId);
-		this.watchablePickHit.write(pickLocalHit);
-	}
+    public abstract void onCommonUpdate();
 
-	public void unpick() {
-		this.pickerEntity = null;
-		this.pickerId = -1;
-		this.pickLocalHit = new Vector3f();
-		dataWatcher.updateObject(watchablePickerId, this.pickerId);
-	}
+    public abstract void onServerUpdate();
 
-	/**
-	 * 
-	 */
-	protected abstract void dispose();
+    @SideOnly(Side.CLIENT)
+    public abstract void onClientInit();
 
-	public abstract void onCommonInit();
+    @SideOnly(Side.CLIENT)
+    public abstract void onClientUpdate();
 
-	public abstract void onServerInit();
+    @SideOnly(Side.CLIENT)
+    public abstract void interpolate();
 
-	public abstract void onCommonUpdate();
+    /**
+     * @return
+     */
+    protected boolean doesPhysicsObjectExist() {
+        return false;
+    }
 
-	public abstract void onServerUpdate();
+    protected abstract void createPhysicsObject(PhysicsWorld physicsWorld);
 
-	@SideOnly(Side.CLIENT)
-	public abstract void onClientInit();
+    // TODO bug: entity tracker has a hard time keeping up with physics base
+    // entities and eventually crashes the game.
 
-	@SideOnly(Side.CLIENT)
-	public abstract void onClientUpdate();
+    protected abstract void updatePhysicsObject(PhysicsWorld physicsWorld);
 
-	@SideOnly(Side.CLIENT)
-	public abstract void interpolate();
+    /**
+     * @return
+     */
+    public abstract IRigidBody getRigidBody();
 
-	/**
-	 * @return
-	 */
-	protected boolean doesPhysicsObjectExist() {
-		return false;
-	}
+    @Override
+    public void readEntityFromNBT(NBTTagCompound tagCompound) {
+        if (!worldObj.isRemote) {
+            mechanics.clear();
+            PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
+            // TODO improvement: block property nbt saving
 
-	protected abstract void createPhysicsObject(PhysicsWorld physicsWorld);
+            Gson gson = new Gson();
+            /*
+             * if (tagCompound.hasKey("Properties")) { this.getRigidBody().getProperties()
+             * .putAll(gson.fromJson(tagCompound.getString("Properties"), Map.class)); }
+             */
 
-	protected abstract void updatePhysicsObject(PhysicsWorld physicsWorld);
+            ArrayList<String> mechanicsByNames = gson.fromJson(tagCompound.getString("Mechanics"), ArrayList.class);
+            if (mechanicsByNames != null) {
+                for (int i = 0; i < mechanicsByNames.size(); i++) {
+                    String mechanicString = mechanicsByNames.get(i);
+                    RigidBodyMechanic mechanic = overworld.getMechanicFromName(mechanicString);
+                    if (mechanic != null)
+                        mechanics.add(overworld.getMechanicFromName(mechanicString));
+                }
+            }
+        }
+    }
 
-	/**
-	 * @return
-	 */
-	public abstract IRigidBody getRigidBody();
+    public void writeEntityToNBT(final NBTTagCompound tagCompound) {
+        ArrayList<String> mechanicsByNames = new ArrayList<String>();
+        for (int i = 0; i < mechanics.size(); i++) {
+            mechanicsByNames
+                    .add(Physics.getInstance().getPhysicsOverworld().getMechanicsMap().inverse().get(mechanics.get(i)));
+        }
+        // TODO improvement: block property nbt saving
+        Gson gson = new Gson();
+        /*
+         * tagCompound.setString("Properties",
+         * gson.toJson(this.getRigidBody().getProperties()));
+         */
+        tagCompound.setString("Mechanics", gson.toJson(mechanicsByNames));
+    }
 
-	// TODO bug: entity tracker has a hard time keeping up with physics base
-	// entities and eventually crashes the game.
+    @Override
+    public final void entityInit() {
+        this.watchablePickHit = new DataWatchableVector3f(this, pickLocalHit = new Vector3f());
+        this.watchablePickerId = watchablePickHit.getNextIndex();
+        this.dataWatcher.addObject(watchablePickerId, pickerId);
+        onCommonInit();
+        if (this.worldObj.isRemote)
+            onClientInit();
+        else
+            onServerInit();
 
-	@Override
-	public void readEntityFromNBT(NBTTagCompound tagCompound) {
-		if (!worldObj.isRemote) {
-			mechanics.clear();
-			PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
-			// TODO improvement: block property nbt saving
+    }
 
-			Gson gson = new Gson();
-			/*
-			 * if (tagCompound.hasKey("Properties")) { this.getRigidBody().getProperties()
-			 * .putAll(gson.fromJson(tagCompound.getString("Properties"), Map.class)); }
-			 */
+    @Override
+    public final void onUpdate() {
+        super.onUpdate();
+        if (this.worldObj.isRemote) {
+            int pickerId = dataWatcher.getWatchableObjectInt(watchablePickerId);
+            if (pickerId != -1) {
+                Entity entity = this.worldObj.getEntityByID(pickerId);
+                if (entity instanceof EntityPlayer) {
+                    this.pickerEntity = (EntityPlayer) entity;
+                    if (this.pickerEntity != null) {
+                        watchablePickHit.read(this.pickLocalHit = new Vector3f());
+                    } else {
+                        this.pickLocalHit = null;
+                    }
+                }
+            } else {
+                this.pickerEntity = null;
+            }
+            onClientUpdate();
+        } else {
+            onServerUpdate();
+            // Check if picker exists.
+            if (pickerEntity != null) {
+                PickUpMechanic mechanic = (PickUpMechanic) physicsWorld.getMechanics().get("PickUp");
+                // Continue if mechanic exists.
+                if (mechanic != null) {
+                    Item item = pickerEntity.getHeldItem() != null ? pickerEntity.getHeldItem().getItem() : null;
+                    // Check if held item isn't physics gun.
+                    if (!(item instanceof ItemPhysicsGun)) {
+                        OwnedPickedObject object = null;
+                        // Continue if picked object exists.
+                        if ((object = mechanic.getOwnedPickedObject(pickerEntity)) != null) {
+                            // Alert's dataWatcher that item shouldn't be
+                            // picked.
+                            unpick();
 
-			ArrayList<String> mechanicsByNames = gson.fromJson(tagCompound.getString("Mechanics"), ArrayList.class);
-			if (mechanicsByNames != null) {
-				for (int i = 0; i < mechanicsByNames.size(); i++) {
-					String mechanicString = mechanicsByNames.get(i);
-					RigidBodyMechanic mechanic = overworld.getMechanicFromName(mechanicString);
-					if (mechanic != null)
-						mechanics.add(overworld.getMechanicFromName(mechanicString));
-				}
-			}
-		}
-	}
+                            // Remove picked object
+                            mechanic.removeOwnedPickedObject(object);
+                        }
+                    }
+                }
+            }
 
-	public void writeEntityToNBT(final NBTTagCompound tagCompound) {
-		ArrayList<String> mechanicsByNames = new ArrayList<String>();
-		for (int i = 0; i < mechanics.size(); i++) {
-			mechanicsByNames
-					.add(Physics.getInstance().getPhysicsOverworld().getMechanicsMap().inverse().get(mechanics.get(i)));
-		}
-		// TODO improvement: block property nbt saving
-		Gson gson = new Gson();
-		/*
-		 * tagCompound.setString("Properties",
-		 * gson.toJson(this.getRigidBody().getProperties()));
-		 */
-		tagCompound.setString("Mechanics", gson.toJson(mechanicsByNames));
-	}
+            if (getRigidBody() != null) {
+                if (getRigidBody().getProperties().containsKey(EnumRigidBodyProperty.DEAD.getName())) {
+                    // System.out.println("Set dead: " + getRigidBody().getProperties());
+                    // Physics.getLogger().warn("Killed physics entity through properties.");
+                    // this.setDead();
+                }
+                if (getRigidBody().isActive())
+                    lastTickActive = ticksExisted;
 
-	@Override
-	public final void entityInit() {
-		this.watchablePickHit = new DataWatchableVector3f(this, pickLocalHit = new Vector3f());
-		this.watchablePickerId = watchablePickHit.getNextIndex();
-		this.dataWatcher.addObject(watchablePickerId, pickerId);
-		onCommonInit();
-		if (this.worldObj.isRemote)
-			onClientInit();
-		else
-			onServerInit();
+                if ((ticksExisted - lastTickActive) / TICKS_PER_SECOND > Physics.getInstance().getSettings()
+                        .getFloatSetting("PhysicsEntities.InactivityDeathTime").getFloatValue()) {
+                    this.setDead();
+                }
+            }
+        }
 
-	}
+        // Update mechanics.
+        for (int i = 0; i < mechanics.size(); i++) {
+            RigidBodyMechanic mechanic = mechanics.get(i);
+            if (mechanic.isEnabled())
+                mechanic.update(getRigidBody(), physicsWorld, this, worldObj.isRemote ? Side.CLIENT : Side.SERVER);
+        }
+    }
 
-	public static final int TICKS_PER_SECOND = 20;
-	private int lastTickActive;
+    /**
+     * @return
+     */
+    public abstract AxisAlignedBB getRenderBoundingBox();
 
-	@Override
-	public final void onUpdate() {
-		super.onUpdate();
-		if (this.worldObj.isRemote) {
-			int pickerId = dataWatcher.getWatchableObjectInt(watchablePickerId);
-			if (pickerId != -1) {
-				Entity entity = this.worldObj.getEntityByID(pickerId);
-				if (entity instanceof EntityPlayer) {
-					this.pickerEntity = (EntityPlayer) entity;
-					if (this.pickerEntity != null) {
-						watchablePickHit.read(this.pickLocalHit = new Vector3f());
-					} else {
-						this.pickLocalHit = null;
-					}
-				}
-			} else {
-				this.pickerEntity = null;
-			}
-			onClientUpdate();
-		} else {
-			onServerUpdate();
-			// Check if picker exists.
-			if (pickerEntity != null) {
-				PickUpMechanic mechanic = (PickUpMechanic) physicsWorld.getMechanics().get("PickUp");
-				// Continue if mechanic exists.
-				if (mechanic != null) {
-					Item item = pickerEntity.getHeldItem() != null ? pickerEntity.getHeldItem().getItem() : null;
-					// Check if held item isn't physics gun.
-					if (!(item instanceof ItemPhysicsGun)) {
-						OwnedPickedObject object = null;
-						// Continue if picked object exists.
-						if ((object = mechanic.getOwnedPickedObject(pickerEntity)) != null) {
-							// Alert's dataWatcher that item shouldn't be
-							// picked.
-							unpick();
+    @Override
+    public void writeSpawnData(ByteBuf buffer) {
+        List<RigidBodyMechanic> clientMechanics = new ArrayList<RigidBodyMechanic>();
+        for (int i = 0; i < mechanics.size(); i++) {
+            RigidBodyMechanic mechanic = mechanics.get(i);
+            if (mechanic.isCommon()) {
+                clientMechanics.add(mechanic);
+            }
+        }
 
-							// Remove picked object
-							mechanic.removeOwnedPickedObject(object);
-						}
-					}
-				}
-			}
+        PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
 
-			if (getRigidBody() != null) {
-				if (getRigidBody().getProperties().containsKey(EnumRigidBodyProperty.DEAD.getName())) {
-					// System.out.println("Set dead: " + getRigidBody().getProperties());
-					// Physics.getLogger().warn("Killed physics entity through properties.");
-					// this.setDead();
-				}
-				if (getRigidBody().isActive())
-					lastTickActive = ticksExisted;
+        buffer.writeInt(clientMechanics.size());
+        for (int i = 0; i < clientMechanics.size(); i++) {
+            ByteBufUtils.writeUTF8String(buffer, overworld.getMechanicsMap().inverse().get(clientMechanics.get(i)));
+        }
 
-				if ((ticksExisted - lastTickActive) / TICKS_PER_SECOND > Physics.getInstance().getSettings()
-						.getFloatSetting("PhysicsEntities.InactivityDeathTime").getFloatValue()) {
-					this.setDead();
-				}
-			}
-		}
+        buffer.writeInt(pickerId);
+        buffer.writeFloat(this.pickLocalHit.x);
+        buffer.writeFloat(this.pickLocalHit.y);
+        buffer.writeFloat(this.pickLocalHit.z);
+    }
 
-		// Update mechanics.
-		for (int i = 0; i < mechanics.size(); i++) {
-			RigidBodyMechanic mechanic = (RigidBodyMechanic) mechanics.get(i);
-			if (mechanic.isEnabled())
-				mechanic.update(getRigidBody(), physicsWorld, this, worldObj.isRemote ? Side.CLIENT : Side.SERVER);
-		}
-	}
+    @Override
+    public void readSpawnData(ByteBuf buffer) {
+        int size = buffer.readInt();
+        PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
+        for (int i = 0; i < size; i++) {
+            String mechanicName = ByteBufUtils.readUTF8String(buffer);
+            RigidBodyMechanic mechanic = overworld.getMechanicFromName(mechanicName);
+            mechanics.add(mechanic);
+        }
 
-	/**
-	 * @return
-	 */
-	public abstract AxisAlignedBB getRenderBoundingBox();
-
-	@Override
-	public void writeSpawnData(ByteBuf buffer) {
-		List<RigidBodyMechanic> clientMechanics = new ArrayList<RigidBodyMechanic>();
-		for (int i = 0; i < mechanics.size(); i++) {
-			RigidBodyMechanic mechanic = mechanics.get(i);
-			if (mechanic.isCommon()) {
-				clientMechanics.add(mechanic);
-			}
-		}
-
-		PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
-
-		buffer.writeInt(clientMechanics.size());
-		for (int i = 0; i < clientMechanics.size(); i++) {
-			ByteBufUtils.writeUTF8String(buffer, overworld.getMechanicsMap().inverse().get(clientMechanics.get(i)));
-		}
-
-		buffer.writeInt(pickerId);
-		buffer.writeFloat(this.pickLocalHit.x);
-		buffer.writeFloat(this.pickLocalHit.y);
-		buffer.writeFloat(this.pickLocalHit.z);
-	}
-
-	@Override
-	public void readSpawnData(ByteBuf buffer) {
-		int size = buffer.readInt();
-		PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
-		for (int i = 0; i < size; i++) {
-			String mechanicName = ByteBufUtils.readUTF8String(buffer);
-			RigidBodyMechanic mechanic = overworld.getMechanicFromName(mechanicName);
-			mechanics.add(mechanic);
-		}
-
-		this.pickerEntity = (EntityPlayer) this.worldObj.getEntityByID(buffer.readInt());
-		Vector3f readPick = new Vector3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
-		if (pickerEntity != null)
-			this.pickLocalHit = readPick;
-	}
+        this.pickerEntity = (EntityPlayer) this.worldObj.getEntityByID(buffer.readInt());
+        Vector3f readPick = new Vector3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+        if (pickerEntity != null)
+            this.pickLocalHit = readPick;
+    }
 
 }

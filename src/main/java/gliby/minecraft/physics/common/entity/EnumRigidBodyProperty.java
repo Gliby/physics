@@ -1,19 +1,19 @@
 package gliby.minecraft.physics.common.entity;
 
 public enum EnumRigidBodyProperty {
-	BIGGESTDISTANCE("BiggestDistance"),
-	MAGNET("Magnet"),
-	BLOCKSTATE("BlockState"),
-	DEAD("Dead");
+    BIGGESTDISTANCE("BiggestDistance"),
+    MAGNET("Magnet"),
+    BLOCKSTATE("BlockState"),
+    DEAD("Dead");
 
-	private EnumRigidBodyProperty(String name) {
-		this.name = name;
-	}
+    private String name;
 
-	private String name;
+    EnumRigidBodyProperty(String name) {
+        this.name = name;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
 }

@@ -1,141 +1,135 @@
 package gliby.minecraft.physics.common.physics.engine;
 
-import java.util.Map;
-
-import javax.vecmath.Vector3f;
-
 import com.bulletphysicsx.linearmath.Transform;
 
-import gliby.minecraft.physics.common.physics.PhysicsWorld;
+import javax.vecmath.Vector3f;
+import java.util.Map;
 
 /**
  *
  */
 public interface IRigidBody extends ICollisionObject {
-	
-	/**
-	 * @return
-	 */
-	public Object getBody();
 
-	public ICollisionShape getCollisionShape();
+    /**
+     * @return
+     */
+    Object getBody();
 
-	/**
-	 * @return
-	 */
-	public boolean isActive();
+    ICollisionShape getCollisionShape();
 
-	/**
-	 * @param vector3f
-	 * @return
-	 */
-	public Vector3f getAngularVelocity(Vector3f vector3f);
+    /**
+     * @return
+     */
+    boolean isActive();
 
-	/**
-	 * @param vector3f
-	 * @return
-	 */
-	public Vector3f getLinearVelocity(Vector3f vector3f);
+    /**
+     * @param vector3f
+     * @return
+     */
+    Vector3f getAngularVelocity(Vector3f vector3f);
 
-	/**
-	 * @param centerOfMass
-	 * @return
-	 */
-	public Vector3f getCenterOfMassPosition(Vector3f centerOfMass);
+    /**
+     * @param vector3f
+     * @return
+     */
+    Vector3f getLinearVelocity(Vector3f vector3f);
 
-	/**
-	 * @param transform
-	 * @return
-	 */
-	public Transform getWorldTransform(Transform transform);
+    /**
+     * @param centerOfMass
+     * @return
+     */
+    Vector3f getCenterOfMassPosition(Vector3f centerOfMass);
 
-	/**
-	 * @param transform
-	 */
-	public void setWorldTransform(Transform transform);
+    /**
+     * @param transform
+     * @return
+     */
+    Transform getWorldTransform(Transform transform);
 
-	/**
-	 * @param vector3f
-	 */
-	public void setGravity(Vector3f vector3f);
+    /**
+     * @param transform
+     */
+    void setWorldTransform(Transform transform);
 
-	/**
-	 * @param friction
-	 */
-	public void setFriction(float friction);
+    /**
+     * @param vector3f
+     */
+    void setGravity(Vector3f vector3f);
 
-	/**
-	 * @param linearVelocity
-	 */
-	public void setLinearVelocity(Vector3f linearVelocity);
+    /**
+     * @param friction
+     */
+    void setFriction(float friction);
 
-	/**
-	 * @param angularVelocity
-	 */
-	public void setAngularVelocity(Vector3f angularVelocity);
+    /**
+     * @param linearVelocity
+     */
+    void setLinearVelocity(Vector3f linearVelocity);
 
-	/**
-	 * @param direction
-	 */
-	public void applyCentralImpulse(Vector3f direction);
+    /**
+     * @param angularVelocity
+     */
+    void setAngularVelocity(Vector3f angularVelocity);
 
-	/**
-	 * @return
-	 */
-	public boolean hasContactResponse();
+    /**
+     * @param direction
+     */
+    void applyCentralImpulse(Vector3f direction);
 
-	/**
-	 * @return
-	 */
-	public float getInvMass();
+    /**
+     * @return
+     */
+    boolean hasContactResponse();
 
-	/**
-	 * 
-	 */
-	public void activate();
+    /**
+     * @return
+     */
+    float getInvMass();
 
-	/**
-	 * @param vector3f
-	 * @param vector3f2
-	 */
-	public void getAabb(Vector3f vector3f, Vector3f vector3f2);
+    /**
+     *
+     */
+    void activate();
 
-	/**
-	 * @param transform
-	 * @return
-	 */
-	public Transform getCenterOfMassTransform(Transform transform);
+    /**
+     * @param vector3f
+     * @param vector3f2
+     */
+    void getAabb(Vector3f vector3f, Vector3f vector3f2);
 
-	/**
-	 * @return
-	 */
+    /**
+     * @param transform
+     * @return
+     */
+    Transform getCenterOfMassTransform(Transform transform);
 
-	/**
-	 * 
-	 * @return
-	 */
-	public Map<String, Object> getProperties();
+    /**
+     * @return
+     */
 
-	/**
-	 * 
-	 * @param force
-	 */
-	public void applyCentralForce(Vector3f force);
+    /**
+     * @return
+     */
+    Map<String, Object> getProperties();
 
-	/**
-	 * 
-	 * @param gravity
-	 * @return
-	 */
-	public Vector3f getGravity(Vector3f gravity);
+    /**
+     * @param force
+     */
+    void applyCentralForce(Vector3f force);
 
-	public Vector3f getCenterOfMassPosition();
+    /**
+     * @param gravity
+     * @return
+     */
+    Vector3f getGravity(Vector3f gravity);
 
-	public IQuaternion getRotation();
+    Vector3f getCenterOfMassPosition();
 
-	public IVector3 getPosition();
+    IQuaternion getRotation();
 
-	public void applyTorque(Vector3f vector);
+    IVector3 getPosition();
 
-	public void applyTorqueImpulse(Vector3f vector);
+    void applyTorque(Vector3f vector);
+
+    void applyTorqueImpulse(Vector3f vector);
 }

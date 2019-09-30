@@ -7,5 +7,5 @@ import net.minecraft.entity.Entity;
  */
 public interface IDynamicLightHandler {
 
-	public abstract void create(Entity light, int lightValue);
+    void create(Entity light, int lightValue);
 }

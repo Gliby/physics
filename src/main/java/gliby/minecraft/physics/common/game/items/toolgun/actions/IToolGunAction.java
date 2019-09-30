@@ -1,18 +1,18 @@
 package gliby.minecraft.physics.common.game.items.toolgun.actions;
 
-import javax.vecmath.Vector3f;
-
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import net.minecraft.entity.player.EntityPlayerMP;
+
+import javax.vecmath.Vector3f;
 
 /**
  *
  */
 public interface IToolGunAction {
 
-	public String getName();
+    String getName();
 
-	public boolean use(PhysicsWorld world, EntityPlayerMP player, Vector3f lookAt);
-	
-	public void stoppedUsing(PhysicsWorld world, EntityPlayerMP player);
+    boolean use(PhysicsWorld world, EntityPlayerMP player, Vector3f lookAt);
+
+    void stoppedUsing(PhysicsWorld world, EntityPlayerMP player);
 }

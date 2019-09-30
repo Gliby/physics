@@ -11,28 +11,26 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
- *
  * @author Gliby, contact@gliby.net
- *
  */
 public abstract class RawItem extends Item {
 
-	@SideOnly(Side.CLIENT)
-	private RawItemRenderer renderer;
+    @SideOnly(Side.CLIENT)
+    private RawItemRenderer renderer;
 
-	@Override
-	@SideOnly(Side.CLIENT)
-	public net.minecraft.client.resources.model.ModelResourceLocation getModel(ItemStack stack, EntityPlayer player,
-			int useRemaining) {
-		this.renderer.setOwner(player);
-		return super.getModel(stack, player, useRemaining);
-	}
+    @Override
+    @SideOnly(Side.CLIENT)
+    public net.minecraft.client.resources.model.ModelResourceLocation getModel(ItemStack stack, EntityPlayer player,
+                                                                               int useRemaining) {
+        this.renderer.setOwner(player);
+        return super.getModel(stack, player, useRemaining);
+    }
 
-	/**
-	 * @param itemRender
-	 */
-	@SideOnly(Side.CLIENT)
-	public void setRenderer(RawItemRenderer itemRender) {
-		this.renderer = itemRender;
-	}
+    /**
+     * @param itemRender
+     */
+    @SideOnly(Side.CLIENT)
+    public void setRenderer(RawItemRenderer itemRender) {
+        this.renderer = itemRender;
+    }
 }

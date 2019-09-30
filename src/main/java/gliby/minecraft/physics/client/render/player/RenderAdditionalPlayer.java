@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
  */
 public class RenderAdditionalPlayer {
 
-	@SubscribeEvent
-	public void postRender(RenderPlayerEvent.Pre post) {
-	}
+    @SubscribeEvent
+    public void postRender(RenderPlayerEvent.Pre post) {
+    }
 }

@@ -1,5 +1,9 @@
 package gliby.minecraft.physics.common.entity;
 /**
+ * @param world
+ * @return
+ * @param world
+ * @return
  *//*
 package net.gliby.physics.common.entity;
 
@@ -38,8 +42,8 @@ import com.bulletphysics.linearmath.Transform;
  *//*
 public class EntityPhysicsRagdoll extends EntityPhysicsBase implements IEntityAdditionalSpawnData {
 	*//**
-	 * @param world
-	 *//*
+ * @param world
+ *//*
 	public EntityPhysicsRagdoll(World world) {
 		super(world);
 		noClip = true;
@@ -57,8 +61,8 @@ public class EntityPhysicsRagdoll extends EntityPhysicsBase implements IEntityAd
 	}
 
 	*//**
-	 * 
-	 *//*
+ *
+ *//*
 	private void createRagdoll() {
 		ArrayList<ModelPart> models = generateModelProxies(modelBiped);
 		ArrayList<AttachementPoint> points = generateAttachementPoints(modelBiped);
@@ -393,8 +397,8 @@ public class EntityPhysicsRagdoll extends EntityPhysicsBase implements IEntityAd
 	}
 
 	*//**
-	 * @return
-	 *//*
+ * @return
+ *//*
 	public OwnedRigidBody[] getRigidBodies() {
 		return rigidBodies;
 	}
@@ -407,8 +411,8 @@ public class EntityPhysicsRagdoll extends EntityPhysicsBase implements IEntityAd
 	}
 
 	*//**
-	 * 
-	 *//*
+ *
+ *//*
 	public void interpolate() {
 		for (int i = 0; i < networkPositions.length; i++) {
 			renderPositions[i].interpolate(networkPositions[i], 0.15f);

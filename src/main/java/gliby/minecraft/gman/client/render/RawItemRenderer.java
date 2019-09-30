@@ -1,12 +1,5 @@
 package gliby.minecraft.gman.client.render;
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.vecmath.Matrix4f;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.GlStateManager;
@@ -27,144 +20,145 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.model.IFlexibleBakedModel;
 import net.minecraftforge.client.model.IPerspectiveAwareModel;
 import net.minecraftforge.client.model.ISmartItemModel;
+import org.apache.commons.lang3.tuple.Pair;
+
+import javax.vecmath.Matrix4f;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Credits: iChun
- * 
+ *
  * @author Gliby, contact@gliby.net
- * 
- *         Based on iChunUtil's own item renderer, but with a some of my own
- *         spice. # Usage: # Simply extend this class, then register with
- *         ItemRendererManager!
+ * <p>
+ * Based on iChunUtil's own item renderer, but with a some of my own
+ * spice. # Usage: # Simply extend this class, then register with
+ * ItemRendererManager!
  */
 public abstract class RawItemRenderer implements ISmartItemModel, IPerspectiveAwareModel, IFlexibleBakedModel {
 
-	protected EntityPlayer owner;
+    public ModelResourceLocation resourceLocation;
+    protected EntityPlayer owner;
+    protected TextureManager textureManager;
+    protected ModelBiped playerBiped;
+    protected Minecraft mc;
+    protected ItemStack itemStack;
+    protected TransformType transformType;
+    private Pair<IBakedModel, Matrix4f> pair;
 
-	protected TextureManager textureManager;
-	public ModelResourceLocation resourceLocation;
+    public RawItemRenderer(ModelResourceLocation resourceLocation) {
+        this.mc = Minecraft.getMinecraft();
+        this.textureManager = mc.getTextureManager();
+        this.resourceLocation = resourceLocation;
+        this.pair = Pair.of((IBakedModel) this, null);
+        this.playerBiped = new ModelBiped();
+        this.playerBiped.textureWidth = 64;
+        this.playerBiped.textureHeight = 64;
+    }
 
-	private Pair<IBakedModel, Matrix4f> pair;
-	protected ModelBiped playerBiped;
-	protected Minecraft mc;
+    public abstract void render();
 
-	public RawItemRenderer(ModelResourceLocation resourceLocation) {
-		this.mc = Minecraft.getMinecraft();
-		this.textureManager = mc.getTextureManager();
-		this.resourceLocation = resourceLocation;
-		this.pair = Pair.of((IBakedModel) this, null);
-		this.playerBiped = new ModelBiped();
-		this.playerBiped.textureWidth = 64;
-		this.playerBiped.textureHeight = 64;
-	}
+    @Override
+    public final List getGeneralQuads() {
+        // Method that this get's called in, is using startDrawingQuads. We
+        // finish
+        // drawing it so we can move on to render our own thing.
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        tessellator.draw();
+        GlStateManager.pushMatrix();
+        GlStateManager.translate(0.5F, 0.5F, 0.5F);
+        GlStateManager.scale(-1.0F, -1.0F, 1.0F);
 
-	public abstract void render();
+        if (owner != null) {
+            if (transformType == TransformType.THIRD_PERSON) {
+                if (owner.isSneaking())
+                    GlStateManager.translate(0.0F, -0.2F, 0.0F);
+            }
+        }
 
-	@Override
-	public final List getGeneralQuads() {
-		// Method that this get's called in, is using startDrawingQuads. We
-		// finish
-		// drawing it so we can move on to render our own thing.
-		Tessellator tessellator = Tessellator.getInstance();
-		WorldRenderer worldrenderer = tessellator.getWorldRenderer();
-		tessellator.draw();
-		GlStateManager.pushMatrix();
-		GlStateManager.translate(0.5F, 0.5F, 0.5F);
-		GlStateManager.scale(-1.0F, -1.0F, 1.0F);
+        if (onGround()) {
+            GlStateManager.scale(-3f, -3f, -3f);
+        }
 
-		if (owner != null) {
-			if (transformType == TransformType.THIRD_PERSON) {
-				if (owner.isSneaking())
-					GlStateManager.translate(0.0F, -0.2F, 0.0F);
-			}
-		}
+        render();
+        GlStateManager.popMatrix();
+        // Reset the dynamic values.
+        this.owner = null;
+        this.itemStack = null;
+        this.transformType = null;
+        // Method that this gets called is expecting that we are still using
+        // startDrawingQuads.
+        worldrenderer.startDrawingQuads();
+        return Collections.EMPTY_LIST;
+    }
 
-		if (onGround()) {
-			GlStateManager.scale(-3f, -3f, -3f);
-		}
+    protected boolean onGround() {
+        return transformType == null;
+    }
 
-		render();
-		GlStateManager.popMatrix();
-		// Reset the dynamic values.
-		this.owner = null;
-		this.itemStack = null;
-		this.transformType = null;
-		// Method that this gets called is expecting that we are still using
-		// startDrawingQuads.
-		worldrenderer.startDrawingQuads();
-		return Collections.EMPTY_LIST;
-	}
+    @Override
+    public List getFaceQuads(EnumFacing p_177551_1_) {
+        return Collections.EMPTY_LIST;
+    }
 
-	protected boolean onGround() {
-		return transformType == null;
-	}
+    @Override
+    public final boolean isAmbientOcclusion() {
+        return true;
+    }
 
-	@Override
-	public List getFaceQuads(EnumFacing p_177551_1_) {
-		return Collections.EMPTY_LIST;
-	}
+    @Override
+    public final boolean isGui3d() {
+        return true;
+    }
 
-	@Override
-	public final boolean isAmbientOcclusion() {
-		return true;
-	}
+    @Override
+    public final boolean isBuiltInRenderer() {
+        return false;
+    }
 
-	@Override
-	public final boolean isGui3d() {
-		return true;
-	}
+    @Override
+    public final TextureAtlasSprite getTexture() {
+        return Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
+    }
 
-	@Override
-	public final boolean isBuiltInRenderer() {
-		return false;
-	}
+    @Override
+    public abstract ItemCameraTransforms getItemCameraTransforms();
 
-	@Override
-	public final TextureAtlasSprite getTexture() {
-		return Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
-	}
+    @Override
+    public IBakedModel handleItemState(ItemStack stack) {
+        this.itemStack = stack;
+        return this;
+    }
 
-	@Override
-	public abstract ItemCameraTransforms getItemCameraTransforms();
+    public void setOwner(EntityPlayer player) {
+        this.owner = player;
+    }
 
-	protected ItemStack itemStack;
+    @Override
+    public Pair<IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType) {
+        this.transformType = cameraTransformType;
+        switch (cameraTransformType) {
+            case FIRST_PERSON:
+                RenderItem.applyVanillaTransform(getItemCameraTransforms().firstPerson);
+                break;
+            case GUI:
+                RenderItem.applyVanillaTransform(getItemCameraTransforms().gui);
+                break;
+            case HEAD:
+                RenderItem.applyVanillaTransform(getItemCameraTransforms().head);
+                break;
+            case THIRD_PERSON:
+                RenderItem.applyVanillaTransform(getItemCameraTransforms().thirdPerson);
+                break;
+            default:
+                break;
+        }
+        return pair;
+    }
 
-	@Override
-	public IBakedModel handleItemState(ItemStack stack) {
-		this.itemStack = stack;
-		return this;
-	}
-
-	public void setOwner(EntityPlayer player) {
-		this.owner = player;
-	}
-
-	protected TransformType transformType;
-
-	@Override
-	public Pair<IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType) {
-		this.transformType = cameraTransformType;
-		switch (cameraTransformType) {
-		case FIRST_PERSON:
-			RenderItem.applyVanillaTransform(getItemCameraTransforms().firstPerson);
-			break;
-		case GUI:
-			RenderItem.applyVanillaTransform(getItemCameraTransforms().gui);
-			break;
-		case HEAD:
-			RenderItem.applyVanillaTransform(getItemCameraTransforms().head);
-			break;
-		case THIRD_PERSON:
-			RenderItem.applyVanillaTransform(getItemCameraTransforms().thirdPerson);
-			break;
-		default:
-			break;
-		}
-		return pair;
-	}
-
-	@Override
-	public VertexFormat getFormat() {
-		return DefaultVertexFormats.ITEM;
-	}
+    @Override
+    public VertexFormat getFormat() {
+        return DefaultVertexFormats.ITEM;
+    }
 }

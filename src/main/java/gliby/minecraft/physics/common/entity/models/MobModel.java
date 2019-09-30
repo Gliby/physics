@@ -1,85 +1,82 @@
 package gliby.minecraft.physics.common.entity.models;
 
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraft.util.AxisAlignedBB;
 
 import javax.vecmath.Vector3f;
-
-import net.minecraft.util.AxisAlignedBB;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Most important parts of a Model.
  * Models are primarily used for rag dolls.
- * 
  */
 public class MobModel {
 
-	private final String name;
-	private final List<ModelCubeGroup> cubeGroups;
+    private final String name;
+    private final List<ModelCubeGroup> cubeGroups;
 
-	public List<ModelCubeGroup> getCubeGroups() {
-		return cubeGroups;
-	}
+    public MobModel(String name, List<ModelCubeGroup> cubeGroups) {
+        this.name = name;
+        this.cubeGroups = cubeGroups;
+    }
 
-	public MobModel(String name, List<ModelCubeGroup> cubeGroups) {
-		this.name = name;
-		this.cubeGroups = cubeGroups;
-	}
+    public MobModel(String name) {
+        this(name, new ArrayList<ModelCubeGroup>());
+    }
 
-	public MobModel(String name) {
-		this(name, new ArrayList<ModelCubeGroup>());
-	}
+    public List<ModelCubeGroup> getCubeGroups() {
+        return cubeGroups;
+    }
 
-	public static class ModelCubeGroup {
+    public String getName() {
+        return name;
+    }
 
-		private Vector3f rotationPoint, rotateAngle, offset;
+    public static class ModelCubeGroup {
 
-		private final List<AxisAlignedBB> cubes;
+        private final List<AxisAlignedBB> cubes;
+        private Vector3f rotationPoint, rotateAngle, offset;
 
-		public Vector3f getRotationPoint() {
-			return rotationPoint;
-		}
+        public ModelCubeGroup(Vector3f rotationPoint, Vector3f rotateAngle, Vector3f offset,
+                              List<AxisAlignedBB> cubes) {
+            this.rotationPoint = rotationPoint;
+            this.rotateAngle = rotateAngle;
+            this.offset = offset;
+            this.cubes = cubes;
+        }
 
-		public void setRotationPoint(Vector3f rotationPoint) {
-			this.rotationPoint = rotationPoint;
-		}
+        public ModelCubeGroup(Vector3f rotationPoint, Vector3f rotateAngle, Vector3f offset) {
+            this(rotationPoint, rotateAngle, offset, new ArrayList<AxisAlignedBB>());
+        }
 
-		public Vector3f getRotateAngle() {
-			return rotateAngle;
-		}
+        public Vector3f getRotationPoint() {
+            return rotationPoint;
+        }
 
-		public void setRotateAngle(Vector3f rotateAngle) {
-			this.rotateAngle = rotateAngle;
-		}
+        public void setRotationPoint(Vector3f rotationPoint) {
+            this.rotationPoint = rotationPoint;
+        }
 
-		public Vector3f getOffset() {
-			return offset;
-		}
+        public Vector3f getRotateAngle() {
+            return rotateAngle;
+        }
 
-		public void setOffset(Vector3f offset) {
-			this.offset = offset;
-		}
+        public void setRotateAngle(Vector3f rotateAngle) {
+            this.rotateAngle = rotateAngle;
+        }
 
-		public List<AxisAlignedBB> getCubes() {
-			return cubes;
-		}
+        public Vector3f getOffset() {
+            return offset;
+        }
 
-		public ModelCubeGroup(Vector3f rotationPoint, Vector3f rotateAngle, Vector3f offset,
-				List<AxisAlignedBB> cubes) {
-			this.rotationPoint = rotationPoint;
-			this.rotateAngle = rotateAngle;
-			this.offset = offset;
-			this.cubes = cubes;
-		}
+        public void setOffset(Vector3f offset) {
+            this.offset = offset;
+        }
 
-		public ModelCubeGroup(Vector3f rotationPoint, Vector3f rotateAngle, Vector3f offset) {
-			this(rotationPoint, rotateAngle, offset, new ArrayList<AxisAlignedBB>());
-		}
+        public List<AxisAlignedBB> getCubes() {
+            return cubes;
+        }
 
-	}
-
-	public String getName() {
-		return name;
-	}
+    }
 
 }

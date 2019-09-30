@@ -7,26 +7,26 @@ import javax.vecmath.Vector3f;
  */
 public interface IRayResult {
 
-	public Object getRayResultCallback();
+    Object getRayResultCallback();
 
-	/**
-	 * @return
-	 */
-	public boolean hasHit();
+    /**
+     * @return
+     */
+    boolean hasHit();
 
-	/**
-	 * @return
-	 */
-	public Object getCollisionObject();
+    /**
+     * @return
+     */
+    Object getCollisionObject();
 
-	/**
-	 * @return
-	 */
-	public Vector3f getHitPointWorld();
+    /**
+     * @return
+     */
+    Vector3f getHitPointWorld();
 
-	/**
-	 * @return
-	 */
-	public Vector3f getHitPointNormal();
-	
+    /**
+     * @return
+     */
+    Vector3f getHitPointNormal();
+
 }

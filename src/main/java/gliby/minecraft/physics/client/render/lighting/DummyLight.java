@@ -7,11 +7,11 @@ import net.minecraft.entity.Entity;
  */
 public class DummyLight implements IDynamicLightHandler {
 
-	public DummyLight() {
-	}
+    public DummyLight() {
+    }
 
-	@Override
-	public void create(Entity light, int lightValue) {
-	}
+    @Override
+    public void create(Entity light, int lightValue) {
+    }
 
 }

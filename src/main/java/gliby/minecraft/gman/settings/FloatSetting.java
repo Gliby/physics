@@ -7,37 +7,37 @@ import gliby.minecraft.gman.settings.INIProperties.INIPropertiesReadFailure;
  */
 public class FloatSetting extends Setting {
 
-	/**
-	 * @param setting
-	 * @param name
-	 */
-	public FloatSetting(String category, String name, Float setting, Side side) {
-		super(category, name, setting, side);
-	}
+    private Object lastData;
 
-	@Override
-	public void read(INIProperties ini) throws INIPropertiesReadFailure {
-		data = new Float(ini.readFloat(category, name, (Float) data));
-	}
+    /**
+     * @param setting
+     * @param name
+     */
+    public FloatSetting(String category, String name, Float setting, Side side) {
+        super(category, name, setting, side);
+    }
 
-	@Override
-	public void write(INIProperties ini) {
-		ini.writeFloat(category, name, ((Float) data).floatValue());
-		this.lastData = data;
-	}
+    @Override
+    public void read(INIProperties ini) throws INIPropertiesReadFailure {
+        data = new Float(ini.readFloat(category, name, (Float) data));
+    }
 
-	public float getFloatValue() {
-		return ((Float) data).floatValue();
-	}
+    @Override
+    public void write(INIProperties ini) {
+        ini.writeFloat(category, name, ((Float) data).floatValue());
+        this.lastData = data;
+    }
 
-	public void setFloatValue(float value) {
-		this.data = new Float(value);
-	}
+    public float getFloatValue() {
+        return ((Float) data).floatValue();
+    }
 
-	private Object lastData;
+    public void setFloatValue(float value) {
+        this.data = new Float(value);
+    }
 
-	@Override
-	public boolean hasChanged() {
-		return data != lastData;
-	}
+    @Override
+    public boolean hasChanged() {
+        return data != lastData;
+    }
 }

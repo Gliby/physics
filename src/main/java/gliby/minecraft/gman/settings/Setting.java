@@ -1,96 +1,92 @@
 package gliby.minecraft.gman.settings;
 
-import java.util.ArrayList;
-
 import gliby.minecraft.gman.settings.INIProperties.INIPropertiesReadFailure;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
+
+import java.util.ArrayList;
 
 /**
  *
  */
 public abstract class Setting {
 
-	public enum Side {
-		CLIENT, SERVER, BOTH;
+    public final String name, category;
+    public final Side side;
+    public Object data;
+    private boolean hidden;
+    private ArrayList<Listener> writeListeners;
+    private ArrayList<Listener> readListeners;
 
-		public static Side getEffectiveSide() {
-			return toSide(FMLCommonHandler.instance().getEffectiveSide());
-		}
+    /**
+     * @param data
+     * @param name
+     */
+    Setting(String category, String name, Object data, Side side) {
+        this.category = category;
+        this.name = name;
+        this.data = data;
+        this.side = side;
+        this.readListeners = new ArrayList<Setting.Listener>();
+        this.writeListeners = new ArrayList<Setting.Listener>();
+    }
 
-		private static Side toSide(net.minecraftforge.fml.relauncher.Side effectiveSide) {
-			return effectiveSide == net.minecraftforge.fml.relauncher.Side.CLIENT ? Side.CLIENT : Side.SERVER;
-		}
-	}
+    public Object getSettingData() {
+        return data;
+    }
 
-	public final String name, category;
-	public final Side side;
-	public Object data;
+    public abstract boolean hasChanged();
 
-	/**
-	 * @param data
-	 * @param name
-	 */
-	Setting(String category, String name, Object data, Side side) {
-		this.category = category;
-		this.name = name;
-		this.data = data;
-		this.side = side;
-		this.readListeners = new ArrayList<Setting.Listener>();
-		this.writeListeners = new ArrayList<Setting.Listener>();
-	}
+    public abstract void read(final INIProperties ini) throws INIPropertiesReadFailure;
 
-	public Object getSettingData() {
-		return data;
-	}
+    public abstract void write(final INIProperties ini);
 
-	public abstract boolean hasChanged();
+    @Override
+    public String toString() {
+        return this.getClass().getSimpleName() + " - " + ": " + data;
+    }
 
-	public abstract void read(final INIProperties ini) throws INIPropertiesReadFailure;
+    public boolean isHidden() {
+        return hidden;
+    }
 
-	public abstract void write(final INIProperties ini);
+    public Setting setHidden(boolean hidden) {
+        this.hidden = hidden;
+        return this;
+    }
 
-	@Override
-	public String toString() {
-		return this.getClass().getSimpleName() + " - " + ": " + data;
-	}
+    public ArrayList<Listener> getWriteListeners() {
+        return writeListeners;
+    }
 
-	private boolean hidden;
+    public Setting addWriteListener(Listener listener) {
+        writeListeners.add(listener);
+        return this;
+    }
 
-	public boolean isHidden() {
-		return hidden;
-	}
+    public ArrayList<Listener> getReadListeners() {
+        return readListeners;
+    }
 
-	public Setting setHidden(boolean hidden) {
-		this.hidden = hidden;
-		return this;
-	}
+    public Setting addReadListener(Listener listener) {
+        readListeners.add(listener);
+        return this;
+    }
 
-	public static interface Listener {
+    public enum Side {
+        CLIENT, SERVER, BOTH;
 
-		public void listen(final INIProperties ini);
+        public static Side getEffectiveSide() {
+            return toSide(FMLCommonHandler.instance().getEffectiveSide());
+        }
 
-	}
+        private static Side toSide(net.minecraftforge.fml.relauncher.Side effectiveSide) {
+            return effectiveSide == net.minecraftforge.fml.relauncher.Side.CLIENT ? Side.CLIENT : Side.SERVER;
+        }
+    }
 
-	private ArrayList<Listener> writeListeners;
+    public interface Listener {
 
-	public ArrayList<Listener> getWriteListeners() {
-		return writeListeners;
-	}
+        void listen(final INIProperties ini);
 
-	public Setting addWriteListener(Listener listener) {
-		writeListeners.add(listener);
-		return this;
-	}
-
-	private ArrayList<Listener> readListeners;
-
-	public ArrayList<Listener> getReadListeners() {
-		return readListeners;
-	}
-
-	public Setting addReadListener(Listener listener) {
-		readListeners.add(listener);
-		return this;
-	}
+    }
 }

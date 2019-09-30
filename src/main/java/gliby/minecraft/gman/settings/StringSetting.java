@@ -1,44 +1,42 @@
 package gliby.minecraft.gman.settings;
 
-import net.minecraftforge.fml.relauncher.Side;
-
 /**
  *
  */
 public class StringSetting extends Setting {
 
-	/**
-	 * @param setting
-	 * @param name
-	 */
-	StringSetting(String category, String name, String setting, Side side) {
-		super(category, name, setting, side);
-	}
+    private Object lastData;
 
-	@Override
-	public void read(INIProperties ini) {
-		data = new String(ini.readString(category, name, ((String) data)));
-	}
+    /**
+     * @param setting
+     * @param name
+     */
+    StringSetting(String category, String name, String setting, Side side) {
+        super(category, name, setting, side);
+    }
 
-	@Override
-	public void write(INIProperties ini) {
-		ini.writeString(category, name, ((String) data));
-		lastData = data;
-	}
+    @Override
+    public void read(INIProperties ini) {
+        data = ini.readString(category, name, ((String) data));
+    }
 
-	private Object lastData;
+    @Override
+    public void write(INIProperties ini) {
+        ini.writeString(category, name, ((String) data));
+        lastData = data;
+    }
 
-	public String getString() {
-		return (String) data;
-	}
+    public String getString() {
+        return (String) data;
+    }
 
-	public void setString(String s) {
-		this.data = s;
-	}
+    public void setString(String s) {
+        this.data = s;
+    }
 
-	@Override
-	public boolean hasChanged() {
-		return data != lastData;
-	}
+    @Override
+    public boolean hasChanged() {
+        return data != lastData;
+    }
 
 }

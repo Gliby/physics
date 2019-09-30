@@ -1,25 +1,25 @@
 package gliby.minecraft.physics.common.physics.engine;
 
-import java.util.List;
+import gliby.minecraft.physics.common.physics.PhysicsWorld;
 
 import javax.vecmath.Vector3f;
-
-import gliby.minecraft.physics.common.physics.PhysicsWorld;
+import java.util.List;
 
 /**
  * Ropes are pretty much just inertial-less spheres, attached to each other.
- *
  */
 public interface IRope {
 
-	public List<Vector3f> getSpherePositions();
+    List<Vector3f> getSpherePositions();
 
-	void create(PhysicsWorld physicsWorld);
-	
-	public int getDetail();
-	public Vector3f getStartPosition();
-	public Vector3f getEndPosition();
+    void create(PhysicsWorld physicsWorld);
 
-	public void dispose(PhysicsWorld physicsWorld);
-	
+    int getDetail();
+
+    Vector3f getStartPosition();
+
+    Vector3f getEndPosition();
+
+    void dispose(PhysicsWorld physicsWorld);
+
 }

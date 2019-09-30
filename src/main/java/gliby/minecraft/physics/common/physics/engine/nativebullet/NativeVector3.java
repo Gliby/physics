@@ -1,36 +1,35 @@
 package gliby.minecraft.physics.common.physics.engine.nativebullet;
 
 import com.badlogic.gdx.math.Vector3;
-
 import gliby.minecraft.physics.common.physics.engine.IVector3;
 
 public class NativeVector3 implements IVector3 {
 
-	@Override
-	public float getX() {
-		return vector3.x;
-	}
+    Vector3 vector3;
 
-	@Override
-	public float getY() {
-		return vector3.y;
-	}
+    public NativeVector3(Vector3 vector3) {
+        this.vector3 = vector3;
+    }
 
-	@Override
-	public float getZ() {
-		return vector3.z;
-	}
+    @Override
+    public float getX() {
+        return vector3.x;
+    }
 
-	public IVector3 set(Vector3 vec3) {
-		this.vector3.x = vec3.x;
-		this.vector3.y = vec3.y;
-		this.vector3.z = vec3.z;
-		return this;
-	}
+    @Override
+    public float getY() {
+        return vector3.y;
+    }
 
-	Vector3 vector3;
+    @Override
+    public float getZ() {
+        return vector3.z;
+    }
 
-	public NativeVector3(Vector3 vector3) {
-		this.vector3 = vector3;
-	}
+    public IVector3 set(Vector3 vec3) {
+        this.vector3.x = vec3.x;
+        this.vector3.y = vec3.y;
+        this.vector3.z = vec3.z;
+        return this;
+    }
 }

@@ -5,21 +5,21 @@ package gliby.minecraft.physics.common.physics.engine;
  */
 public interface IConstraint {
 
-	/**
-	 * @return
-	 */
-	Object getConstraint();
+    /**
+     * @return
+     */
+    Object getConstraint();
 
-	/**
-	 * @return
-	 */
-	boolean isPoint2Point();
+    /**
+     * @return
+     */
+    boolean isPoint2Point();
 
-	/**
-	 * @return
-	 */
-	boolean isGeneric6Dof();
-	
-	boolean isSlider();
-	
+    /**
+     * @return
+     */
+    boolean isGeneric6Dof();
+
+    boolean isSlider();
+
 }

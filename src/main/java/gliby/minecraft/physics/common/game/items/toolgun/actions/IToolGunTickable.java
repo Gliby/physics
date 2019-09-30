@@ -4,6 +4,6 @@ import gliby.minecraft.physics.common.physics.PhysicsWorld;
 
 public interface IToolGunTickable {
 
-	void update(PhysicsWorld physicsWorld);
+    void update(PhysicsWorld physicsWorld);
 
 }

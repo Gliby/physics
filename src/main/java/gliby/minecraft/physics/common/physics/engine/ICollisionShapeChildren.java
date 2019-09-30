@@ -7,8 +7,8 @@ import com.bulletphysicsx.linearmath.Transform;
  */
 public interface ICollisionShapeChildren {
 
-	public Transform getTransform();
+    Transform getTransform();
 
-	public ICollisionShape getCollisionShape();
-	
+    ICollisionShape getCollisionShape();
+
 }

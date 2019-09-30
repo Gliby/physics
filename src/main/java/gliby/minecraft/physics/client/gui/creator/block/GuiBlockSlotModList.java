@@ -12,103 +12,101 @@ package gliby.minecraft.physics.client.gui.creator.block;
  *     cpw - implementation
  */
 
-import java.util.ArrayList;
-
 import gliby.minecraft.physics.client.gui.creator.block.GuiScreenBlockCreator2.BlockIdentifier;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.StringUtils;
-import net.minecraftforge.fml.client.GuiScrollingList;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.LoaderState.ModState;
 import net.minecraftforge.fml.common.ModContainer;
 
+import java.util.ArrayList;
+
 /**
  * @author cpw
- *
  */
 public class GuiBlockSlotModList extends GuiCustomScrollingList {
-	private GuiScreenBlockCreator2 parent;
-	private ArrayList<ModContainer> mods;
+    private GuiScreenBlockCreator2 parent;
+    private ArrayList<ModContainer> mods;
 
-	public GuiBlockSlotModList(GuiScreenBlockCreator2 parent, ArrayList<ModContainer> mods, int listWidth) {
-		super(parent.getMinecraftInstance(), listWidth, parent.height, 32, parent.height - 88 + 4, 10, 35);
-		this.parent = parent;
-		this.mods = mods;
-	}
+    public GuiBlockSlotModList(GuiScreenBlockCreator2 parent, ArrayList<ModContainer> mods, int listWidth) {
+        super(parent.getMinecraftInstance(), listWidth, parent.height, 32, parent.height - 88 + 4, 10, 35);
+        this.parent = parent;
+        this.mods = mods;
+    }
 
-	@Override
-	protected int getSize() {
-		return mods.size();
-	}
+    @Override
+    protected int getSize() {
+        return mods.size();
+    }
 
-	@Override
-	protected void elementClicked(int var1, boolean var2) {
-		this.parent.selectModIndex(var1);
-	}
+    @Override
+    protected void elementClicked(int var1, boolean var2) {
+        this.parent.selectModIndex(var1);
+    }
 
-	@Override
-	protected boolean isSelected(int var1) {
-		return this.parent.modIndexSelected(var1);
-	}
+    @Override
+    protected boolean isSelected(int var1) {
+        return this.parent.modIndexSelected(var1);
+    }
 
-	@Override
-	protected void drawBackground() {
-		this.parent.drawDefaultBackground();
-	}
+    @Override
+    protected void drawBackground() {
+        this.parent.drawDefaultBackground();
+    }
 
-	@Override
-	protected int getContentHeight() {
-		return (this.getSize()) * 35 + 1;
-	}
+    @Override
+    protected int getContentHeight() {
+        return (this.getSize()) * 35 + 1;
+    }
 
-	ArrayList<ModContainer> getMods() {
-		return mods;
-	}
+    ArrayList<ModContainer> getMods() {
+        return mods;
+    }
 
-	@Override
-	protected void drawSlot(int listIndex, int var2, int var3, int var4, Tessellator var5) {
-		ModContainer mc = mods.get(listIndex);
-		String name = StringUtils.stripControlCodes(mc.getName());
-		ArrayList<BlockIdentifier> blocks = parent.getBlockIdentifiers(mc);
-		String version = (blocks != null ? blocks.size() : 0) + " blocks";
-		String hasPhysicsBlocks = "0" + " physics blocks";
-		if (Loader.instance().getModState(mc) == ModState.DISABLED) {
-			this.parent.getFontRenderer().drawString(
-					this.parent.getFontRenderer().trimStringToWidth(name, listWidth - 10), this.left + 3, var3 + 2,
-					0xFF2222);
-			this.parent.getFontRenderer().drawString(
-					this.parent.getFontRenderer().trimStringToWidth(version, listWidth - 10), this.left + 3, var3 + 12,
-					0xFF2222);
-			this.parent.getFontRenderer().drawString(
-					this.parent.getFontRenderer().trimStringToWidth("DISABLED", listWidth - 10), this.left + 3,
-					var3 + 22, 0xFF2222);
-		} else {
-			this.parent.getFontRenderer().drawString(
-					this.parent.getFontRenderer().trimStringToWidth(name, listWidth - 10), this.left + 3, var3 + 2,
-					0xFFFFFF);
-			this.parent.getFontRenderer().drawString(
-					this.parent.getFontRenderer().trimStringToWidth(version, listWidth - 10), this.left + 3, var3 + 12,
-					(blocks == null ? true : blocks.isEmpty()) ? 0xFF2222 : 0xCCCCCC);
-			this.parent.getFontRenderer().drawString(
-					this.parent.getFontRenderer().trimStringToWidth(hasPhysicsBlocks, listWidth - 10), this.left + 3,
-					var3 + 22, 0xCCCCCC);
-		}
-	}
+    @Override
+    protected void drawSlot(int listIndex, int var2, int var3, int var4, Tessellator var5) {
+        ModContainer mc = mods.get(listIndex);
+        String name = StringUtils.stripControlCodes(mc.getName());
+        ArrayList<BlockIdentifier> blocks = parent.getBlockIdentifiers(mc);
+        String version = (blocks != null ? blocks.size() : 0) + " blocks";
+        String hasPhysicsBlocks = "0" + " physics blocks";
+        if (Loader.instance().getModState(mc) == ModState.DISABLED) {
+            this.parent.getFontRenderer().drawString(
+                    this.parent.getFontRenderer().trimStringToWidth(name, listWidth - 10), this.left + 3, var3 + 2,
+                    0xFF2222);
+            this.parent.getFontRenderer().drawString(
+                    this.parent.getFontRenderer().trimStringToWidth(version, listWidth - 10), this.left + 3, var3 + 12,
+                    0xFF2222);
+            this.parent.getFontRenderer().drawString(
+                    this.parent.getFontRenderer().trimStringToWidth("DISABLED", listWidth - 10), this.left + 3,
+                    var3 + 22, 0xFF2222);
+        } else {
+            this.parent.getFontRenderer().drawString(
+                    this.parent.getFontRenderer().trimStringToWidth(name, listWidth - 10), this.left + 3, var3 + 2,
+                    0xFFFFFF);
+            this.parent.getFontRenderer().drawString(
+                    this.parent.getFontRenderer().trimStringToWidth(version, listWidth - 10), this.left + 3, var3 + 12,
+                    (blocks == null || blocks.isEmpty()) ? 0xFF2222 : 0xCCCCCC);
+            this.parent.getFontRenderer().drawString(
+                    this.parent.getFontRenderer().trimStringToWidth(hasPhysicsBlocks, listWidth - 10), this.left + 3,
+                    var3 + 22, 0xCCCCCC);
+        }
+    }
 
-	public int getRight() {
-		return right;
-	}
+    public int getRight() {
+        return right;
+    }
 
-	public int getBottom() {
-		return bottom;
-	}
+    public int getBottom() {
+        return bottom;
+    }
 
-	public int getListWidth() {
-		return listWidth;
-	}
+    public int getListWidth() {
+        return listWidth;
+    }
 
-	public int setSelectedIndex(int indexOf) {
-		return selectedIndex = indexOf;
-	}
+    public int setSelectedIndex(int indexOf) {
+        return selectedIndex = indexOf;
+    }
 
 }

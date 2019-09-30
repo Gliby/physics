@@ -1,45 +1,44 @@
 package gliby.minecraft.gman.settings;
 
 import gliby.minecraft.gman.settings.INIProperties.INIPropertiesReadFailure;
-import net.minecraftforge.fml.relauncher.Side;
 
 /**
  *
  */
 public class IntegerSetting extends Setting {
 
-	/**
-	 * @param setting
-	 * @param name
-	 */
-	public IntegerSetting(String category, String name, Integer setting, Side side) {
-		super(category, name, setting, side);
-	}
+    private Object lastData;
 
-	@Override
-	public void read(INIProperties ini) throws INIPropertiesReadFailure {
-		data = new Integer(
-				ini.readInteger(category, name, ((Integer)data).intValue()));
-	}
+    /**
+     * @param setting
+     * @param name
+     */
+    public IntegerSetting(String category, String name, Integer setting, Side side) {
+        super(category, name, setting, side);
+    }
 
-	@Override
-	public void write(INIProperties ini) {
-		ini.writeInteger(category, name, ((Integer) data).intValue());
-		lastData = data;
-	}
+    @Override
+    public void read(INIProperties ini) throws INIPropertiesReadFailure {
+        data = new Integer(
+                ini.readInteger(category, name, ((Integer) data).intValue()));
+    }
 
-	public int getIntValue() {
-		return ((Integer) data).intValue();
-	}
+    @Override
+    public void write(INIProperties ini) {
+        ini.writeInteger(category, name, ((Integer) data).intValue());
+        lastData = data;
+    }
 
-	public void setIntValue(int value) {
-		this.data = new Integer(value);
-	}
+    public int getIntValue() {
+        return ((Integer) data).intValue();
+    }
 
-	private Object lastData;
+    public void setIntValue(int value) {
+        this.data = new Integer(value);
+    }
 
-	@Override
-	public boolean hasChanged() {
-		return data != lastData;
-	}
+    @Override
+    public boolean hasChanged() {
+        return data != lastData;
+    }
 }

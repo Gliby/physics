@@ -1,57 +1,56 @@
 package gliby.minecraft.physics.common.physics.engine;
 
-import java.util.List;
+import gliby.minecraft.physics.common.physics.PhysicsWorld;
 
 import javax.vecmath.Vector3f;
-
-import gliby.minecraft.physics.common.physics.PhysicsWorld;
+import java.util.List;
 
 /**
  *
  */
 public interface ICollisionShape {
 
-	PhysicsWorld getPhysicsWorld();
-	
-	
-	/**
-	 * @return
-	 */
-	Object getCollisionShape();
+    PhysicsWorld getPhysicsWorld();
 
-	/**
-	 * @return
-	 */
-	int getShapeType();
 
-	/**
-	 * @return
-	 */
-	boolean isBoxShape();
+    /**
+     * @return
+     */
+    Object getCollisionShape();
 
-	/**
-	 * @return
-	 */
-	boolean isCompoundShape();
+    /**
+     * @return
+     */
+    int getShapeType();
 
-	void setLocalScaling(Vector3f localScaling);
-	
-	/**
-	 * @param mass
-	 * @param localInertia
-	 */
-	void calculateLocalInertia(float mass, Object localInertia);
+    /**
+     * @return
+     */
+    boolean isBoxShape();
 
-	/**
-	 * Only applies to box shapes.
-	 * 
-	 * @param halfExtent
-	 */
-	void getHalfExtentsWithMargin(Vector3f halfExtent);
+    /**
+     * @return
+     */
+    boolean isCompoundShape();
 
-	/**
-	 * @return
-	 */
-	List<ICollisionShapeChildren> getChildren();
+    void setLocalScaling(Vector3f localScaling);
+
+    /**
+     * @param mass
+     * @param localInertia
+     */
+    void calculateLocalInertia(float mass, Object localInertia);
+
+    /**
+     * Only applies to box shapes.
+     *
+     * @param halfExtent
+     */
+    void getHalfExtentsWithMargin(Vector3f halfExtent);
+
+    /**
+     * @return
+     */
+    List<ICollisionShapeChildren> getChildren();
 
 }

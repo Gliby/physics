@@ -1,35 +1,31 @@
-buildscript {
-    repositories {
-        jcenter()
-        maven { url = "http://files.minecraftforge.net/maven" }
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
-    }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
-        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.2'
-    }
+plugins {
+    id "net.minecraftforge.gradle.forge" version "2.0.2"
 }
 
-apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: 'com.github.johnrengelman.shadow'
-
-version = "0.3.0"
+version = "0.4.0"
 group= "gliby.minecraft" 
 archivesBaseName = "glibysphysics"
 
 minecraft {
-    version = "1.8-11.14.4.1577"
-    runDir = "run"
-    mappings = "snapshot_20141130"
+    version = "1.8-11.14.4.1563"
     
-    makeObfSourceJar = false 
-
+    if(file('../run').exists()) {
+        runDir = "../run/assets"
+    } else {
+        runDir = "assets"
+    }    
+    
+    mappings = "snapshot_20141130"
     replace '@VERSION@', project.version
     replace '@MC_VERSION@', version
 }
 
+dependencies {
+    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.0'    
+    compile files('lib/gdx-bullet.jar')
+    compile files('lib/gdx-bullet-natives.jar')
+    compile files('lib/gdx.jar')
+}
 
 processResources
 {
@@ -38,39 +34,12 @@ processResources
 
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-                
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
-        
+    
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
-}
-
-shadowJar {
-    classifier = ''
-    relocate "org.apache.commons.math3", "gliby.repackage.org.apache.commons.math3"
-    relocate "com.badlogic", "com.badlogic"
-    relocate "com.bulletphysicsx", "gliby.repackage.com.bulletphysicsx"
-    configurations = [project.configurations.shadow]
-}
-
-reobf {
-    shadowJar { mappingType = 'SEARGE' }
-}
-
-tasks.build.dependsOn reobfShadowJar
-
-artifacts {
-    archives shadowJar
-}
-
-dependencies {
-    shadow group: 'org.apache.commons', name: 'commons-math3', version: '3.0'
-    shadow group: 'javax.vecmath', name: 'vecmath', version: '1.5.2'
-    shadow files('lib/gdx-bullet.jar')
-    shadow files('lib/gdx-bullet-natives.jar')
-    shadow files('lib/gdx.jar')
 }
 
 jar {

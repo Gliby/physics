@@ -2,13 +2,13 @@ package gliby.minecraft.physics.common.physics.engine;
 
 public interface IQuaternion {
 
-	public float getX();
+    float getX();
 
-	public float getY();
+    float getY();
 
-	public float getZ();
+    float getZ();
 
-	public float getW();
+    float getW();
 
-	
+
 }

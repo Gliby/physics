@@ -23,7 +23,7 @@ archivesBaseName = "glibysphysics"
 
 minecraft {
     version = "1.8-11.14.3.1450"
-     if(file('../run').exists()) {
+    if(file('../run').exists()) {
         runDir = "../run/assets"
     } else {
         runDir = "assets"

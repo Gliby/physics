@@ -1,7 +1,6 @@
 package gliby.minecraft.physics.common.physics.engine;
 
 import com.bulletphysicsx.linearmath.Transform;
-
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import net.minecraft.entity.Entity;
 
@@ -9,32 +8,32 @@ import net.minecraft.entity.Entity;
  *
  */
 public interface ICollisionObject {
-	
-	PhysicsWorld getPhysicsWorld();
 
-	public Entity getOwner();
-	
-	
-	public Object getCollisionObject();
+    PhysicsWorld getPhysicsWorld();
 
-	/**
-	 * @param entityTransform
-	 */
-	public void setWorldTransform(Transform entityTransform);
+    Entity getOwner();
 
-	/**
-	 * @param iCollisionShape
-	 */
-	public void setCollisionShape(ICollisionShape iCollisionShape);
 
-	/**
-	 * @param characterObject
-	 */
-	public void setCollisionFlags(int characterObject);
+    Object getCollisionObject();
 
-	/**
-	 * @param entityTransform
-	 */
-	public void setInterpolationWorldTransform(Transform entityTransform);
-	
+    /**
+     * @param entityTransform
+     */
+    void setWorldTransform(Transform entityTransform);
+
+    /**
+     * @param iCollisionShape
+     */
+    void setCollisionShape(ICollisionShape iCollisionShape);
+
+    /**
+     * @param characterObject
+     */
+    void setCollisionFlags(int characterObject);
+
+    /**
+     * @param entityTransform
+     */
+    void setInterpolationWorldTransform(Transform entityTransform);
+
 }

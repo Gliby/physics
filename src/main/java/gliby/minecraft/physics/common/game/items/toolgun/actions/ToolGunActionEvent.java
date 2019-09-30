@@ -7,20 +7,20 @@ import net.minecraftforge.fml.common.eventhandler.Event;
  */
 public class ToolGunActionEvent extends Event {
 
-	private Object action;
+    private Object action;
 
-	public ToolGunActionEvent(Object action) {
-		this.action = action;
-	}
+    public ToolGunActionEvent(Object action) {
+        this.action = action;
+    }
 
-	public static class Register extends ToolGunActionEvent {
+    public static class Register extends ToolGunActionEvent {
 
-		private boolean isDefault;
+        private boolean isDefault;
 
-		Register(Object action, boolean isDefault) {
-			super(action);
-			this.isDefault = isDefault;
-		}
-	}
+        Register(Object action, boolean isDefault) {
+            super(action);
+            this.isDefault = isDefault;
+        }
+    }
 
 }
