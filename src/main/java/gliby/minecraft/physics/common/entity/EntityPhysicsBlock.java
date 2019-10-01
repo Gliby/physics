@@ -141,7 +141,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
             this.collisionShape = physicsWorld.getBlockCache().getShape(world,new BlockPos(x, y, z), blockState);
 
 
-        Physics.getLogger().error("Block doesn't exist, couldn't create collision shape");
+//        Physics.getLogger().error("Block doesn't exist, couldn't create collision shape");
 
 
         createPhysicsObject(physicsWorld);

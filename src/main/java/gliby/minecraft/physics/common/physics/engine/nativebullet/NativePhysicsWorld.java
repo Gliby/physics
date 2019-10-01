@@ -466,12 +466,8 @@ public class NativePhysicsWorld extends PhysicsWorld {
             quickDispose(collisionObject);
         }
 
-        for (IRigidBody body : rigidBodies) {
-            body.dispose();
-        }
         rigidBodies.clear();
 
-        quickDispose(dynamicsWorld.getCollisionWorld());
         quickDispose(dynamicsWorld);
         quickDispose(broadphase);
         quickDispose(sequentialSolver);
@@ -491,6 +487,11 @@ public class NativePhysicsWorld extends PhysicsWorld {
         voxelShape = null;
         voxelBody = null;
         voxelInfo = null;
+
+        for (IRigidBody body : rigidBodies) {
+            body.dispose();
+        }
+        rigidBodies.clear();
 
         super.dispose();
 
