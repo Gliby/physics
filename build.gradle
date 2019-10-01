@@ -50,3 +50,6 @@ jar {
         attributes 'FMLAT' : 'GlibysPhysics_at.cfg'
     }
 }
+
+// InteliJ 14 support
+idea { module { inheritOutputDirs = true } }

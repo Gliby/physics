@@ -17,14 +17,8 @@ $ ./export.sh
 $ ./setupWorkspace.sh
 ```
 
-### Setting up IDE (InteliJ)
-1. First run:
-```sh
-$ ./gradlew setupDecompWorkspace
-```
-```sh
-$ ./gradlew idea
-```
+### Setting up IDE (IntelliJ IDEA)
+1. Import ```build.gradle``` into IntelliJ and follow https://mcforge.readthedocs.io/en/latest/gettingstarted/#terminal-free-intellij-idea-configuration
 
 ### Setting up IDE (Eclipse)
 1. Get the MDK https://files.minecraftforge.net/maven/net/minecraftforge/forge/index_1.8.html, copy the ``'eclipse'`` from the MDK to this project's root. Continue:
