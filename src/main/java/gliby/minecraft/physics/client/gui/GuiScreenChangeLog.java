@@ -184,7 +184,7 @@ public class GuiScreenChangeLog extends GuiScreen {
         private ArrayList<Page> addPage(List<String> changes, FontRenderer fontRenderer, int wrap) {
             ArrayList<String> texts = new ArrayList<String>();
             for (String s : changes) {
-                if (!s.startsWith(PREFIX_TITLE)) {
+                if (!s.startsWith(PREFIX_TITLE) && !s.isEmpty()) {
                     s = " * " + s + "";
                 }
                 texts.addAll(fontRenderer.listFormattedStringToWidth(s, wrap));

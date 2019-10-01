@@ -63,13 +63,12 @@ public class ExplosionHandler {
                     IRigidBody body = affectedEntities.get(i).getRigidBody();
                     Vector3f centerOfMass = body.getCenterOfMassPosition(new Vector3f());
                     Vector3f direction = new Vector3f();
-                    direction.sub(centerOfMass, explosion);
+                    direction.sub(explosion, centerOfMass);
                     float distance = direction.length();
-                    if (distance <= explosionRadius) {
+                    if (distance <= explosionRadius && body.isValid()) {
                         direction.normalize();
                         float forceMultiplier = explosionRadius / (1 + explosionRadius - distance);
-                        direction.scale(Math.abs(force * forceMultiplier));
-//                        System.out.println("applied force: " + direction);
+                        direction.scale(force * Math.abs(forceMultiplier));
                         body.applyCentralImpulse(direction);
                     }
                 }
