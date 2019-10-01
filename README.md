@@ -1,5 +1,9 @@
 Gliby's Physics (1.8 branch)
 =============
+<p align="center"> 
+<img src="https://raw.githubusercontent.com/Gliby/physics/1.8/src/main/resources/logo.png" alt="Gliby's Physics">
+</p>
+
 
 Gliby's Physics is a Minecraft Forge modification which adds realistic physics simulation.
 
@@ -8,17 +12,25 @@ Gliby's Physics is a Minecraft Forge modification which adds realistic physics s
 ```sh
 $ ./export.sh
 ```
-
+## Development
 ### Setting up workspace from terminal.
 ```sh
 $ ./setupWorkspace.sh
 ```
 
-### Setting IDE (InteliJ)
-* Import ```build.gradle``` and follow https://mcforge.readthedocs.io/en/latest/gettingstarted/#terminal-free-intellij-idea-configuration
+### Setting up IDE (InteliJ)
+```sh
+$ ./gradlew setupDecompWorkspace
+```
+```sh
+$ ./gradlew idea
+```
 
-### Setting IDE (Eclipse)
-* Get the MDK https://files.minecraftforge.net/maven/net/minecraftforge/forge/index_1.8.html, and put the 'eclipse' dir in the root of the project. Then run:
+### Setting up IDE (Eclipse)
+* Get the MDK https://files.minecraftforge.net/maven/net/minecraftforge/forge/index_1.8.html, copy the ``'eclipse'`` from the MDK to this project's root. Continue:
+```sh
+$ ./setupWorkspace.sh
+```
 ```sh
 $ ./gradlew -b setupWorkspace.gradle eclipse
 ```
