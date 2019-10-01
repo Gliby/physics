@@ -158,7 +158,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
         if (dynamicsWorld != null) {
             final float delta = getDelta();
             final int maxSubStep = Math.max(1, Math.round(delta / 7));
-            System.out.println("max substepping:" + maxSubStep);
             dynamicsWorld.stepSimulation(1, maxSubStep);
             super.update();
         }
