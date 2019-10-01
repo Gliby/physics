@@ -34,6 +34,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
     private final Physics physics;
     private List<IRigidBody> rigidBodies;
     private List<IConstraint> constraints;
+
     private DiscreteDynamicsWorld dynamicsWorld;
     private List<IRope> ropes;
 
@@ -168,6 +169,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
         dynamicsWorld.clearForces();
         dynamicsWorld.destroy();
+        dynamicsWorld = null;
     }
 
     @Override
