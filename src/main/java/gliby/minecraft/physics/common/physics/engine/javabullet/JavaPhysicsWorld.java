@@ -82,7 +82,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
     protected void update() {
         if (dynamicsWorld != null) {
             final float delta = getDelta();
-            final int maxSubStep = Math.max(1, Math.round(delta / 7));
+            final int maxSubStep = Math.max(1, Math.round(delta / 10));
             dynamicsWorld.stepSimulation(1, maxSubStep);
             super.update();
         }
@@ -336,6 +336,8 @@ public class JavaPhysicsWorld extends PhysicsWorld {
     public void dispose() {
         dynamicsWorld.removeRigidBody(blockCollisionBody);
         blockCollisionBody.destroy();
+
+
 
         for (IRigidBody body : rigidBodies) {
             RigidBody rigidBody = (RigidBody) body.getBody();

@@ -157,7 +157,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
     protected void update() {
         if (dynamicsWorld != null && !dynamicsWorld.isDisposed() && voxelBody != null && !voxelBody.isDisposed()) {
             final float delta = getDelta();
-            final int maxSubStep = Math.max(1, Math.round(delta / 6));
+            final int maxSubStep = Math.max(1, Math.round(delta / 10));
             dynamicsWorld.stepSimulation(1, maxSubStep);
             super.update();
         }
@@ -459,6 +459,8 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
     @Override
     public void dispose() {
+
+        dynamicsWorld.removeCollisionObject(voxelBody);
 
         for (int i = 0; i < dynamicsWorld.getNumCollisionObjects(); i++) {
             btCollisionObject collisionObject = dynamicsWorld.getCollisionObjectArray().at(i);
