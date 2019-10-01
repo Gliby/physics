@@ -1,6 +1,5 @@
 package gliby.minecraft.physics.common.physics;
 
-import com.bulletphysicsx.linearmath.Clock;
 import com.bulletphysicsx.linearmath.Transform;
 import com.google.gson.annotations.SerializedName;
 import gliby.minecraft.gman.WorldUtility;
@@ -24,7 +23,6 @@ public abstract class PhysicsWorld {
     private final IPhysicsWorldConfiguration physicsConfiguration;
     private final Vector3f gravityDirection;
     protected HashMap<String, PhysicsMechanic> physicsMechanics;
-    protected Clock clock = new Clock();
 
     public PhysicsWorld(final IPhysicsWorldConfiguration physicsConfiguration) {
         this.physicsConfiguration = physicsConfiguration;
@@ -51,6 +49,7 @@ public abstract class PhysicsWorld {
             PhysicsMechanic mechanic = ((Map.Entry<String, PhysicsMechanic>) it.next()).getValue();
             mechanic.init();
         }
+        getDelta();
     }
 
     public ICollisionShape createBlockShape(final World worldObj, final BlockPos blockPos, final IBlockState blockState) {
@@ -77,19 +76,57 @@ public abstract class PhysicsWorld {
         physicsMechanics.clear();
     }
 
-    public float getDeltaTimeMicroseconds() {
-        float dt = clock.getTimeMicroseconds();
-        clock.reset();
-        return dt;
-    }
-
-
-    protected void update(final int maxSubSteps) {
+    protected void update() {
         final Iterator it = physicsMechanics.entrySet().iterator();
         while (it.hasNext()) {
             final PhysicsMechanic mechanic = ((Map.Entry<String, PhysicsMechanic>) it.next()).getValue();
             mechanic.update();
         }
+        updateFPS();
+    }
+
+    /** time at last frame */
+    long lastFrame;
+
+    /** frames per second */
+    int fps;
+    /** last fps time */
+    long lastFPS;
+
+
+    /**
+     * Calculate how many milliseconds have passed
+     * since last frame.
+     *
+     * @return milliseconds passed since last frame
+     */
+    public int getDelta() {
+        long time = getTime();
+        int delta = (int) (time - lastFrame);
+        lastFrame = time;
+
+        return delta;
+    }
+
+    /**
+     * Get the accurate system time
+     *
+     * @return The system time in milliseconds
+     */
+    public long getTime() {
+        return System.currentTimeMillis();
+//        return (Sys.getTime() * 1000) / Sys.getTimerResolution();
+    }
+
+    /**
+     * Calculate the FPS and set it in the title bar
+     */
+    public void updateFPS() {
+        if (getTime() - lastFPS > 1000) {
+            fps = 0;
+            lastFPS += 1000;
+        }
+        fps++;
     }
 
     public abstract ICollisionShape buildCollisionShape(List<AxisAlignedBB> bbs, Vector3f offset);

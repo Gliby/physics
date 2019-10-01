@@ -98,7 +98,7 @@ public class PhysicsOverworld {
     @SubscribeEvent
     public void onWorldTick(final TickEvent.WorldTickEvent event) {
         if (event.world.playerEntities.size() > 0 && !event.world.isRemote) {
-            getPhysicsByWorld(event.world).update(1);
+            getPhysicsByWorld(event.world).update();
         }
 
     }

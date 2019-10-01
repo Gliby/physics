@@ -151,12 +151,16 @@ public class NativePhysicsWorld extends PhysicsWorld {
         super.create();
     }
 
+
+
     @Override
-    protected void update(final int maxSubSteps) {
+    protected void update() {
         if (dynamicsWorld != null) {
-            final float dt = getDeltaTimeMicroseconds() * 0.000001f;
-            dynamicsWorld.stepSimulation(dt, maxSubSteps, 1f / (float) getPhysicsConfiguration().getTicksPerSecond());
-            super.update(maxSubSteps);
+            final float delta = getDelta();
+            final int maxSubStep = Math.max(1, Math.round(delta / 7));
+            System.out.println("max substepping:" + maxSubStep);
+            dynamicsWorld.stepSimulation(1, maxSubStep);
+            super.update();
         }
     }
 
