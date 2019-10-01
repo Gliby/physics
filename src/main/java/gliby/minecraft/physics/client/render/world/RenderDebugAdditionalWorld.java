@@ -5,7 +5,8 @@ import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.client.render.RenderUtilities;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
-import gliby.minecraft.physics.common.physics.engine.*;
+import gliby.minecraft.physics.common.physics.engine.ICollisionShapeChildren;
+import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -14,7 +15,6 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
 
 import javax.vecmath.Vector3f;
 import java.nio.FloatBuffer;
@@ -106,39 +106,39 @@ public class RenderDebugAdditionalWorld {
             // Transform into world + physics offset because Minecraft is
             // special.
             glTranslatef(-world.x + 0.5F, -world.y + 0.5F, -world.z + 0.5F);
-            if (renderConstraint) {
-                for (int i = 0; i < physicsWorld.getConstraints().size(); i++) {
-                    IConstraint constraint = physicsWorld.getConstraints().get(i);
-                    if (constraint.isPoint2Point()) {
-                        IConstraintPoint2Point point2point = (IConstraintPoint2Point) constraint;
-                        Vector3f pointA = point2point.getPivotInA(new Vector3f());
-                        Vector3f pointB = point2point.getPivotInB(new Vector3f());
-                        glPushMatrix();
-                        GL11.glBegin(GL11.GL_LINES);
-                        GL11.glVertex3f(pointA.x, pointA.y, pointA.z);
-                        GL11.glVertex3f(pointB.x, pointB.y, pointB.z);
-                        GL11.glEnd();
-                        glPopMatrix();
-                    } else if (constraint.isGeneric6Dof()) {
-                        IConstraintGeneric6Dof generic6Dof = (IConstraintGeneric6Dof) constraint;
-                        Transform pointA = generic6Dof.getGlobalFrameOffsetA(new Transform());
-                        Transform pointB = generic6Dof.getGlobalFrameOffsetB(new Transform());
-                        glPushMatrix();
-                        glColor4f(1.0f, 0.2f, 0.2f, 1.0f);
-                        glDisable(GL_DEPTH_TEST);
-                        glLineWidth(999.0F);
-                        glBegin(GL11.GL_LINES);
-                        float size = 0;
-                        glVertex3f(pointA.origin.x - size, pointA.origin.y - size, pointA.origin.z - size);
-                        glVertex3f(pointB.origin.x + size, pointB.origin.y + size, pointB.origin.z + size);
-                        glEnd();
-                        glEnable(GL_DEPTH_TEST);
-                        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-                        glLineWidth(1.0F);
-                        glPopMatrix();
-                    }
-                }
-            }
+//            if (renderConstraint) {
+//                for (int i = 0; i < physicsWorld.getConstraints().size(); i++) {
+//                    IConstraint constraint = physicsWorld.getConstraints().get(i);
+//                    if (constraint.isPoint2Point()) {
+//                        IConstraintPoint2Point point2point = (IConstraintPoint2Point) constraint;
+//                        Vector3f pointA = point2point.getPivotInA(new Vector3f());
+//                        Vector3f pointB = point2point.getPivotInB(new Vector3f());
+//                        glPushMatrix();
+//                        GL11.glBegin(GL11.GL_LINES);
+//                        GL11.glVertex3f(pointA.x, pointA.y, pointA.z);
+//                        GL11.glVertex3f(pointB.x, pointB.y, pointB.z);
+//                        GL11.glEnd();
+//                        glPopMatrix();
+//                    } else if (constraint.isGeneric6Dof()) {
+//                        IConstraintGeneric6Dof generic6Dof = (IConstraintGeneric6Dof) constraint;
+//                        Transform pointA = generic6Dof.getGlobalFrameOffsetA(new Transform());
+//                        Transform pointB = generic6Dof.getGlobalFrameOffsetB(new Transform());
+//                        glPushMatrix();
+//                        glColor4f(1.0f, 0.2f, 0.2f, 1.0f);
+//                        glDisable(GL_DEPTH_TEST);
+//                        glLineWidth(999.0F);
+//                        glBegin(GL11.GL_LINES);
+//                        float size = 0;
+//                        glVertex3f(pointA.origin.x - size, pointA.origin.y - size, pointA.origin.z - size);
+//                        glVertex3f(pointB.origin.x + size, pointB.origin.y + size, pointB.origin.z + size);
+//                        glEnd();
+//                        glEnable(GL_DEPTH_TEST);
+//                        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+//                        glLineWidth(1.0F);
+//                        glPopMatrix();
+//                    }
+//                }
+//            }
 
             // for (int i = 0; i < physicsWorld.getRopes().size(); i++) {
             // IRope rope = physicsWorld.getRopes().get(i);

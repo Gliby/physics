@@ -21,7 +21,10 @@ minecraft {
 }
 
 dependencies {
-    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.0'    
+    // compile(group: 'org.terasology', name: 'native-bullet', version: '0.0.5-20190916.050515-1')
+    // compile(group: 'org.terasology', name: 'native-bullet', version: '0.0.5-20190916.050515-1', ext: 'zip')
+
+    compile group: 'org.apache.commons', name: 'commons-math3', version: '3.0'
     compile files('lib/gdx-bullet.jar')
     compile files('lib/gdx-bullet-natives.jar')
     compile files('lib/gdx.jar')

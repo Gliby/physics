@@ -27,7 +27,7 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
     private Vector3 centerOfMass;
     private NativeQuaternion rotation;
     private NativeVector3 position;
-    private Vector3 vectorPosition;
+    private Vector3 tempPosition = new Vector3();
 
     public NativeRigidBody(PhysicsWorld physicsWorld, btRigidBody rigidBody, Entity entity) {
         super(physicsWorld, entity, rigidBody);
@@ -36,8 +36,7 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
         this.collisionShape = new NativeCollisionShape(physicsWorld, rigidBody.getCollisionShape());
         this.properties = new HashMap<String, Object>();
         this.rotation = new NativeQuaternion(rigidBody.getOrientation());
-        this.vectorPosition = new Vector3();
-        this.position = new NativeVector3(vectorPosition);
+        this.position = new NativeVector3(tempPosition);
     }
 
     @Override
@@ -97,6 +96,11 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
     public void setWorldTransform(final Transform transform) {
         rigidBody.setWorldTransform(NativePhysicsWorld.fromTransformToMatrix4(transform));
 
+    }
+
+    @Override
+    public boolean isValid() {
+        return !rigidBody.isDisposed();
     }
 
     @Override
@@ -191,9 +195,13 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
         return rotation.set(rigidBody.getOrientation());
     }
 
+    Matrix4 tempMatrix = new Matrix4();
+
     @Override
     public IVector3 getPosition() {
-        return position.set(rigidBody.getWorldTransform().getTranslation(vectorPosition));
+        rigidBody.getWorldTransform(tempMatrix);
+        tempMatrix.getTranslation(tempPosition);
+        return position.set(rigidBody.getWorldTransform().getTranslation(tempPosition));
     }
 
     @Override

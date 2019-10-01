@@ -218,11 +218,6 @@ public abstract class PhysicsWorld {
      */
     public abstract String writeBlockCollisionShape(ICollisionShape shape);
 
-    /**
-     * @return
-     */
-    public abstract List<IConstraint> getConstraints();
-
     public abstract IConstraintSlider createSliderConstraint(IRigidBody rbA, IRigidBody rbB, Transform frameInA,
                                                              Transform frameInB, boolean useLinearReferenceFrameA);
 

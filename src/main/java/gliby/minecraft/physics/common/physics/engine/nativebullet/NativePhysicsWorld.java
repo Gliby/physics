@@ -8,7 +8,6 @@ import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.dynamics.*;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstructionInfo;
 import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
-import com.badlogic.gdx.utils.Disposable;
 import com.bulletphysicsx.linearmath.Transform;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.physics.IPhysicsWorldConfiguration;
@@ -24,7 +23,6 @@ import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  *
@@ -35,35 +33,36 @@ import java.util.concurrent.CopyOnWriteArrayList;
 // IQuaternion, IMatrix, replace with custom vector stuff or MC Vec3.
 public class NativePhysicsWorld extends PhysicsWorld {
 
+    // TODO get rid of these hacks.
     static Vector3f staticVector = new Vector3f();
-    static Vector3 tempVec = new Vector3();
-    static Quaternion tempQuat = new Quaternion();
-    // TODO NativePhysicsWorld: replace this hack.
-    private static Transform temp = new Transform();
-    private static Quat4f rotationTemp = new Quat4f();
+    static Vector3 tempVector3f = new Vector3();
+    static Quaternion tempQuaternion = new Quaternion();
+    static Quat4f tempQuat4f = new Quat4f();
+    static Matrix4 tempMatrix = new Matrix4();
+    static Matrix4f tempMatrix4f = new Matrix4f();
+    static Transform tempTransform = new Transform();
 
     static {
         Bullet.init();
     }
 
-    protected List<ICollisionObject> collisionObjects;
     private btDiscreteDynamicsWorld dynamicsWorld;
-    private List<IConstraint> constraints;
     private List<IRigidBody> rigidBodies;
+
     private PhysicsOverworld physicsOverworld;
     private Physics physics;
+
     private btDbvtBroadphase broadphase;
     private btCollisionConfiguration collisionConfiguration;
     private btCollisionDispatcher collisionDispatcher;
     private btVoxelShape voxelShape;
     private btCollisionObject voxelBody;
     private NativeVoxelProvider voxelProvider;
+
     private btSequentialImpulseConstraintSolver sequentialSolver;
     /**
      * Tracks disposable objects that fall under miscellaneous.
      */
-
-    private List<Disposable> disposables;
 
     public NativePhysicsWorld(Physics physics, PhysicsOverworld physicsOverworld,
                               IPhysicsWorldConfiguration physicsConfig) {
@@ -73,13 +72,15 @@ public class NativePhysicsWorld extends PhysicsWorld {
     }
 
     static Matrix4 fromTransformToMatrix4(Transform transform) {
-        return toMatrix4(transform.getMatrix(tempMatrix));
+        return toMatrix4(transform.getMatrix(tempMatrix4f));
+
     }
 
+
     public static Matrix4 toMatrix4(Matrix4f matrix4f) {
-        temp.set(matrix4f);
-        Quat4f rot = temp.getRotation(rotationTemp);
-        return new Matrix4().set(temp.origin.x, temp.origin.y, temp.origin.z, rot.x, rot.y, rot.z, rot.w, 1, 1, 1);
+        tempTransform.set(matrix4f);
+        Quat4f rot = tempTransform.getRotation(tempQuat4f);
+        return tempMatrix.set(tempTransform.origin.x, tempTransform.origin.y, tempTransform.origin.z, rot.x, rot.y, rot.z, rot.w, 1, 1, 1);
     }
 
     static Vector3 toVector3(Vector3f vector3f) {
@@ -95,16 +96,13 @@ public class NativePhysicsWorld extends PhysicsWorld {
         return staticVector;
     }
 
-    static Matrix4f tempMatrix = new Matrix4f();
-
-    // FIXME NativePhysicsWorld: Potential Memory Leak.
     static Matrix4f toMatrix4f(Matrix4 matrix4) {
-        Vector3 position = matrix4.getTranslation(tempVec);
-        Quaternion rotation = matrix4.getRotation(tempQuat);
-        rotationTemp.set(rotation.x, rotation.y, rotation.z, rotation.w);
-        temp.setRotation(rotationTemp);
-        temp.origin.set(position.x, position.y, position.z);
-        return temp.getMatrix(tempMatrix);
+        Vector3 position = matrix4.getTranslation(tempVector3f);
+        Quaternion rotation = matrix4.getRotation(tempQuaternion);
+        tempQuat4f.set(rotation.x, rotation.y, rotation.z, rotation.w);
+        tempTransform.setRotation(tempQuat4f);
+        tempTransform.origin.set(position.x, position.y, position.z);
+        return tempTransform.getMatrix(tempMatrix4f);
     }
 
 //    @Override
@@ -127,10 +125,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
     @Override
     public void create() {
-        collisionObjects = new CopyOnWriteArrayList<ICollisionObject>();
-        rigidBodies = new CopyOnWriteArrayList<IRigidBody>();
-        constraints = new CopyOnWriteArrayList<IConstraint>();
-        disposables = new ArrayList<Disposable>();
+        rigidBodies = new ArrayList<IRigidBody>();
 
         broadphase = new btDbvtBroadphase();
         collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -198,7 +193,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
         ClosestRayResultCallback nativeCallback;
         NativeClosestRayResultCallback callback = new NativeClosestRayResultCallback(
                 nativeCallback = new ClosestRayResultCallback(toVector3(rayFromWorld), toVector3(rayToWorld)));
-        disposables.add(nativeCallback);
         return callback;
     }
 
@@ -221,20 +215,17 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
     @Override
     public void addConstraint(final IConstraint p2p) {
-
         dynamicsWorld.addConstraint((btTypedConstraint) p2p.getConstraint());
-        constraints.add(p2p);
-
     }
 
     // TODO NativePhysicsWorld: Dispose of object on remove.
     @Override
     public void removeRigidBody(final IRigidBody body) {
         rigidBodies.remove(body);
-
         btRigidBody nativeBody;
         dynamicsWorld.removeRigidBody(nativeBody = (btRigidBody) body.getBody());
-        nativeBody.dispose();
+        if (!nativeBody.isDisposed())
+            nativeBody.dispose();
 
     }
 
@@ -281,10 +272,8 @@ public class NativePhysicsWorld extends PhysicsWorld {
         btCollisionObject nativeCollsionObject;
         dynamicsWorld.removeCollisionObject(
                 nativeCollsionObject = (btCollisionObject) collisionObject.getCollisionObject());
-        collisionObjects.remove(collisionObject);
-        nativeCollsionObject.dispose();
-
-
+        if(!nativeCollsionObject.isDisposed())
+            nativeCollsionObject.dispose();
     }
 
     @Override
@@ -298,8 +287,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
     public void addCollisionObject(final ICollisionObject object) {
 
         dynamicsWorld.addCollisionObject((btCollisionObject) object.getCollisionObject());
-        collisionObjects.add(object);
-
     }
 
     @Override
@@ -308,8 +295,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
         dynamicsWorld.addCollisionObject((btCollisionObject) object.getCollisionObject(), collisionFilterGroup,
                 collisionFilterMask);
-        collisionObjects.add(object);
-
     }
 
     @Override
@@ -323,7 +308,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
         btPairCachingGhostObject nativePair;
         NativePairCachingGhostObject pairCache = new NativePairCachingGhostObject(this,
                 nativePair = new btPairCachingGhostObject());
-        disposables.add(nativePair);
         return pairCache;
     }
 
@@ -352,9 +336,8 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
         btTypedConstraint nativeConstraint = (btTypedConstraint) constraint.getConstraint();
         dynamicsWorld.removeConstraint((btTypedConstraint) constraint.getConstraint());
-        constraints.remove(constraint);
-        nativeConstraint.dispose();
-
+        if (!nativeConstraint.isDisposed())
+            nativeConstraint.dispose();
     }
 
     @Override
@@ -365,11 +348,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
     @Override
     public String writeBlockCollisionShape(ICollisionShape shape) {
         return null;
-    }
-
-    @Override
-    public List<IConstraint> getConstraints() {
-        return constraints;
     }
 
     @Override
@@ -416,7 +394,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
     public ICollisionShape createSphereShape(float radius) {
         btSphereShape nativeSphere;
         NativeCollisionShape shape = new NativeCollisionShape(this, nativeSphere = new btSphereShape(radius));
-        disposables.add(nativeSphere);
         return shape;
     }
 
@@ -449,60 +426,33 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
     }
 
-    // TODO NativePhysicsWorld: Make dispose actually dispose something.
     @Override
     public void dispose() {
+        super.dispose();
+//        // get rid of all tracked rigidbodies.
+//        for (IRigidBody body : rigidBodies) {
+//            btRigidBody rigidBody = (btRigidBody) body.getBody();
+//            if (!rigidBody.isDisposed()) {
+//                rigidBody.dispose();
+//            }
+//        }
+//        rigidBodies.clear();
+//
+//        dynamicsWorld.removeCollisionObject(voxelBody);
+//
+//        if (!voxelBody.isDisposed())
+//            voxelBody.dispose();
+//
+//        if (!voxelBody.isDisposed())
+//            voxelBody.dispose();
+//
+//        if (!voxelProvider.isDisposed())
+//            voxelProvider.dispose();
 
-        dynamicsWorld.removeCollisionObject(voxelBody);
-        voxelShape.dispose();
-        voxelBody.dispose();
-        voxelProvider.dispose();
+        if (!dynamicsWorld.isDisposed())
+           dynamicsWorld.dispose();
 
-        for (int i = 0; i < constraints.size(); i++) {
-            // Get constraint
-            IConstraint constraint = constraints.get(i);
-            // Remove reference from list
+//        dynamicsWorld = null;
 
-            // Get native reference
-            btTypedConstraint constraintRef = (btTypedConstraint) constraint.getConstraint();
-            // Remove from world.
-            dynamicsWorld.removeConstraint(constraintRef);
-
-            // Dispose of native reference
-            constraintRef.dispose();
-        }
-
-        constraints.clear();
-
-        for (int i = 0; i < collisionObjects.size(); i++) {
-            ICollisionObject object = collisionObjects.get(i);
-            btCollisionObject objectRef = (btCollisionObject) object.getCollisionObject();
-            dynamicsWorld.removeCollisionObject(objectRef);
-            objectRef.dispose();
-        }
-
-        collisionObjects.clear();
-
-        for (int i = 0; i < rigidBodies.size(); i++) {
-            // Get rigidBody
-            IRigidBody rigidBody = rigidBodies.get(i);
-            // Remove reference from list
-            removeRigidBody(rigidBody);
-        }
-
-        rigidBodies.clear();
-
-        broadphase.dispose();
-        collisionDispatcher.dispose();
-        collisionConfiguration.dispose();
-        sequentialSolver.dispose();
-        dynamicsWorld.dispose();
-        dynamicsWorld = null;
-
-        for (int i = 0; i < disposables.size(); i++) {
-            Disposable disposable = disposables.get(i);
-            if (disposable != null)
-                disposable.dispose();
-        }
     }
 }

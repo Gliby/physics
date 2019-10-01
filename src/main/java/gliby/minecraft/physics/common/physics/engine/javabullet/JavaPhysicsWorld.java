@@ -148,6 +148,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
     @Override
     public void dispose() {
+        super.dispose();
 
         for (IRigidBody body : rigidBodies) {
 
@@ -161,12 +162,12 @@ public class JavaPhysicsWorld extends PhysicsWorld {
             dynamicsWorld.removeCollisionObject(disposedObject);
         }
 
-        dynamicsWorld.clearForces();
-        dynamicsWorld.destroy();
-
+        rigidBodies.clear();
         constraints.clear();
         ropes.clear();
-        super.dispose();
+
+        dynamicsWorld.clearForces();
+        dynamicsWorld.destroy();
     }
 
     @Override
@@ -268,10 +269,6 @@ public class JavaPhysicsWorld extends PhysicsWorld {
         return new JavaCollisionShape(this, shape);
     }
 
-    @Override
-    public List<IConstraint> getConstraints() {
-        return constraints;
-    }
 
     @Override
     public IConstraintGeneric6Dof createGeneric6DofConstraint(final IRigidBody rbA, final IRigidBody rbB, final Transform frameInA,

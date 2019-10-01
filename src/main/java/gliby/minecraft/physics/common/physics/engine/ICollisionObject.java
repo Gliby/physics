@@ -36,4 +36,7 @@ public interface ICollisionObject {
      */
     void setInterpolationWorldTransform(Transform entityTransform);
 
+    // Returns whether the RigidBody is valid.
+    boolean isValid();
+
 }

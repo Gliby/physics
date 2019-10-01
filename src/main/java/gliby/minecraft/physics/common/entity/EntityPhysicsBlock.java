@@ -16,7 +16,9 @@ import gliby.minecraft.physics.common.blocks.PhysicsBlockMetadata;
 import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
+import gliby.minecraft.physics.common.physics.engine.IQuaternion;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
+import gliby.minecraft.physics.common.physics.engine.IVector3;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -245,13 +247,16 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
     @Override
     public void onServerUpdate() {
-        if (rigidBody != null) {
+        if (rigidBody != null && rigidBody.isValid()) {
             // Update position from given rigid body.
-            position.set(rigidBody.getPosition().getX(), rigidBody.getPosition().getY(),
-                    rigidBody.getPosition().getZ());
+            final IVector3 newPosition = rigidBody.getPosition();
+
+            position.set(newPosition.getX(), newPosition.getY(),
+                    newPosition.getZ());
             // Update rotation from given rigid body.
-            rotation.set(rigidBody.getRotation().getX(), rigidBody.getRotation().getY(), rigidBody.getRotation().getZ(),
-                    rigidBody.getRotation().getW());
+            final IQuaternion newQuat = rigidBody.getRotation();
+            rotation.set(newQuat.getX(), newQuat.getY(),newQuat.getZ(),
+                    newQuat.getW());
             // Set location and angles, so client could have proper bounding
             // boxes.
             setLocationAndAngles(position.x + 0.5f, position.y, position.z + 0.5f, 0, 0);

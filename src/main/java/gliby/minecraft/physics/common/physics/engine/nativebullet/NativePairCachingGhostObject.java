@@ -64,6 +64,11 @@ class NativePairCachingGhostObject implements IGhostObject {
     }
 
     @Override
+    public boolean isValid() {
+        return ghostObject != null;
+    }
+
+    @Override
     public Entity getOwner() {
         return owner;
     }

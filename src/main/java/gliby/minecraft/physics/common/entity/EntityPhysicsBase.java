@@ -267,27 +267,27 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
                 }
             }
 
-            if (getRigidBody() != null) {
-                if (getRigidBody().getProperties().containsKey(EnumRigidBodyProperty.DEAD.getName())) {
+            IRigidBody rigidBody = getRigidBody();
+            if (rigidBody != null && rigidBody.isValid()) {
+                if (rigidBody.getProperties().containsKey(EnumRigidBodyProperty.DEAD.getName())) {
                     // System.out.println("Set dead: " + getRigidBody().getProperties());
                     // Physics.getLogger().warn("Killed physics entity through properties.");
                     // this.setDead();
                 }
-                if (getRigidBody().isActive())
+                if (rigidBody.isActive())
                     lastTickActive = ticksExisted;
 
                 if ((ticksExisted - lastTickActive) / TICKS_PER_SECOND > Physics.getInstance().getSettings()
                         .getFloatSetting("PhysicsEntities.InactivityDeathTime").getFloatValue()) {
                     this.setDead();
                 }
+                // Update mechanics.
+                for (int i = 0; i < mechanics.size(); i++) {
+                    RigidBodyMechanic mechanic = mechanics.get(i);
+                    if (mechanic.isEnabled())
+                        mechanic.update(getRigidBody(), physicsWorld, this, worldObj.isRemote ? Side.CLIENT : Side.SERVER);
+                }
             }
-        }
-
-        // Update mechanics.
-        for (int i = 0; i < mechanics.size(); i++) {
-            RigidBodyMechanic mechanic = mechanics.get(i);
-            if (mechanic.isEnabled())
-                mechanic.update(getRigidBody(), physicsWorld, this, worldObj.isRemote ? Side.CLIENT : Side.SERVER);
         }
     }
 

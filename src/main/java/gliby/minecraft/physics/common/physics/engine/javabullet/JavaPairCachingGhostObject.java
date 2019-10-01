@@ -67,6 +67,11 @@ public class JavaPairCachingGhostObject implements IGhostObject {
     }
 
     @Override
+    public boolean isValid() {
+        return getCollisionObject() != null;
+    }
+
+    @Override
     public Entity getOwner() {
         return owner;
     }
