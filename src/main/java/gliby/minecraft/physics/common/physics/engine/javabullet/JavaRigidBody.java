@@ -201,7 +201,7 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
 
     @Override
     public void dispose() {
-        rigidBody = null;
+        rigidBody.destroy();
     }
 
 }

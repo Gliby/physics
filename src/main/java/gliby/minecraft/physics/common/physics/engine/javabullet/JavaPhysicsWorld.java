@@ -36,6 +36,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
     private List<IConstraint> constraints;
 
     private DiscreteDynamicsWorld dynamicsWorld;
+    private RigidBody blockCollisionBody;
     private List<IRope> ropes;
 
     public JavaPhysicsWorld(final Physics physics, final PhysicsOverworld physicsOverworld,
@@ -51,6 +52,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
         rigidBodies = new ArrayList<IRigidBody>();
         constraints = new ArrayList<IConstraint>();
         final DbvtBroadphase broadphase = new DbvtBroadphase();
+
         broadphase.getOverlappingPairCache().setInternalGhostPairCallback(new GhostPairCallback());
         final CollisionConfiguration collisionConfiguration = new DefaultCollisionConfiguration();
         final CollisionDispatcher dispatcher = new CollisionDispatcher(collisionConfiguration);
@@ -69,7 +71,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
         blockCollisionHandler.calculateLocalInertia(0, new Vector3f());
         final RigidBodyConstructionInfo blockConsInf = new RigidBodyConstructionInfo(0,
                 new DefaultMotionState(identityTransform), blockCollisionHandler, new Vector3f());
-        final RigidBody blockCollisionBody = new RigidBody(blockConsInf);
+        blockCollisionBody = new RigidBody(blockConsInf);
         blockCollisionBody.setCollisionFlags(CollisionFlags.STATIC_OBJECT | blockCollisionBody.getCollisionFlags());
         dynamicsWorld.addRigidBody(blockCollisionBody);
 
@@ -146,32 +148,6 @@ public class JavaPhysicsWorld extends PhysicsWorld {
     @Override
     public List<IRigidBody> getRigidBodies() {
         return rigidBodies;
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-
-        for (IRigidBody body : rigidBodies) {
-
-            dynamicsWorld.removeRigidBody((RigidBody) body.getBody());
-        }
-
-        final int numCollisionObjects = dynamicsWorld.getNumCollisionObjects();
-        for (int i = 0; i < numCollisionObjects; i++) {
-            final CollisionObject disposedObject = dynamicsWorld.getCollisionObjectArray().get(i);
-
-            dynamicsWorld.removeCollisionObject(disposedObject);
-        }
-
-
-        rigidBodies.clear();
-        constraints.clear();
-        ropes.clear();
-
-        dynamicsWorld.clearForces();
-        dynamicsWorld.destroy();
-        dynamicsWorld = null;
     }
 
     @Override
@@ -354,4 +330,34 @@ public class JavaPhysicsWorld extends PhysicsWorld {
         }
         return new JavaCollisionShape(this, compoundShape);
     }
+
+    @Override
+    public void dispose() {
+        dynamicsWorld.removeRigidBody(blockCollisionBody);
+        blockCollisionBody.destroy();
+
+        for (IRigidBody body : rigidBodies) {
+            RigidBody rigidBody = (RigidBody) body.getBody();
+            dynamicsWorld.removeRigidBody(rigidBody);
+            body.dispose();
+        }
+
+
+        final int numCollisionObjects = dynamicsWorld.getNumCollisionObjects();
+        for (int i = 0; i < numCollisionObjects; i++) {
+            final CollisionObject disposedObject = dynamicsWorld.getCollisionObjectArray().get(i);
+            dynamicsWorld.removeCollisionObject(disposedObject);
+        }
+
+
+        rigidBodies.clear();
+        constraints.clear();
+        ropes.clear();
+
+        dynamicsWorld.clearForces();
+        dynamicsWorld.destroy();
+        dynamicsWorld = null;
+        super.dispose();
+    }
+
 }
