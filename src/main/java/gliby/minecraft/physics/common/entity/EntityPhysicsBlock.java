@@ -9,7 +9,6 @@ import com.google.gson.reflect.TypeToken;
 import gliby.minecraft.gman.BlockUtility;
 import gliby.minecraft.gman.DataWatchableQuat4f;
 import gliby.minecraft.gman.DataWatchableVector3f;
-import gliby.minecraft.gman.WorldUtility;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.client.render.RenderHandler;
 import gliby.minecraft.physics.common.blocks.PhysicsBlockMetadata;
@@ -63,11 +62,6 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
      * Block.
      */
     private IBlockState blockState;
-    /**
-     * Block bounding boxes, this only gets generated when you create a new
-     * instance, otherwise it will load/save from NBT.
-     */
-    private List<AxisAlignedBB> collisionBBs;
     /**
      * Common variable, physics object's absolute position.
      */
@@ -141,22 +135,15 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         this.defaultCollisionShape = metadataExists && metadata.defaultCollisionShape;
         this.collisionEnabled = !metadataExists || metadata.collisionEnabled;
 
-        // TODO feature: introduce block bounding box caching.
-        try {
-            if (this.defaultCollisionShape)
-                this.collisionShape = physicsWorld.createBoxShape(new Vector3f(0.5f, 0.5f, 0.5f));
-            else {
-                blockState.getBlock().addCollisionBoxesToList(worldObj, new BlockPos(x, y, z), blockState,
-                        WorldUtility.MAX_BB, collisionBBs = new ArrayList<AxisAlignedBB>(), this);
-                for (int i = 0; i < collisionBBs.size(); i++) {
-                    collisionBBs.set(i, collisionBBs.get(i).offset(-x, -y, -z));
-                }
-                this.collisionShape = physicsWorld.buildCollisionShape(collisionBBs, VectorUtil.IDENTITY);
-            }
-        } catch (IllegalArgumentException e) {
-            this.collisionShape = physicsWorld.createBoxShape(new Vector3f(0.5f, 0.5f, 0.5f));
-            Physics.getLogger().error("Block doesn't exist, couldn't create collision shape");
-        }
+        if (this.defaultCollisionShape)
+            this.collisionShape = physicsWorld.getDefaultShape();
+        else
+            this.collisionShape = physicsWorld.getBlockCache().getShape(world,new BlockPos(x, y, z), blockState);
+
+
+        Physics.getLogger().error("Block doesn't exist, couldn't create collision shape");
+
+
         createPhysicsObject(physicsWorld);
         if (metadata != null) {
             if (metadata.mechanics != null)
@@ -305,8 +292,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
             tagCompound.setBoolean("DefaultCollisionShape", defaultCollisionShape);
         if (!collisionEnabled)
             tagCompound.setBoolean("CollisionEnabled", collisionEnabled);
-        if (collisionBBs != null)
-            tagCompound.setString("CollisionShape", new Gson().toJson(collisionBBs));
+
         // Remove original tags.
         tagCompound.removeTag("Pos");
         tagCompound.removeTag("Rotation");
@@ -335,6 +321,8 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
     @Override
     public void readEntityFromNBT(NBTTagCompound tagCompound) {
+        super.readEntityFromNBT(tagCompound);
+
         this.physicsWorld = Physics.getInstance().getPhysicsOverworld().getPhysicsByWorld(worldObj);
         int data = tagCompound.getByte("Data") & 255;
 
@@ -352,12 +340,9 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
                 : collisionEnabled;
 
         if (tagCompound.hasKey("CollisionShape")) {
-            collisionBBs = new Gson().fromJson(tagCompound.getString("CollisionShape"),
-                    new TypeToken<List<AxisAlignedBB>>() {
-                    }.getType());
-            this.collisionShape = physicsWorld.buildCollisionShape(collisionBBs, VectorUtil.IDENTITY);
+            this.collisionShape = physicsWorld.getBlockCache().getShape(worldObj, new BlockPos((int)posX, (int)posY, (int)posZ), blockState);
         } else
-            this.collisionShape = physicsWorld.createBoxShape(new Vector3f(0.5F, 0.5F, 0.5F));
+            this.collisionShape = physicsWorld.getDefaultShape();
 
         this.position.set((float) posX, (float) posY, (float) posZ);
         if (tagCompound.hasKey("Rotation")) {
@@ -389,7 +374,6 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         } else {
             updatePhysicsObject(physicsWorld);
         }
-        super.readEntityFromNBT(tagCompound);
 
     }
 
@@ -497,7 +481,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     @Override
     protected void dispose() {
         // Drops item.
-        if (dropItem != null) {
+        if (dropItem != null && isNaturalDeath()) {
             entityDropItem(dropItem, 0);
             /*
              * Vector3f centerOfMass = rigidBody.getCenterOfMassPosition();

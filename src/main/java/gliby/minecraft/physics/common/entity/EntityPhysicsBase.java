@@ -47,7 +47,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     private int watchablePickerId;
     private DataWatchableVector3f watchablePickHit;
     private int lastTickActive;
-
+    private boolean naturalDeath = true;
     /**
      * Client or Load constructor.
      *
@@ -94,25 +94,26 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
     @Override
     public void setDead() {
-        MinecraftServer.getServer().addScheduledTask(new Runnable() {
-            public void run() {
-                spawnRemoveParticle();
-                for (int i = 0; i < mechanics.size(); i++) {
-                    mechanics.get(i).dispose();
-                }
-                mechanics.clear();
+        spawnRemoveParticle();
+        for (int i = 0; i < mechanics.size(); i++) {
+            mechanics.get(i).dispose();
+        }
+        mechanics.clear();
 
-                if (!worldObj.isRemote) {
-                    if (doesPhysicsObjectExist()) {
-                        Vector3f minBB = new Vector3f(), maxBB = new Vector3f();
-                        getRigidBody().getAabb(minBB, maxBB);
-                        physicsWorld.awakenArea(minBB, maxBB);
-                    }
-                    dispose();
-                }
+        if (!worldObj.isRemote) {
+            if (doesPhysicsObjectExist()) {
+                Vector3f minBB = new Vector3f(), maxBB = new Vector3f();
+                getRigidBody().getAabb(minBB, maxBB);
+                physicsWorld.awakenArea(minBB, maxBB);
             }
-        });
+            dispose();
+        }
+
         super.setDead();
+    }
+
+    public boolean isNaturalDeath() {
+        return naturalDeath;
     }
 
     public void pick(Entity picker, Vector3f pickPoint) {
@@ -284,6 +285,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
                 }
 
                 if (rigidBody.getProperties().containsKey(EnumRigidBodyProperty.DEAD.getName())) {
+                    this.naturalDeath = false;
                     this.setDead();
                 }
             }

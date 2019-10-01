@@ -33,7 +33,7 @@ public class ToolGunAttachAction implements IToolGunAction {
         IRayResult ray = physicsWorld.createClosestRayResultCallback(eyePos, lookAt);
         physicsWorld.rayTest(eyePos, lookAt, ray);
         if (ray.getCollisionObject() != null && ray.hasHit()) {
-            IRigidBody body = physicsWorld.upcastRigidBody(ray.getCollisionObject());
+            IRigidBody body = physicsWorld.upCastRigidBody(ray.getCollisionObject());
             if (body != null) {
                 Transform centerOfMassTransform = body.getCenterOfMassTransform(new Transform());
                 centerOfMassTransform.inverse();

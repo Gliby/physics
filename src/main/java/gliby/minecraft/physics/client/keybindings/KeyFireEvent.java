@@ -57,25 +57,25 @@ public class KeyFireEvent extends KeyEvent {
     }
 
     public void debugSpawn(World world) {
-        Minecraft mc = Minecraft.getMinecraft();
-        Physics physics = Physics.getInstance();
-        PhysicsWorld physicsWorld = physics.getPhysicsOverworld().getPhysicsByWorld(world);
-        Vector3f playerPosition = EntityUtility.toVector3f(mc.thePlayer.getPositionVector());
-        List<ModelCubeGroup> cubeGroups = physics.getMobModelManager().getModelRegistry().get(EntityPig.class)
-                .getCubeGroups();
-        float scale = 1.0F / 16.0F;
-        for (ModelCubeGroup group : cubeGroups) {
-            Random rand = new Random();
-            Vector3f localPosition = new Vector3f(rand.nextInt(5), rand.nextInt(5), rand.nextInt(5));
-            ICollisionShape shape = physicsWorld.buildCollisionShape(group.getCubes(), VectorUtil.IDENTITY);
-            shape.setLocalScaling(new Vector3f(-scale, -scale, -scale));
-
-            Transform worldTransform = new Transform();
-            worldTransform.origin.add(localPosition);
-            worldTransform.origin.add(playerPosition);
-            IRigidBody body = physicsWorld.createRigidBody(null, worldTransform, 0, shape);
-            physicsWorld.addRigidBody(body);
-        }
+//        Minecraft mc = Minecraft.getMinecraft();
+//        Physics physics = Physics.getInstance();
+//        PhysicsWorld physicsWorld = physics.getPhysicsOverworld().getPhysicsByWorld(world);
+//        Vector3f playerPosition = EntityUtility.toVector3f(mc.thePlayer.getPositionVector());
+//        List<ModelCubeGroup> cubeGroups = physics.getMobModelManager().getModelRegistry().get(EntityPig.class)
+//                .getCubeGroups();
+//        float scale = 1.0F / 16.0F;
+//        for (ModelCubeGroup group : cubeGroups) {
+//            Random rand = new Random();
+//            Vector3f localPosition = new Vector3f(rand.nextInt(5), rand.nextInt(5), rand.nextInt(5));
+//            ICollisionShape shape = physicsWorld.buildCollisionShape(group.getCubes(), VectorUtil.IDENTITY);
+//            shape.setLocalScaling(new Vector3f(-scale, -scale, -scale));
+//
+//            Transform worldTransform = new Transform();
+//            worldTransform.origin.add(localPosition);
+//            worldTransform.origin.add(playerPosition);
+//            IRigidBody body = physicsWorld.createRigidBody(null, worldTransform, 0, shape);
+//            physicsWorld.addRigidBody(body);
+//        }
 
         /*
          * if (true) { PhysicsWorld physicsWorld =

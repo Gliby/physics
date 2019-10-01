@@ -42,7 +42,7 @@ class NativeVoxelProvider extends btVoxelContentProvider {
             info.setTracable(false);
             info.setBlocking(state.getBlock().getMaterial().isSolid());
             info.setCollisionShape((btCollisionShape) physicsWorld.getBlockCache()
-                    .getShape(physicsWorld, world, blockPosition, state).getCollisionShape());
+                    .getShape(world, blockPosition, state).getCollisionShape());
             info.setFriction((1 - state.getBlock().slipperiness) * 5);
         }
         return info;

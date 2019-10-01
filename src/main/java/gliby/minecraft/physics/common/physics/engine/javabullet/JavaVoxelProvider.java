@@ -65,7 +65,7 @@ public class JavaVoxelProvider implements VoxelPhysicsWorld {
             @Override
             public Object getCollisionShape() {
                 return physicsWorld.getBlockCache()
-                        .getShape(physicsWorld, world, blockPos, blockState).getCollisionShape();
+                        .getShape(world, blockPos, blockState).getCollisionShape();
             }
 
             @Override

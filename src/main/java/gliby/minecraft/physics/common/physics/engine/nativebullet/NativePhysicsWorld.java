@@ -329,7 +329,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
     }
 
     @Override
-    public IRigidBody upcastRigidBody(Object collisionObject) {
+    public IRigidBody upCastRigidBody(Object collisionObject) {
         for (int i = 0; i < rigidBodies.size(); i++) {
             IRigidBody body = rigidBodies.get(i);
             if (body.getBody() == collisionObject)
@@ -459,7 +459,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
     @Override
     public void dispose() {
-
         dynamicsWorld.removeCollisionObject(voxelBody);
 
         for (int i = 0; i < dynamicsWorld.getNumCollisionObjects(); i++) {

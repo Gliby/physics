@@ -182,7 +182,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
     }
 
     @Override
-    public IRigidBody upcastRigidBody(final Object collisionObject) {
+    public IRigidBody upCastRigidBody(final Object collisionObject) {
         final RigidBody upCasted = RigidBody.upcast((CollisionObject) collisionObject);
         for (int i = 0; i < rigidBodies.size(); i++) {
             final IRigidBody body = rigidBodies.get(i);

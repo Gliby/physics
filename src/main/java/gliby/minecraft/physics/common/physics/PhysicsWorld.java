@@ -50,12 +50,12 @@ public abstract class PhysicsWorld {
             PhysicsMechanic mechanic = ((Map.Entry<String, PhysicsMechanic>) it.next()).getValue();
             mechanic.init();
         }
-        blockShapeCache = new BlockShapeCache();
+        blockShapeCache = new BlockShapeCache(this);
         getDelta();
 
     }
 
-    public ICollisionShape createBlockShape(final World worldObj, final BlockPos blockPos, final IBlockState blockState) {
+    protected ICollisionShape createBlockShape(final World worldObj, final BlockPos blockPos, final IBlockState blockState) {
         if (!blockState.getBlock().isNormalCube()) {
             final List<AxisAlignedBB> collisionBBs = new ArrayList<AxisAlignedBB>();
             blockState.getBlock().addCollisionBoxesToList(worldObj, blockPos, blockState, WorldUtility.MAX_BB,
@@ -76,6 +76,8 @@ public abstract class PhysicsWorld {
             mechanic.setEnabled(false);
             mechanic.physicsWorld = null;
         }
+        defaultShape.dispose();
+
         physicsMechanics.clear();
         physicsMechanics = null;
 
@@ -136,7 +138,7 @@ public abstract class PhysicsWorld {
         fps++;
     }
 
-    public abstract ICollisionShape buildCollisionShape(List<AxisAlignedBB> bbs, Vector3f offset);
+    protected abstract ICollisionShape buildCollisionShape(List<AxisAlignedBB> bbs, Vector3f offset);
 
     public abstract IRigidBody createRigidBody(Entity owner, Transform transform, float mass, ICollisionShape shape);
 
@@ -192,7 +194,7 @@ public abstract class PhysicsWorld {
      * @param collisionObject
      * @return
      */
-    public abstract IRigidBody upcastRigidBody(Object collisionObject);
+    public abstract IRigidBody upCastRigidBody(Object collisionObject);
 
     /**
      * @param rigidBody
@@ -238,6 +240,14 @@ public abstract class PhysicsWorld {
 
     public abstract boolean isValid();
 
+    ICollisionShape defaultShape;
+
+    public ICollisionShape getDefaultShape() {
+        if (defaultShape == null)
+            defaultShape = createBoxShape(new Vector3f(0.5f, 0.5f, 0.5f));
+        return defaultShape;
+    }
+
     protected class CollisionPart {
 
         @SerializedName("isCompoundShape")
@@ -267,13 +277,16 @@ public abstract class PhysicsWorld {
 
     public class BlockShapeCache {
 
+        protected PhysicsWorld physicsWorld;
+
         private Map<IBlockState, ICollisionShape> cache;
 
-        public BlockShapeCache() {
-            cache = new HashMap<IBlockState, ICollisionShape>();
+        public BlockShapeCache(PhysicsWorld physicsWorld) {
+            this.physicsWorld = physicsWorld;
+            this.cache = new HashMap<IBlockState, ICollisionShape>();
         }
 
-        public ICollisionShape getShape(PhysicsWorld physicsWorld, World world, BlockPos pos, IBlockState state) {
+        public ICollisionShape getShape(World world, BlockPos pos, IBlockState state) {
             ICollisionShape shape;
             if ((shape = cache.get(state)) == null) {
                 shape = physicsWorld.createBlockShape(world, pos, state);

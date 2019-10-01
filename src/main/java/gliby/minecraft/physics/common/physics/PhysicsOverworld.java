@@ -110,7 +110,6 @@ public class PhysicsOverworld {
             physicsWorld.dispose();
             getPhysicsWorldMap().remove(event.world);
             Physics.getLogger().info("Destroyed " + event.world.getWorldInfo().getWorldName() + " physics world.");
-            System.gc();
         }
     }
 

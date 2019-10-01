@@ -17,6 +17,7 @@ import java.util.Map;
 /**
  *
  */
+// TODO finish implementing motor action
 public class ToolGunMotorAction implements IToolGunAction, IToolGunTickable {
     private Map<Integer, ToolGunHit> hits = new HashMap<Integer, ToolGunHit>();
     private List<Motor> motors = new ArrayList<Motor>();
@@ -35,7 +36,7 @@ public class ToolGunMotorAction implements IToolGunAction, IToolGunTickable {
         IRayResult ray = physicsWorld.createClosestRayResultCallback(eyePos, lookAt);
         physicsWorld.rayTest(eyePos, lookAt, ray);
         if (ray.getCollisionObject() != null && ray.hasHit()) {
-            IRigidBody body = physicsWorld.upcastRigidBody(ray.getCollisionObject());
+            IRigidBody body = physicsWorld.upCastRigidBody(ray.getCollisionObject());
             if (body != null) {
                 Transform centerOfMassTransform = body.getCenterOfMassTransform(new Transform());
 

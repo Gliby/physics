@@ -35,7 +35,7 @@ public class ToolGunAlignAction implements IToolGunAction {
         IRayResult ray = physicsWorld.createClosestRayResultCallback(eyePos, lookAt);
         physicsWorld.rayTest(eyePos, lookAt, ray);
         if (ray.hasHit()) {
-            IRigidBody body = physicsWorld.upcastRigidBody(ray.getCollisionObject());
+            IRigidBody body = physicsWorld.upCastRigidBody(ray.getCollisionObject());
             if (body != null && body.isValid() && body.getOwner() instanceof EntityPhysicsBlock) {
                 player.worldObj.setBlockState(new BlockPos(body.getOwner().posX, body.getOwner().posY + 0.5F, body.getOwner().posZ), ((EntityPhysicsBlock) body.getOwner()).getBlockState());
                 body.getProperties().put(EnumRigidBodyProperty.DEAD.getName(), System.currentTimeMillis());

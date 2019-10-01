@@ -147,7 +147,7 @@ public class ItemPhysicsGun extends RawItem {
                                 physicsWorld.rayTest(eyePos, lookAt, rayCallback);
                                 OwnedPickedObject object;
                                 if (rayCallback.hasHit() && mechanic.getOwnedPickedObject(player) == null) {
-                                    IRigidBody body = physicsWorld.upcastRigidBody(rayCallback.getCollisionObject());
+                                    IRigidBody body = physicsWorld.upCastRigidBody(rayCallback.getCollisionObject());
                                     if (body != null && player.canEntityBeSeen(body.getOwner())) {
                                         Vector3f localHit = new Vector3f(rayCallback.getHitPointWorld());
                                         localHit.sub(new Vector3f(body.getPosition().getX(), body.getPosition().getY(),
