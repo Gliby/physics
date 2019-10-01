@@ -34,11 +34,9 @@ public class BlockManager {
     private HashMap<String, PhysicsBlockMetadata> physicsBlockMetadata;
     private Map<String, IBlockGenerator> blockGenerators;
     private IBlockGenerator defaultGenerator;
-    private BlockShapeCache blockShapeCache;
 
     public BlockManager(Physics physics) {
         this.physics = physics;
-        blockShapeCache = new BlockShapeCache();
         blockGenerators = new HashMap<String, IBlockGenerator>();
         defaultGenerator = new DefaultBlockGenerator();
         // TODO When metadata has finished loading, copy concurrenthashmap from
@@ -113,28 +111,6 @@ public class BlockManager {
 
     public Map<String, IBlockGenerator> getBlockGenerators() {
         return blockGenerators;
-    }
-
-    public BlockShapeCache getBlockCache() {
-        return blockShapeCache;
-    }
-
-    public class BlockShapeCache {
-
-        private Map<IBlockState, ICollisionShape> cache;
-
-        public BlockShapeCache() {
-            cache = new HashMap<IBlockState, ICollisionShape>();
-        }
-
-        public ICollisionShape getShape(PhysicsWorld physicsWorld, World world, BlockPos pos, IBlockState state) {
-            ICollisionShape shape;
-            if ((shape = cache.get(state)) == null) {
-                shape = physicsWorld.createBlockShape(world, pos, state);
-                cache.put(state, shape);
-            }
-            return shape;
-        }
     }
 
 }

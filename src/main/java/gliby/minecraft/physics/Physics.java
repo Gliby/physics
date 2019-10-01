@@ -18,6 +18,7 @@ import gliby.minecraft.physics.common.game.GameManager;
 import gliby.minecraft.physics.common.packets.PacketPlayerJoin;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;
 import net.minecraft.entity.Entity;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -82,7 +83,7 @@ public class Physics {
         }
 
         public static boolean isDevelopment() {
-            return VERSION.contains("@");
+            return Launch.blackboard.get("fml.deobfuscatedEnvironment") != null;
         }
 
         public GMan getGMan() {

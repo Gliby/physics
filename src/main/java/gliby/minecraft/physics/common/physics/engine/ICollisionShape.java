@@ -53,4 +53,5 @@ public interface ICollisionShape {
      */
     List<ICollisionShapeChildren> getChildren();
 
+    void dispose();
 }

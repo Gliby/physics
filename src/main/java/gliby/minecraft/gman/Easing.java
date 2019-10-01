@@ -21,6 +21,7 @@ import org.apache.commons.math3.util.FastMath;
  *
  * @author Robert Penner (functions)
  * @author davedes (java port)
+ * https://github.com/mattdesl/cisc226game/blob/master/SpaceGame/src/space/engine/easing/Easing.java
  * <p>
  * Terms of Use: Easing Functions (Equations)
  * <p>

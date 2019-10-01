@@ -27,11 +27,11 @@ class NativeVoxelProvider extends btVoxelContentProvider {
      * state.getBlock().slipperiness) * 5, 0, 0); }
      */
 
-    NativeVoxelProvider(World world, PhysicsWorld physicsWorld, Physics physics) {
+    NativeVoxelProvider(btVoxelInfo info, final World world, PhysicsWorld physicsWorld, Physics physics) {
         this.world = world;
         this.physicsWorld = physicsWorld;
         this.physics = physics;
-        this.info = new btVoxelInfo(false, true, 0, 0, null, new Vector3(0, 0, 0), 0, 0, 0);
+        this.info = info;
     }
 
     @Override
@@ -41,7 +41,7 @@ class NativeVoxelProvider extends btVoxelContentProvider {
             final IBlockState state = world.getBlockState(blockPosition);
             info.setTracable(false);
             info.setBlocking(state.getBlock().getMaterial().isSolid());
-            info.setCollisionShape((btCollisionShape) physics.getBlockManager().getBlockCache()
+            info.setCollisionShape((btCollisionShape) physicsWorld.getBlockCache()
                     .getShape(physicsWorld, world, blockPosition, state).getCollisionShape());
             info.setFriction((1 - state.getBlock().slipperiness) * 5);
         }

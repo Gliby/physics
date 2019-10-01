@@ -132,4 +132,6 @@ public interface IRigidBody extends ICollisionObject {
     void applyTorque(Vector3f vector);
 
     void applyTorqueImpulse(Vector3f vector);
+
+    void dispose();
 }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Bullet;
+import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.dynamics.*;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstructionInfo;
@@ -45,10 +46,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
     static Matrix4f tempMatrix4f = new Matrix4f();
     static Transform tempTransform = new Transform();
 
-    // All disposables.
-    private Set<Disposable> disposables = new HashSet<Disposable>();
-
-
     static {
         Bullet.init();
     }
@@ -64,6 +61,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
     private btCollisionDispatcher collisionDispatcher;
     private btVoxelShape voxelShape;
     private btCollisionObject voxelBody;
+    private btVoxelInfo voxelInfo;
     private NativeVoxelProvider voxelProvider;
 
     private btSequentialImpulseConstraintSolver sequentialSolver;
@@ -122,7 +120,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 //                    wait(1000 / getPhysicsConfiguration().getTicksPerSecond());
 //                } catch (InterruptedException e) {
 //                    e.printStackTrace();
-//                }
+//                }*-
 //            }
 //            if (getPhysicsConfiguration().shouldSimulate(getPhysicsConfiguration().getWorld(), this))
 //                update();
@@ -143,7 +141,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
         dynamicsWorld.setGravity(toVector3(getPhysicsConfiguration().getRegularGravity()));
 
         voxelShape = new btVoxelShape(
-                voxelProvider = new NativeVoxelProvider(getPhysicsConfiguration().getWorld(), this, physics),
+                voxelProvider = new NativeVoxelProvider(voxelInfo = new btVoxelInfo(), getPhysicsConfiguration().getWorld(), this, physics),
                 new Vector3(-Integer.MAX_VALUE, -Integer.MAX_VALUE, -Integer.MAX_VALUE),
                 new Vector3(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE));
         voxelBody = new btCollisionObject();
@@ -157,9 +155,9 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
     @Override
     protected void update() {
-        if (dynamicsWorld != null) {
+        if (dynamicsWorld != null && !dynamicsWorld.isDisposed() && voxelBody != null && !voxelBody.isDisposed()) {
             final float delta = getDelta();
-            final int maxSubStep = Math.max(1, Math.round(delta / 7));
+            final int maxSubStep = Math.max(1, Math.round(delta / 6));
             dynamicsWorld.stepSimulation(1, maxSubStep);
             super.update();
         }
@@ -176,9 +174,8 @@ public class NativePhysicsWorld extends PhysicsWorld {
                 (btCollisionShape) shape.getCollisionShape(), localInertia);
 
         btRigidBody body = new btRigidBody(constructionInfo);
-        disposables.add(body);
-        NativeRigidBody rigidBody = new NativeRigidBody(this, body, owner);
 
+        NativeRigidBody rigidBody = new NativeRigidBody(this, body, owner);
         return rigidBody;
     }
 
@@ -190,7 +187,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
                 (btCollisionShape) shape.getCollisionShape());
 
         btRigidBody body = new btRigidBody(constructionInfo);
-        disposables.add(body);
 
         NativeRigidBody rigidBody = new NativeRigidBody(this, body, owner);
         return rigidBody;
@@ -198,7 +194,8 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
     @Override
     public ICollisionShape createBoxShape(Vector3f extents) {
-        NativeCollisionShape shape = new NativeCollisionShape(this, new btBoxShape(toVector3(extents)));
+        btBoxShape nativeBox = new btBoxShape(toVector3(extents));
+        NativeCollisionShape shape = new NativeCollisionShape(this, nativeBox);
         return shape;
     }
 
@@ -212,9 +209,9 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
     @Override
     public void addRigidBody(final IRigidBody body) {
-        dynamicsWorld.addRigidBody((btRigidBody) body.getBody());
+        btRigidBody nativeBody = (btRigidBody) body.getBody();
+        dynamicsWorld.addRigidBody(nativeBody);
         rigidBodies.add(body);
-
     }
 
     // float stepsPerSecond;
@@ -222,7 +219,8 @@ public class NativePhysicsWorld extends PhysicsWorld {
     @Override
     public void addRigidBody(final IRigidBody body, final short collisionFilterGroup, final short collisionFilterMask) {
 
-        dynamicsWorld.addRigidBody((btRigidBody) body.getBody(), collisionFilterGroup, collisionFilterMask);
+        btRigidBody nativeBody = (btRigidBody) body.getBody();
+        dynamicsWorld.addRigidBody(nativeBody, collisionFilterGroup, collisionFilterMask);
         rigidBodies.add(body);
 
     }
@@ -239,7 +237,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
         btRigidBody nativeBody;
         dynamicsWorld.removeRigidBody(nativeBody = (btRigidBody) body.getBody());
         if (!nativeBody.isDisposed()) {
-            disposables.remove(nativeBody);
             nativeBody.dispose();
         }
     }
@@ -290,7 +287,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
         dynamicsWorld.removeCollisionObject(
                 nativeCollsionObject = (btCollisionObject) collisionObject.getCollisionObject());
         if(!nativeCollsionObject.isDisposed()) {
-            disposables.remove(nativeCollsionObject);
             nativeCollsionObject.dispose();
         }
     }
@@ -306,7 +302,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
     public void addCollisionObject(final ICollisionObject object) {
         btCollisionObject collisionObject = (btCollisionObject) object.getCollisionObject();
         dynamicsWorld.addCollisionObject(collisionObject);
-        disposables.add(collisionObject);
     }
 
     @Override
@@ -317,7 +312,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
         dynamicsWorld.addCollisionObject(collisionObject, collisionFilterGroup,
                 collisionFilterMask);
-        disposables.add(collisionObject);
     }
 
     @Override
@@ -351,7 +345,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
         NativePoint2PointConstraint p2p = new NativePoint2PointConstraint(this,
                 nativeConstraint = new btPoint2PointConstraint((btRigidBody) rigidBody.getBody(),
                         toVector3(relativePivot)));
-        disposables.add(nativeConstraint);
         return p2p;
     }
 
@@ -361,7 +354,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
         btTypedConstraint nativeConstraint = (btTypedConstraint) constraint.getConstraint();
         dynamicsWorld.removeConstraint((btTypedConstraint) constraint.getConstraint());
         if (!nativeConstraint.isDisposed()) {
-            disposables.remove(nativeConstraint);
             nativeConstraint.dispose();
         }
     }
@@ -385,7 +377,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
                 useLinearReferenceFrameA);
 
         NativeConstraintGeneric6Dof constraint = new NativeConstraintGeneric6Dof(this, nativeConstraint);
-        disposables.remove(nativeConstraint);
         return constraint;
     }
 
@@ -426,6 +417,11 @@ public class NativePhysicsWorld extends PhysicsWorld {
         return shape;
     }
 
+    @Override
+    public boolean isValid() {
+        return !dynamicsWorld.isDisposed();
+    }
+
     // TODO NativePhysicsWorld: Add slider constraint
     @Override
     public IConstraintSlider createSliderConstraint(IRigidBody rbA, IRigidBody rbB, Transform frameInA,
@@ -449,43 +445,54 @@ public class NativePhysicsWorld extends PhysicsWorld {
                     (float) relativeBB.minY + (float) relativeBB.maxY - 0.5f,
                     (float) relativeBB.minZ + (float) relativeBB.maxZ - 0.5f);
             compoundShape.addChildShape(fromTransformToMatrix4(transform), new btBoxShape(toVector3(extents)));
-            disposables.add(compoundShape);
         }
         NativeCollisionShape collisionShape = new NativeCollisionShape(this, compoundShape);
         return collisionShape;
 
     }
 
+    public void quickDispose(BulletBase base) {
+        if (!base.isDisposed()) base.dispose();
+    }
+
+
+
     @Override
     public void dispose() {
-        super.dispose();
 
-        if (!dynamicsWorld.isDisposed())
-            dynamicsWorld.dispose();
-
-
-        broadphase = null;
-        collisionConfiguration = null;
-        collisionDispatcher = null;
-        voxelShape = null;
-        voxelProvider = null;
-        dynamicsWorld = null;
-
-        for (Disposable disposable : disposables) {
-            disposable.dispose();
+        for (int i = 0; i < dynamicsWorld.getNumCollisionObjects(); i++) {
+            btCollisionObject collisionObject = dynamicsWorld.getCollisionObjectArray().at(i);
+            quickDispose(collisionObject);
         }
 
+        for (IRigidBody body : rigidBodies) {
+            body.dispose();
+        }
+        rigidBodies.clear();
 
-//        dynamicsWorld.removeCollisionObject(voxelBody);
-//
-//        if (!voxelBody.isDisposed())
-//            voxelBody.dispose();
-//
-//        if (!voxelBody.isDisposed())
-//            voxelBody.dispose();
-//
-//        if (!voxelProvider.isDisposed())
-//            voxelProvider.dispose();
+        quickDispose(dynamicsWorld.getCollisionWorld());
+        quickDispose(dynamicsWorld);
+        quickDispose(broadphase);
+        quickDispose(sequentialSolver);
+        quickDispose(collisionConfiguration);
+        quickDispose(collisionDispatcher);
+        quickDispose(voxelInfo);
+        quickDispose(voxelBody);
+        quickDispose(voxelShape);
+        quickDispose(voxelProvider);
+        dynamicsWorld = null;
+        broadphase = null;
+        sequentialSolver = null;
+        collisionConfiguration = null;
+        collisionDispatcher = null;
+        voxelProvider = null;
+
+        voxelShape = null;
+        voxelBody = null;
+        voxelInfo = null;
+
+        super.dispose();
+
 
     }
 }

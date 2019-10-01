@@ -14,7 +14,7 @@ import net.minecraft.entity.Entity;
 class NativeCollisionObject implements ICollisionObject {
 
     protected NativePhysicsWorld physicsWorld;
-    Entity owner;
+    protected Entity owner;
     private btCollisionObject object;
 
     NativeCollisionObject(PhysicsWorld physicsWorld, btCollisionObject object) {

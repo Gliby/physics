@@ -72,6 +72,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
         final RigidBody blockCollisionBody = new RigidBody(blockConsInf);
         blockCollisionBody.setCollisionFlags(CollisionFlags.STATIC_OBJECT | blockCollisionBody.getCollisionFlags());
         dynamicsWorld.addRigidBody(blockCollisionBody);
+
         super.create();
     }
 
@@ -162,6 +163,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
             dynamicsWorld.removeCollisionObject(disposedObject);
         }
+
 
         rigidBodies.clear();
         constraints.clear();
@@ -309,6 +311,11 @@ public class JavaPhysicsWorld extends PhysicsWorld {
     @Override
     public ICollisionShape createSphereShape(final float radius) {
         return new JavaCollisionShape(this, new SphereShape(radius));
+    }
+
+    @Override
+    public boolean isValid() {
+        return dynamicsWorld != null;
     }
 
     @Override

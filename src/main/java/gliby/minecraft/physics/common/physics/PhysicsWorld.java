@@ -3,6 +3,7 @@ package gliby.minecraft.physics.common.physics;
 import com.bulletphysicsx.linearmath.Transform;
 import com.google.gson.annotations.SerializedName;
 import gliby.minecraft.gman.WorldUtility;
+import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.physics.engine.*;
 import gliby.minecraft.physics.common.physics.mechanics.PhysicsMechanic;
 import net.minecraft.block.state.IBlockState;
@@ -49,7 +50,9 @@ public abstract class PhysicsWorld {
             PhysicsMechanic mechanic = ((Map.Entry<String, PhysicsMechanic>) it.next()).getValue();
             mechanic.init();
         }
+        blockShapeCache = new BlockShapeCache();
         getDelta();
+
     }
 
     public ICollisionShape createBlockShape(final World worldObj, final BlockPos blockPos, final IBlockState blockState) {
@@ -74,6 +77,10 @@ public abstract class PhysicsWorld {
             mechanic.physicsWorld = null;
         }
         physicsMechanics.clear();
+        physicsMechanics = null;
+
+        blockShapeCache.dispose();
+        blockShapeCache = null;
     }
 
     protected void update() {
@@ -229,6 +236,8 @@ public abstract class PhysicsWorld {
 
     public abstract ICollisionShape createSphereShape(float radius);
 
+    public abstract boolean isValid();
+
     protected class CollisionPart {
 
         @SerializedName("isCompoundShape")
@@ -249,4 +258,37 @@ public abstract class PhysicsWorld {
         }
     }
 
+
+    private BlockShapeCache blockShapeCache;
+
+    public BlockShapeCache getBlockCache() {
+        return blockShapeCache;
+    }
+
+    public class BlockShapeCache {
+
+        private Map<IBlockState, ICollisionShape> cache;
+
+        public BlockShapeCache() {
+            cache = new HashMap<IBlockState, ICollisionShape>();
+        }
+
+        public ICollisionShape getShape(PhysicsWorld physicsWorld, World world, BlockPos pos, IBlockState state) {
+            ICollisionShape shape;
+            if ((shape = cache.get(state)) == null) {
+                shape = physicsWorld.createBlockShape(world, pos, state);
+                cache.put(state, shape);
+            }
+            return shape;
+        }
+
+        public void dispose() {
+            Physics.getLogger().debug(String.format("Disposing of %s unique block collision shapes.", cache.size()));
+
+            for (ICollisionShape shape : cache.values()) {
+                shape.dispose();
+            }
+            cache.clear();
+        }
+    }
 }

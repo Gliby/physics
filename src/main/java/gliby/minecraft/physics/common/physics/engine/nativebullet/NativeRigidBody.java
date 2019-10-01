@@ -214,4 +214,11 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
     public void applyTorqueImpulse(final Vector3f vector) {
         rigidBody.applyTorqueImpulse(NativePhysicsWorld.toVector3(vector));
     }
+
+    @Override
+    public void dispose() {
+        if (!rigidBody.isDisposed()) {
+            rigidBody.dispose();
+        }
+    }
 }

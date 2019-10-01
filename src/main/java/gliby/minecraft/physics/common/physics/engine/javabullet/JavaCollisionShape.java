@@ -81,6 +81,11 @@ public class JavaCollisionShape implements ICollisionShape {
     }
 
     @Override
+    public void dispose() {
+        shape = null;
+    }
+
+    @Override
     public void setLocalScaling(final Vector3f localScaling) {
         shape.setLocalScaling(localScaling);
     }

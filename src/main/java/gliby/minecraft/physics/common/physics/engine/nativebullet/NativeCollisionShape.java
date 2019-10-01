@@ -92,6 +92,11 @@ class NativeCollisionShape implements ICollisionShape {
     }
 
     @Override
+    public void dispose() {
+        if (!shape.isDisposed()) shape.dispose();
+    }
+
+    @Override
     public void setLocalScaling(final Vector3f localScaling) {
         shape.setLocalScaling(NativePhysicsWorld.toVector3(localScaling));
     }
