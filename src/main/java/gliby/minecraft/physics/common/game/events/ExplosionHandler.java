@@ -69,6 +69,7 @@ public class ExplosionHandler {
                         direction.normalize();
                         float forceMultiplier = explosionRadius / (1 + explosionRadius - distance);
                         direction.scale(Math.abs(force * forceMultiplier));
+//                        System.out.println("applied force: " + direction);
                         body.applyCentralImpulse(direction);
                     }
                 }
