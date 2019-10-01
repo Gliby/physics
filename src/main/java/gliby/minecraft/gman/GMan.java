@@ -2,6 +2,7 @@ package gliby.minecraft.gman;
 
 import com.google.common.base.Predicate;
 import com.google.gson.Gson;
+import net.minecraft.launchwrapper.Launch;
 import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
@@ -31,6 +32,11 @@ public class GMan {
     private String minecraftVersion;
     private String modVersion;
 
+    public static boolean isDevelopment() {
+        boolean development = (Boolean) (Launch.blackboard.get("fml.deobfuscatedEnvironment"));
+        return development;
+    }
+
     public GMan(Logger logger, ModInfo modInfo, String minecraftVersion, String modVersion) {
         this.logger = logger;
         this.modInfo = modInfo;
@@ -40,7 +46,7 @@ public class GMan {
     }
 
     public static GMan create(final Logger logger, ModInfo modInfo, final String minecraftVersion,
-                              final String modVersion, boolean checkVersion) {
+                              final String modVersion) {
         StringBuilder builder = new StringBuilder();
         builder.append(LOCATION);
         builder.append(modInfo.modId);
@@ -55,7 +61,7 @@ public class GMan {
             logger.warn("Failed to retrieve mod info, either mod doesn't exist or host(" + builder.toString()
                     + ") is down?");
         }
-        if (reader != null && checkVersion) {
+        if (reader != null && !isDevelopment()) {
             final ModInfo externalInfo = gson.fromJson(reader, ModInfo.class);
             modInfo.donateURL = externalInfo.donateURL;
             modInfo.updateURL = externalInfo.updateURL;

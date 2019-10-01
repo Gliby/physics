@@ -82,10 +82,6 @@ public class Physics {
             return instance;
         }
 
-        public static boolean isDevelopment() {
-            return Launch.blackboard.get("fml.deobfuscatedEnvironment") != null;
-        }
-
         public GMan getGMan() {
             return gman;
         }
@@ -128,9 +124,9 @@ public class Physics {
             settings.registerBoolean("Miscellaneous", "DisableAllowFlight", true, Setting.Side.BOTH);
             settings.load();
             gman = GMan.create(getLogger(), new ModInfo(ID, event.getModMetadata().updateUrl), MinecraftForge.MC_VERSION,
-                    VERSION, !isDevelopment());
+                    VERSION);
 
-            if (!isDevelopment()) {
+            if (!GMan.isDevelopment()) {
                 StringSetting lastVersionSetting = settings.getStringSetting("Miscellaneous.LastVersion");
                 final String lastVersion = settings.getStringSetting("Miscellaneous.LastVersion").getString();
                 final boolean modUpdated = !lastVersion.equals(VERSION);
