@@ -104,6 +104,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
     public void removeRigidBody(final IRigidBody body) {
         dynamicsWorld.removeRigidBody((RigidBody) body.getBody());
         rigidBodies.remove(body);
+        body.dispose();
     }
 
     @Override
