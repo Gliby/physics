@@ -1,8 +1,7 @@
 Gliby's Physics (1.8 branch)
 =============
-<p align="center"> 
 <img src="https://raw.githubusercontent.com/Gliby/physics/1.8/src/main/resources/logo2.png" alt="Gliby's Physics">
-</p>
+
 
 
 Gliby's Physics is a Minecraft Forge modification which adds realistic physics simulation.
