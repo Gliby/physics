@@ -25,7 +25,6 @@ $ ./gradlew setupDecompWorkspace
 ```sh
 $ ./gradlew idea
 ```
-2. Follow https://mcforge.readthedocs.io/en/latest/gettingstarted/#terminal-free-intellij-idea-configuration
 
 ### Setting up IDE (Eclipse)
 1. Get the MDK https://files.minecraftforge.net/maven/net/minecraftforge/forge/index_1.8.html, copy the ``'eclipse'`` from the MDK to this project's root. Continue:
