@@ -269,11 +269,6 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
             IRigidBody rigidBody = getRigidBody();
             if (rigidBody != null && rigidBody.isValid()) {
-                if (rigidBody.getProperties().containsKey(EnumRigidBodyProperty.DEAD.getName())) {
-                    // System.out.println("Set dead: " + getRigidBody().getProperties());
-                    // Physics.getLogger().warn("Killed physics entity through properties.");
-                    // this.setDead();
-                }
                 if (rigidBody.isActive())
                     lastTickActive = ticksExisted;
 
@@ -286,6 +281,10 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
                     RigidBodyMechanic mechanic = mechanics.get(i);
                     if (mechanic.isEnabled())
                         mechanic.update(getRigidBody(), physicsWorld, this, worldObj.isRemote ? Side.CLIENT : Side.SERVER);
+                }
+
+                if (rigidBody.getProperties().containsKey(EnumRigidBodyProperty.DEAD.getName())) {
+                    this.setDead();
                 }
             }
         }
