@@ -1,7 +1,7 @@
 Gliby's Physics (1.8 branch)
 =============
 <p align="center"> 
-<img src="https://raw.githubusercontent.com/Gliby/physics/1.8/src/main/resources/logo.png" alt="Gliby's Physics">
+<img src="https://raw.githubusercontent.com/Gliby/physics/1.8/src/main/resources/logo2.png" alt="Gliby's Physics">
 </p>
 
 
