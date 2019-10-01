@@ -23,21 +23,17 @@
 
 package com.bulletphysicsx.demos.concaveconvexcast;
 
-import static com.bulletphysicsx.demos.opengl.IGL.GL_LIGHTING;
-import static com.bulletphysicsx.demos.opengl.IGL.GL_LINES;
-
-import javax.vecmath.Quat4f;
-import javax.vecmath.Vector3f;
-
 import com.bulletphysicsx.collision.dispatch.CollisionWorld;
 import com.bulletphysicsx.collision.dispatch.CollisionWorld.ClosestConvexResultCallback;
 import com.bulletphysicsx.collision.shapes.BoxShape;
 import com.bulletphysicsx.demos.opengl.IGL;
-import com.bulletphysicsx.linearmath.Clock;
-import com.bulletphysicsx.linearmath.QuaternionUtil;
-import com.bulletphysicsx.linearmath.Transform;
-import com.bulletphysicsx.linearmath.TransformUtil;
-import com.bulletphysicsx.linearmath.VectorUtil;
+import com.bulletphysicsx.linearmath.*;
+
+import javax.vecmath.Quat4f;
+import javax.vecmath.Vector3f;
+
+import static com.bulletphysicsx.demos.opengl.IGL.GL_LIGHTING;
+import static com.bulletphysicsx.demos.opengl.IGL.GL_LINES;
 
 /**
  * Scrolls back and forth over terrain.
@@ -47,7 +43,8 @@ import com.bulletphysicsx.linearmath.VectorUtil;
 public class ConvexcastBatch {
 
     public static final int NUMRAYS_IN_BAR = 100;
-
+    public final Vector3f boxShapeHalfExtents = new Vector3f();
+    public final BoxShape boxShape;
     public Vector3f[] source = new Vector3f[NUMRAYS_IN_BAR];
     public Vector3f[] dest = new Vector3f[NUMRAYS_IN_BAR];
     public Vector3f[] direction = new Vector3f[NUMRAYS_IN_BAR];
@@ -55,6 +52,21 @@ public class ConvexcastBatch {
     public Vector3f[] hit_surface = new Vector3f[NUMRAYS_IN_BAR];
     public float[] hit_fraction = new float[NUMRAYS_IN_BAR];
     public Vector3f[] normal = new Vector3f[NUMRAYS_IN_BAR];
+    public int frame_counter;
+    public int ms;
+    public int sum_ms;
+    public int sum_ms_samples;
+    public int min_ms;
+    public int max_ms;
+    //#endif //USE_BT_CLOCK
+    //#ifdef USE_BT_CLOCK
+    public Clock frame_timer = new Clock();
+    public float dx;
+    public float min_x;
+    public float max_x;
+    public float min_y;
+    public float max_y;
+    public float sign;
 
     {
         for (int i = 0; i < NUMRAYS_IN_BAR; i++) {
@@ -66,27 +78,6 @@ public class ConvexcastBatch {
             normal[i] = new Vector3f();
         }
     }
-
-    public int frame_counter;
-    public int ms;
-    public int sum_ms;
-    public int sum_ms_samples;
-    public int min_ms;
-    public int max_ms;
-
-    //#ifdef USE_BT_CLOCK
-    public Clock frame_timer = new Clock();
-    //#endif //USE_BT_CLOCK
-
-    public float dx;
-    public float min_x;
-    public float max_x;
-    public float min_y;
-    public float max_y;
-    public float sign;
-
-    public final Vector3f boxShapeHalfExtents = new Vector3f();
-    public final BoxShape boxShape;
 
     public ConvexcastBatch() {
         boxShape = new BoxShape(new Vector3f(0f, 0f, 0f));

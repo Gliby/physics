@@ -7,11 +7,11 @@
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from
  * the use of this software.
- * 
- * Permission is granted to anyone to use this software for any purpose, 
+ *
+ * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would be
@@ -23,48 +23,33 @@
 
 package com.bulletphysicsx.demos.forklift;
 
-import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Keyboard;
-
 import com.bulletphysicsx.collision.broadphase.BroadphaseInterface;
 import com.bulletphysicsx.collision.broadphase.DbvtBroadphase;
 import com.bulletphysicsx.collision.dispatch.CollisionDispatcher;
 import com.bulletphysicsx.collision.dispatch.CollisionObject;
 import com.bulletphysicsx.collision.dispatch.DefaultCollisionConfiguration;
-import com.bulletphysicsx.collision.shapes.BoxShape;
-import com.bulletphysicsx.collision.shapes.BvhTriangleMeshShape;
-import com.bulletphysicsx.collision.shapes.CollisionShape;
-import com.bulletphysicsx.collision.shapes.CompoundShape;
-import com.bulletphysicsx.collision.shapes.CylinderShapeX;
-import com.bulletphysicsx.collision.shapes.TriangleIndexVertexArray;
-import com.bulletphysicsx.demos.opengl.DemoApplication;
-import com.bulletphysicsx.demos.opengl.GLDebugDrawer;
-import com.bulletphysicsx.demos.opengl.GLShapeDrawer;
-import com.bulletphysicsx.demos.opengl.IGL;
-import com.bulletphysicsx.demos.opengl.LWJGL;
+import com.bulletphysicsx.collision.shapes.*;
+import com.bulletphysicsx.demos.opengl.*;
 import com.bulletphysicsx.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysicsx.dynamics.RigidBody;
 import com.bulletphysicsx.dynamics.constraintsolver.ConstraintSolver;
 import com.bulletphysicsx.dynamics.constraintsolver.HingeConstraint;
 import com.bulletphysicsx.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.bulletphysicsx.dynamics.constraintsolver.SliderConstraint;
-import com.bulletphysicsx.dynamics.vehicle.DefaultVehicleRaycaster;
-import com.bulletphysicsx.dynamics.vehicle.RaycastVehicle;
-import com.bulletphysicsx.dynamics.vehicle.VehicleRaycaster;
-import com.bulletphysicsx.dynamics.vehicle.VehicleTuning;
-import com.bulletphysicsx.dynamics.vehicle.WheelInfo;
+import com.bulletphysicsx.dynamics.vehicle.*;
 import com.bulletphysicsx.linearmath.DebugDrawModes;
 import com.bulletphysicsx.linearmath.MatrixUtil;
 import com.bulletphysicsx.linearmath.Transform;
 import com.bulletphysicsx.util.ObjectArrayList;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Keyboard;
 
 import javax.vecmath.Vector3f;
-
-import static com.bulletphysicsx.demos.opengl.IGL.GL_LIGHTING;
-
 import java.awt.event.KeyEvent;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+
+import static com.bulletphysicsx.demos.opengl.IGL.GL_LIGHTING;
 
 /**
  * @author jezek2
@@ -79,7 +64,39 @@ public class ForkLiftDemo extends DemoApplication {
     // By default, Bullet Vehicle uses Y as up axis.
     // You can override the up axis, for example Z-axis up. Enable this define to see how to:
     ////#define FORCE_ZAXIS_UP 1
+    private static final int maxProxies = 32766;
+    private static final int maxOverlap = 65535;
+    private static final float CUBE_HALF_EXTENTS = 1f;
+    public final Vector3f liftStartPos = new Vector3f();
+    private final Vector3f wheelDirectionCS0 = new Vector3f(0, -1, 0);
+    //#endif
+    private final Vector3f wheelAxleCS = new Vector3f(-1, 0, 0);
+    public RigidBody carChassis;
+    public RigidBody liftBody;
+    public HingeConstraint liftHinge;
+    public RigidBody forkBody;
+    public Vector3f forkStartPos = new Vector3f();
+    public SliderConstraint forkSlider;
+    public RigidBody loadBody;
+    public Vector3f loadStartPos = new Vector3f();
+    public boolean useDefaultCamera;
+    public ObjectArrayList<CollisionShape> collisionShapes = new ObjectArrayList<CollisionShape>();
+    public BroadphaseInterface overlappingPairCache;
+    public CollisionDispatcher dispatcher;
+    public ConstraintSolver constraintSolver;
+    public DefaultCollisionConfiguration collisionConfiguration;
+    public TriangleIndexVertexArray indexVertexArrays;
+    public ByteBuffer vertices;
+    public VehicleTuning tuning = new VehicleTuning();
+    public VehicleRaycaster vehicleRayCaster;
 
+    ////////////////////////////////////////////////////////////////////////////
+    public RaycastVehicle vehicle;
+
+    //----------------------------
+    public float cameraHeight = 4f;
+    public float minCameraDistance = 3f;
+    public float maxCameraDistance = 10f;
     //#ifdef FORCE_ZAXIS_UP
     //private int rightIndex = 0;
     //private int upIndex = 2;
@@ -90,24 +107,16 @@ public class ForkLiftDemo extends DemoApplication {
     private int rightIndex = 0;
     private int upIndex = 1;
     private int forwardIndex = 2;
-    private final Vector3f wheelDirectionCS0 = new Vector3f(0, -1, 0);
-    private final Vector3f wheelAxleCS = new Vector3f(-1, 0, 0);
-    //#endif
-
-    private static final int maxProxies = 32766;
-    private static final int maxOverlap = 65535;
-
     // RaycastVehicle is the interface for the constraint that implements the raycast vehicle
     // notice that for higher-quality slow-moving vehicles, another approach might be better
     // implementing explicit hinged-wheel constraints with cylinder collision, rather then raycasts
     private float gEngineForce = 0.f;
-
     private float defaultBreakingForce = 10.f;
     private float gBreakingForce = 10.f;
 
+    //----------------------------
     private float maxEngineForce = 1000.f;//this should be engine/velocity dependent
     private float maxBreakingForce = 100.f;
-
     private float gVehicleSteering = 0.f;
     private float steeringIncrement = 0.04f;
     private float steeringClamp = 0.3f;
@@ -118,53 +127,20 @@ public class ForkLiftDemo extends DemoApplication {
     private float suspensionDamping = 2.3f;
     private float suspensionCompression = 4.4f;
     private float rollInfluence = 0.1f;//1.0f;
-
     private float suspensionRestLength = 0.6f;
-
-    private static final float CUBE_HALF_EXTENTS = 1f;
-
-    ////////////////////////////////////////////////////////////////////////////
-
-
-    public RigidBody carChassis;
-
-    //----------------------------
-
-    public RigidBody liftBody;
-    public final Vector3f liftStartPos = new Vector3f();
-    public HingeConstraint liftHinge;
-
-    public RigidBody forkBody;
-    public Vector3f forkStartPos = new Vector3f();
-    public SliderConstraint forkSlider;
-
-    public RigidBody loadBody;
-    public Vector3f loadStartPos = new Vector3f();
-
-    public boolean useDefaultCamera;
-
-    //----------------------------
-
-    public ObjectArrayList<CollisionShape> collisionShapes = new ObjectArrayList<CollisionShape>();
-    public BroadphaseInterface overlappingPairCache;
-    public CollisionDispatcher dispatcher;
-    public ConstraintSolver constraintSolver;
-    public DefaultCollisionConfiguration collisionConfiguration;
-    public TriangleIndexVertexArray indexVertexArrays;
-    public ByteBuffer vertices;
-
-    public VehicleTuning tuning = new VehicleTuning();
-    public VehicleRaycaster vehicleRayCaster;
-    public RaycastVehicle vehicle;
-
-    public float cameraHeight = 4f;
-    public float minCameraDistance = 3f;
-    public float maxCameraDistance = 10f;
 
     public ForkLiftDemo(IGL gl) {
         super(gl);
         cameraPosition.set(30, 30, 30);
         useDefaultCamera = false;
+    }
+
+    public static void main(String[] args) throws LWJGLException {
+        ForkLiftDemo forkLiftDemo = new ForkLiftDemo(LWJGL.getGL());
+        forkLiftDemo.initPhysics();
+        forkLiftDemo.getDynamicsWorld().setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
+
+        LWJGL.main(args, 800, 600, "Bullet ForkLift Demo", forkLiftDemo);
     }
 
     public void lockLiftHinge() {
@@ -840,14 +816,6 @@ public class ForkLiftDemo extends DemoApplication {
         }
 
         setCameraDistance(26.f);
-    }
-
-    public static void main(String[] args) throws LWJGLException {
-        ForkLiftDemo forkLiftDemo = new ForkLiftDemo(LWJGL.getGL());
-        forkLiftDemo.initPhysics();
-        forkLiftDemo.getDynamicsWorld().setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
-
-        LWJGL.main(args, 800, 600, "Bullet ForkLift Demo", forkLiftDemo);
     }
 
 }

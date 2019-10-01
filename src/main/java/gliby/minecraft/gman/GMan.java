@@ -32,17 +32,17 @@ public class GMan {
     private String minecraftVersion;
     private String modVersion;
 
-    public static boolean isDevelopment() {
-        boolean development = (Boolean) (Launch.blackboard.get("fml.deobfuscatedEnvironment"));
-        return development;
-    }
-
     public GMan(Logger logger, ModInfo modInfo, String minecraftVersion, String modVersion) {
         this.logger = logger;
         this.modInfo = modInfo;
         this.minecraftVersion = minecraftVersion;
         this.modVersion = modVersion;
         this.properties = new HashMap<String, Object>();
+    }
+
+    public static boolean isDevelopment() {
+        boolean development = (Boolean) (Launch.blackboard.get("fml.deobfuscatedEnvironment"));
+        return development;
     }
 
     public static GMan create(final Logger logger, ModInfo modInfo, final String minecraftVersion,

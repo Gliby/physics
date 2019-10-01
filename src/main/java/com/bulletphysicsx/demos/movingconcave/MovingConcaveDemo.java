@@ -7,11 +7,11 @@
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from
  * the use of this software.
- * 
- * Permission is granted to anyone to use this software for any purpose, 
+ *
+ * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would be
@@ -23,18 +23,12 @@
 
 package com.bulletphysicsx.demos.movingconcave;
 
-import org.lwjgl.LWJGLException;
-
 import com.bulletphysicsx.collision.broadphase.BroadphaseInterface;
 import com.bulletphysicsx.collision.broadphase.DbvtBroadphase;
 import com.bulletphysicsx.collision.dispatch.CollisionDispatcher;
 import com.bulletphysicsx.collision.dispatch.CollisionFlags;
 import com.bulletphysicsx.collision.dispatch.DefaultCollisionConfiguration;
-import com.bulletphysicsx.collision.shapes.BoxShape;
-import com.bulletphysicsx.collision.shapes.CollisionShape;
-import com.bulletphysicsx.collision.shapes.CompoundShape;
-import com.bulletphysicsx.collision.shapes.StaticPlaneShape;
-import com.bulletphysicsx.collision.shapes.TriangleIndexVertexArray;
+import com.bulletphysicsx.collision.shapes.*;
 import com.bulletphysicsx.demos.opengl.DemoApplication;
 import com.bulletphysicsx.demos.opengl.GLDebugDrawer;
 import com.bulletphysicsx.demos.opengl.IGL;
@@ -46,12 +40,13 @@ import com.bulletphysicsx.dynamics.constraintsolver.SequentialImpulseConstraintS
 import com.bulletphysicsx.extras.gimpact.GImpactCollisionAlgorithm;
 import com.bulletphysicsx.extras.gimpact.GImpactMeshShape;
 import com.bulletphysicsx.linearmath.Transform;
-
-import static com.bulletphysicsx.demos.opengl.IGL.GL_COLOR_BUFFER_BIT;
-import static com.bulletphysicsx.demos.opengl.IGL.GL_DEPTH_BUFFER_BIT;
+import org.lwjgl.LWJGLException;
 
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
+
+import static com.bulletphysicsx.demos.opengl.IGL.GL_COLOR_BUFFER_BIT;
+import static com.bulletphysicsx.demos.opengl.IGL.GL_DEPTH_BUFFER_BIT;
 
 /**
  * @author jezek2
@@ -67,6 +62,14 @@ public class MovingConcaveDemo extends DemoApplication {
 
     public MovingConcaveDemo(IGL gl) {
         super(gl);
+    }
+
+    public static void main(String[] args) throws LWJGLException {
+        MovingConcaveDemo concaveDemo = new MovingConcaveDemo(LWJGL.getGL());
+        concaveDemo.initPhysics();
+        concaveDemo.getDynamicsWorld().setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
+
+        LWJGL.main(args, 800, 600, "Moving Concave Mesh Demo", concaveDemo);
     }
 
     @Override
@@ -228,14 +231,6 @@ public class MovingConcaveDemo extends DemoApplication {
             default:
                 super.keyboardCallback(key, x, y, modifiers);
         }
-    }
-
-    public static void main(String[] args) throws LWJGLException {
-        MovingConcaveDemo concaveDemo = new MovingConcaveDemo(LWJGL.getGL());
-        concaveDemo.initPhysics();
-        concaveDemo.getDynamicsWorld().setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
-
-        LWJGL.main(args, 800, 600, "Moving Concave Mesh Demo", concaveDemo);
     }
 
 }

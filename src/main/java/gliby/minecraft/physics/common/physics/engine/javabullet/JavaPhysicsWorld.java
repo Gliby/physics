@@ -338,7 +338,6 @@ public class JavaPhysicsWorld extends PhysicsWorld {
         blockCollisionBody.destroy();
 
 
-
         for (IRigidBody body : rigidBodies) {
             RigidBody rigidBody = (RigidBody) body.getBody();
             dynamicsWorld.removeRigidBody(rigidBody);

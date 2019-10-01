@@ -7,11 +7,11 @@
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from
  * the use of this software.
- * 
- * Permission is granted to anyone to use this software for any purpose, 
+ *
+ * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would be
@@ -30,68 +30,14 @@ import java.awt.color.ColorSpace;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineMetrics;
 import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.ComponentColorModel;
-import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferByte;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.awt.image.*;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.IntBuffer;
 import java.util.Hashtable;
 
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_COMPILE;
-import static org.lwjgl.opengl.GL11.GL_LINEAR;
-import static org.lwjgl.opengl.GL11.GL_LINEAR_MIPMAP_LINEAR;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_PACK_ALIGNMENT;
-import static org.lwjgl.opengl.GL11.GL_PACK_ROW_LENGTH;
-import static org.lwjgl.opengl.GL11.GL_PACK_SKIP_PIXELS;
-import static org.lwjgl.opengl.GL11.GL_PACK_SKIP_ROWS;
-import static org.lwjgl.opengl.GL11.GL_QUADS;
-import static org.lwjgl.opengl.GL11.GL_RGB;
-import static org.lwjgl.opengl.GL11.GL_RGBA;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
-import static org.lwjgl.opengl.GL11.GL_UNPACK_ALIGNMENT;
-import static org.lwjgl.opengl.GL11.GL_UNPACK_ROW_LENGTH;
-import static org.lwjgl.opengl.GL11.GL_UNPACK_SKIP_PIXELS;
-import static org.lwjgl.opengl.GL11.GL_UNPACK_SKIP_ROWS;
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
-import static org.lwjgl.opengl.GL11.glBegin;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glCallList;
-import static org.lwjgl.opengl.GL11.glColor4f;
-import static org.lwjgl.opengl.GL11.glDeleteTextures;
-import static org.lwjgl.opengl.GL11.glDisable;
-import static org.lwjgl.opengl.GL11.glEnable;
-import static org.lwjgl.opengl.GL11.glEnd;
-import static org.lwjgl.opengl.GL11.glEndList;
-import static org.lwjgl.opengl.GL11.glGenLists;
-import static org.lwjgl.opengl.GL11.glGenTextures;
-import static org.lwjgl.opengl.GL11.glGetTexImage;
-import static org.lwjgl.opengl.GL11.glNewList;
-import static org.lwjgl.opengl.GL11.glPixelStorei;
-import static org.lwjgl.opengl.GL11.glPopMatrix;
-import static org.lwjgl.opengl.GL11.glPushMatrix;
-import static org.lwjgl.opengl.GL11.glTexCoord2f;
-import static org.lwjgl.opengl.GL11.glTexImage2D;
-import static org.lwjgl.opengl.GL11.glTexParameteri;
-import static org.lwjgl.opengl.GL11.glTranslatef;
-import static org.lwjgl.opengl.GL11.glVertex3f;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_COMPRESSED_RGB;
 import static org.lwjgl.opengl.GL13.GL_COMPRESSED_RGBA;
 import static org.lwjgl.util.glu.GLU.gluBuild2DMipmaps;
@@ -103,100 +49,10 @@ public class FontRender {
 
     //private static final File cacheDir = new File("/path/to/font/cache/dir/");
 
+    private static ColorModel glColorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[]{8, 8, 8, 0}, false, false, ComponentColorModel.OPAQUE, DataBuffer.TYPE_BYTE);
+    private static ColorModel glColorModelAlpha = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[]{8, 8, 8, 8}, true, false, ComponentColorModel.OPAQUE, DataBuffer.TYPE_BYTE);
+
     private FontRender() {
-    }
-
-    protected static class Glyph {
-        int x, y, w, h;
-        int list = -1;
-    }
-
-    public static class GLFont {
-        protected int texture;
-        protected int width, height;
-        protected Glyph[] glyphs = new Glyph[128 - 32];
-
-        public GLFont() {
-            for (int i = 0; i < glyphs.length; i++) glyphs[i] = new Glyph();
-        }
-
-        public GLFont(InputStream in) throws IOException {
-            this();
-            load(in);
-        }
-
-        public void destroy() {
-            glDeleteTextures(IntBuffer.wrap(new int[]{texture}));
-        }
-
-        protected void save(File f) throws IOException {
-            DataOutputStream out = new DataOutputStream(new FileOutputStream(f));
-            out.writeInt(width);
-            out.writeInt(height);
-
-            glPixelStorei(GL_PACK_ROW_LENGTH, 0);
-            glPixelStorei(GL_PACK_ALIGNMENT, 1);
-            glPixelStorei(GL_PACK_SKIP_ROWS, 0);
-            glPixelStorei(GL_PACK_SKIP_PIXELS, 0);
-
-            int size = width * height * 4;
-            ByteBuffer buf = BufferUtils.createByteBuffer(size);
-            byte[] data = new byte[size];
-            glBindTexture(GL_TEXTURE_2D, texture);
-            glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, (ByteBuffer) buf.position(0));
-            buf.get(data);
-            out.write(data);
-
-            for (int i = 0; i < glyphs.length; i++) {
-                out.writeShort(glyphs[i].x);
-                out.writeShort(glyphs[i].y);
-                out.writeShort(glyphs[i].w);
-                out.writeShort(glyphs[i].h);
-            }
-
-            out.close();
-        }
-
-        protected void load(File f) throws IOException {
-            load(new FileInputStream(f));
-        }
-
-        protected void load(InputStream _in) throws IOException {
-            DataInputStream in = new DataInputStream(_in);
-            int w = in.readInt();
-            int h = in.readInt();
-            int size = w * h * 4;
-
-            glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
-            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-            glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
-            glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
-
-            ByteBuffer buf = BufferUtils.createByteBuffer(size);
-            byte[] data = new byte[size];
-            in.read(data);
-            buf.put(data);
-
-            int[] id = new int[1];
-            glGenTextures(IntBuffer.wrap(id));
-            texture = id[0];
-            width = w;
-            height = h;
-
-            glBindTexture(GL_TEXTURE_2D, texture);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, (ByteBuffer) buf.position(0));
-
-            for (int i = 0; i < glyphs.length; i++) {
-                glyphs[i].x = in.readShort();
-                glyphs[i].y = in.readShort();
-                glyphs[i].w = in.readShort();
-                glyphs[i].h = in.readShort();
-            }
-
-            in.close();
-        }
     }
 
     private static String getFontFileName(String family, int size, boolean bold) {
@@ -340,9 +196,6 @@ public class FontRender {
         glDisable(GL_BLEND);
     }
 
-    private static ColorModel glColorModel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[]{8, 8, 8, 0}, false, false, ComponentColorModel.OPAQUE, DataBuffer.TYPE_BYTE);
-    private static ColorModel glColorModelAlpha = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[]{8, 8, 8, 8}, true, false, ComponentColorModel.OPAQUE, DataBuffer.TYPE_BYTE);
-
     private static int createTexture(BufferedImage img, boolean mipMap) {
         boolean USE_COMPRESSION = false;
 
@@ -381,6 +234,99 @@ public class FontRender {
 
         WritableRaster raster = Raster.createInterleavedRaster(DataBuffer.TYPE_BYTE, width, height, 3, null);
         return new BufferedImage(glColorModel, raster, false, new Hashtable());
+    }
+
+    protected static class Glyph {
+        int x, y, w, h;
+        int list = -1;
+    }
+
+    public static class GLFont {
+        protected int texture;
+        protected int width, height;
+        protected Glyph[] glyphs = new Glyph[128 - 32];
+
+        public GLFont() {
+            for (int i = 0; i < glyphs.length; i++) glyphs[i] = new Glyph();
+        }
+
+        public GLFont(InputStream in) throws IOException {
+            this();
+            load(in);
+        }
+
+        public void destroy() {
+            glDeleteTextures(IntBuffer.wrap(new int[]{texture}));
+        }
+
+        protected void save(File f) throws IOException {
+            DataOutputStream out = new DataOutputStream(new FileOutputStream(f));
+            out.writeInt(width);
+            out.writeInt(height);
+
+            glPixelStorei(GL_PACK_ROW_LENGTH, 0);
+            glPixelStorei(GL_PACK_ALIGNMENT, 1);
+            glPixelStorei(GL_PACK_SKIP_ROWS, 0);
+            glPixelStorei(GL_PACK_SKIP_PIXELS, 0);
+
+            int size = width * height * 4;
+            ByteBuffer buf = BufferUtils.createByteBuffer(size);
+            byte[] data = new byte[size];
+            glBindTexture(GL_TEXTURE_2D, texture);
+            glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, (ByteBuffer) buf.position(0));
+            buf.get(data);
+            out.write(data);
+
+            for (int i = 0; i < glyphs.length; i++) {
+                out.writeShort(glyphs[i].x);
+                out.writeShort(glyphs[i].y);
+                out.writeShort(glyphs[i].w);
+                out.writeShort(glyphs[i].h);
+            }
+
+            out.close();
+        }
+
+        protected void load(File f) throws IOException {
+            load(new FileInputStream(f));
+        }
+
+        protected void load(InputStream _in) throws IOException {
+            DataInputStream in = new DataInputStream(_in);
+            int w = in.readInt();
+            int h = in.readInt();
+            int size = w * h * 4;
+
+            glPixelStorei(GL_UNPACK_ROW_LENGTH, 0);
+            glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+            glPixelStorei(GL_UNPACK_SKIP_ROWS, 0);
+            glPixelStorei(GL_UNPACK_SKIP_PIXELS, 0);
+
+            ByteBuffer buf = BufferUtils.createByteBuffer(size);
+            byte[] data = new byte[size];
+            in.read(data);
+            buf.put(data);
+
+            int[] id = new int[1];
+            glGenTextures(IntBuffer.wrap(id));
+            texture = id[0];
+            width = w;
+            height = h;
+
+            glBindTexture(GL_TEXTURE_2D, texture);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, (ByteBuffer) buf.position(0));
+
+            for (int i = 0; i < glyphs.length; i++) {
+                glyphs[i].x = in.readShort();
+                glyphs[i].y = in.readShort();
+                glyphs[i].w = in.readShort();
+                glyphs[i].h = in.readShort();
+            }
+
+            in.close();
+        }
     }
 
 }

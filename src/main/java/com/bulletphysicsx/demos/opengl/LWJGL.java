@@ -7,11 +7,11 @@
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from
  * the use of this software.
- * 
- * Permission is granted to anyone to use this software for any purpose, 
+ *
+ * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would be
@@ -72,9 +72,12 @@ public class LWJGL {
             Display.update();
 
             int modifiers = 0;
-            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) modifiers |= KeyEvent.SHIFT_DOWN_MASK;
-            if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)) modifiers |= KeyEvent.CTRL_DOWN_MASK;
-            if (Keyboard.isKeyDown(Keyboard.KEY_LMETA) || Keyboard.isKeyDown(Keyboard.KEY_RMETA)) modifiers |= KeyEvent.ALT_DOWN_MASK;
+            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))
+                modifiers |= KeyEvent.SHIFT_DOWN_MASK;
+            if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))
+                modifiers |= KeyEvent.CTRL_DOWN_MASK;
+            if (Keyboard.isKeyDown(Keyboard.KEY_LMETA) || Keyboard.isKeyDown(Keyboard.KEY_RMETA))
+                modifiers |= KeyEvent.ALT_DOWN_MASK;
 
             while (Keyboard.next()) {
                 if (Keyboard.getEventCharacter() != '\0') {

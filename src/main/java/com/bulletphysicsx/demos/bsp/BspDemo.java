@@ -7,11 +7,11 @@
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from
  * the use of this software.
- * 
- * Permission is granted to anyone to use this software for any purpose, 
+ *
+ * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would be
@@ -22,11 +22,6 @@
  */
 
 package com.bulletphysicsx.demos.bsp;
-
-import static com.bulletphysicsx.demos.opengl.IGL.GL_COLOR_BUFFER_BIT;
-import static com.bulletphysicsx.demos.opengl.IGL.GL_DEPTH_BUFFER_BIT;
-
-import javax.vecmath.Vector3f;
 
 import com.bulletphysicsx.collision.broadphase.BroadphaseInterface;
 import com.bulletphysicsx.collision.broadphase.DbvtBroadphase;
@@ -43,6 +38,11 @@ import com.bulletphysicsx.dynamics.constraintsolver.ConstraintSolver;
 import com.bulletphysicsx.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.bulletphysicsx.linearmath.Transform;
 import com.bulletphysicsx.util.ObjectArrayList;
+
+import javax.vecmath.Vector3f;
+
+import static com.bulletphysicsx.demos.opengl.IGL.GL_COLOR_BUFFER_BIT;
+import static com.bulletphysicsx.demos.opengl.IGL.GL_DEPTH_BUFFER_BIT;
 
 /**
  * BspDemo shows the convex collision detection, by converting a Quake BSP file
@@ -64,6 +64,14 @@ public class BspDemo extends DemoApplication {
 
     public BspDemo(IGL gl) {
         super(gl);
+    }
+
+    public static void main(String[] args) throws Exception {
+        BspDemo demo = new BspDemo(LWJGL.getGL());
+        demo.initPhysics();
+        demo.getDynamicsWorld().setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
+
+        LWJGL.main(args, 800, 600, "Bullet Physics Demo. http://bullet.sf.net", demo);
     }
 
     public void initPhysics() throws Exception {
@@ -121,14 +129,6 @@ public class BspDemo extends DemoApplication {
 
         //glFlush();
         //glutSwapBuffers();
-    }
-
-    public static void main(String[] args) throws Exception {
-        BspDemo demo = new BspDemo(LWJGL.getGL());
-        demo.initPhysics();
-        demo.getDynamicsWorld().setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
-
-        LWJGL.main(args, 800, 600, "Bullet Physics Demo. http://bullet.sf.net", demo);
     }
 
     ////////////////////////////////////////////////////////////////////////////

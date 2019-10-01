@@ -4,11 +4,11 @@
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from
  * the use of this software.
- * 
- * Permission is granted to anyone to use this software for any purpose, 
+ *
+ * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would be
@@ -20,10 +20,9 @@
 
 package com.bulletphysicsx.demos.applet;
 
-import javax.vecmath.Matrix4f;
-
 import com.bulletphysicsx.demos.opengl.IGL;
 
+import javax.vecmath.Matrix4f;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
@@ -37,6 +36,9 @@ public class SoftwareGL implements IGL {
     private int matrixMode = GL_MODELVIEW;
     private Matrix4f tmpMat = new Matrix4f();
     private Graphics g;
+    private Sphere sphere = new Sphere();
+    private Cylinder cylinder = new Cylinder();
+    private Disk disk = new Disk();
 
     public SoftwareGL() {
         gl = new Graphics3D();
@@ -293,10 +295,6 @@ public class SoftwareGL implements IGL {
         glVertex3f(+extent, -extent, -extent);
         glEnd();
     }
-
-    private Sphere sphere = new Sphere();
-    private Cylinder cylinder = new Cylinder();
-    private Disk disk = new Disk();
 
     public void drawSphere(float radius, int slices, int stacks) {
         sphere.draw(gl, radius, 6, 6);

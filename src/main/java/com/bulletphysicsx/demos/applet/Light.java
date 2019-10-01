@@ -4,11 +4,11 @@
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from
  * the use of this software.
- * 
- * Permission is granted to anyone to use this software for any purpose, 
+ *
+ * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would be
@@ -27,10 +27,10 @@ import javax.vecmath.Vector4f;
  */
 public class Light {
 
-    public boolean enabled = false;
     public final Vector4f ambient = new Vector4f(0f, 0f, 0f, 1f);
     public final Vector4f diffuse = new Vector4f(1f, 1f, 1f, 1f);
     public final Vector4f specular = new Vector4f(1f, 1f, 1f, 1f);
     public final Vector4f position = new Vector4f(0f, 0f, 1f, 0f);
+    public boolean enabled = false;
 
 }

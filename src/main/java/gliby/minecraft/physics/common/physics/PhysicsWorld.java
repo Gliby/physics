@@ -24,6 +24,20 @@ public abstract class PhysicsWorld {
     private final IPhysicsWorldConfiguration physicsConfiguration;
     private final Vector3f gravityDirection;
     protected HashMap<String, PhysicsMechanic> physicsMechanics;
+    /**
+     * time at last frame
+     */
+    long lastFrame;
+    /**
+     * frames per second
+     */
+    int fps;
+    /**
+     * last fps time
+     */
+    long lastFPS;
+    ICollisionShape defaultShape;
+    private BlockShapeCache blockShapeCache;
 
     public PhysicsWorld(final IPhysicsWorldConfiguration physicsConfiguration) {
         this.physicsConfiguration = physicsConfiguration;
@@ -94,15 +108,6 @@ public abstract class PhysicsWorld {
         updateFPS();
     }
 
-    /** time at last frame */
-    long lastFrame;
-
-    /** frames per second */
-    int fps;
-    /** last fps time */
-    long lastFPS;
-
-
     /**
      * Calculate how many milliseconds have passed
      * since last frame.
@@ -172,7 +177,6 @@ public abstract class PhysicsWorld {
     public abstract void addCollisionObject(ICollisionObject collisionObject, short collisionFilterGroup,
                                             short collisionFilterMask);
 
-
     public abstract List<IRigidBody> getRigidBodies();
 
     public abstract List<IRope> getRopes();
@@ -240,12 +244,14 @@ public abstract class PhysicsWorld {
 
     public abstract boolean isValid();
 
-    ICollisionShape defaultShape;
-
     public ICollisionShape getDefaultShape() {
         if (defaultShape == null)
             defaultShape = createBoxShape(new Vector3f(0.5f, 0.5f, 0.5f));
         return defaultShape;
+    }
+
+    public BlockShapeCache getBlockCache() {
+        return blockShapeCache;
     }
 
     protected class CollisionPart {
@@ -266,13 +272,6 @@ public abstract class PhysicsWorld {
             this.transform = transform;
             this.extent = extent;
         }
-    }
-
-
-    private BlockShapeCache blockShapeCache;
-
-    public BlockShapeCache getBlockCache() {
-        return blockShapeCache;
     }
 
     public class BlockShapeCache {

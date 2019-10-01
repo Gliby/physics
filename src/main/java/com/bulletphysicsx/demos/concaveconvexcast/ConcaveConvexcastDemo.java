@@ -7,11 +7,11 @@
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from
  * the use of this software.
- * 
- * Permission is granted to anyone to use this software for any purpose, 
+ *
+ * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would be
@@ -22,8 +22,6 @@
  */
 
 package com.bulletphysicsx.demos.concaveconvexcast;
-
-import org.lwjgl.LWJGLException;
 
 import com.bulletphysicsx.BulletStats;
 import com.bulletphysicsx.collision.broadphase.BroadphaseInterface;
@@ -46,20 +44,30 @@ import com.bulletphysicsx.dynamics.constraintsolver.ConstraintSolver;
 import com.bulletphysicsx.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.bulletphysicsx.linearmath.Transform;
 import com.bulletphysicsx.util.ObjectArrayList;
+import org.lwjgl.LWJGLException;
 
 import javax.vecmath.Vector3f;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import static com.bulletphysicsx.demos.opengl.IGL.GL_COLOR_BUFFER_BIT;
 import static com.bulletphysicsx.demos.opengl.IGL.GL_DEPTH_BUFFER_BIT;
-
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 /**
  * @author jezek2
  */
 public class ConcaveConvexcastDemo extends DemoApplication {
 
+    private static final float TRIANGLE_SIZE = 8.f;
+    private static ByteBuffer gVertices;
+    private static ByteBuffer gIndices;
+    private static BvhTriangleMeshShape trimeshShape;
+    private static RigidBody staticBody;
+    private static float waveheight = 5.f;
+    private static int NUM_VERTS_X = 30;
+    private static int NUM_VERTS_Y = 30;
+    private static int totalVerts = NUM_VERTS_X * NUM_VERTS_Y;
+    private static float offset = 0f;
     // keep the collision shapes, for deletion/cleanup
     private ObjectArrayList<CollisionShape> collisionShapes = new ObjectArrayList<CollisionShape>();
     private TriangleIndexVertexArray indexVertexArrays;
@@ -68,22 +76,18 @@ public class ConcaveConvexcastDemo extends DemoApplication {
     private ConstraintSolver solver;
     private DefaultCollisionConfiguration collisionConfiguration;
     private boolean animatedMesh = false;
-
-    private static ByteBuffer gVertices;
-    private static ByteBuffer gIndices;
-    private static BvhTriangleMeshShape trimeshShape;
-    private static RigidBody staticBody;
-    private static float waveheight = 5.f;
-
-    private static final float TRIANGLE_SIZE = 8.f;
-    private static int NUM_VERTS_X = 30;
-    private static int NUM_VERTS_Y = 30;
-    private static int totalVerts = NUM_VERTS_X * NUM_VERTS_Y;
-
     private ConvexcastBatch convexcastBatch;
 
     public ConcaveConvexcastDemo(IGL gl) {
         super(gl);
+    }
+
+    public static void main(String[] args) throws LWJGLException {
+        ConcaveConvexcastDemo concaveConvexcastDemo = new ConcaveConvexcastDemo(LWJGL.getGL());
+        concaveConvexcastDemo.initPhysics();
+        concaveConvexcastDemo.setCameraDistance(30f);
+
+        LWJGL.main(args, 800, 600, "Concave Convexcast Demo", concaveConvexcastDemo);
     }
 
     public void setVertexPositions(float waveheight, float offset) {
@@ -212,8 +216,6 @@ public class ConcaveConvexcastDemo extends DemoApplication {
         convexcastBatch = new ConvexcastBatch(40f, 0f, -10f, 10f);
     }
 
-    private static float offset = 0f;
-
     @Override
     public void clientMoveAndDisplay() {
         gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -265,14 +267,6 @@ public class ConcaveConvexcastDemo extends DemoApplication {
 
         //glFlush();
         //glutSwapBuffers();
-    }
-
-    public static void main(String[] args) throws LWJGLException {
-        ConcaveConvexcastDemo concaveConvexcastDemo = new ConcaveConvexcastDemo(LWJGL.getGL());
-        concaveConvexcastDemo.initPhysics();
-        concaveConvexcastDemo.setCameraDistance(30f);
-
-        LWJGL.main(args, 800, 600, "Concave Convexcast Demo", concaveConvexcastDemo);
     }
 
 }

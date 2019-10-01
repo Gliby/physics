@@ -20,8 +20,8 @@ import java.util.Map;
  */
 class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 
+    Matrix4 tempMatrix = new Matrix4();
     private btRigidBody rigidBody;
-
     private ICollisionShape collisionShape;
     private Map<String, Object> properties;
     private Vector3 centerOfMass;
@@ -194,8 +194,6 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
     public IQuaternion getRotation() {
         return rotation.set(rigidBody.getOrientation());
     }
-
-    Matrix4 tempMatrix = new Matrix4();
 
     @Override
     public IVector3 getPosition() {

@@ -7,11 +7,11 @@
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from
  * the use of this software.
- * 
- * Permission is granted to anyone to use this software for any purpose, 
+ *
+ * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would be
@@ -23,6 +23,7 @@
 
 package com.bulletphysicsx.demos.opengl;
 
+import com.bulletphysicsx.demos.opengl.FontRender.GLFont;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.Cylinder;
@@ -30,19 +31,12 @@ import org.lwjgl.util.glu.Disk;
 import org.lwjgl.util.glu.GLU;
 import org.lwjgl.util.glu.Sphere;
 
-import com.bulletphysicsx.demos.opengl.FontRender.GLFont;
-
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.lwjgl.opengl.GL11.GL_COMPILE;
-import static org.lwjgl.opengl.GL11.glCallList;
-import static org.lwjgl.opengl.GL11.glEndList;
-import static org.lwjgl.opengl.GL11.glGenLists;
-import static org.lwjgl.opengl.GL11.glNewList;
-import static org.lwjgl.opengl.GL11.glRotatef;
+import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.util.glu.GLU.GLU_FILL;
 import static org.lwjgl.util.glu.GLU.GLU_SMOOTH;
 
@@ -51,8 +45,14 @@ import static org.lwjgl.util.glu.GLU.GLU_SMOOTH;
  */
 public class LwjglGL implements IGL {
 
+    private static final Cylinder cylinder = new Cylinder();
+    private static final Disk disk = new Disk();
+    private static final Sphere sphere = new Sphere();
     private static FloatBuffer floatBuf = BufferUtils.createFloatBuffer(16);
-
+    private static Map<SphereKey, Integer> sphereDisplayLists = new HashMap<SphereKey, Integer>();
+    private static SphereKey sphereKey = new SphereKey();
+    private static Map<CylinderKey, Integer> cylinderDisplayLists = new HashMap<CylinderKey, Integer>();
+    private static CylinderKey cylinderKey = new CylinderKey();
     private GLFont font;
 
     public void init() {
@@ -136,9 +136,13 @@ public class LwjglGL implements IGL {
         GL11.glClear(mask);
     }
 
+    ////////////////////////////////////////////////////////////////////////////
+
     public void glBegin(int mode) {
         GL11.glBegin(mode);
     }
+
+    ////////////////////////////////////////////////////////////////////////////
 
     public void glEnd() {
         GL11.glEnd();
@@ -165,8 +169,6 @@ public class LwjglGL implements IGL {
         floatBuf.put(m).flip();
         GL11.glMultMatrix(floatBuf);
     }
-
-    ////////////////////////////////////////////////////////////////////////////
 
     public void drawCube(float extent) {
         extent = extent * 0.5f;
@@ -207,36 +209,6 @@ public class LwjglGL implements IGL {
 
     ////////////////////////////////////////////////////////////////////////////
 
-    private static final Cylinder cylinder = new Cylinder();
-    private static final Disk disk = new Disk();
-    private static final Sphere sphere = new Sphere();
-
-    private static class SphereKey {
-        public float radius;
-
-        public SphereKey() {
-        }
-
-        public SphereKey(SphereKey key) {
-            radius = key.radius;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj == null || !(obj instanceof SphereKey)) return false;
-            SphereKey other = (SphereKey) obj;
-            return radius == other.radius;
-        }
-
-        @Override
-        public int hashCode() {
-            return Float.floatToIntBits(radius);
-        }
-    }
-
-    private static Map<SphereKey, Integer> sphereDisplayLists = new HashMap<SphereKey, Integer>();
-    private static SphereKey sphereKey = new SphereKey();
-
     public void drawSphere(float radius, int slices, int stacks) {
         sphereKey.radius = radius;
         Integer glList = sphereDisplayLists.get(sphereKey);
@@ -250,47 +222,6 @@ public class LwjglGL implements IGL {
 
         glCallList(glList);
     }
-
-    ////////////////////////////////////////////////////////////////////////////
-
-
-    private static class CylinderKey {
-        public float radius;
-        public float halfHeight;
-
-        public CylinderKey() {
-        }
-
-        public CylinderKey(CylinderKey key) {
-            radius = key.radius;
-            halfHeight = key.halfHeight;
-        }
-
-        public void set(float radius, float halfHeight) {
-            this.radius = radius;
-            this.halfHeight = halfHeight;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (obj == null || !(obj instanceof CylinderKey)) return false;
-            CylinderKey other = (CylinderKey) obj;
-            if (radius != other.radius) return false;
-            if (halfHeight != other.halfHeight) return false;
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 7;
-            hash = 23 * hash + Float.floatToIntBits(radius);
-            hash = 23 * hash + Float.floatToIntBits(halfHeight);
-            return hash;
-        }
-    }
-
-    private static Map<CylinderKey, Integer> cylinderDisplayLists = new HashMap<CylinderKey, Integer>();
-    private static CylinderKey cylinderKey = new CylinderKey();
 
     public void drawCylinder(float radius, float halfHeight, int upAxis) {
         glPushMatrix();
@@ -342,11 +273,69 @@ public class LwjglGL implements IGL {
         glPopMatrix();
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-
     public void drawString(CharSequence s, int x, int y, float red, float green, float blue) {
         if (font != null) {
             FontRender.drawString(font, s, x, y, red, green, blue);
+        }
+    }
+
+    private static class SphereKey {
+        public float radius;
+
+        public SphereKey() {
+        }
+
+        public SphereKey(SphereKey key) {
+            radius = key.radius;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null || !(obj instanceof SphereKey)) return false;
+            SphereKey other = (SphereKey) obj;
+            return radius == other.radius;
+        }
+
+        @Override
+        public int hashCode() {
+            return Float.floatToIntBits(radius);
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////
+
+    private static class CylinderKey {
+        public float radius;
+        public float halfHeight;
+
+        public CylinderKey() {
+        }
+
+        public CylinderKey(CylinderKey key) {
+            radius = key.radius;
+            halfHeight = key.halfHeight;
+        }
+
+        public void set(float radius, float halfHeight) {
+            this.radius = radius;
+            this.halfHeight = halfHeight;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null || !(obj instanceof CylinderKey)) return false;
+            CylinderKey other = (CylinderKey) obj;
+            if (radius != other.radius) return false;
+            if (halfHeight != other.halfHeight) return false;
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 23 * hash + Float.floatToIntBits(radius);
+            hash = 23 * hash + Float.floatToIntBits(halfHeight);
+            return hash;
         }
     }
 

@@ -61,7 +61,7 @@ public class JavaRope implements IRope {
             body.setAngularVelocity(new Vector3f());
             body.setLinearVelocity(new Vector3f());
             rigidBodies.add(body);
-            if (lastBody != null  && body.isValid()) {
+            if (lastBody != null && body.isValid()) {
                 Transform lastBodyTransfrom = new Transform();
                 lastBodyTransfrom.setIdentity();
                 lastBodyTransfrom.origin.set(lastRelativePoint);

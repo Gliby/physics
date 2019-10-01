@@ -4,11 +4,11 @@
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from
  * the use of this software.
- * 
- * Permission is granted to anyone to use this software for any purpose, 
+ *
+ * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would be
@@ -19,9 +19,6 @@
  */
 
 package com.bulletphysicsx.demos.applet;
-
-import javax.swing.*;
-import javax.swing.border.BevelBorder;
 
 import com.bulletphysicsx.demos.basic.BasicDemo;
 import com.bulletphysicsx.demos.bsp.BspDemo;
@@ -36,6 +33,8 @@ import com.bulletphysicsx.demos.opengl.DemoApplication;
 import com.bulletphysicsx.demos.opengl.IGL;
 import com.bulletphysicsx.demos.vehicle.VehicleDemo;
 
+import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -49,6 +48,28 @@ public class JBulletApplet extends javax.swing.JApplet {
 
     private DemoPanel demoPanel;
     private DemoEntry currentDemo;
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnRestart;
+    private javax.swing.JComboBox cmbDemos;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel mainPanel;
+    private javax.swing.JPanel topPanel;
+
+    public static void main(String[] args) {
+        final JBulletApplet app = new JBulletApplet();
+        app.init();
+
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                JFrame frm = new JFrame();
+                frm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frm.add(app);
+                frm.setSize(600, 450 + 50);
+                //frm.setSize(512, 384+50);
+                frm.setVisible(true);
+            }
+        });
+    }
 
     /**
      * Initializes the applet JBulletApplet
@@ -132,21 +153,6 @@ public class JBulletApplet extends javax.swing.JApplet {
         }
     }
 
-    private static class DemoEntry {
-        public String name;
-        public Class<? extends DemoApplication> cls;
-
-        public DemoEntry(String name, Class<? extends DemoApplication> cls) {
-            this.name = name;
-            this.cls = cls;
-        }
-
-        @Override
-        public String toString() {
-            return name;
-        }
-    }
-
     /**
      * This method is called from within the init() method to
      * initialize the form.
@@ -200,28 +206,20 @@ public class JBulletApplet extends javax.swing.JApplet {
         getContentPane().add(mainPanel, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
-    public static void main(String[] args) {
-        final JBulletApplet app = new JBulletApplet();
-        app.init();
+    private static class DemoEntry {
+        public String name;
+        public Class<? extends DemoApplication> cls;
 
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                JFrame frm = new JFrame();
-                frm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frm.add(app);
-                frm.setSize(600, 450 + 50);
-                //frm.setSize(512, 384+50);
-                frm.setVisible(true);
-            }
-        });
+        public DemoEntry(String name, Class<? extends DemoApplication> cls) {
+            this.name = name;
+            this.cls = cls;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
     }
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnRestart;
-    private javax.swing.JComboBox cmbDemos;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel mainPanel;
-    private javax.swing.JPanel topPanel;
     // End of variables declaration//GEN-END:variables
 
 }

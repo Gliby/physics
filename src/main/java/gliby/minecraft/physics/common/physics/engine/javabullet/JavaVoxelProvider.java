@@ -12,11 +12,6 @@ import javax.vecmath.Vector3f;
 
 public class JavaVoxelProvider implements VoxelPhysicsWorld {
 
-
-
-    BlockPos blockPos;
-
-    IBlockState blockState;
     private World world;
     private JavaPhysicsWorld physicsWorld;
     private Physics physics;
@@ -27,10 +22,9 @@ public class JavaVoxelProvider implements VoxelPhysicsWorld {
         this.physicsWorld = physicsWorld;
     }
 
-
     @Override
     public VoxelInfo getCollisionShapeAt(final int x, final int y, final int z) {
-        blockPos = new BlockPos(x, y, z);
+        final BlockPos blockPos = new BlockPos(x, y, z);
         final IBlockState blockState = world.getBlockState(blockPos);
         // final PhysicsBlockMetadata metadata =
         // physicsOverworld.getPhysicsBlockMetadata().get(state.getBlock().getUnlocalizedName());

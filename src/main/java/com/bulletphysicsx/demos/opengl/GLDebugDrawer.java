@@ -7,11 +7,11 @@
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from
  * the use of this software.
- * 
- * Permission is granted to anyone to use this software for any purpose, 
+ *
+ * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would be
@@ -23,13 +23,13 @@
 
 package com.bulletphysicsx.demos.opengl;
 
-import static com.bulletphysicsx.demos.opengl.IGL.GL_LINES;
-import static com.bulletphysicsx.demos.opengl.IGL.GL_POINTS;
+import com.bulletphysicsx.linearmath.DebugDrawModes;
+import com.bulletphysicsx.linearmath.IDebugDraw;
 
 import javax.vecmath.Vector3f;
 
-import com.bulletphysicsx.linearmath.DebugDrawModes;
-import com.bulletphysicsx.linearmath.IDebugDraw;
+import static com.bulletphysicsx.demos.opengl.IGL.GL_LINES;
+import static com.bulletphysicsx.demos.opengl.IGL.GL_POINTS;
 
 /**
  * @author jezek2
@@ -38,11 +38,9 @@ public class GLDebugDrawer extends IDebugDraw {
 
     // JAVA NOTE: added
     private static final boolean DEBUG_NORMALS = false;
-
+    private final Vector3f tmpVec = new Vector3f();
     private IGL gl;
     private int debugMode;
-
-    private final Vector3f tmpVec = new Vector3f();
 
     public GLDebugDrawer(IGL gl) {
         this.gl = gl;
@@ -57,11 +55,6 @@ public class GLDebugDrawer extends IDebugDraw {
             gl.glVertex3f(to.x, to.y, to.z);
             gl.glEnd();
         }
-    }
-
-    @Override
-    public void setDebugMode(int debugMode) {
-        this.debugMode = debugMode;
     }
 
     @Override
@@ -117,6 +110,11 @@ public class GLDebugDrawer extends IDebugDraw {
     @Override
     public int getDebugMode() {
         return debugMode;
+    }
+
+    @Override
+    public void setDebugMode(int debugMode) {
+        this.debugMode = debugMode;
     }
 
 }

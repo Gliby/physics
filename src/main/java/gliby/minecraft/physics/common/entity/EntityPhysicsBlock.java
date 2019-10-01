@@ -3,9 +3,6 @@ package gliby.minecraft.physics.common.entity;
 import com.bulletphysicsx.collision.broadphase.CollisionFilterGroups;
 import com.bulletphysicsx.linearmath.QuaternionUtil;
 import com.bulletphysicsx.linearmath.Transform;
-import com.bulletphysicsx.linearmath.VectorUtil;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import gliby.minecraft.gman.BlockUtility;
 import gliby.minecraft.gman.DataWatchableQuat4f;
 import gliby.minecraft.gman.DataWatchableVector3f;
@@ -34,8 +31,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  *
@@ -138,7 +133,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         if (this.defaultCollisionShape)
             this.collisionShape = physicsWorld.getDefaultShape();
         else
-            this.collisionShape = physicsWorld.getBlockCache().getShape(world,new BlockPos(x, y, z), blockState);
+            this.collisionShape = physicsWorld.getBlockCache().getShape(world, new BlockPos(x, y, z), blockState);
 
 
 //        Physics.getLogger().error("Block doesn't exist, couldn't create collision shape");
@@ -242,7 +237,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
                     newPosition.getZ());
             // Update rotation from given rigid body.
             final IQuaternion newQuat = rigidBody.getRotation();
-            rotation.set(newQuat.getX(), newQuat.getY(),newQuat.getZ(),
+            rotation.set(newQuat.getX(), newQuat.getY(), newQuat.getZ(),
                     newQuat.getW());
             // Set location and angles, so client could have proper bounding
             // boxes.
@@ -340,7 +335,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
                 : collisionEnabled;
 
         if (tagCompound.hasKey("CollisionShape")) {
-            this.collisionShape = physicsWorld.getBlockCache().getShape(worldObj, new BlockPos((int)posX, (int)posY, (int)posZ), blockState);
+            this.collisionShape = physicsWorld.getBlockCache().getShape(worldObj, new BlockPos((int) posX, (int) posY, (int) posZ), blockState);
         } else
             this.collisionShape = physicsWorld.getDefaultShape();
 

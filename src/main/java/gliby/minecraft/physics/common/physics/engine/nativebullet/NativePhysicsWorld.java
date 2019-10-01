@@ -9,7 +9,6 @@ import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.dynamics.*;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstructionInfo;
 import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
-import com.badlogic.gdx.utils.Disposable;
 import com.bulletphysicsx.linearmath.Transform;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.physics.IPhysicsWorldConfiguration;
@@ -24,9 +23,7 @@ import javax.vecmath.Matrix4f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  *
@@ -65,9 +62,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
     private NativeVoxelProvider voxelProvider;
 
     private btSequentialImpulseConstraintSolver sequentialSolver;
-    /**
-     * Tracks disposable objects that fall under miscellaneous.
-     */
 
     public NativePhysicsWorld(Physics physics, PhysicsOverworld physicsOverworld,
                               IPhysicsWorldConfiguration physicsConfig) {
@@ -150,7 +144,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
         dynamicsWorld.addCollisionObject(voxelBody);
         super.create();
     }
-
 
 
     @Override
@@ -236,9 +229,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
         rigidBodies.remove(body);
         btRigidBody nativeBody;
         dynamicsWorld.removeRigidBody(nativeBody = (btRigidBody) body.getBody());
-        if (!nativeBody.isDisposed()) {
-            nativeBody.dispose();
-        }
     }
 
     @Override
@@ -273,10 +263,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
     @Override
     public void clearRayTest(final IRayResult resultCallback) {
         RayResultCallback rayCallback = (RayResultCallback) resultCallback.getRayResultCallback();
-        if (rayCallback != null && !rayCallback.isDisposed()) {
-
-            rayCallback.dispose();
-        }
     }
 
 
@@ -286,9 +272,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
         btCollisionObject nativeCollsionObject;
         dynamicsWorld.removeCollisionObject(
                 nativeCollsionObject = (btCollisionObject) collisionObject.getCollisionObject());
-        if(!nativeCollsionObject.isDisposed()) {
-            nativeCollsionObject.dispose();
-        }
     }
 
     @Override
@@ -410,6 +393,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
         return null;
     }
 
+    // Blasphemy
     @Override
     public ICollisionShape createSphereShape(float radius) {
         btSphereShape nativeSphere;
@@ -451,32 +435,24 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
     }
 
-    public void quickDispose(BulletBase base) {
-        if (!base.isDisposed()) base.dispose();
+    public void safeDispose(BulletBase base) {
+        if (base != null && !base.isDisposed()) base.dispose();
     }
-
 
 
     @Override
     public void dispose() {
-        dynamicsWorld.removeCollisionObject(voxelBody);
-
-        for (int i = 0; i < dynamicsWorld.getNumCollisionObjects(); i++) {
-            btCollisionObject collisionObject = dynamicsWorld.getCollisionObjectArray().at(i);
-            quickDispose(collisionObject);
-        }
-
         rigidBodies.clear();
+        safeDispose(dynamicsWorld);
+        safeDispose(broadphase);
+        safeDispose(sequentialSolver);
+        safeDispose(collisionConfiguration);
+        safeDispose(collisionDispatcher);
+        safeDispose(voxelInfo);
+        safeDispose(voxelBody);
+        safeDispose(voxelShape);
+        safeDispose(voxelProvider);
 
-        quickDispose(dynamicsWorld);
-        quickDispose(broadphase);
-        quickDispose(sequentialSolver);
-        quickDispose(collisionConfiguration);
-        quickDispose(collisionDispatcher);
-        quickDispose(voxelInfo);
-        quickDispose(voxelBody);
-        quickDispose(voxelShape);
-        quickDispose(voxelProvider);
         dynamicsWorld = null;
         broadphase = null;
         sequentialSolver = null;
@@ -487,12 +463,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
         voxelShape = null;
         voxelBody = null;
         voxelInfo = null;
-
-        for (IRigidBody body : rigidBodies) {
-            body.dispose();
-        }
-        rigidBodies.clear();
-
         super.dispose();
 
 

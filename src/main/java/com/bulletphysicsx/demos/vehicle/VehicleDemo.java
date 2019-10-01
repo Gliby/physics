@@ -7,11 +7,11 @@
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from
  * the use of this software.
- * 
- * Permission is granted to anyone to use this software for any purpose, 
+ *
+ * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would be
@@ -23,36 +23,22 @@
 
 package com.bulletphysicsx.demos.vehicle;
 
-import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Keyboard;
-
 import com.bulletphysicsx.collision.broadphase.BroadphaseInterface;
 import com.bulletphysicsx.collision.broadphase.DbvtBroadphase;
 import com.bulletphysicsx.collision.dispatch.CollisionDispatcher;
 import com.bulletphysicsx.collision.dispatch.CollisionObject;
 import com.bulletphysicsx.collision.dispatch.DefaultCollisionConfiguration;
-import com.bulletphysicsx.collision.shapes.BoxShape;
-import com.bulletphysicsx.collision.shapes.BvhTriangleMeshShape;
-import com.bulletphysicsx.collision.shapes.CollisionShape;
-import com.bulletphysicsx.collision.shapes.CompoundShape;
-import com.bulletphysicsx.collision.shapes.CylinderShapeX;
-import com.bulletphysicsx.collision.shapes.TriangleIndexVertexArray;
-import com.bulletphysicsx.demos.opengl.DemoApplication;
-import com.bulletphysicsx.demos.opengl.GLDebugDrawer;
-import com.bulletphysicsx.demos.opengl.GLShapeDrawer;
-import com.bulletphysicsx.demos.opengl.IGL;
-import com.bulletphysicsx.demos.opengl.LWJGL;
+import com.bulletphysicsx.collision.shapes.*;
+import com.bulletphysicsx.demos.opengl.*;
 import com.bulletphysicsx.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysicsx.dynamics.RigidBody;
 import com.bulletphysicsx.dynamics.constraintsolver.ConstraintSolver;
 import com.bulletphysicsx.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
-import com.bulletphysicsx.dynamics.vehicle.DefaultVehicleRaycaster;
-import com.bulletphysicsx.dynamics.vehicle.RaycastVehicle;
-import com.bulletphysicsx.dynamics.vehicle.VehicleRaycaster;
-import com.bulletphysicsx.dynamics.vehicle.VehicleTuning;
-import com.bulletphysicsx.dynamics.vehicle.WheelInfo;
+import com.bulletphysicsx.dynamics.vehicle.*;
 import com.bulletphysicsx.linearmath.Transform;
 import com.bulletphysicsx.util.ObjectArrayList;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Keyboard;
 
 import javax.vecmath.Vector3f;
 import java.nio.ByteBuffer;
@@ -85,16 +71,15 @@ public class VehicleDemo extends DemoApplication {
 
     private static final int maxProxies = 32766;
     private static final int maxOverlap = 65535;
-
+    private static final float suspensionRestLength = 0.6f;
+    private static final int CUBE_HALF_EXTENTS = 1;
     // RaycastVehicle is the interface for the constraint that implements the raycast vehicle
     // notice that for higher-quality slow-moving vehicles, another approach might be better
     // implementing explicit hinged-wheel constraints with cylinder collision, rather then raycasts
     private static float gEngineForce = 0.f;
     private static float gBreakingForce = 0.f;
-
     private static float maxEngineForce = 1000.f;//this should be engine/velocity dependent
     private static float maxBreakingForce = 100.f;
-
     private static float gVehicleSteering = 0.f;
     private static float steeringIncrement = 0.04f;
     private static float steeringClamp = 0.3f;
@@ -106,12 +91,7 @@ public class VehicleDemo extends DemoApplication {
     private static float suspensionCompression = 4.4f;
     private static float rollInfluence = 0.1f;//1.0f;
 
-    private static final float suspensionRestLength = 0.6f;
-
-    private static final int CUBE_HALF_EXTENTS = 1;
-
     ////////////////////////////////////////////////////////////////////////////
-
     public RigidBody carChassis;
     public ObjectArrayList<CollisionShape> collisionShapes = new ObjectArrayList<CollisionShape>();
     public BroadphaseInterface overlappingPairCache;
@@ -141,6 +121,14 @@ public class VehicleDemo extends DemoApplication {
         vertices = null;
         vehicle = null;
         cameraPosition.set(30, 30, 30);
+    }
+
+    public static void main(String[] args) throws LWJGLException {
+        VehicleDemo vehicleDemo = new VehicleDemo(LWJGL.getGL());
+        vehicleDemo.initPhysics();
+        vehicleDemo.getDynamicsWorld().setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
+
+        LWJGL.main(args, 800, 600, "Bullet Vehicle Demo", vehicleDemo);
     }
 
     public void initPhysics() {
@@ -597,14 +585,6 @@ public class VehicleDemo extends DemoApplication {
         gl.gluLookAt(cameraPosition.x, cameraPosition.y, cameraPosition.z,
                 cameraTargetPosition.x, cameraTargetPosition.y, cameraTargetPosition.z,
                 cameraUp.x, cameraUp.y, cameraUp.z);
-    }
-
-    public static void main(String[] args) throws LWJGLException {
-        VehicleDemo vehicleDemo = new VehicleDemo(LWJGL.getGL());
-        vehicleDemo.initPhysics();
-        vehicleDemo.getDynamicsWorld().setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
-
-        LWJGL.main(args, 800, 600, "Bullet Vehicle Demo", vehicleDemo);
     }
 
 }

@@ -7,11 +7,11 @@
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from
  * the use of this software.
- * 
- * Permission is granted to anyone to use this software for any purpose, 
+ *
+ * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would be
@@ -23,8 +23,6 @@
 
 package com.bulletphysicsx.demos.concave;
 
-import org.lwjgl.LWJGLException;
-
 import com.bulletphysicsx.BulletGlobals;
 import com.bulletphysicsx.BulletStats;
 import com.bulletphysicsx.ContactAddedCallback;
@@ -35,13 +33,7 @@ import com.bulletphysicsx.collision.dispatch.CollisionFlags;
 import com.bulletphysicsx.collision.dispatch.CollisionObject;
 import com.bulletphysicsx.collision.dispatch.DefaultCollisionConfiguration;
 import com.bulletphysicsx.collision.narrowphase.ManifoldPoint;
-import com.bulletphysicsx.collision.shapes.BoxShape;
-import com.bulletphysicsx.collision.shapes.BvhTriangleMeshShape;
-import com.bulletphysicsx.collision.shapes.CollisionShape;
-import com.bulletphysicsx.collision.shapes.CompoundShape;
-import com.bulletphysicsx.collision.shapes.CylinderShapeX;
-import com.bulletphysicsx.collision.shapes.OptimizedBvh;
-import com.bulletphysicsx.collision.shapes.TriangleIndexVertexArray;
+import com.bulletphysicsx.collision.shapes.*;
 import com.bulletphysicsx.demos.opengl.DemoApplication;
 import com.bulletphysicsx.demos.opengl.GLDebugDrawer;
 import com.bulletphysicsx.demos.opengl.IGL;
@@ -53,23 +45,18 @@ import com.bulletphysicsx.dynamics.constraintsolver.SequentialImpulseConstraintS
 import com.bulletphysicsx.linearmath.QuaternionUtil;
 import com.bulletphysicsx.linearmath.Transform;
 import com.bulletphysicsx.util.ObjectArrayList;
+import org.lwjgl.LWJGLException;
 
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
-
-import static com.bulletphysicsx.demos.opengl.IGL.GL_COLOR_BUFFER_BIT;
-import static com.bulletphysicsx.demos.opengl.IGL.GL_DEPTH_BUFFER_BIT;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+
+import static com.bulletphysicsx.demos.opengl.IGL.GL_COLOR_BUFFER_BIT;
+import static com.bulletphysicsx.demos.opengl.IGL.GL_DEPTH_BUFFER_BIT;
 
 // JAVA TODO: update for 2.70b1
 
@@ -84,7 +71,16 @@ public class ConcaveDemo extends DemoApplication {
     private static final boolean SERIALIZE_TO_DISK = true;
 
     private static final boolean USE_BOX_SHAPE = false;
-
+    private static final float TRIANGLE_SIZE = 8.f;
+    private static ByteBuffer gVertices;
+    private static ByteBuffer gIndices;
+    private static BvhTriangleMeshShape trimeshShape;
+    private static RigidBody staticBody;
+    private static float waveheight = 5.f;
+    private static int NUM_VERTS_X = 30;
+    private static int NUM_VERTS_Y = 30;
+    private static int totalVerts = NUM_VERTS_X * NUM_VERTS_Y;
+    private static float offset = 0f;
     // keep the collision shapes, for deletion/cleanup
     private ObjectArrayList<CollisionShape> collisionShapes = new ObjectArrayList<CollisionShape>();
     private TriangleIndexVertexArray indexVertexArrays;
@@ -94,19 +90,37 @@ public class ConcaveDemo extends DemoApplication {
     private DefaultCollisionConfiguration collisionConfiguration;
     private boolean animatedMesh = false;
 
-    private static ByteBuffer gVertices;
-    private static ByteBuffer gIndices;
-    private static BvhTriangleMeshShape trimeshShape;
-    private static RigidBody staticBody;
-    private static float waveheight = 5.f;
-
-    private static final float TRIANGLE_SIZE = 8.f;
-    private static int NUM_VERTS_X = 30;
-    private static int NUM_VERTS_Y = 30;
-    private static int totalVerts = NUM_VERTS_X * NUM_VERTS_Y;
-
     public ConcaveDemo(IGL gl) {
         super(gl);
+    }
+
+    /**
+     * User can override this material combiner by implementing gContactAddedCallback
+     * and setting body0->m_collisionFlags |= btCollisionObject::customMaterialCallback
+     */
+    private static float calculateCombinedFriction(float friction0, float friction1) {
+        float friction = friction0 * friction1;
+
+        float MAX_FRICTION = 10f;
+        if (friction < -MAX_FRICTION) {
+            friction = -MAX_FRICTION;
+        }
+        if (friction > MAX_FRICTION) {
+            friction = MAX_FRICTION;
+        }
+        return friction;
+    }
+
+    private static float calculateCombinedRestitution(float restitution0, float restitution1) {
+        return restitution0 * restitution1;
+    }
+
+    public static void main(String[] args) throws LWJGLException {
+        ConcaveDemo concaveDemo = new ConcaveDemo(LWJGL.getGL());
+        concaveDemo.initPhysics();
+        concaveDemo.setCameraDistance(30f);
+
+        LWJGL.main(args, 800, 600, "Static Concave Mesh Demo", concaveDemo);
     }
 
     public void setVertexPositions(float waveheight, float offset) {
@@ -307,8 +321,6 @@ public class ConcaveDemo extends DemoApplication {
         staticBody.setCollisionFlags(staticBody.getCollisionFlags() | CollisionFlags.CUSTOM_MATERIAL_CALLBACK);
     }
 
-    private static float offset = 0f;
-
     @Override
     public void clientMoveAndDisplay() {
         gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -357,27 +369,6 @@ public class ConcaveDemo extends DemoApplication {
         //glutSwapBuffers();
     }
 
-    /**
-     * User can override this material combiner by implementing gContactAddedCallback
-     * and setting body0->m_collisionFlags |= btCollisionObject::customMaterialCallback
-     */
-    private static float calculateCombinedFriction(float friction0, float friction1) {
-        float friction = friction0 * friction1;
-
-        float MAX_FRICTION = 10f;
-        if (friction < -MAX_FRICTION) {
-            friction = -MAX_FRICTION;
-        }
-        if (friction > MAX_FRICTION) {
-            friction = MAX_FRICTION;
-        }
-        return friction;
-    }
-
-    private static float calculateCombinedRestitution(float restitution0, float restitution1) {
-        return restitution0 * restitution1;
-    }
-
     private static class CustomMaterialCombinerCallback extends ContactAddedCallback {
         public boolean contactAdded(ManifoldPoint cp, CollisionObject colObj0, int partId0, int index0, CollisionObject colObj1, int partId1, int index1) {
             float friction0 = colObj0.getFriction();
@@ -404,14 +395,6 @@ public class ConcaveDemo extends DemoApplication {
             // this return value is currently ignored, but to be on the safe side: return false if you don't calculate friction
             return true;
         }
-    }
-
-    public static void main(String[] args) throws LWJGLException {
-        ConcaveDemo concaveDemo = new ConcaveDemo(LWJGL.getGL());
-        concaveDemo.initPhysics();
-        concaveDemo.setCameraDistance(30f);
-
-        LWJGL.main(args, 800, 600, "Static Concave Mesh Demo", concaveDemo);
     }
 
 }

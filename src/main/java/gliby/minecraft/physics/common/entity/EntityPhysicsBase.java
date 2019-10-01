@@ -15,7 +15,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
@@ -48,6 +47,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     private DataWatchableVector3f watchablePickHit;
     private int lastTickActive;
     private boolean naturalDeath = true;
+
     /**
      * Client or Load constructor.
      *

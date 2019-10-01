@@ -7,11 +7,11 @@
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from
  * the use of this software.
- * 
- * Permission is granted to anyone to use this software for any purpose, 
+ *
+ * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would be
@@ -31,30 +31,11 @@ import java.nio.ByteOrder;
  */
 public class Bunny {
 
-    public static ByteBuffer getVertexBuffer() {
-        ByteBuffer buf = ByteBuffer.allocateDirect(gVertices.length * 4).order(ByteOrder.nativeOrder());
-        for (int i = 0; i < gVertices.length; i++) {
-            buf.putFloat(gVertices[i]);
-        }
-        buf.flip();
-        return buf;
-    }
-
-    public static ByteBuffer getIndexBuffer() {
-        ByteBuffer buf = ByteBuffer.allocateDirect(gIndices.length * 4).order(ByteOrder.nativeOrder());
-        for (int i = 0; i < gIndices.length; i++) {
-            buf.putInt(gIndices[i]);
-        }
-        buf.flip();
-        return buf;
-    }
-
-    ////////////////////////////////////////////////////////////////////////////
-
     public static final int NUM_TRIANGLES = 902;
     public static final int NUM_VERTICES = 453;
-    public static final int NUM_INDICES = NUM_TRIANGLES * 3;
 
+    ////////////////////////////////////////////////////////////////////////////
+    public static final int NUM_INDICES = NUM_TRIANGLES * 3;
     public static float[] gVertices = new float[]{
             -0.334392f, 0.133007f, 0.062259f,
             -0.350189f, 0.150354f, -0.147769f,
@@ -510,7 +491,6 @@ public class Bunny {
             0.356076f, 0.149288f, -0.143443f,
             0.337656f, 0.131992f, 0.066374f
     };
-
     public static int[] gIndices = new int[]{
             126, 134, 133,
             342, 138, 134,
@@ -1415,5 +1395,23 @@ public class Bunny {
             452, 451, 450,
             452, 450, 449
     };
+
+    public static ByteBuffer getVertexBuffer() {
+        ByteBuffer buf = ByteBuffer.allocateDirect(gVertices.length * 4).order(ByteOrder.nativeOrder());
+        for (int i = 0; i < gVertices.length; i++) {
+            buf.putFloat(gVertices[i]);
+        }
+        buf.flip();
+        return buf;
+    }
+
+    public static ByteBuffer getIndexBuffer() {
+        ByteBuffer buf = ByteBuffer.allocateDirect(gIndices.length * 4).order(ByteOrder.nativeOrder());
+        for (int i = 0; i < gIndices.length; i++) {
+            buf.putInt(gIndices[i]);
+        }
+        buf.flip();
+        return buf;
+    }
 
 }

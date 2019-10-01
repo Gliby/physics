@@ -7,11 +7,11 @@
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from
  * the use of this software.
- * 
- * Permission is granted to anyone to use this software for any purpose, 
+ *
+ * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would be
@@ -23,25 +23,8 @@
 
 package com.bulletphysicsx.demos.opengl;
 
-import static com.bulletphysicsx.demos.opengl.IGL.GL_COLOR_MATERIAL;
-import static com.bulletphysicsx.demos.opengl.IGL.GL_LINES;
-import static com.bulletphysicsx.demos.opengl.IGL.GL_TRIANGLES;
-
-import javax.vecmath.Vector3f;
-
 import com.bulletphysicsx.collision.broadphase.BroadphaseNativeType;
-import com.bulletphysicsx.collision.shapes.BoxShape;
-import com.bulletphysicsx.collision.shapes.CollisionShape;
-import com.bulletphysicsx.collision.shapes.CompoundShape;
-import com.bulletphysicsx.collision.shapes.ConcaveShape;
-import com.bulletphysicsx.collision.shapes.ConvexShape;
-import com.bulletphysicsx.collision.shapes.CylinderShape;
-import com.bulletphysicsx.collision.shapes.InternalTriangleIndexCallback;
-import com.bulletphysicsx.collision.shapes.PolyhedralConvexShape;
-import com.bulletphysicsx.collision.shapes.ShapeHull;
-import com.bulletphysicsx.collision.shapes.SphereShape;
-import com.bulletphysicsx.collision.shapes.StaticPlaneShape;
-import com.bulletphysicsx.collision.shapes.TriangleCallback;
+import com.bulletphysicsx.collision.shapes.*;
 import com.bulletphysicsx.linearmath.DebugDrawModes;
 import com.bulletphysicsx.linearmath.Transform;
 import com.bulletphysicsx.linearmath.TransformUtil;
@@ -49,6 +32,10 @@ import com.bulletphysicsx.linearmath.VectorUtil;
 import com.bulletphysicsx.util.IntArrayList;
 import com.bulletphysicsx.util.ObjectArrayList;
 import com.bulletphysicsx.util.ObjectPool;
+
+import javax.vecmath.Vector3f;
+
+import static com.bulletphysicsx.demos.opengl.IGL.*;
 
 //import static org.lwjgl.opengl.GL11.*;
 //import static org.lwjgl.opengl.glu.GLU.*;
@@ -81,6 +68,8 @@ public class GLShapeDrawer {
 	}
 	*/
 
+    private static float[] glMat = new float[16];
+
     public static void drawCoordSystem(IGL gl) {
         gl.glBegin(GL_LINES);
         gl.glColor3f(1, 0, 0);
@@ -94,8 +83,6 @@ public class GLShapeDrawer {
         gl.glVertex3f(0, 0, 1);
         gl.glEnd();
     }
-
-    private static float[] glMat = new float[16];
 
     public static void drawOpenGL(IGL gl, Transform trans, CollisionShape shape, Vector3f color, int debugMode) {
         ObjectPool<Transform> transformsPool = ObjectPool.get(Transform.class);
@@ -471,11 +458,10 @@ public class GLShapeDrawer {
     }
 
     private static class GlDisplaylistDrawcallback extends TriangleCallback {
-        private IGL gl;
-
         private final Vector3f diff1 = new Vector3f();
         private final Vector3f diff2 = new Vector3f();
         private final Vector3f normal = new Vector3f();
+        private IGL gl;
 
         public GlDisplaylistDrawcallback(IGL gl) {
             this.gl = gl;
@@ -523,8 +509,8 @@ public class GLShapeDrawer {
     }
 
     private static class GlDrawcallback extends TriangleCallback {
-        private IGL gl;
         public boolean wireframe = false;
+        private IGL gl;
 
         public GlDrawcallback(IGL gl) {
             this.gl = gl;

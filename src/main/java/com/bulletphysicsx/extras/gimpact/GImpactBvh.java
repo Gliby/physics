@@ -11,11 +11,11 @@
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from
  * the use of this software.
- * 
- * Permission is granted to anyone to use this software for any purpose, 
+ *
+ * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would be
@@ -27,12 +27,12 @@
 
 package com.bulletphysicsx.extras.gimpact;
 
-import javax.vecmath.Vector3f;
-
 import com.bulletphysicsx.extras.gimpact.BoxCollision.AABB;
 import com.bulletphysicsx.extras.gimpact.BoxCollision.BoxBoxTransformCache;
 import com.bulletphysicsx.linearmath.Transform;
 import com.bulletphysicsx.util.IntArrayList;
+
+import javax.vecmath.Vector3f;
 
 /**
  * @author jezek2
@@ -56,17 +56,119 @@ class GImpactBvh {
         this.primitive_manager = primitive_manager;
     }
 
+    private static boolean _node_collision(GImpactBvh boxset0, GImpactBvh boxset1, BoxBoxTransformCache trans_cache_1to0, int node0, int node1, boolean complete_primitive_tests) {
+        AABB box0 = new AABB();
+        boxset0.getNodeBound(node0, box0);
+        AABB box1 = new AABB();
+        boxset1.getNodeBound(node1, box1);
+
+        return box0.overlapping_trans_cache(box1, trans_cache_1to0, complete_primitive_tests);
+        //box1.appy_transform_trans_cache(trans_cache_1to0);
+        //return box0.has_collision(box1);
+    }
+
+    /**
+     * Stackless recursive collision routine.
+     */
+    private static void _find_collision_pairs_recursive(GImpactBvh boxset0, GImpactBvh boxset1, PairSet collision_pairs, BoxBoxTransformCache trans_cache_1to0, int node0, int node1, boolean complete_primitive_tests) {
+        if (_node_collision(
+                boxset0, boxset1, trans_cache_1to0,
+                node0, node1, complete_primitive_tests) == false) {
+            return;//avoid colliding internal nodes
+        }
+        if (boxset0.isLeafNode(node0)) {
+            if (boxset1.isLeafNode(node1)) {
+                // collision result
+                collision_pairs.push_pair(boxset0.getNodeData(node0), boxset1.getNodeData(node1));
+                return;
+            } else {
+                // collide left recursive
+                _find_collision_pairs_recursive(
+                        boxset0, boxset1,
+                        collision_pairs, trans_cache_1to0,
+                        node0, boxset1.getLeftNode(node1), false);
+
+                // collide right recursive
+                _find_collision_pairs_recursive(
+                        boxset0, boxset1,
+                        collision_pairs, trans_cache_1to0,
+                        node0, boxset1.getRightNode(node1), false);
+            }
+        } else {
+            if (boxset1.isLeafNode(node1)) {
+                // collide left recursive
+                _find_collision_pairs_recursive(
+                        boxset0, boxset1,
+                        collision_pairs, trans_cache_1to0,
+                        boxset0.getLeftNode(node0), node1, false);
+
+
+                // collide right recursive
+                _find_collision_pairs_recursive(
+                        boxset0, boxset1,
+                        collision_pairs, trans_cache_1to0,
+                        boxset0.getRightNode(node0), node1, false);
+            } else {
+                // collide left0 left1
+                _find_collision_pairs_recursive(
+                        boxset0, boxset1,
+                        collision_pairs, trans_cache_1to0,
+                        boxset0.getLeftNode(node0), boxset1.getLeftNode(node1), false);
+
+                // collide left0 right1
+                _find_collision_pairs_recursive(
+                        boxset0, boxset1,
+                        collision_pairs, trans_cache_1to0,
+                        boxset0.getLeftNode(node0), boxset1.getRightNode(node1), false);
+
+                // collide right0 left1
+                _find_collision_pairs_recursive(
+                        boxset0, boxset1,
+                        collision_pairs, trans_cache_1to0,
+                        boxset0.getRightNode(node0), boxset1.getLeftNode(node1), false);
+
+                // collide right0 right1
+                _find_collision_pairs_recursive(
+                        boxset0, boxset1,
+                        collision_pairs, trans_cache_1to0,
+                        boxset0.getRightNode(node0), boxset1.getRightNode(node1), false);
+
+            } // else if node1 is not a leaf
+        } // else if node0 is not a leaf
+    }
+
+    public static void find_collision(GImpactBvh boxset0, Transform trans0, GImpactBvh boxset1, Transform trans1, PairSet collision_pairs) {
+        if (boxset0.getNodeCount() == 0 || boxset1.getNodeCount() == 0) {
+            return;
+        }
+        BoxBoxTransformCache trans_cache_1to0 = new BoxBoxTransformCache();
+
+        trans_cache_1to0.calc_from_homogenic(trans0, trans1);
+
+        //#ifdef TRI_COLLISION_PROFILING
+        //bt_begin_gim02_tree_time();
+        //#endif //TRI_COLLISION_PROFILING
+
+        _find_collision_pairs_recursive(
+                boxset0, boxset1,
+                collision_pairs, trans_cache_1to0, 0, 0, true);
+
+        //#ifdef TRI_COLLISION_PROFILING
+        //bt_end_gim02_tree_time();
+        //#endif //TRI_COLLISION_PROFILING
+    }
+
     public AABB getGlobalBox(AABB out) {
         getNodeBound(0, out);
         return out;
     }
 
-    public void setPrimitiveManager(PrimitiveManagerBase primitive_manager) {
-        this.primitive_manager = primitive_manager;
-    }
-
     public PrimitiveManagerBase getPrimitiveManager() {
         return primitive_manager;
+    }
+
+    public void setPrimitiveManager(PrimitiveManagerBase primitive_manager) {
+        this.primitive_manager = primitive_manager;
     }
 
     // stackless refit
@@ -262,112 +364,10 @@ class GImpactBvh {
         primitive_manager.get_primitive_triangle(getNodeData(nodeindex), triangle);
     }
 
-    public BvhTreeNodeArray get_node_pointer() {
-        return box_tree.get_node_pointer();
-    }
-
-    private static boolean _node_collision(GImpactBvh boxset0, GImpactBvh boxset1, BoxBoxTransformCache trans_cache_1to0, int node0, int node1, boolean complete_primitive_tests) {
-        AABB box0 = new AABB();
-        boxset0.getNodeBound(node0, box0);
-        AABB box1 = new AABB();
-        boxset1.getNodeBound(node1, box1);
-
-        return box0.overlapping_trans_cache(box1, trans_cache_1to0, complete_primitive_tests);
-        //box1.appy_transform_trans_cache(trans_cache_1to0);
-        //return box0.has_collision(box1);
-    }
-
-    /**
-     * Stackless recursive collision routine.
-     */
-    private static void _find_collision_pairs_recursive(GImpactBvh boxset0, GImpactBvh boxset1, PairSet collision_pairs, BoxBoxTransformCache trans_cache_1to0, int node0, int node1, boolean complete_primitive_tests) {
-        if (_node_collision(
-                boxset0, boxset1, trans_cache_1to0,
-                node0, node1, complete_primitive_tests) == false) {
-            return;//avoid colliding internal nodes
-        }
-        if (boxset0.isLeafNode(node0)) {
-            if (boxset1.isLeafNode(node1)) {
-                // collision result
-                collision_pairs.push_pair(boxset0.getNodeData(node0), boxset1.getNodeData(node1));
-                return;
-            } else {
-                // collide left recursive
-                _find_collision_pairs_recursive(
-                        boxset0, boxset1,
-                        collision_pairs, trans_cache_1to0,
-                        node0, boxset1.getLeftNode(node1), false);
-
-                // collide right recursive
-                _find_collision_pairs_recursive(
-                        boxset0, boxset1,
-                        collision_pairs, trans_cache_1to0,
-                        node0, boxset1.getRightNode(node1), false);
-            }
-        } else {
-            if (boxset1.isLeafNode(node1)) {
-                // collide left recursive
-                _find_collision_pairs_recursive(
-                        boxset0, boxset1,
-                        collision_pairs, trans_cache_1to0,
-                        boxset0.getLeftNode(node0), node1, false);
-
-
-                // collide right recursive
-                _find_collision_pairs_recursive(
-                        boxset0, boxset1,
-                        collision_pairs, trans_cache_1to0,
-                        boxset0.getRightNode(node0), node1, false);
-            } else {
-                // collide left0 left1
-                _find_collision_pairs_recursive(
-                        boxset0, boxset1,
-                        collision_pairs, trans_cache_1to0,
-                        boxset0.getLeftNode(node0), boxset1.getLeftNode(node1), false);
-
-                // collide left0 right1
-                _find_collision_pairs_recursive(
-                        boxset0, boxset1,
-                        collision_pairs, trans_cache_1to0,
-                        boxset0.getLeftNode(node0), boxset1.getRightNode(node1), false);
-
-                // collide right0 left1
-                _find_collision_pairs_recursive(
-                        boxset0, boxset1,
-                        collision_pairs, trans_cache_1to0,
-                        boxset0.getRightNode(node0), boxset1.getLeftNode(node1), false);
-
-                // collide right0 right1
-                _find_collision_pairs_recursive(
-                        boxset0, boxset1,
-                        collision_pairs, trans_cache_1to0,
-                        boxset0.getRightNode(node0), boxset1.getRightNode(node1), false);
-
-            } // else if node1 is not a leaf
-        } // else if node0 is not a leaf
-    }
-
     //public static float getAverageTreeCollisionTime();
 
-    public static void find_collision(GImpactBvh boxset0, Transform trans0, GImpactBvh boxset1, Transform trans1, PairSet collision_pairs) {
-        if (boxset0.getNodeCount() == 0 || boxset1.getNodeCount() == 0) {
-            return;
-        }
-        BoxBoxTransformCache trans_cache_1to0 = new BoxBoxTransformCache();
-
-        trans_cache_1to0.calc_from_homogenic(trans0, trans1);
-
-        //#ifdef TRI_COLLISION_PROFILING
-        //bt_begin_gim02_tree_time();
-        //#endif //TRI_COLLISION_PROFILING
-
-        _find_collision_pairs_recursive(
-                boxset0, boxset1,
-                collision_pairs, trans_cache_1to0, 0, 0, true);
-
-        //#ifdef TRI_COLLISION_PROFILING
-        //bt_end_gim02_tree_time();
-        //#endif //TRI_COLLISION_PROFILING
+    public BvhTreeNodeArray get_node_pointer() {
+        return box_tree.get_node_pointer();
     }
 
 }

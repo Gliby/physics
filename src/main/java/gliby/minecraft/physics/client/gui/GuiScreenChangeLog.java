@@ -1,6 +1,5 @@
 package gliby.minecraft.physics.client.gui;
 
-import gliby.minecraft.gman.Easing;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.VersionChanges;
 import gliby.minecraft.physics.client.gui.GuiScreenChangeLog.FormattedChangeLog.Page;
@@ -170,12 +169,12 @@ public class GuiScreenChangeLog extends GuiScreen {
 
             float targetScroll = scrollY + (delta * fontRendererObj.FONT_HEIGHT);
             if (targetScroll >= DRAW_HEIGHT + (alpha)) targetScroll = DRAW_HEIGHT;
-            else if(targetScroll <= -DRAW_HEIGHT + (alpha)) targetScroll = -DRAW_HEIGHT;
+            else if (targetScroll <= -DRAW_HEIGHT + (alpha)) targetScroll = -DRAW_HEIGHT;
 
             this.scrollY = targetScroll;
 //            this.scrollY =  Easing.QUAD_IN_OUT.ease((targetScroll - scrollY) + alpha, scrollY, targetScroll, 1);
             if (scrollY >= DRAW_HEIGHT) scrollY = DRAW_HEIGHT;
-            else if(scrollY <= -DRAW_HEIGHT) scrollY = -DRAW_HEIGHT;
+            else if (scrollY <= -DRAW_HEIGHT) scrollY = -DRAW_HEIGHT;
         }
         super.handleMouseInput();
     }

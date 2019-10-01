@@ -4,11 +4,11 @@
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from
  * the use of this software.
- * 
- * Permission is granted to anyone to use this software for any purpose, 
+ *
+ * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would be
@@ -30,12 +30,14 @@ public class Rasterizer {
 
     public static final int COLOR_BUFFER = 1 << 0;
     public static final int DEPTH_BUFFER = 1 << 1;
-
+    private static final int EDGE_LEFT = 1 << 0;
+    private static final int EDGE_RIGHT = 1 << 1;
+    private static final int EDGE_TOP = 1 << 2;
+    private static final int EDGE_BOTTOM = 1 << 3;
     private int[] pixels;
     private float[] zbuffer;
     private int width;
     private int height;
-
     private int minY, maxY;
     private Span[] spans;
 
@@ -230,11 +232,6 @@ public class Rasterizer {
             cb += slopeCB;
         }
     }
-
-    private static final int EDGE_LEFT = 1 << 0;
-    private static final int EDGE_RIGHT = 1 << 1;
-    private static final int EDGE_TOP = 1 << 2;
-    private static final int EDGE_BOTTOM = 1 << 3;
 
     public void drawLine(Tuple4f[] vertices, Tuple3f[] colors) {
         float x1 = vertices[0].x + 0.5f;

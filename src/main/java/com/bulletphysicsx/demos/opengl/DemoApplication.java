@@ -7,11 +7,11 @@
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from
  * the use of this software.
- * 
- * Permission is granted to anyone to use this software for any purpose, 
+ *
+ * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would be
@@ -22,8 +22,6 @@
  */
 
 package com.bulletphysicsx.demos.opengl;
-
-import org.lwjgl.input.Keyboard;
 
 import com.bulletphysicsx.BulletGlobals;
 import com.bulletphysicsx.BulletStats;
@@ -36,32 +34,15 @@ import com.bulletphysicsx.dynamics.RigidBody;
 import com.bulletphysicsx.dynamics.RigidBodyConstructionInfo;
 import com.bulletphysicsx.dynamics.constraintsolver.Point2PointConstraint;
 import com.bulletphysicsx.dynamics.constraintsolver.TypedConstraint;
-import com.bulletphysicsx.linearmath.CProfileIterator;
-import com.bulletphysicsx.linearmath.CProfileManager;
-import com.bulletphysicsx.linearmath.Clock;
-import com.bulletphysicsx.linearmath.DebugDrawModes;
-import com.bulletphysicsx.linearmath.DefaultMotionState;
-import com.bulletphysicsx.linearmath.QuaternionUtil;
-import com.bulletphysicsx.linearmath.Transform;
-import com.bulletphysicsx.linearmath.VectorUtil;
-
-import static com.bulletphysicsx.demos.opengl.IGL.GL_AMBIENT;
-import static com.bulletphysicsx.demos.opengl.IGL.GL_DEPTH_TEST;
-import static com.bulletphysicsx.demos.opengl.IGL.GL_DIFFUSE;
-import static com.bulletphysicsx.demos.opengl.IGL.GL_LESS;
-import static com.bulletphysicsx.demos.opengl.IGL.GL_LIGHT0;
-import static com.bulletphysicsx.demos.opengl.IGL.GL_LIGHT1;
-import static com.bulletphysicsx.demos.opengl.IGL.GL_LIGHTING;
-import static com.bulletphysicsx.demos.opengl.IGL.GL_MODELVIEW;
-import static com.bulletphysicsx.demos.opengl.IGL.GL_POSITION;
-import static com.bulletphysicsx.demos.opengl.IGL.GL_PROJECTION;
-import static com.bulletphysicsx.demos.opengl.IGL.GL_SMOOTH;
-import static com.bulletphysicsx.demos.opengl.IGL.GL_SPECULAR;
+import com.bulletphysicsx.linearmath.*;
+import org.lwjgl.input.Keyboard;
 
 import javax.vecmath.Color3f;
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
+
+import static com.bulletphysicsx.demos.opengl.IGL.*;
 
 /**
  * @author jezek2
@@ -70,61 +51,54 @@ public abstract class DemoApplication {
 
     //protected final BulletStack stack = BulletStack.get();
 
-    private static final float STEPSIZE = 5;
-
-    public static int numObjects = 0;
     public static final int maxNumObjects = 16384;
+    private static final float STEPSIZE = 5;
+    public static int numObjects = 0;
     public static Transform[] startTransforms = new Transform[maxNumObjects];
     public static CollisionShape[] gShapePtr = new CollisionShape[maxNumObjects]; //1 rigidbody has 1 shape (no re-use of shapes)
 
     public static RigidBody pickedBody = null; // for deactivation state
 
     private static float mousePickClamping = 3f;
+    private static double time_since_reset = 0f;
+    // TODO: class CProfileIterator* m_profileIterator;
 
     static {
         for (int i = 0; i < startTransforms.length; i++) {
             startTransforms[i] = new Transform();
         }
     }
-    // TODO: class CProfileIterator* m_profileIterator;
 
-    // JAVA NOTE: added
-    protected IGL gl;
-
-    protected Clock clock = new Clock();
-
-    // this is the most important class
-    protected DynamicsWorld dynamicsWorld = null;
-
-    // constraint for mouse picking
-    protected TypedConstraint pickConstraint = null;
-
-    protected CollisionShape shootBoxShape = null;
-
-    protected float cameraDistance = 15f;
-    protected int debugMode = 0;
-
-    protected float ele = 20f;
-    protected float azi = 0f;
     protected final Vector3f cameraPosition = new Vector3f(0f, 0f, 0f);
     protected final Vector3f cameraTargetPosition = new Vector3f(0f, 0f, 0f); // look at
-
+    protected final Vector3f cameraUp = new Vector3f(0f, 1f, 0f);
+    private final Transform m = new Transform();
+    // JAVA NOTE: added
+    protected IGL gl;
+    protected Clock clock = new Clock();
+    // this is the most important class
+    protected DynamicsWorld dynamicsWorld = null;
+    // constraint for mouse picking
+    protected TypedConstraint pickConstraint = null;
+    protected CollisionShape shootBoxShape = null;
+    protected float cameraDistance = 15f;
+    protected int debugMode = 0;
+    protected float ele = 20f;
+    protected float azi = 0f;
     protected float scaleBottom = 0.5f;
     protected float scaleFactor = 2f;
-    protected final Vector3f cameraUp = new Vector3f(0f, 1f, 0f);
     protected int forwardAxis = 2;
-
     protected int glutScreenWidth = 0;
     protected int glutScreenHeight = 0;
-
     protected float ShootBoxInitialSpeed = 40f;
-
     protected boolean stepping = true;
     protected boolean singleStep = false;
     protected boolean idle = false;
     protected int lastKey;
-
+    protected Color3f TEXT_COLOR = new Color3f(0f, 0f, 0f);
     private CProfileIterator profileIterator;
+    private Vector3f wireColor = new Vector3f();
+    private StringBuilder buf = new StringBuilder();
 
     public DemoApplication(IGL gl) {
         this.gl = gl;
@@ -173,12 +147,12 @@ public abstract class DemoApplication {
         //glCullFace(GL_BACK);
     }
 
-    public void setCameraDistance(float dist) {
-        cameraDistance = dist;
-    }
-
     public float getCameraDistance() {
         return cameraDistance;
+    }
+
+    public void setCameraDistance(float dist) {
+        cameraDistance = dist;
     }
 
     public void toggleIdle() {
@@ -801,8 +775,6 @@ public abstract class DemoApplication {
         drawString(message, Math.round(xOffset), Math.round(yStart), TEXT_COLOR);
     }
 
-    private static double time_since_reset = 0f;
-
     protected float showProfileInfo(float xOffset, float yStart, float yIncr) {
         if (!idle) {
             time_since_reset = CProfileManager.getTimeSinceReset();
@@ -875,11 +847,6 @@ public abstract class DemoApplication {
 
         return yStart;
     }
-
-    private final Transform m = new Transform();
-    private Vector3f wireColor = new Vector3f();
-    protected Color3f TEXT_COLOR = new Color3f(0f, 0f, 0f);
-    private StringBuilder buf = new StringBuilder();
 
     public void renderme() {
         updateCamera();

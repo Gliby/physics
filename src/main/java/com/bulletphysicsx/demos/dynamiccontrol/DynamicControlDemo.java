@@ -1,18 +1,18 @@
 /*
  * Java port of Bullet (c) 2008 Martin Dvorak <jezek2@advel.cz>
  * DynamicControlDemo port by: Olivier OUDIN / LvR
- * 
+ *
  * Bullet Continuous Collision Detection and Physics Library
  * Copyright (c) 2003-2008 Erwin Coumans  http://www.bulletphysics.com/
- * 
+ *
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from
  * the use of this software.
- * 
- * Permission is granted to anyone to use this software for any purpose, 
+ *
+ * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would be
@@ -23,8 +23,6 @@
  */
 
 package com.bulletphysicsx.demos.dynamiccontrol;
-
-import org.lwjgl.LWJGLException;
 
 import com.bulletphysicsx.BulletGlobals;
 import com.bulletphysicsx.collision.broadphase.BroadphaseInterface;
@@ -44,12 +42,11 @@ import com.bulletphysicsx.dynamics.constraintsolver.HingeConstraint;
 import com.bulletphysicsx.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.bulletphysicsx.linearmath.Transform;
 import com.bulletphysicsx.util.ObjectArrayList;
-
-import static com.bulletphysicsx.demos.opengl.IGL.GL_COLOR_BUFFER_BIT;
-import static com.bulletphysicsx.demos.opengl.IGL.GL_DEPTH_BUFFER_BIT;
-import static com.bulletphysicsx.demos.opengl.IGL.GL_LINES;
+import org.lwjgl.LWJGLException;
 
 import javax.vecmath.Vector3f;
+
+import static com.bulletphysicsx.demos.opengl.IGL.*;
 
 /**
  * @author LvR
@@ -64,6 +61,13 @@ public class DynamicControlDemo extends DemoApplication {
 
     public DynamicControlDemo(IGL gl) {
         super(gl);
+    }
+
+    public static void main(String[] args) throws LWJGLException {
+        DynamicControlDemo demoApp = new DynamicControlDemo(LWJGL.getGL());
+        demoApp.initPhysics();
+
+        LWJGL.main(args, 800, 600, "Bullet Physics Demo. http://bullet.sf.net", demoApp);
     }
 
     public void initPhysics() {
@@ -234,13 +238,6 @@ public class DynamicControlDemo extends DemoApplication {
         vertex(vZ);
 
         gl.glEnd();
-    }
-
-    public static void main(String[] args) throws LWJGLException {
-        DynamicControlDemo demoApp = new DynamicControlDemo(LWJGL.getGL());
-        demoApp.initPhysics();
-
-        LWJGL.main(args, 800, 600, "Bullet Physics Demo. http://bullet.sf.net", demoApp);
     }
 
 }

@@ -7,11 +7,11 @@
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from
  * the use of this software.
- * 
- * Permission is granted to anyone to use this software for any purpose, 
+ *
+ * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would be
@@ -23,21 +23,11 @@
 
 package com.bulletphysicsx.demos.character;
 
-import org.lwjgl.input.Keyboard;
-
 import com.bulletphysicsx.collision.broadphase.AxisSweep3;
 import com.bulletphysicsx.collision.broadphase.BroadphaseInterface;
 import com.bulletphysicsx.collision.broadphase.CollisionFilterGroups;
-import com.bulletphysicsx.collision.dispatch.CollisionDispatcher;
-import com.bulletphysicsx.collision.dispatch.CollisionFlags;
-import com.bulletphysicsx.collision.dispatch.DefaultCollisionConfiguration;
-import com.bulletphysicsx.collision.dispatch.GhostPairCallback;
-import com.bulletphysicsx.collision.dispatch.PairCachingGhostObject;
-import com.bulletphysicsx.collision.shapes.BoxShape;
-import com.bulletphysicsx.collision.shapes.CapsuleShape;
-import com.bulletphysicsx.collision.shapes.CollisionShape;
-import com.bulletphysicsx.collision.shapes.ConvexHullShape;
-import com.bulletphysicsx.collision.shapes.ConvexShape;
+import com.bulletphysicsx.collision.dispatch.*;
+import com.bulletphysicsx.collision.shapes.*;
 import com.bulletphysicsx.demos.bsp.BspConverter;
 import com.bulletphysicsx.demos.opengl.DemoApplication;
 import com.bulletphysicsx.demos.opengl.GLDebugDrawer;
@@ -49,25 +39,25 @@ import com.bulletphysicsx.dynamics.constraintsolver.ConstraintSolver;
 import com.bulletphysicsx.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.bulletphysicsx.linearmath.Transform;
 import com.bulletphysicsx.util.ObjectArrayList;
+import org.lwjgl.input.Keyboard;
+
+import javax.vecmath.Vector3f;
 
 import static com.bulletphysicsx.demos.opengl.IGL.GL_COLOR_BUFFER_BIT;
 import static com.bulletphysicsx.demos.opengl.IGL.GL_DEPTH_BUFFER_BIT;
-
-import javax.vecmath.Vector3f;
 
 /**
  * @author tomrbryn
  */
 public class CharacterDemo extends DemoApplication {
 
-    private final int maxProxies = 32766;
-    private final int maxOverlap = 65535;
     private static int gForward = 0;
     private static int gBackward = 0;
     private static int gLeft = 0;
     private static int gRight = 0;
     private static int gJump = 0;
-
+    private final int maxProxies = 32766;
+    private final int maxOverlap = 65535;
     public KinematicCharacterController character;
     public PairCachingGhostObject ghostObject;
 
@@ -75,19 +65,25 @@ public class CharacterDemo extends DemoApplication {
 
     public float minCameraDistance = 3f;
     public float maxCameraDistance = 10f;
-
-    // JAVA NOTE: the original demo scaled the bsp room, we scale up the character
-    private float characterScale = 2f;
-
     // keep the collision shapes, for deletion/cleanup
     public ObjectArrayList<CollisionShape> collisionShapes = new ObjectArrayList<CollisionShape>();
     public BroadphaseInterface overlappingPairCache;
     public CollisionDispatcher dispatcher;
     public ConstraintSolver constraintSolver;
     public DefaultCollisionConfiguration collisionConfiguration;
+    // JAVA NOTE: the original demo scaled the bsp room, we scale up the character
+    private float characterScale = 2f;
 
     public CharacterDemo(IGL gl) {
         super(gl);
+    }
+
+    public static void main(String[] args) throws Exception {
+        CharacterDemo demo = new CharacterDemo(LWJGL.getGL());
+        demo.initPhysics();
+        demo.getDynamicsWorld().setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
+
+        LWJGL.main(args, 800, 600, "Bullet Character Demo. http://bullet.sf.net", demo);
     }
 
     public void initPhysics() throws Exception {
@@ -310,14 +306,6 @@ public class CharacterDemo extends DemoApplication {
         gl.gluLookAt(cameraPosition.x, cameraPosition.y, cameraPosition.z,
                 cameraTargetPosition.x, cameraTargetPosition.y, cameraTargetPosition.z,
                 cameraUp.x, cameraUp.y, cameraUp.z);
-    }
-
-    public static void main(String[] args) throws Exception {
-        CharacterDemo demo = new CharacterDemo(LWJGL.getGL());
-        demo.initPhysics();
-        demo.getDynamicsWorld().setDebugDrawer(new GLDebugDrawer(LWJGL.getGL()));
-
-        LWJGL.main(args, 800, 600, "Bullet Character Demo. http://bullet.sf.net", demo);
     }
 
     ////////////////////////////////////////////////////////////////////////////

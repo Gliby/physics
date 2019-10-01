@@ -435,7 +435,7 @@ public interface Easing {
                 a = c;
                 s = p / 4;
             } else s = p / (float) (2 * FastMath.PI) * (float) FastMath.asin(c / a);
-            return a * (float) FastMath.pow(2, -10 * t) * (float)  FastMath.sin((t * d - s) * (2 * FastMath.PI) / p) + c + b;
+            return a * (float) FastMath.pow(2, -10 * t) * (float) FastMath.sin((t * d - s) * (2 * FastMath.PI) / p) + c + b;
         }
     }
 
@@ -464,7 +464,7 @@ public interface Easing {
             } else s = p / (float) (2 * FastMath.PI) * (float) FastMath.asin(c / a);
             if (t < 1)
                 return -.5f * (a * (float) FastMath.pow(2, 10 * (t -= 1)) * (float) FastMath.sin((t * d - s) * (2 * FastMath.PI) / p)) + b;
-            return a * (float) FastMath.pow(2, -10 * (t -= 1)) * (float)  FastMath.sin((t * d - s) * (2 * FastMath.PI) / p) * .5f + c + b;
+            return a * (float) FastMath.pow(2, -10 * (t -= 1)) * (float) FastMath.sin((t * d - s) * (2 * FastMath.PI) / p) * .5f + c + b;
         }
     }
 

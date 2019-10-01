@@ -8,11 +8,11 @@
  * This software is provided 'as-is', without any express or implied warranty.
  * In no event will the authors be held liable for any damages arising from
  * the use of this software.
- * 
- * Permission is granted to anyone to use this software for any purpose, 
+ *
+ * Permission is granted to anyone to use this software for any purpose,
  * including commercial applications, and to alter it and redistribute it
  * freely, subject to the following restrictions:
- * 
+ *
  * 1. The origin of this software must not be misrepresented; you must not
  *    claim that you wrote the original software. If you use this software
  *    in a product, an acknowledgment in the product documentation would be
@@ -20,13 +20,11 @@
  * 2. Altered source versions must be plainly marked as such, and must not be
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
- * 
+ *
  * Written by: Marten Svanfeldt
  */
 
 package com.bulletphysicsx.demos.genericjoint;
-
-import javax.vecmath.Vector3f;
 
 import com.bulletphysicsx.BulletGlobals;
 import com.bulletphysicsx.collision.shapes.CapsuleShape;
@@ -40,6 +38,8 @@ import com.bulletphysicsx.linearmath.DefaultMotionState;
 import com.bulletphysicsx.linearmath.MatrixUtil;
 import com.bulletphysicsx.linearmath.Transform;
 
+import javax.vecmath.Vector3f;
+
 /**
  * @author jezek2
  */
@@ -47,54 +47,13 @@ public class RagDoll {
 
     //protected final BulletStack stack = BulletStack.get();
 
-    public enum BodyPart {
-        BODYPART_PELVIS,
-        BODYPART_SPINE,
-        BODYPART_HEAD,
-
-        BODYPART_LEFT_UPPER_LEG,
-        BODYPART_LEFT_LOWER_LEG,
-
-        BODYPART_RIGHT_UPPER_LEG,
-        BODYPART_RIGHT_LOWER_LEG,
-
-        BODYPART_LEFT_UPPER_ARM,
-        BODYPART_LEFT_LOWER_ARM,
-
-        BODYPART_RIGHT_UPPER_ARM,
-        BODYPART_RIGHT_LOWER_ARM,
-
-        BODYPART_COUNT;
-    }
-
-    public enum JointType {
-        JOINT_PELVIS_SPINE,
-        JOINT_SPINE_HEAD,
-
-        JOINT_LEFT_HIP,
-        JOINT_LEFT_KNEE,
-
-        JOINT_RIGHT_HIP,
-        JOINT_RIGHT_KNEE,
-
-        JOINT_LEFT_SHOULDER,
-        JOINT_LEFT_ELBOW,
-
-        JOINT_RIGHT_SHOULDER,
-        JOINT_RIGHT_ELBOW,
-
-        JOINT_COUNT
-    }
-
     private DynamicsWorld ownerWorld;
     private CollisionShape[] shapes = new CollisionShape[BodyPart.BODYPART_COUNT.ordinal()];
     private RigidBody[] bodies = new RigidBody[BodyPart.BODYPART_COUNT.ordinal()];
     private TypedConstraint[] joints = new TypedConstraint[JointType.JOINT_COUNT.ordinal()];
-
     public RagDoll(DynamicsWorld ownerWorld, Vector3f positionOffset) {
         this(ownerWorld, positionOffset, 1.0f);
     }
-
     public RagDoll(DynamicsWorld ownerWorld, Vector3f positionOffset, float scale_ragdoll) {
         this.ownerWorld = ownerWorld;
 
@@ -478,6 +437,45 @@ public class RagDoll {
         ownerWorld.addRigidBody(body);
 
         return body;
+    }
+
+    public enum BodyPart {
+        BODYPART_PELVIS,
+        BODYPART_SPINE,
+        BODYPART_HEAD,
+
+        BODYPART_LEFT_UPPER_LEG,
+        BODYPART_LEFT_LOWER_LEG,
+
+        BODYPART_RIGHT_UPPER_LEG,
+        BODYPART_RIGHT_LOWER_LEG,
+
+        BODYPART_LEFT_UPPER_ARM,
+        BODYPART_LEFT_LOWER_ARM,
+
+        BODYPART_RIGHT_UPPER_ARM,
+        BODYPART_RIGHT_LOWER_ARM,
+
+        BODYPART_COUNT;
+    }
+
+    public enum JointType {
+        JOINT_PELVIS_SPINE,
+        JOINT_SPINE_HEAD,
+
+        JOINT_LEFT_HIP,
+        JOINT_LEFT_KNEE,
+
+        JOINT_RIGHT_HIP,
+        JOINT_RIGHT_KNEE,
+
+        JOINT_LEFT_SHOULDER,
+        JOINT_LEFT_ELBOW,
+
+        JOINT_RIGHT_SHOULDER,
+        JOINT_RIGHT_ELBOW,
+
+        JOINT_COUNT
     }
 
 }
