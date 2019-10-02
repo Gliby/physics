@@ -30,6 +30,7 @@ public class SoundHandler {
     }
 
     public static void playLocalSound(Minecraft mc, String sound) {
-        mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation(getSoundByIdentifer(sound)), 1.0F));
+        // todo 1.12.2 port
+//        mc.getSoundHandler().playSound(PositionedSoundRecord.(new ResourceLocation(getSoundByIdentifer(sound)), 1.0F));
     }
 }

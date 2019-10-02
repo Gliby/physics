@@ -5,7 +5,7 @@ import com.bulletphysicsx.collision.shapes.voxel.VoxelPhysicsWorld;
 import com.bulletphysicsx.linearmath.VectorUtil;
 import gliby.minecraft.physics.Physics;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.vecmath.Vector3f;
@@ -32,7 +32,7 @@ public class JavaVoxelProvider implements VoxelPhysicsWorld {
 
             @Override
             public boolean isColliding() {
-                return blockState.getBlock().getMaterial().isLiquid();
+                return blockState.getBlock().getMaterial(blockState).isLiquid();
             }
 
             @Override
@@ -48,7 +48,7 @@ public class JavaVoxelProvider implements VoxelPhysicsWorld {
 
             @Override
             public boolean isBlocking() {
-                return blockState.getBlock().getMaterial().isSolid();
+                return blockState.getBlock().getMaterial(blockState).isSolid();
             }
 
             @Override

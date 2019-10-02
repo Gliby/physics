@@ -8,8 +8,8 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.math3.util.FastMath;
 import org.lwjgl.input.Mouse;
 
@@ -44,7 +44,7 @@ public class GuiScreenChangeLog extends GuiScreen {
         buttonList.clear();
         formattedLog.clear();
         for (VersionChanges changes : versionChanges) {
-            formattedLog.add(new FormattedChangeLog(changes, fontRendererObj, WRAP));
+            formattedLog.add(new FormattedChangeLog(changes, fontRenderer, WRAP));
         }
         createButtons();
     }
@@ -90,14 +90,14 @@ public class GuiScreenChangeLog extends GuiScreen {
             int boundY = height / 2 - 100;
             int boundWidth = boundX + 185;
             int boundHeight = boundY + 154;
-            String version = EnumChatFormatting.BOLD + changes.changes.version;
-            drawString(fontRendererObj, version, boundWidth - (15 + (fontRendererObj.getStringWidth(version) / 2)),
+            String version = TextFormatting.BOLD + changes.changes.version;
+            drawString(fontRenderer, version, boundWidth - (15 + (fontRenderer.getStringWidth(version) / 2)),
                     boundY + 6, -1);
             if (page != null) {
                 for (int textIndex = 0; textIndex < page.texts.size(); textIndex++) {
                     String text = page.texts.get(textIndex);
                     float textX = width / 2 - 175;
-                    float textY = height / 2 - 90 + (textIndex * fontRendererObj.FONT_HEIGHT) + scrollY;
+                    float textY = height / 2 - 90 + (textIndex * fontRenderer.FONT_HEIGHT) + scrollY;
                     if (inBounds(textX, textY, boundX, boundY, boundWidth, boundHeight)) {
                         if (text.startsWith(PREFIX_TITLE)) {
                             text = text.substring(PREFIX_TITLE.length());
@@ -112,15 +112,15 @@ public class GuiScreenChangeLog extends GuiScreen {
                          */
                         GlStateManager.pushMatrix();
                         GlStateManager.translate(textX, textY, 0);
-                        fontRendererObj.drawSplitString(text, 1, 1, WRAP, 0);
-                        fontRendererObj.drawSplitString(text, 0, 0, WRAP, -1);
+                        fontRenderer.drawSplitString(text, 1, 1, WRAP, 0);
+                        fontRenderer.drawSplitString(text, 0, 0, WRAP, -1);
                         GlStateManager.popMatrix();
 
                     }
                 }
             }
         }
-        drawCenteredString(fontRendererObj, I18n.format("gui.changelog.title"), width / 2, 4, -1);
+        drawCenteredString(fontRenderer, I18n.format("gui.changelog.title"), width / 2, 4, -1);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
@@ -167,7 +167,7 @@ public class GuiScreenChangeLog extends GuiScreen {
             float delta = (FastMath.abs(rawMouseWheel) / rawMouseWheel);
             final float alpha = 0.1f;
 
-            float targetScroll = scrollY + (delta * fontRendererObj.FONT_HEIGHT);
+            float targetScroll = scrollY + (delta * fontRenderer.FONT_HEIGHT);
             if (targetScroll >= DRAW_HEIGHT + (alpha)) targetScroll = DRAW_HEIGHT;
             else if (targetScroll <= -DRAW_HEIGHT + (alpha)) targetScroll = -DRAW_HEIGHT;
 

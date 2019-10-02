@@ -5,9 +5,9 @@ import net.minecraft.entity.Entity;
 /**
  * No lighting!
  */
-public class DummyLight implements IDynamicLightHandler {
+public class NullLight implements IDynamicLightHandler {
 
-    public DummyLight() {
+    public NullLight() {
     }
 
     @Override

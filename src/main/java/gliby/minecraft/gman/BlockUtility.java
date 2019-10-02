@@ -24,7 +24,7 @@ public class BlockUtility {
         IBlockState metaState = Block.getStateById(stateID);
         IBlockState defaultState = inputState.getBlock().getDefaultState();
 
-        for (IProperty property : (Collection<IProperty>) defaultState.getProperties().keySet()) {
+        for (IProperty property : defaultState.getProperties().keySet()) {
             Comparable<?> metaValue = metaState.getValue(property);
             Comparable<?> defaultValue = defaultState.getValue(property);
 
@@ -57,22 +57,22 @@ public class BlockUtility {
 
         new ArrayList<IProperty>();
 
-        for (IProperty property : (Collection<IProperty>) metaState.getProperties().keySet()) {
+        for (IProperty property :  metaState.getProperties().keySet()) {
             Comparable<?> metaValue = metaState.getValue(property);
             Comparable<?> defaultValue = defaultState.getValue(property);
 
             if (metaValue == defaultValue) {
                 int valueID = buf.readInt();
                 int i = 0;
-
-                for (Comparable<?> checkValue : (Collection<Comparable<?>>) property.getAllowedValues()) {
-                    if (i == valueID) {
-                        outState = outState.withProperty(property, checkValue);
-                        break;
-                    }
-
-                    i++;
-                }
+                // todo 1.12.2 port VERY IMPORTANT
+//                for (Comparable<?> checkValue : (Collection<Comparable<?>>) property.getAllowedValues()) {
+//                    if (i == valueID) {
+//                        outState = outState.withProperty(property, (Comparable<?>) checkValue);
+//                        break;
+//                    }
+//
+//                    i++;
+//                }
             }
         }
 

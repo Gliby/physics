@@ -121,7 +121,7 @@ public class ItemHandler {
         public void onPlayerTick(TickEvent.PlayerTickEvent event) {
             Minecraft mc = Minecraft.getMinecraft();
             if (event.side.isClient()) {
-                ItemStack itemStack = event.player.getCurrentEquippedItem();
+                ItemStack itemStack = event.player.getActiveItemStack();
                 boolean isClient = event.player == mc.getRenderViewEntity();
                 boolean isFirstPerson = mc.gameSettings.thirdPersonView == 0 && isClient;
 
@@ -130,13 +130,14 @@ public class ItemHandler {
                     AlwaysUsedItem itemInfo = getAlwaysUsedItem(item);
                     if (itemInfo != null) {
                         if (!itemInfo.isSwingable() && isClient) {
-                            mc.entityRenderer.itemRenderer.itemToRender = mc.thePlayer.inventory.getCurrentItem();
-                            mc.entityRenderer.itemRenderer.equippedItemSlot = mc.thePlayer.inventory.currentItem;
-                            mc.entityRenderer.itemRenderer.equippedProgress = 1.0f;
-                            mc.entityRenderer.itemRenderer.prevEquippedProgress = 1.0f;
-                            mc.thePlayer.isSwingInProgress = false;
-                            mc.thePlayer.swingProgressInt = 0;
-                            mc.thePlayer.swingProgress = 0;
+                            // TODO 1.12.2 item renderer AT
+//                            mc.entityRenderer.itemRenderer.itemToRender = mc.thePlayer.inventory.getCurrentItem();
+//                            mc.entityRenderer.itemRenderer.equippedItemSlot = mc.thePlayer.inventory.currentItem;
+//                            mc.entityRenderer.itemRenderer.equippedProgress = 1.0f;
+//                            mc.entityRenderer.itemRenderer.prevEquippedProgress = 1.0f;
+                            mc.player.isSwingInProgress = false;
+                            mc.player.swingProgressInt = 0;
+                            mc.player.swingProgress = 0;
                         }
 
                         if (event.phase.equals(TickEvent.Phase.END)) {

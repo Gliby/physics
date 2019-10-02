@@ -9,7 +9,7 @@ import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.math.AxisAlignedBB;
 
 import javax.vecmath.Vector3f;
 import java.lang.reflect.Field;
@@ -84,15 +84,14 @@ public class RenderPhysicsRagdoll extends RenderPhysics {
             for (int j = 0; j < proxyList.size(); j++) {
                 ModelPart model = proxyList.get(j);
                 float size = 0.07f;
-                AxisAlignedBB pointBB = AxisAlignedBB
-                        .fromBounds(point.getPosition().x, point.getPosition().y, point.getPosition().z,
+                AxisAlignedBB pointBB = new AxisAlignedBB(point.getPosition().x, point.getPosition().y, point.getPosition().z,
                                 point.getPosition().x, point.getPosition().y, point.getPosition().z)
                         .expand(size, size, size);
-                AxisAlignedBB modelBB = AxisAlignedBB
-                        .fromBounds(model.getModelBox().posX1, model.getModelBox().posY1, model.getModelBox().posZ1,
+                AxisAlignedBB modelBB = new AxisAlignedBB(model.getModelBox().posX1, model.getModelBox().posY1, model.getModelBox().posZ1,
                                 model.getModelBox().posX2, model.getModelBox().posY2, model.getModelBox().posZ2)
                         .offset(model.getPosition().x, model.getPosition().y, model.getPosition().z);
-                if (pointBB.intersectsWith(modelBB)) {
+
+                if (pointBB.intersects(modelBB)) {
                     if (point.bodyA == null) {
                         //System.out.println("Body A set");
                         point.setBodyA(model);

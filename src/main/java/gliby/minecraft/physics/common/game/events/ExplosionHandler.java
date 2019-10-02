@@ -7,10 +7,12 @@ import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.apache.commons.math3.analysis.function.Min;
 
 import javax.vecmath.Vector3f;
 import java.util.ArrayList;
@@ -30,28 +32,28 @@ public class ExplosionHandler {
     // TODO bug: fix explosions
     @SubscribeEvent
     public void handleEvent(final ExplosionEvent.Detonate event) {
-        MinecraftServer server = MinecraftServer.getServer();
+        Minecraft server = Minecraft.getMinecraft();
         server.addScheduledTask(new Runnable() {
 
             @Override
             public void run() {
                 Physics physics = Physics.getInstance();
-                PhysicsWorld physicsWorld = physics.getPhysicsOverworld().getPhysicsByWorld(event.world);
-                Vector3f explosion = new Vector3f((float) event.explosion.getPosition().xCoord,
-                        (float) event.explosion.getPosition().yCoord, (float) event.explosion.getPosition().zCoord);
+                PhysicsWorld physicsWorld = physics.getPhysicsOverworld().getPhysicsByWorld(event.getWorld());
+                Vector3f explosion = new Vector3f((float) event.getExplosion().getPosition().x,
+                        (float) event.getExplosion().getPosition().y, (float) event.getExplosion().getPosition().z);
 
                 List<EntityPhysicsBlock> affectedEntities = new ArrayList<EntityPhysicsBlock>();
                 for (int i = 0; i < event.getAffectedBlocks().size(); i++) {
                     BlockPos pos = event.getAffectedBlocks().get(i);
-                    IBlockState blockState = event.world.getBlockState(pos);
+                    IBlockState blockState = event.getWorld().getBlockState(pos);
                     PhysicsBlockMetadata metadata = physics.getBlockManager().getPhysicsBlockMetadata()
                             .get(physics.getBlockManager().getBlockIdentity(blockState.getBlock()));
                     boolean shouldSpawnInExplosions = metadata == null || metadata.spawnInExplosions;
-                    if (blockState.getBlock().getMaterial() != Material.air && shouldSpawnInExplosions) {
-                        blockState = blockState.getBlock().getActualState(blockState, event.world, pos);
-                        EntityPhysicsBlock analog = new EntityPhysicsBlock(event.world, physicsWorld, blockState,
+                    if (blockState.getBlock().getMaterial(blockState) != Material.AIR && shouldSpawnInExplosions) {
+                        blockState = blockState.getBlock().getActualState(blockState, event.getWorld(), pos);
+                        EntityPhysicsBlock analog = new EntityPhysicsBlock(event.getWorld(), physicsWorld, blockState,
                                 pos.getX(), pos.getY(), pos.getZ());
-                        event.world.spawnEntityInWorld(analog);
+                        event.getWorld().spawnEntity(analog);
                         affectedEntities.add(analog);
                     }
                 }

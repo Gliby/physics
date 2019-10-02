@@ -15,12 +15,11 @@ import net.minecraft.client.model.ModelBox;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.entity.RendererLivingEntity;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 
@@ -58,8 +57,8 @@ public class GuiScreenMobCreator extends GuiScreenCreator {
             Map.Entry<Class<? extends Entity>, RenderLiving> entry = (Map.Entry<Class<? extends Entity>, RenderLiving>) obj;
             Class<? extends Entity> entityClass = entry.getKey();
             Object renderObj = entry.getValue();
-            if (renderObj instanceof RendererLivingEntity)
-                mobModels.add(new EntityRenderInformation(entityClass, (RendererLivingEntity) renderObj));
+            if (renderObj instanceof RenderLiving)
+                mobModels.add(new EntityRenderInformation(entityClass, (RenderLiving) renderObj));
         }
 
         thread = new Thread("Mob Generator");
@@ -92,39 +91,39 @@ public class GuiScreenMobCreator extends GuiScreenCreator {
         drawRectangleWithOutline(18, consoleY, width - 30, 32, 1, 0xFF000000, 0xFFFFFFFF);
         for (int i = messagesList.size() - 1; i >= 0; i--) {
             String s = (String) messagesList.toArray()[i];
-            drawString(fontRendererObj, s, 20, consoleY + 2 + (i * (fontRendererObj.FONT_HEIGHT + 1)), -1);
+            drawString(fontRenderer, s, 20, consoleY + 2 + (i * (fontRenderer.FONT_HEIGHT + 1)), -1);
         }
 
-        int modHeight = MathHelper.clamp_int(height - 55,
-                Loader.instance().getActiveModList().size() * fontRendererObj.FONT_HEIGHT + 3, Integer.MAX_VALUE);
+        int modHeight = MathHelper.clamp(height - 55,
+                Loader.instance().getActiveModList().size() * fontRenderer.FONT_HEIGHT + 3, Integer.MAX_VALUE);
 
         drawRectangleWithOutline(18, 8, 89, modHeight, 1, 0xFF000000, 0xFFFFFFFF);
         for (int i = 0; i < Loader.instance().getActiveModList().size(); i++) {
             ModContainer mod = Loader.instance().getActiveModList().get(i);
-            if (i < modHeight / fontRendererObj.FONT_HEIGHT) {
+            if (i < modHeight / fontRenderer.FONT_HEIGHT) {
                 int maxLength = 15;
-                drawString(fontRendererObj,
+                drawString(fontRenderer,
                         mod.getName().substring(0,
                                 mod.getName().length() > maxLength ? maxLength : mod.getName().length()),
-                        20, 10 + i * fontRendererObj.FONT_HEIGHT, -1);
+                        20, 10 + i * fontRenderer.FONT_HEIGHT, -1);
             }
         }
 
-        int loadingY = MathHelper.clamp_int(height - 67, 27, Integer.MAX_VALUE);
+        int loadingY = MathHelper.clamp(height - 67, 27, Integer.MAX_VALUE);
         int loadingWidth = width - 125;
         drawRectangleWithOutline(112, loadingY, loadingWidth, 20, 1, 0xFF000000, 0xFFFFFFFF);
         double scalar = ((double) mobsBuilt / (double) mobModels.size());
         if (scalar > 0)
             drawRectangleWithOutline(112, loadingY, (int) (loadingWidth * scalar), 20, 1, 0xFF449044,
                     0xFFFFFFFF);
-        drawCenteredString(fontRendererObj, (int) (100 * scalar) + "%", 112 + (loadingWidth / 2), loadingY + 6, -1);
+        drawCenteredString(fontRenderer, (int) (100 * scalar) + "%", 112 + (loadingWidth / 2), loadingY + 6, -1);
 
         if (lucky) {
             String whatchagonnado = "¯\\_(ツ)_/¯";
             luckyTick += 88 * partialTicks;
             if (luckyTick > width * 4)
-                luckyTick = -fontRendererObj.getStringWidth(whatchagonnado);
-            drawString(fontRendererObj, whatchagonnado, luckyTick / 4, height - fontRendererObj.FONT_HEIGHT, -1);
+                luckyTick = -fontRenderer.getStringWidth(whatchagonnado);
+            drawString(fontRenderer, whatchagonnado, luckyTick / 4, height - fontRenderer.FONT_HEIGHT, -1);
 
         }
         super.drawScreen(mouseX, mouseY, partialTicks);
@@ -150,8 +149,7 @@ public class GuiScreenMobCreator extends GuiScreenCreator {
                 }
 
                 for (EntityRenderInformation renderEntity : mobModels) {
-                    String entityName = (String) EntityList.classToStringMapping.get(renderEntity.getEntityClass());
-                    MobModel mobModel = new MobModel(entityName);
+                    MobModel mobModel = new MobModel(EntityList.getKey(renderEntity.getEntityClass()).getResourceDomain());
                     Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
                     ArrayList<ModelRenderer> filteredModelRenders = new ArrayList<ModelRenderer>();
@@ -186,7 +184,7 @@ public class GuiScreenMobCreator extends GuiScreenCreator {
                             for (Object geom : modelRenderer.cubeList) {
                                 if (geom instanceof ModelBox) {
                                     ModelBox cube = (ModelBox) geom;
-                                    group.getCubes().add(AxisAlignedBB.fromBounds(cube.posX1, cube.posY1, cube.posZ1,
+                                    group.getCubes().add(new AxisAlignedBB(cube.posX1, cube.posY1, cube.posZ1,
                                             cube.posX2, cube.posY2, cube.posZ2));
                                 }
                             }
@@ -195,7 +193,7 @@ public class GuiScreenMobCreator extends GuiScreenCreator {
                     }
 
                     try {
-                        Path nf = fs.getPath(EntityList.getIDFromString(entityName) + ".json");
+                        Path nf = fs.getPath(EntityList.getID(renderEntity.getEntityClass()) + ".json");
                         {
                             Writer writer = Files.newBufferedWriter(nf, StandardCharsets.UTF_8,
                                     StandardOpenOption.CREATE);
@@ -266,9 +264,9 @@ public class GuiScreenMobCreator extends GuiScreenCreator {
 
     private class EntityRenderInformation {
         private final Class entityClass;
-        private final RendererLivingEntity renderer;
+        private final RenderLiving renderer;
 
-        public EntityRenderInformation(Class entityClass, RendererLivingEntity renderer) {
+        public EntityRenderInformation(Class entityClass, RenderLiving renderer) {
             this.entityClass = entityClass;
             this.renderer = renderer;
         }
@@ -277,7 +275,7 @@ public class GuiScreenMobCreator extends GuiScreenCreator {
             return entityClass;
         }
 
-        public RendererLivingEntity getRenderer() {
+        public RenderLiving getRenderer() {
             return renderer;
         }
 

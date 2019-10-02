@@ -3,6 +3,7 @@ package gliby.minecraft.physics.common.entity.models;
 import com.google.gson.Gson;
 import gliby.minecraft.gman.io.MinecraftResourceLoader;
 import gliby.minecraft.physics.Physics;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -14,6 +15,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -46,65 +48,65 @@ public class MobModelManager {
                 }
 
                 int loaded = 0;
-                Iterator<Map.Entry<Integer, Class>> it = EntityList.idToClassMapping.entrySet().iterator();
-                Gson gson = new Gson();
-                while (it.hasNext()) {
-                    Map.Entry<Integer, Class> entry = it.next();
-                    if (entry.getValue() != null) {
-                        String mobModel = null;
-                        int uniqueEntityId = entry.getKey();
-                        final ZipFile otherZip = tempZip;
-                        final File otherFile = tempFile;
-                        boolean loadedFromZip = false;
-                        if (otherFile.exists()) {
-                            ZipEntry zipEntry = otherZip.getEntry(uniqueEntityId + ".json");
-                            if (zipEntry != null) {
-                                InputStream stream = null;
-                                try {
-                                    stream = otherZip.getInputStream(zipEntry);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                                if (stream != null) {
-                                    loadedFromZip = true;
-                                    try {
-                                        mobModel = IOUtils.toString(stream);
-                                        stream.close();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        } else {
-                            try {
-                                InputStream stream = MinecraftResourceLoader.getResource(Physics.getLogger(),
-                                        FMLCommonHandler.instance().getSide(),
-                                        new ResourceLocation(Physics.ID, "mobs/" + uniqueEntityId + ".json"));
-                                if (stream != null) {
-                                    mobModel = IOUtils.toString(stream);
-                                    stream.close();
-                                }
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
+                // TODO port 1.12.2
+//              net.minecraftforge.fml.common.registry.EntityEntry entry = net.minecraftforge.registries.GameData.getEntityRegistry();
 
-                        if (mobModel != null) {
-                            MobModel model;
-                            //System.out.println("loaded: " + entry.getValue());
-                            modelRegistry.put(entry.getValue(), model = gson.fromJson(mobModel, MobModel.class));
-                            loaded++;
-                        }
-                    }
-
-                    if (tempZip != null) {
-                        try {
-                            tempZip.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
+//                Gson gson = new Gson();
+//                for (ResourceLocation entityResource : entities) {
+//                    String mobModel = null;
+//                    int uniqueEntityId = EntityList.getID()
+//                    final ZipFile otherZip = tempZip;
+//                    final File otherFile = tempFile;
+//                    boolean loadedFromZip = false;
+//                    if (otherFile.exists()) {
+//                        ZipEntry zipEntry = otherZip.getEntry(uniqueEntityId + ".json");
+//                        if (zipEntry != null) {
+//                            InputStream stream = null;
+//                            try {
+//                                stream = otherZip.getInputStream(zipEntry);
+//                            } catch (IOException e) {
+//                                e.printStackTrace();
+//                            }
+//                            if (stream != null) {
+//                                loadedFromZip = true;
+//                                try {
+//                                    mobModel = IOUtils.toString(stream);
+//                                    stream.close();
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }
+//                        }
+//                    } else {
+//                        try {
+//                            InputStream stream = MinecraftResourceLoader.getResource(Physics.getLogger(),
+//                                    FMLCommonHandler.instance().getSide(),
+//                                    new ResourceLocation(Physics.ID, "mobs/" + uniqueEntityId + ".json"));
+//                            if (stream != null) {
+//                                mobModel = IOUtils.toString(stream);
+//                                stream.close();
+//                            }
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//
+//                    if (mobModel != null) {
+//                        MobModel model;
+//                        //System.out.println("loaded: " + entry.getValue());
+//                        modelRegistry.put(entry.getValue(), model = gson.fromJson(mobModel, MobModel.class));
+//                        loaded++;
+//                    }
+//
+//
+//                    if (tempZip != null) {
+//                        try {
+//                            tempZip.close();
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
                 Physics.getLogger().info("Loaded " + loaded + " mob models.");
             }
         }, "Mob Model Loader");

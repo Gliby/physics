@@ -8,8 +8,8 @@ import gliby.minecraft.physics.common.physics.engine.*;
 import gliby.minecraft.physics.common.physics.mechanics.PhysicsMechanic;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import javax.vecmath.Vector3f;
@@ -70,14 +70,16 @@ public abstract class PhysicsWorld {
     }
 
     protected ICollisionShape createBlockShape(final World worldObj, final BlockPos blockPos, final IBlockState blockState) {
-        if (!blockState.getBlock().isNormalCube()) {
+        if (!blockState.getBlock().isNormalCube(blockState)) {
             final List<AxisAlignedBB> collisionBBs = new ArrayList<AxisAlignedBB>();
-            blockState.getBlock().addCollisionBoxesToList(worldObj, blockPos, blockState, WorldUtility.MAX_BB,
-                    collisionBBs, null);
+            // todo 1.12.2 port possible bug
+            blockState.getBlock().addCollisionBoxToList(blockState, worldObj, blockPos, WorldUtility.MAX_BB,
+                    collisionBBs, null, true);
             return buildCollisionShape(collisionBBs, new Vector3f(blockPos.getX(), blockPos.getY(), blockPos.getZ()));
         }
-        final Vector3f blockPosition = new Vector3f((float) blockState.getBlock().getBlockBoundsMaxX(),
-                (float) blockState.getBlock().getBlockBoundsMaxY(), (float) blockState.getBlock().getBlockBoundsMaxZ());
+        AxisAlignedBB bb = blockState.getBlock().getBoundingBox(blockState, worldObj, blockPos);
+
+        final Vector3f blockPosition = new Vector3f((float)bb.maxX, (float)bb.maxY, (float)bb.maxZ);
         blockPosition.scale(0.5f);
         return createBoxShape(blockPosition);
     }

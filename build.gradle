@@ -1,21 +1,29 @@
-plugins {
-    id "net.minecraftforge.gradle.forge" version "2.0.2"
+buildscript {
+    repositories {
+        jcenter()
+        maven { url = "http://files.minecraftforge.net/maven" }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+    }
 }
+apply plugin: 'net.minecraftforge.gradle.forge'
 
 version = mod_version
 group= "gliby.minecraft" 
 archivesBaseName = "glibysphysics"
 
+sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+}
+
+
 minecraft {
-    version = "1.8-11.14.4.1563"
-    
-    if(file('../run').exists()) {
-        runDir = "../run/assets"
-    } else {
-        runDir = "assets"
-    }    
-    
-    mappings = "snapshot_20141130"
+    version = "1.12.2-14.23.5.2768"
+    runDir = "run"
+    mappings = "snapshot_20171003"
+
     replace '@VERSION@', project.version
     replace '@MC_VERSION@', version
 }

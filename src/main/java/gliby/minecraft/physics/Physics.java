@@ -10,14 +10,10 @@ import gliby.minecraft.physics.client.PhysicsClient;
 import gliby.minecraft.physics.common.IPhysicsProxy;
 import gliby.minecraft.physics.common.PhysicsServer;
 import gliby.minecraft.physics.common.blocks.BlockManager;
-import gliby.minecraft.physics.common.entity.EntityPhysicsBlock;
-import gliby.minecraft.physics.common.entity.EntityPhysicsModelPart;
-import gliby.minecraft.physics.common.entity.EntityToolGunBeam;
 import gliby.minecraft.physics.common.entity.models.MobModelManager;
 import gliby.minecraft.physics.common.game.GameManager;
 import gliby.minecraft.physics.common.packets.PacketPlayerJoin;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;
-import net.minecraft.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -27,7 +23,6 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.LogManager;
@@ -87,11 +82,8 @@ public class Physics {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        MinecraftForge.EVENT_BUS.register(this);
         instance = this;
-
-        registerEntity(EntityPhysicsBlock.class, "PhysicsBlock", 64, 1, false);
-        registerEntity(EntityPhysicsModelPart.class, "Model Part Entity", 64, 1, false);
-        registerEntity(EntityToolGunBeam.class, "Tool Gun Beam", 64, 1, false);
         File dir = new File(event.getModConfigurationDirectory(), ID);
         if (!dir.exists())
             dir.mkdir();
@@ -171,8 +163,10 @@ public class Physics {
         } else {
             getLogger().info("Development environment detected.");
         }
+
         settings.save();
         gameManager = new GameManager(this);
+        MinecraftForge.EVENT_BUS.register(gameManager);
         gameManager.preInit();
 
         registerPacket(PacketPlayerJoin.class, PacketPlayerJoin.class, Side.CLIENT);
@@ -190,12 +184,6 @@ public class Physics {
 
     public void registerPacket(Class handler, Class packet, Side side) {
         getDispatcher().registerMessage(packet, handler, packetIDIndex++, side);
-    }
-
-    protected void registerEntity(Class<? extends Entity> clazz, String name, int trackRange, int trackFrequency,
-                                  boolean trackVelocity) {
-        EntityRegistry.registerGlobalEntityID(clazz, name, EntityRegistry.findGlobalUniqueEntityId());
-        EntityRegistry.registerModEntity(clazz, name, entityIDIndex++, this, trackRange, trackFrequency, trackVelocity);
     }
 
     @EventHandler

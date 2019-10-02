@@ -13,7 +13,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.entity.RenderLiving;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -50,8 +50,8 @@ public class EntityDeathHandler {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void handleEvent(LivingDeathEvent event) {
-        PhysicsWorld physicsWorld = physicsOverworld.getPhysicsByWorld(event.entity.worldObj);
-        ArrayList<ModelPart> modelParts = modelRegistry.get(event.entity.getClass());
+        PhysicsWorld physicsWorld = physicsOverworld.getPhysicsByWorld(event.getEntity().world);
+        ArrayList<ModelPart> modelParts = modelRegistry.get(event.getEntity().getClass());
         if (modelParts != null) {
             for (int i = 0; i < modelParts.size(); i++) {
                 ModelPart model = modelParts.get(i);
@@ -70,10 +70,10 @@ public class EntityDeathHandler {
                 // Adjust to minecraft's scale.
                 extent.scale(0.0625f);
                 extent.scale(0.5f);
-                transform.origin.add(new Vector3f(-0.5f, event.entity.getEyeHeight(), -0.5f));
+                transform.origin.add(new Vector3f(-0.5f, event.getEntity().getEyeHeight(), -0.5f));
                 ICollisionShape shape = physicsWorld.createBoxShape(extent);
-                if (event.entityLiving != null) {
-                    float yaw = event.entityLiving.rotationYaw;
+                if (event.getEntity() != null) {
+                    float yaw = event.getEntity().rotationYaw;
                     Quat4f rotation = new Quat4f();
                     QuaternionUtil.setEuler(rotation, yaw, 0, 0);
                     // QuaternionUtil.quatRotate(rotation, transform.origin,
@@ -81,19 +81,19 @@ public class EntityDeathHandler {
                     transform.setRotation(rotation);
                 }
 
-                float width = (float) event.entity.getEntityBoundingBox().maxX
-                        - (float) event.entity.getEntityBoundingBox().minX;
-                float height = (float) event.entity.getEntityBoundingBox().maxY
-                        - (float) event.entity.getEntityBoundingBox().minY;
-                float length = (float) event.entity.getEntityBoundingBox().maxZ
-                        - (float) event.entity.getEntityBoundingBox().minZ;
+                float width = (float) event.getEntity().getEntityBoundingBox().maxX
+                        - (float) event.getEntity().getEntityBoundingBox().minX;
+                float height = (float) event.getEntity().getEntityBoundingBox().maxY
+                        - (float) event.getEntity().getEntityBoundingBox().minY;
+                float length = (float) event.getEntity().getEntityBoundingBox().maxZ
+                        - (float) event.getEntity().getEntityBoundingBox().minZ;
 
                 transform.origin.add(
-                        new Vector3f((float) event.entity.posX, (float) event.entity.posY, (float) event.entity.posZ));
+                        new Vector3f((float) event.getEntity().posX, (float) event.getEntity().posY, (float) event.getEntity().posZ));
                 transform.origin.sub(new Vector3f(width / 2, height / 2, length / 2));
                 IRigidBody rigidBody = physicsWorld.createRigidBody(null, transform, 10, shape);
                 physicsWorld.addRigidBody(rigidBody);
-                event.entity.setDead();
+                event.getEntity().setDead();
 
             }
         }

@@ -4,9 +4,9 @@ import gliby.minecraft.physics.common.entity.EnumRigidBodyProperty;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 
@@ -27,10 +27,10 @@ public class BounceMechanic extends RigidBodyMechanic {
     @Override
     public void update(IRigidBody rigidBody, PhysicsWorld physicsWorld, Entity entity, Side side) {
         if (rigidBody.isActive()) {
-            World world = rigidBody.getOwner().worldObj;
-            Vec3 startRay = new Vec3(rigidBody.getOwner().posX, rigidBody.getOwner().posY, rigidBody.getOwner().posZ);
-            Vec3 endRay = startRay.subtract(0, startRay.yCoord, 0);
-            MovingObjectPosition pos = world.rayTraceBlocks(startRay, endRay, false, true, false);
+            World world = rigidBody.getOwner().world;
+            Vec3d startRay = new Vec3d(rigidBody.getOwner().posX, rigidBody.getOwner().posY, rigidBody.getOwner().posZ);
+            Vec3d endRay = startRay.subtract(0, startRay.y, 0);
+            RayTraceResult pos = world.rayTraceBlocks(startRay, endRay, false, true, false);
             if (pos != null) {
                 float dist = (float) startRay.distanceTo(pos.hitVec);
                 float biggestDistance = 0;
@@ -45,7 +45,7 @@ public class BounceMechanic extends RigidBodyMechanic {
                     float mass = rigidBody.getInvMass();
                     Vector3f impulse = new Vector3f(0, biggestDistance, 0);
                     impulse.scale(mass * 300);
-                    impulse.setY(MathHelper.clamp_float(impulse.getY(), 0, 300));
+                    impulse.setY(MathHelper.clamp(impulse.getY(), 0, 300));
                     rigidBody.applyCentralImpulse(impulse);
                     rigidBody.getProperties().put(EnumRigidBodyProperty.BIGGESTDISTANCE.getName(), 0.0F);
                     biggestDistance = 0;

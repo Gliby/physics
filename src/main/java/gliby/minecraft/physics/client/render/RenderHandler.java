@@ -3,18 +3,16 @@ package gliby.minecraft.physics.client.render;
 import gliby.minecraft.gman.client.render.ItemRendererManager;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.client.render.entity.RenderPhysicsBlock;
-import gliby.minecraft.physics.client.render.entity.RenderPhysicsModelPart;
 import gliby.minecraft.physics.client.render.entity.RenderToolGunBeam;
 import gliby.minecraft.physics.client.render.items.RenderItemPhysicsGun;
 import gliby.minecraft.physics.client.render.items.RenderItemToolGun;
-import gliby.minecraft.physics.client.render.lighting.DummyLight;
 import gliby.minecraft.physics.client.render.lighting.IDynamicLightHandler;
+import gliby.minecraft.physics.client.render.lighting.NullLight;
 import gliby.minecraft.physics.client.render.player.RenderAdditionalPlayer;
 import gliby.minecraft.physics.common.entity.EntityPhysicsBlock;
-import gliby.minecraft.physics.common.entity.EntityPhysicsModelPart;
 import gliby.minecraft.physics.common.entity.EntityToolGunBeam;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -44,7 +42,7 @@ public class RenderHandler {
         if (dynamicLightsPresent) {
             // lightHandler = new AtomicStrykerLight();
         } else
-            lightHandler = new DummyLight();
+            lightHandler = new NullLight();
     }
 
     /**
@@ -76,9 +74,9 @@ public class RenderHandler {
                 new RenderPhysicsBlock(this, mc.getRenderManager()));
         // RenderingRegistry.registerEntityRenderingHandler(EntityPhysicsRagdoll.class,
         // new RenderPhysicsRagdoll(mc.getRenderManager()));
-        RenderingRegistry.registerEntityRenderingHandler(EntityPhysicsModelPart.class,
-                new RenderPhysicsModelPart(this, mc.getRenderManager()));
-        RenderingRegistry.registerEntityRenderingHandler(EntityToolGunBeam.class, new RenderToolGunBeam(mc));
+//        RenderingRegistry.registerEntityRenderingHandler(EntityPhysicsModelPart.class,
+//                new RenderPhysicsModelPart(this, mc.getRenderManager()));
+        RenderingRegistry.registerEntityRenderingHandler(EntityToolGunBeam.class, new RenderToolGunBeam(this, mc.getRenderManager()));
         ItemRendererManager itemRenderManager = ItemRendererManager.getInstance();
 
         // Create fake-model resource, doesn't need any file to function.

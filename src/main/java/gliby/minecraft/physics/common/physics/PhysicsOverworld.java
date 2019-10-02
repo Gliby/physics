@@ -12,7 +12,7 @@ import gliby.minecraft.physics.common.physics.engine.nativebullet.NativePhysicsW
 import gliby.minecraft.physics.common.physics.mechanics.ToolMechanics;
 import gliby.minecraft.physics.common.physics.mechanics.gravitymagnets.GravityModifierMechanic;
 import gliby.minecraft.physics.common.physics.mechanics.physicsgun.PickUpMechanic;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent;
@@ -106,18 +106,18 @@ public class PhysicsOverworld {
     @SubscribeEvent
     public void onUnload(final WorldEvent.Unload event) {
         final PhysicsWorld physicsWorld;
-        if ((physicsWorld = getPhysicsWorldMap().get(event.world)) != null) {
+        if ((physicsWorld = getPhysicsWorldMap().get(event.getWorld())) != null) {
             physicsWorld.dispose();
-            getPhysicsWorldMap().remove(event.world);
-            Physics.getLogger().info("Destroyed " + event.world.getWorldInfo().getWorldName() + " physics world.");
+            getPhysicsWorldMap().remove(event.getWorld());
+            Physics.getLogger().info("Destroyed " + event.getWorld().getWorldInfo().getWorldName() + " physics world.");
         }
     }
 
     @SubscribeEvent
     public void onBlockEvent(final BlockEvent event) {
         final PhysicsWorld physicsWorld;
-        if ((physicsWorld = getPhysicsWorldMap().get(event.world)) != null) {
-            final AxisAlignedBB bb = BLOCK_BREAK_BB.offset(event.pos.getX(), event.pos.getY(), event.pos.getZ());
+        if ((physicsWorld = getPhysicsWorldMap().get(event.getWorld())) != null) {
+            final AxisAlignedBB bb = BLOCK_BREAK_BB.offset(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
             physicsWorld.awakenArea(new Vector3f((float) bb.minX, (float) bb.minY, (float) bb.minZ),
                     new Vector3f((float) bb.maxX, (float) bb.maxY, (float) bb.maxZ));
         }

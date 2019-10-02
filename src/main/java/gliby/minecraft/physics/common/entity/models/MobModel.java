@@ -1,6 +1,6 @@
 package gliby.minecraft.physics.common.entity.models;
 
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.math.AxisAlignedBB;
 
 import javax.vecmath.Vector3f;
 import java.util.ArrayList;

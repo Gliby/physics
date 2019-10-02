@@ -14,7 +14,7 @@ public class GuiDebug {
     @SubscribeEvent
     public void render(RenderGameOverlayEvent.Text text) {
         PhysicsClient mf = Physics.getInstance().getClientProxy();
-        if (text.type == ElementType.TEXT) {
+        if (text.getType() == ElementType.TEXT) {
             // Moved to server, client doesn't have access to these values
             // anymore :(
             // text.right.add("Physics Updates Per Seconds: " +

@@ -31,7 +31,7 @@ public class KeyFireEvent extends KeyEvent {
     public void keyUp(KeyBinding kb, boolean tickEnd) {
         Minecraft mc = Minecraft.getMinecraft();
         World world = null;
-        if ((world = mc.theWorld) != null) {
+        if ((world = mc.world) != null) {
             if (mc.currentScreen == null) {
                 // Minecraft.getMinecraft().displayGuiScreen(new
                 // GuiScreenPhysicsCreator(null));

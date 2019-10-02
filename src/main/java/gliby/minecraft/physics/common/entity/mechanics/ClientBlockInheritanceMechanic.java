@@ -7,8 +7,8 @@ import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class ClientBlockInheritanceMechanic extends RigidBodyMechanic {
                     // 1F);
                     BlockPos pos = new BlockPos(entity);
                     block.onEntityCollidedWithBlock(entity.getEntityWorld(), pos, blockState, collidedEntity);
-                    block.onEntityCollidedWithBlock(entity.getEntityWorld(), pos, collidedEntity);
+//                    block.onEntityCollidedWithBlock(entity.getEntityWorld(), pos, collidedEntity);
                 }
             }
         }

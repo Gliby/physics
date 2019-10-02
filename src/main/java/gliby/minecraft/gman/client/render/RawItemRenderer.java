@@ -1,30 +1,44 @@
 package gliby.minecraft.gman.client.render;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.resources.model.IBakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraftforge.client.model.IFlexibleBakedModel;
-import net.minecraftforge.client.model.IPerspectiveAwareModel;
-import net.minecraftforge.client.model.ISmartItemModel;
+import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+class RawItemOverrideList extends ItemOverrideList {
+
+    protected RawItemRenderer rawItem;
+    public RawItemOverrideList(List<ItemOverride> overridesIn, RawItemRenderer rawItem) {
+        super(overridesIn);
+        this.rawItem = rawItem;
+    }
+
+    @Override
+    public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, @Nullable World world, @Nullable EntityLivingBase entity) {
+        this.rawItem.handleItemState(stack);
+        return super.handleItemState(originalModel, stack, world, entity);
+    }
+}
 
 /**
  * Credits: iChun
@@ -35,7 +49,7 @@ import java.util.List;
  * spice. # Usage: # Simply extend this class, then register with
  * ItemRendererManager!
  */
-public abstract class RawItemRenderer implements ISmartItemModel, IPerspectiveAwareModel, IFlexibleBakedModel {
+public abstract class RawItemRenderer implements IBakedModel {
 
     public ModelResourceLocation resourceLocation;
     protected EntityPlayer owner;
@@ -45,6 +59,7 @@ public abstract class RawItemRenderer implements ISmartItemModel, IPerspectiveAw
     protected ItemStack itemStack;
     protected TransformType transformType;
     private Pair<IBakedModel, Matrix4f> pair;
+    protected RawItemOverrideList itemOverride;
 
     public RawItemRenderer(ModelResourceLocation resourceLocation) {
         this.mc = Minecraft.getMinecraft();
@@ -54,24 +69,26 @@ public abstract class RawItemRenderer implements ISmartItemModel, IPerspectiveAw
         this.playerBiped = new ModelBiped();
         this.playerBiped.textureWidth = 64;
         this.playerBiped.textureHeight = 64;
+        this.itemOverride = new RawItemOverrideList(new ArrayList<ItemOverride>(), this);
     }
 
     public abstract void render();
 
+
     @Override
-    public final List getGeneralQuads() {
+    public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
         // Method that this get's called in, is using startDrawingQuads. We
         // finish
         // drawing it so we can move on to render our own thing.
         Tessellator tessellator = Tessellator.getInstance();
-        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        BufferBuilder bufferBuilder = tessellator.getBuffer();
         tessellator.draw();
         GlStateManager.pushMatrix();
         GlStateManager.translate(0.5F, 0.5F, 0.5F);
         GlStateManager.scale(-1.0F, -1.0F, 1.0F);
 
         if (owner != null) {
-            if (transformType == TransformType.THIRD_PERSON) {
+            if (transformType == TransformType.THIRD_PERSON_LEFT_HAND || transformType == TransformType.THIRD_PERSON_RIGHT_HAND) {
                 if (owner.isSneaking())
                     GlStateManager.translate(0.0F, -0.2F, 0.0F);
             }
@@ -89,7 +106,8 @@ public abstract class RawItemRenderer implements ISmartItemModel, IPerspectiveAw
         this.transformType = null;
         // Method that this gets called is expecting that we are still using
         // startDrawingQuads.
-        worldrenderer.startDrawingQuads();
+
+        bufferBuilder.begin(7, DefaultVertexFormats.BLOCK);
         return Collections.EMPTY_LIST;
     }
 
@@ -97,10 +115,6 @@ public abstract class RawItemRenderer implements ISmartItemModel, IPerspectiveAw
         return transformType == null;
     }
 
-    @Override
-    public List getFaceQuads(EnumFacing p_177551_1_) {
-        return Collections.EMPTY_LIST;
-    }
 
     @Override
     public final boolean isAmbientOcclusion() {
@@ -118,14 +132,14 @@ public abstract class RawItemRenderer implements ISmartItemModel, IPerspectiveAw
     }
 
     @Override
-    public final TextureAtlasSprite getTexture() {
-        return Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
+    public ItemOverrideList getOverrides() {
+        return itemOverride;
     }
+
 
     @Override
     public abstract ItemCameraTransforms getItemCameraTransforms();
 
-    @Override
     public IBakedModel handleItemState(ItemStack stack) {
         this.itemStack = stack;
         return this;
@@ -139,17 +153,23 @@ public abstract class RawItemRenderer implements ISmartItemModel, IPerspectiveAw
     public Pair<IBakedModel, Matrix4f> handlePerspective(TransformType cameraTransformType) {
         this.transformType = cameraTransformType;
         switch (cameraTransformType) {
-            case FIRST_PERSON:
-                RenderItem.applyVanillaTransform(getItemCameraTransforms().firstPerson);
+            case FIRST_PERSON_LEFT_HAND:
+                ItemCameraTransforms.applyTransformSide(getItemCameraTransforms().firstperson_left, true);
+                break;
+            case FIRST_PERSON_RIGHT_HAND:
+                ItemCameraTransforms.applyTransformSide(getItemCameraTransforms().firstperson_right, false);
                 break;
             case GUI:
-                RenderItem.applyVanillaTransform(getItemCameraTransforms().gui);
+                ItemCameraTransforms.applyTransformSide(getItemCameraTransforms().gui, false);
                 break;
             case HEAD:
-                RenderItem.applyVanillaTransform(getItemCameraTransforms().head);
+                ItemCameraTransforms.applyTransformSide(getItemCameraTransforms().head, false);
                 break;
-            case THIRD_PERSON:
-                RenderItem.applyVanillaTransform(getItemCameraTransforms().thirdPerson);
+            case THIRD_PERSON_LEFT_HAND:
+                ItemCameraTransforms.applyTransformSide(getItemCameraTransforms().thirdperson_left, true);
+                break;
+            case THIRD_PERSON_RIGHT_HAND:
+                ItemCameraTransforms.applyTransformSide(getItemCameraTransforms().thirdperson_right, false);
                 break;
             default:
                 break;
@@ -158,7 +178,7 @@ public abstract class RawItemRenderer implements ISmartItemModel, IPerspectiveAw
     }
 
     @Override
-    public VertexFormat getFormat() {
-        return DefaultVertexFormats.ITEM;
+    public TextureAtlasSprite getParticleTexture() {
+        return Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
     }
 }

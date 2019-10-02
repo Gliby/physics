@@ -10,11 +10,11 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.block.model.ItemTransformVec3f;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.realms.RealmsMth;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.util.vector.Vector3f;
 
-import javax.vecmath.Vector3f;
 
 /**
  *
@@ -43,14 +43,14 @@ public class RenderItemToolGun extends RawItemRenderer {
         String text = "Fine in 4K";
 
         if (owner != null) {
-            if (transformType == TransformType.FIRST_PERSON) {
+            if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND || transformType == TransformType.FIRST_PERSON_LEFT_HAND) {
                 GlStateManager.rotate(-2f, 0.0F, 0.0F, 1.0F);
                 GlStateManager.rotate(9.0F, 0.0F, 1.0F, 0.0F);
                 GlStateManager.rotate(22.0F, 1.0F, 0.0F, 0.0F);
                 GlStateManager.translate(-0.5F, 0.27F, -0.2F);
                 text = ((ItemToolGun) itemStack.getItem()).getModeName();
                 if (!owner.isInvisible()) {
-                    textureManager.bindTexture(mc.thePlayer.getLocationSkin());
+                    textureManager.bindTexture(mc.player.getLocationSkin());
                     GlStateManager.pushMatrix();
                     GlStateManager.scale(1.25f, 1.25f, 1.25f);
                     GlStateManager.translate(-0.4f, -0.17f, -0.89f);
@@ -85,7 +85,7 @@ public class RenderItemToolGun extends RawItemRenderer {
             // gets rid of zbuffering with screen texture
             GlStateManager.translate(0, 0, -0.01f);
 
-            int text_width = mc.fontRendererObj.getStringWidth(text);
+            int text_width = mc.fontRenderer.getStringWidth(text);
             int perfect_size = 32;
             float scaleFactor = ((float) perfect_size / text_width);
             scale = RealmsMth.clamp(0.75f * scaleFactor, 0F, 1F);
@@ -94,7 +94,7 @@ public class RenderItemToolGun extends RawItemRenderer {
             // TODO cosmetic: make text scale vertically
             GlStateManager.translate(21 - (text_width / 2) * scaleFactor, 8, 0);
             GlStateManager.scale(scale, scale, 0);
-            mc.fontRendererObj.drawString(text, 0, 0, -1);
+            mc.fontRenderer.drawString(text, 0, 0, -1);
 
         }
         // Gui.drawRect(0, 0, 3000, 3000, 0xFF999999);
@@ -104,14 +104,17 @@ public class RenderItemToolGun extends RawItemRenderer {
         // }
     }
 
+    ItemCameraTransforms transforms = new ItemCameraTransforms(new ItemTransformVec3f(new Vector3f(90, 0, 0), new Vector3f(0, 0.2f, -0.15f),new Vector3f(0.5f, 0.5f, -0.5f)),
+            new ItemTransformVec3f(new Vector3f(27, -39, 8), new Vector3f(0.2f, 0.3f, -0.1f), new Vector3f(-1.15f, -1.15f, -1.15f)),
+            ItemTransformVec3f.DEFAULT,
+            new ItemTransformVec3f(new Vector3f(0, 90, 0), new Vector3f(-0.15f, 0, 0), new Vector3f(-1.25F, -1.25F, -1.25F)),
+            ItemTransformVec3f.DEFAULT,
+            ItemTransformVec3f.DEFAULT,
+            ItemTransformVec3f.DEFAULT,
+            ItemTransformVec3f.DEFAULT);
+
     @Override
     public ItemCameraTransforms getItemCameraTransforms() {
-        return new ItemCameraTransforms(
-                new ItemTransformVec3f(new Vector3f(90, 0, 0), new Vector3f(0, 0.2f, -0.15f),
-                        new Vector3f(0.5f, 0.5f, -0.5f)),
-                new ItemTransformVec3f(new Vector3f(27, -39, 8), new Vector3f(0.2f, 0.3f, -0.1f),
-                        new Vector3f(-1.15f, -1.15f, -1.15f)),
-                ItemTransformVec3f.DEFAULT, new ItemTransformVec3f(new Vector3f(0, 90, 0), new Vector3f(-0.15f, 0, 0),
-                new Vector3f(-1.25F, -1.25F, -1.25F)));
+        return transforms;
     }
 }

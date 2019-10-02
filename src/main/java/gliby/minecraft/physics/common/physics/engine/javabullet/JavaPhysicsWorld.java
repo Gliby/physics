@@ -18,7 +18,7 @@ import gliby.minecraft.physics.common.physics.PhysicsOverworld;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.*;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.math.AxisAlignedBB;
 
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Matrix4f;
@@ -316,7 +316,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
     public ICollisionShape buildCollisionShape(final List<AxisAlignedBB> bbs, final Vector3f offset) {
         final CompoundShape compoundShape = new CompoundShape();
         for (final AxisAlignedBB bb : bbs) {
-            final AxisAlignedBB relativeBB = AxisAlignedBB.fromBounds((bb.minX - offset.getX()) * 0.5f,
+            final AxisAlignedBB relativeBB = new AxisAlignedBB((bb.minX - offset.getX()) * 0.5f,
                     (bb.minY - offset.getY()) * 0.5f, (bb.minZ - offset.getZ()) * 0.5f,
                     (bb.maxX - offset.getX()) * 0.5f, (bb.maxY - offset.getY()) * 0.5f,
                     (bb.maxZ - offset.getZ()) * 0.5f);

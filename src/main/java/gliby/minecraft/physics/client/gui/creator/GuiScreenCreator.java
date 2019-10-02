@@ -14,7 +14,7 @@ public abstract class GuiScreenCreator extends GuiScreen {
     }
 
     public static void startGlScissor(Minecraft mc, int x, int y, int width, int height) {
-        ScaledResolution scaledRes = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
+        ScaledResolution scaledRes = new ScaledResolution(mc);
 
         double scaleW = (double) mc.displayWidth / scaledRes.getScaledWidth_double();
         double scaleH = (double) mc.displayHeight / scaledRes.getScaledHeight_double();

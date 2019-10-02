@@ -4,9 +4,11 @@ import gliby.minecraft.gman.settings.BooleanSetting;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.game.events.ExplosionHandler;
 import gliby.minecraft.physics.common.packets.PacketPlayerJoin;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
@@ -26,7 +28,7 @@ public class PhysicsServer implements IPhysicsProxy {
 
     @SubscribeEvent
     public void playerJoinEvent(final PlayerLoggedInEvent event) {
-        MinecraftServer.getServer().addScheduledTask(new Runnable() {
+        Minecraft.getMinecraft().addScheduledTask(new Runnable() {
 
             @Override
             public void run() {
@@ -62,7 +64,8 @@ public class PhysicsServer implements IPhysicsProxy {
                 .getBooleanValue()) {
             Physics.getLogger()
                     .warn("Configuration Setting: " + setting + " has disabled server.properties allow-flight.");
-            MinecraftServer.getServer().setAllowFlight(true);
+            FMLCommonHandler.instance().getMinecraftServerInstance()
+                    .setAllowFlight(true);
         }
     }
 }

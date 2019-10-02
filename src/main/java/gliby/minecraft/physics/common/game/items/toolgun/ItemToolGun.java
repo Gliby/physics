@@ -16,7 +16,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -39,7 +39,7 @@ public class ItemToolGun extends RawItem {
     public ItemToolGun(Physics physics) {
         this.physics = physics;
         setMaxStackSize(1);
-        setCreativeTab(CreativeTabs.tabTools);
+        setCreativeTab(CreativeTabs.TOOLS);
         setUnlocalizedName("physicstoolgun");
         setFull3D();
         physics.registerPacket(PacketToolGunUse.class, PacketToolGunUse.class, Side.SERVER);
@@ -51,7 +51,7 @@ public class ItemToolGun extends RawItem {
     }
 
     @Override
-    public float getDigSpeed(ItemStack itemstack, net.minecraft.block.state.IBlockState state) {
+    public float getDestroySpeed(ItemStack itemstack, net.minecraft.block.state.IBlockState state) {
         return 0;
     }
 
@@ -63,14 +63,14 @@ public class ItemToolGun extends RawItem {
     @SubscribeEvent
     public void onMouseEvent(MouseEvent event) {
         Minecraft mc = Minecraft.getMinecraft();
-        if (mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemToolGun
-                && !mc.thePlayer.isSpectator()) {
-            if (event.buttonstate) {
-                if (event.button == 0) {
+        if (mc.player.getHeldItemMainhand() != null && mc.player.getHeldItemMainhand().getItem() instanceof ItemToolGun
+                && !mc.player.isSpectator()) {
+            if (event.isButtonstate()) {
+                if (event.getButton() == 0) {
                     Physics.getDispatcher().sendToServer(new PacketToolGunUse(currentMode,
-                            EntityUtility.toVector3f(EntityUtility.rayTrace(mc.thePlayer, 64).hitVec)));
+                            EntityUtility.toVector3f(EntityUtility.rayTrace(mc.player, 64).hitVec)));
                     event.setCanceled(true);
-                } else if (event.button == 1) {
+                } else if (event.getButton() == 1) {
                     if (currentMode < physics.getGameManager().getToolGunRegistry().getValueDefinitions().size() - 1) {
                         currentMode++;
                     } else
@@ -130,15 +130,16 @@ public class ItemToolGun extends RawItem {
 
         @Override
         public IMessage onMessage(final PacketToolGunStoppedUsing packet, final MessageContext ctx) {
-            MinecraftServer.getServer().addScheduledTask(new Runnable() {
+            Minecraft mc = Minecraft.getMinecraft();
+            mc.addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
-                    EntityPlayerMP player = ctx.getServerHandler().playerEntity;
-                    World world = player.worldObj;
+                    EntityPlayerMP player = ctx.getServerHandler().player;
+                    World world = player.world;
                     Physics physics = Physics.getInstance();
                     PhysicsWorld physicsWorld = Physics.getInstance().getPhysicsOverworld().getPhysicsByWorld(world);
-                    if (player.getCurrentEquippedItem() != null
-                            && player.getCurrentEquippedItem().getItem() instanceof ItemToolGun) {
+                    if (player.getActiveItemStack() != null
+                            && player.getActiveItemStack().getItem() instanceof ItemToolGun) {
                         IToolGunAction toolGunAction;
                         if ((toolGunAction = physics.getGameManager().getToolGunRegistry().getActions()
                                 .get(packet.mode)) != null) {
@@ -188,21 +189,22 @@ public class ItemToolGun extends RawItem {
 
         @Override
         public IMessage onMessage(final PacketToolGunUse packet, final MessageContext ctx) {
-            MinecraftServer.getServer().addScheduledTask(new Runnable() {
+            Minecraft mc = Minecraft.getMinecraft();
+            mc.addScheduledTask(new Runnable() {
 
                 @Override
                 public void run() {
-                    EntityPlayerMP player = ctx.getServerHandler().playerEntity;
-                    World world = player.worldObj;
+                    EntityPlayerMP player = ctx.getServerHandler().player;
+                    World world = player.world;
                     Physics physics = Physics.getInstance();
                     PhysicsWorld physicsWorld = physics.getPhysicsOverworld().getPhysicsByWorld(world);
-                    if (player.getCurrentEquippedItem() != null
-                            && player.getCurrentEquippedItem().getItem() instanceof ItemToolGun) {
+                    if (player.getActiveItemStack() != null
+                            && player.getActiveItemStack().getItem() instanceof ItemToolGun) {
                         IToolGunAction toolGunAction;
                         if ((toolGunAction = physics.getGameManager().getToolGunRegistry().getActions()
                                 .get(packet.mode)) != null) {
                             if (toolGunAction.use(physicsWorld, player, packet.lookAt)) {
-                                world.spawnEntityInWorld(new EntityToolGunBeam(world, player, packet.lookAt));
+                                world.spawnEntity(new EntityToolGunBeam(world, player, packet.lookAt));
                             }
                         }
                     }

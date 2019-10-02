@@ -7,7 +7,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.RayTraceResult;
 
 import javax.vecmath.Vector3f;
 
@@ -17,15 +17,15 @@ import javax.vecmath.Vector3f;
 public class ToolGunReviveAction implements IToolGunAction {
 
     public boolean use(PhysicsWorld physicsWorld, EntityPlayerMP player, Vector3f lookAt) {
-        MovingObjectPosition position = EntityUtility.rayTrace(player, 64);
+        RayTraceResult position = EntityUtility.rayTrace(player, 64);
         if (position.getBlockPos() != null) {
-            IBlockState state = player.worldObj.getBlockState(position.getBlockPos());
-            state = state.getBlock().getActualState(state, player.worldObj, position.getBlockPos());
-            EntityPhysicsBlock block = new EntityPhysicsBlock(player.worldObj, physicsWorld, state,
+            IBlockState state = player.world.getBlockState(position.getBlockPos());
+            state = state.getBlock().getActualState(state, player.world, position.getBlockPos());
+            EntityPhysicsBlock block = new EntityPhysicsBlock(player.world, physicsWorld, state,
                     position.getBlockPos().getX(), position.getBlockPos().getY(), position.getBlockPos().getZ())
                     .setDropItem(new ItemStack(Item.getItemFromBlock(state.getBlock())));
-            player.worldObj.setBlockToAir(position.getBlockPos());
-            player.worldObj.spawnEntityInWorld(block);
+            player.world.setBlockToAir(position.getBlockPos());
+            player.world.spawnEntity(block);
             return true;
         }
         return false;

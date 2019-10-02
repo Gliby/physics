@@ -9,11 +9,12 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.block.model.ItemTransformVec3f;
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.util.MathHelper;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
+import org.lwjgl.util.vector.Vector3f;
 
-import javax.vecmath.Vector3f;
 
 /**
  *
@@ -21,12 +22,14 @@ import javax.vecmath.Vector3f;
 public class RenderItemPhysicsGun extends RawItemRenderer {
 
     private ItemCameraTransforms transforms = new ItemCameraTransforms(
-            new ItemTransformVec3f(new Vector3f(-90, -180, 0), new Vector3f(0.1f, 0.19f, -0.1F),
-                    new Vector3f(-1, 1, 1)),
-            new ItemTransformVec3f(new Vector3f(27, -40, 8), new Vector3f(-0.33f, 0.14f, 0.25f),
-                    new Vector3f(-1, -1, -1)),
-            new ItemTransformVec3f(new Vector3f(), new Vector3f(), new Vector3f()), new ItemTransformVec3f(
-            new Vector3f(0, -90, 0), new Vector3f(-0.05f, 0, 0), new Vector3f(-1.5f, -1.5f, -1.5f)));
+            new ItemTransformVec3f(new Vector3f(-90, -180, 0), new Vector3f(0.1f, 0.19f, -0.1F), new Vector3f(-1, 1, 1)),
+            new ItemTransformVec3f(new Vector3f(27, -40, 8), new Vector3f(-0.33f, 0.14f, 0.25f),new Vector3f(-1, -1, -1)),
+            new ItemTransformVec3f(new Vector3f(), new Vector3f(), new Vector3f()),
+            new ItemTransformVec3f(new Vector3f(0, -90, 0), new Vector3f(-0.05f, 0, 0), new Vector3f(-1.5f, -1.5f, -1.5f)),
+            ItemTransformVec3f.DEFAULT,
+            ItemTransformVec3f.DEFAULT,
+            ItemTransformVec3f.DEFAULT,
+            ItemTransformVec3f.DEFAULT);
 
     private ModelRenderer bipedLeftArm;
     private RenderHandler renderHandler;
@@ -34,10 +37,6 @@ public class RenderItemPhysicsGun extends RawItemRenderer {
     private ResourceLocation textureColorable = new ResourceLocation(Physics.ID,
             "textures/physics_gun_colorable.png");
 
-    /**
-     * @param renderMananger
-     * @param resourceLocation
-     */
 
     public RenderItemPhysicsGun(RenderHandler renderHandler, ModelResourceLocation resourceLocation) {
         super(resourceLocation);
@@ -54,15 +53,15 @@ public class RenderItemPhysicsGun extends RawItemRenderer {
         float scale = -0.0625f;
         float f1 = 40F - MathHelper.abs(
                 MathHelper.sin((float) (Minecraft.getSystemTime() % 1000L) / 1000.0F * (float) Math.PI * 1.0F) * 40F);
-        int lightValue = (int) MathHelper.clamp_float((200 + f1), 0, 250);
+        int lightValue = (int) MathHelper.clamp((200 + f1), 0, 250);
         if (owner != null) {
-            if (transformType == TransformType.FIRST_PERSON) {
+            if (transformType == TransformType.FIRST_PERSON_LEFT_HAND || transformType == TransformType.FIRST_PERSON_RIGHT_HAND) {
                 GlStateManager.rotate(1.0f, 0.0F, 0.0F, 1.0F);
                 GlStateManager.rotate(12.0F, 0.0F, 1.0F, 0.0F);
                 GlStateManager.rotate(20.0F, 1.0F, 0.0F, 0.0F);
                 GlStateManager.translate(-0.7F, 0.8F, -0.2F);
                 if (!owner.isInvisible()) {
-                    textureManager.bindTexture(mc.thePlayer.getLocationSkin());
+                    textureManager.bindTexture(mc.player.getLocationSkin());
                     GlStateManager.pushMatrix();
                     GlStateManager.translate(-0.19f, 0.05f, -0.55f);
                     this.bipedLeftArm.rotateAngleY = 15 / (180F / (float) Math.PI);
@@ -82,6 +81,7 @@ public class RenderItemPhysicsGun extends RawItemRenderer {
         model.render(null, 0, 0, 0, 0, 0, scale);
 
     }
+
 
     public ItemCameraTransforms getItemCameraTransforms() {
         return transforms;

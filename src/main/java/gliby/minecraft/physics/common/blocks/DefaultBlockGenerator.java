@@ -4,22 +4,22 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.minecraft.block.Block;
-import net.minecraft.util.MathHelper;
-import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 
 public class DefaultBlockGenerator implements IBlockGenerator {
 
     @Override
-    public JsonObject write(UniqueIdentifier uniqueIdentifer, Block block) {
+    public JsonObject write(ResourceLocation resourceLocation, Block block) {
         JsonObject writable = new JsonObject();
-        float hardness = block.getBlockHardness(null, null);
-        writable.addProperty("mass", MathHelper.clamp_float(hardness * 20, 1, Float.MAX_VALUE));
+        float hardness = block.getBlockHardness(null, null, null);
+        writable.addProperty("mass", MathHelper.clamp(hardness * 20, 1, Float.MAX_VALUE));
         writable.addProperty("friction", (1 - block.slipperiness) * 5);
         /*
          * if (block.getCollisionBoundingBox(null, new BlockPos(0, 0, 0), null)
          * == null) { writable.addProperty("collisionEnabled", false); }
          */
-        if (block.getBlockState().getBaseState().getPropertyNames().contains("explode") || hardness < 0) {
+        if (block.getBlockState().getBaseState().getPropertyKeys().contains("explode") || hardness < 0) {
             writable.addProperty("shouldSpawnInExplosion", false);
         }
 

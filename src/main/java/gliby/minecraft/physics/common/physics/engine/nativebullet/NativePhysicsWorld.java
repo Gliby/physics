@@ -16,8 +16,8 @@ import gliby.minecraft.physics.common.physics.PhysicsOverworld;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.*;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Quat4f;
@@ -233,12 +233,12 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
     @Override
     public void awakenArea(Vector3f min, Vector3f max) {
-        final AxisAlignedBB bb = AxisAlignedBB.fromBounds(min.x, min.y, min.z, max.x, max.y, max.z);
+        final AxisAlignedBB bb = new AxisAlignedBB(min.x, min.y, min.z, max.x, max.y, max.z);
         for (int i = 0; i < rigidBodies.size(); i++) {
             IRigidBody body = rigidBodies.get(i);
             Vector3f vec3 = body.getCenterOfMassPosition();
-            Vec3 centerOfMass = new Vec3(vec3.x, vec3.y, vec3.z);
-            if (bb.isVecInside(centerOfMass)) {
+            Vec3d centerOfMass = new Vec3d(vec3.x, vec3.y, vec3.z);
+            if (bb.contains(centerOfMass)) {
                 body.activate();
             }
         }
@@ -417,7 +417,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
     public ICollisionShape buildCollisionShape(List<AxisAlignedBB> bbs, Vector3f offset) {
         btCompoundShape compoundShape = new btCompoundShape();
         for (AxisAlignedBB bb : bbs) {
-            AxisAlignedBB relativeBB = AxisAlignedBB.fromBounds((bb.minX - offset.x) * 0.5f,
+            AxisAlignedBB relativeBB = new AxisAlignedBB((bb.minX - offset.x) * 0.5f,
                     (bb.minY - offset.y) * 0.5f, (bb.minZ - offset.z) * 0.5f, (bb.maxX - offset.x) * 0.5f,
                     (bb.maxY - offset.y) * 0.5f, (bb.maxZ - offset.z) * 0.5f);
             Vector3f extents = new Vector3f((float) relativeBB.maxX - (float) relativeBB.minX,

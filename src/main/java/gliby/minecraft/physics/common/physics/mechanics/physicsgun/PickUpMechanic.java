@@ -6,7 +6,7 @@ import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IConstraintPoint2Point;
 import gliby.minecraft.physics.common.physics.mechanics.PhysicsMechanic;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.math.AxisAlignedBB;
 
 import javax.vecmath.Vector3f;
 import java.util.ArrayList;

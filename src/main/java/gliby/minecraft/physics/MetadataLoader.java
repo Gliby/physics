@@ -6,6 +6,8 @@ import gliby.minecraft.physics.common.blocks.PhysicsBlockMetadata;
 import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;
 import net.minecraft.block.Block;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistry;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,7 +65,7 @@ public abstract class MetadataLoader {
     }
 
     public void start() {
-        Iterator<Block> itr = Block.blockRegistry.iterator();
+        Iterator<Block> itr = ForgeRegistries.BLOCKS.iterator();
         while (itr.hasNext()) {
             final Block block = itr.next();
             final String blockID = blockManager.getBlockIdentity(block);

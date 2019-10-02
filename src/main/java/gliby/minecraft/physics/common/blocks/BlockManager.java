@@ -8,8 +8,7 @@ import gliby.minecraft.physics.Physics;
 import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -83,8 +82,9 @@ public class BlockManager {
     }
 
     public String getBlockIdentity(Block block) {
-        UniqueIdentifier id = GameRegistry.findUniqueIdentifierFor(block);
-        return id.modId + "." + id.name;
+        ResourceLocation location = ForgeRegistries.BLOCKS.getKey(block);
+        return location.getResourceDomain() + '.' + location.getResourcePath();
+
     }
 
     /**

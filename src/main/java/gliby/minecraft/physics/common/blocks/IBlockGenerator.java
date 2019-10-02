@@ -2,10 +2,10 @@ package gliby.minecraft.physics.common.blocks;
 
 import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
-import net.minecraftforge.fml.common.registry.GameRegistry.UniqueIdentifier;
+import net.minecraft.util.ResourceLocation;
 
 public interface IBlockGenerator {
 
-    JsonObject write(UniqueIdentifier uniqueIdentifer, Block block);
+    JsonObject write(ResourceLocation resourceLocation, Block block);
 
 }

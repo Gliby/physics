@@ -7,7 +7,7 @@ import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IRayResult;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 
 import javax.vecmath.Vector3f;
 
@@ -37,7 +37,7 @@ public class ToolGunAlignAction implements IToolGunAction {
         if (ray.hasHit()) {
             IRigidBody body = physicsWorld.upCastRigidBody(ray.getCollisionObject());
             if (body != null && body.isValid() && body.getOwner() instanceof EntityPhysicsBlock) {
-                player.worldObj.setBlockState(new BlockPos(body.getOwner().posX, body.getOwner().posY + 0.5F, body.getOwner().posZ), ((EntityPhysicsBlock) body.getOwner()).getBlockState());
+                player.world.setBlockState(new BlockPos(body.getOwner().posX, body.getOwner().posY + 0.5F, body.getOwner().posZ), ((EntityPhysicsBlock) body.getOwner()).getBlockState());
                 body.getProperties().put(EnumRigidBodyProperty.DEAD.getName(), System.currentTimeMillis());
                 physicsWorld.clearRayTest(ray);
                 return true;

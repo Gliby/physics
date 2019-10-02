@@ -18,8 +18,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -43,7 +43,7 @@ public class ItemPhysicsGun extends RawItem {
 
     public ItemPhysicsGun(Physics physics) {
         setUnlocalizedName("physicsgun");
-        setCreativeTab(CreativeTabs.tabTools);
+        setCreativeTab(CreativeTabs.TOOLS);
         setMaxStackSize(1);
         setMaxDamage(0);
         setFull3D();
@@ -56,7 +56,7 @@ public class ItemPhysicsGun extends RawItem {
     }
 
     @Override
-    public float getDigSpeed(ItemStack itemstack, net.minecraft.block.state.IBlockState state) {
+    public float getDestroySpeed(ItemStack itemstack, net.minecraft.block.state.IBlockState state) {
         return 0;
     }
 
@@ -64,18 +64,18 @@ public class ItemPhysicsGun extends RawItem {
     @SubscribeEvent
     public void onMouseEvent(MouseEvent event) {
         Minecraft mc = Minecraft.getMinecraft();
-        if (mc.thePlayer.getHeldItem() != null && mc.thePlayer.getHeldItem().getItem() instanceof ItemPhysicsGun
-                && !mc.thePlayer.isSpectator()) {
-            if (event.dwheel != 0) {
+        if (mc.player.getHeldItemMainhand() != null && mc.player.getHeldItemMainhand().getItem() instanceof ItemPhysicsGun
+                && !mc.player.isSpectator()) {
+            if (event.getDwheel() != 0) {
                 if (holdingDown) {
-                    Physics.getDispatcher().sendToServer(new PacketPhysicsGunWheel(event.dwheel > 0));
+                    Physics.getDispatcher().sendToServer(new PacketPhysicsGunWheel(event.getDwheel() > 0));
                     event.setCanceled(true);
                 }
             }
 
-            if (event.button == 0) {
-                holdingDown = event.buttonstate;
-                Physics.getDispatcher().sendToServer(new PacketPhysicsGunPick(event.buttonstate));
+            if (event.getButton() == 0) {
+                holdingDown = event.isButtonstate();
+                Physics.getDispatcher().sendToServer(new PacketPhysicsGunPick(event.isButtonstate()));
                 event.setCanceled(true);
             }
         }
@@ -122,18 +122,18 @@ public class ItemPhysicsGun extends RawItem {
 
         @Override
         public IMessage onMessage(final PacketPhysicsGunPick packet, final MessageContext ctx) {
-            MinecraftServer.getServer().addScheduledTask(new Runnable() {
+            Minecraft.getMinecraft().addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
-                    EntityPlayerMP player = ctx.getServerHandler().playerEntity;
-                    World world = player.worldObj;
+                    EntityPlayerMP player = ctx.getServerHandler().player;
+                    World world = player.world;
                     PhysicsWorld physicsWorld = Physics.getInstance().getPhysicsOverworld()
-                            .getPhysicsByWorld(player.worldObj);
+                            .getPhysicsByWorld(player.world);
                     PickUpMechanic mechanic = (PickUpMechanic) physicsWorld.getMechanics().get("PickUp");
                     if (player != null && physicsWorld != null && mechanic != null) {
                         if (packet.picking) {
-                            if (player.getCurrentEquippedItem() != null
-                                    && player.getCurrentEquippedItem().getItem() instanceof ItemPhysicsGun) {
+                            if (player.getActiveItemStack() != null
+                                    && player.getActiveItemStack().getItem() instanceof ItemPhysicsGun) {
                                 Vector3f offset = new Vector3f(0.5f, 0.5f, 0.5f);
                                 Vector3f eyePos = EntityUtility.getPositionEyes(player);
                                 Vector3f eyeLook = EntityUtility.toVector3f(player.getLook(1));
@@ -202,21 +202,21 @@ public class ItemPhysicsGun extends RawItem {
 
         @Override
         public IMessage onMessage(final PacketPhysicsGunWheel packet, final MessageContext ctx) {
-            MinecraftServer.getServer().addScheduledTask(new Runnable() {
+            Minecraft.getMinecraft().addScheduledTask(new Runnable() {
 
                 @Override
                 public void run() {
-                    EntityPlayerMP player = ctx.getServerHandler().playerEntity;
-                    World world = player.worldObj;
+                    EntityPlayerMP player = ctx.getServerHandler().player;
+                    World world = player.world;
                     PhysicsWorld physicsWorld = Physics.getInstance().getPhysicsOverworld()
-                            .getPhysicsByWorld(player.worldObj);
-                    if (player.getCurrentEquippedItem() != null
-                            && player.getCurrentEquippedItem().getItem() instanceof ItemPhysicsGun) {
+                            .getPhysicsByWorld(player.world);
+                    if (player.getActiveItemStack() != null
+                            && player.getActiveItemStack().getItem() instanceof ItemPhysicsGun) {
                         PickUpMechanic mechanic = (PickUpMechanic) physicsWorld.getMechanics().get("PickUp");
                         if (mechanic != null) {
                             OwnedPickedObject object = mechanic.getOwnedPickedObject(player);
                             if (object != null) {
-                                object.setPickDistance(MathHelper.clamp_float(
+                                object.setPickDistance(MathHelper.clamp(
                                         object.getPickDistance() + (packet.wheelIncreased ? 1 : -1), 1.5f, 64));
                             }
                         }

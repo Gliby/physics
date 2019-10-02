@@ -4,6 +4,8 @@
 package gliby.minecraft.gman;
 
 import gliby.minecraft.gman.client.render.RawItemRenderer;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -19,11 +21,10 @@ public abstract class RawItem extends Item {
     private RawItemRenderer renderer;
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public net.minecraft.client.resources.model.ModelResourceLocation getModel(ItemStack stack, EntityPlayer player,
-                                                                               int useRemaining) {
-        this.renderer.setOwner(player);
-        return super.getModel(stack, player, useRemaining);
+    public void onUsingTick(ItemStack stack, EntityLivingBase player, int count)
+    {
+        this.renderer.setOwner((EntityPlayer) player);
+        super.onUsingTick(stack, player, count);
     }
 
     /**
