@@ -69,10 +69,18 @@ public class GameManager {
     @SubscribeEvent
     public void registerItems(RegistryEvent.Register<Item> event) {
         final IForgeRegistry<Item> registry = event.getRegistry();
-        registry.register(itemToolgun = new ItemToolGun(physics));
-        registry.register(itemPhysicsGun = new ItemPhysicsGun(physics));
+
+        itemToolgun = new ItemToolGun(physics);
+        itemToolgun.setRegistryName(itemToolgun.getUnlocalizedName());
+        registry.register(itemToolgun);
+
+        itemPhysicsGun = new ItemPhysicsGun(physics);
+        itemPhysicsGun.setRegistryName(itemPhysicsGun.getUnlocalizedName());
+        registry.register(itemPhysicsGun);
+
         MinecraftForge.EVENT_BUS.register(itemPhysicsGun);
         MinecraftForge.EVENT_BUS.register(itemToolgun);
+
         toolGunRegistry = new ToolGunActionRegistry();
         toolGunRegistry.registerAction(new ToolGunReviveAction(), Physics.ID);
         toolGunRegistry.registerAction(new ToolGunAttachAction(), Physics.ID);

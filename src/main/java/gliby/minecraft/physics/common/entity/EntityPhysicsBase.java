@@ -98,7 +98,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     public List<RigidBodyMechanic> mechanics = new ArrayList<RigidBodyMechanic>();
     public EntityPlayer pickerEntity;
     // Shared
-    public Vector3f pickLocalHit = new Vector3f(0, 0, 0);
+    public Vector3f pickLocalHit;
     protected PhysicsWorld physicsWorld;
 
     protected static final DataParameter<Integer> PICKER_ID = EntityDataManager.<Integer>createKey(EntityPhysicsBase.class, DataSerializers.VARINT);
@@ -181,14 +181,15 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
         this.pickerEntity = (EntityPlayer) picker;
         this.pickLocalHit = pickPoint;
         this.dataManager.set(PICKER_ID, picker.getEntityId());
+        if (pickLocalHit != null)
         this.dataManager.set(PICK_OFFSET, pickLocalHit);
     }
 
     public void unpick() {
         this.pickerEntity = null;
         this.dataManager.set(PICKER_ID, -1);
-        this.pickLocalHit = new Vector3f();
-        this.dataManager.set(PICK_OFFSET, pickLocalHit);
+        if (pickLocalHit != null)
+            this.dataManager.set(PICK_OFFSET, pickLocalHit = new Vector3f());
     }
 
     /**
@@ -274,7 +275,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
     @Override
     public void entityInit() {
-        this.dataManager.register(PICK_OFFSET, pickLocalHit);
+        this.dataManager.register(PICK_OFFSET, pickLocalHit = new Vector3f());
         this.dataManager.register(PICKER_ID, -1);
 
         onCommonInit();
@@ -359,22 +360,23 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
     @Override
     public void writeSpawnData(ByteBuf buffer) {
-        List<RigidBodyMechanic> clientMechanics = new ArrayList<RigidBodyMechanic>();
+        List<RigidBodyMechanic> savedMechanics = new ArrayList<RigidBodyMechanic>();
         for (int i = 0; i < mechanics.size(); i++) {
             RigidBodyMechanic mechanic = mechanics.get(i);
             if (mechanic.isCommon()) {
-                clientMechanics.add(mechanic);
+                savedMechanics.add(mechanic);
             }
         }
 
         PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
 
-        buffer.writeInt(clientMechanics.size());
-        for (int i = 0; i < clientMechanics.size(); i++) {
-            ByteBufUtils.writeUTF8String(buffer, overworld.getMechanicsMap().inverse().get(clientMechanics.get(i)));
+        buffer.writeInt(savedMechanics.size());
+        for (int i = 0; i < savedMechanics.size(); i++) {
+            ByteBufUtils.writeUTF8String(buffer, overworld.getMechanicsMap().inverse().get(savedMechanics.get(i)));
         }
 
         buffer.writeInt(dataManager.get(PICKER_ID));
+
         buffer.writeFloat(this.pickLocalHit.x);
         buffer.writeFloat(this.pickLocalHit.y);
         buffer.writeFloat(this.pickLocalHit.z);

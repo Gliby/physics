@@ -92,7 +92,9 @@ public abstract class PhysicsWorld {
             mechanic.setEnabled(false);
             mechanic.physicsWorld = null;
         }
-        defaultShape.dispose();
+
+        if (defaultShape != null)
+         defaultShape.dispose();
 
         physicsMechanics.clear();
         physicsMechanics = null;

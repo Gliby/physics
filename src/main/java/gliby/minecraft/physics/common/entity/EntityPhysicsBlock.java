@@ -3,9 +3,10 @@ package gliby.minecraft.physics.common.entity;
 import com.bulletphysicsx.collision.broadphase.CollisionFilterGroups;
 import com.bulletphysicsx.linearmath.QuaternionUtil;
 import com.bulletphysicsx.linearmath.Transform;
-import gliby.minecraft.gman.BlockUtility;
+import gliby.minecraft.gman.BlockStateToMetadata;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.client.render.RenderHandler;
+import gliby.minecraft.physics.client.render.RenderUtilities;
 import gliby.minecraft.physics.common.blocks.PhysicsBlockMetadata;
 import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
@@ -160,8 +161,8 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     @Override
     public void entityInit() {
         super.entityInit();
-        this.dataManager.register(PHYSICS_POSITION, physicsPosition);
-        this.dataManager.register(PHYSICS_ROTATION, physicsRotation);
+        this.dataManager.register(PHYSICS_POSITION, physicsPosition = RenderUtilities.toVector3f(getPositionVector()));
+        this.dataManager.register(PHYSICS_ROTATION, physicsRotation = new Quat4f());
     }
 
     /**
@@ -255,7 +256,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
             setLocationAndAngles(physicsPosition.x + 0.5f, physicsPosition.y, physicsPosition.z + 0.5f, 0, 0);
             // Check if rigidBody is active, and if the last written postion
             // and rotation has changed.
-            if (isDirty()) {
+            if (isDirty() && physicsPosition != null && physicsRotation != null) {
                 this.dataManager.set(PHYSICS_POSITION, physicsPosition);
                 this.dataManager.set(PHYSICS_ROTATION, physicsRotation);
             }
@@ -403,7 +404,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     public void writeSpawnData(ByteBuf buffer) {
         super.writeSpawnData(buffer);
 
-        BlockUtility.serializeBlockState(blockState, buffer);
+        BlockStateToMetadata.serializeBlockState(blockState, buffer);
         buffer.writeBoolean(collisionEnabled);
         buffer.writeFloat(physicsPosition.x);
         buffer.writeFloat(physicsPosition.y);
@@ -418,7 +419,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     @Override
     public void readSpawnData(ByteBuf buffer) {
         super.readSpawnData(buffer);
-        this.blockState = BlockUtility.deserializeBlockState(buffer);
+        this.blockState = BlockStateToMetadata.deserializeBlockState(buffer);
         this.collisionEnabled = buffer.readBoolean();
         this.physicsPosition = new Vector3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         this.physicsRotation = new Quat4f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat());

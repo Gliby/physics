@@ -76,7 +76,10 @@ public class RenderPhysicsBlock extends RenderPhysics {
             tessellator.draw();
 
             GlStateManager.popMatrix();
+            System.out.println("im rendering!");
         }
+        System.out.println("im rendering 2!");
+
     }
 
     /*
