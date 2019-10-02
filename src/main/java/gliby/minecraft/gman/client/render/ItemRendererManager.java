@@ -46,7 +46,7 @@ public class ItemRendererManager {
     public void bakeModel(ModelBakeEvent event) {
         for (int i = 0; i < itemRenderer.size(); i++) {
             RawItemRenderer itemRender = itemRenderer.get(i);
-            event.modelRegistry.putObject(itemRender.resourceLocation, itemRender);
+            event.getModelRegistry().putObject(itemRender.resourceLocation, itemRender);
 
         }
     }

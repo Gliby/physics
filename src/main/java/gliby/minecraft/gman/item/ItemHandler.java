@@ -142,8 +142,10 @@ public class ItemHandler {
 
                         if (event.phase.equals(TickEvent.Phase.END)) {
                             if (event.player.getItemInUseCount() <= 0 && !isFirstPerson) {
-                                event.player.clearItemInUse();
-                                event.player.setItemInUse(itemStack, Integer.MAX_VALUE);
+                                event.player.resetActiveHand();
+                                // todo 1.12.2 port
+//                                event.player.setActiveHand();
+//                                event.player.setItemInUse(itemStack, Integer.MAX_VALUE);
                             }
                         }
                     }
@@ -157,8 +159,8 @@ public class ItemHandler {
         @SideOnly(Side.CLIENT)
         @SubscribeEvent
         public void onBlockBreak(BlockEvent.BreakEvent event) {
-            if (event.getPlayer().getCurrentEquippedItem() != null) {
-                AlwaysUsedItem itemInfo = getAlwaysUsedItem(event.getPlayer().getCurrentEquippedItem().getItem());
+            if (event.getPlayer().getActiveItemStack() != null) {
+                AlwaysUsedItem itemInfo = getAlwaysUsedItem(event.getPlayer().getActiveItemStack().getItem());
                 if (itemInfo != null && !itemInfo.canHit()) {
                     event.setCanceled(true);
                 }
