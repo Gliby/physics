@@ -95,8 +95,8 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     private float friction;
     private Vector3f linearVelocity, angularVelocity;
 
-    protected static final DataParameter<Vector3f> PHYSICS_POSITION = EntityDataManager.<Vector3f>createKey(EntityPhysicsBase.class, VECTOR3F);
-    protected static final DataParameter<Quat4f> PHYSICS_ROTATION = EntityDataManager.<Quat4f>createKey(EntityPhysicsBase.class, QUAT4F);
+    protected static final DataParameter<Vector3f> PHYSICS_POSITION = EntityDataManager.<Vector3f>createKey(EntityPhysicsBlock.class, Physics.VECTOR3F);
+    protected static final DataParameter<Quat4f> PHYSICS_ROTATION = EntityDataManager.<Quat4f>createKey(EntityPhysicsBlock.class, Physics.QUAT4F);
 
 
     @SideOnly(Side.CLIENT)

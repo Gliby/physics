@@ -42,57 +42,6 @@ import java.util.List;
  */
 public abstract class EntityPhysicsBase extends Entity implements IEntityAdditionalSpawnData, IEntityPhysics {
 
-    // Custom Vector serializer.
-    public static final DataSerializer<Vector3f> VECTOR3F = new DataSerializer<Vector3f>()
-    {
-        public void write(PacketBuffer buf, Vector3f value)
-        {
-            buf.writeFloat(value.getX());
-            buf.writeFloat(value.getY());
-            buf.writeFloat(value.getZ());
-        }
-        public Vector3f read(PacketBuffer buf) throws IOException
-        {
-            return new Vector3f(buf.readFloat(), buf.readFloat(), buf.readFloat());
-        }
-        public DataParameter<Vector3f> createKey(int id)
-        {
-            return new DataParameter<Vector3f>(id, this);
-        }
-        public Vector3f copyValue(Vector3f value)
-        {
-            return value;
-        }
-    };
-
-    // Custom Vector serializer.
-    public static final DataSerializer<Quat4f> QUAT4F = new DataSerializer<Quat4f>()
-    {
-        public void write(PacketBuffer buf, Quat4f value)
-        {
-            buf.writeFloat(value.getX());
-            buf.writeFloat(value.getY());
-            buf.writeFloat(value.getZ());
-        }
-        public Quat4f read(PacketBuffer buf) throws IOException
-        {
-            return new Quat4f(buf.readFloat(), buf.readFloat(), buf.readFloat(), buf.readFloat());
-        }
-        public DataParameter<Quat4f> createKey(int id)
-        {
-            return new DataParameter<Quat4f>(id, this);
-        }
-        public Quat4f copyValue(Quat4f value)
-        {
-            return value;
-        }
-    };
-
-
-    static {
-        DataSerializers.registerSerializer(VECTOR3F);
-        DataSerializers.registerSerializer(QUAT4F);
-    }
 
     public static final int TICKS_PER_SECOND = 20;
     public List<RigidBodyMechanic> mechanics = new ArrayList<RigidBodyMechanic>();
@@ -102,7 +51,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     protected PhysicsWorld physicsWorld;
 
     protected static final DataParameter<Integer> PICKER_ID = EntityDataManager.<Integer>createKey(EntityPhysicsBase.class, DataSerializers.VARINT);
-    protected static final DataParameter<Vector3f> PICK_OFFSET = EntityDataManager.<Vector3f>createKey(EntityPhysicsBase.class, VECTOR3F);
+    protected static final DataParameter<Vector3f> PICK_OFFSET = EntityDataManager.<Vector3f>createKey(EntityPhysicsBase.class, Physics.VECTOR3F);
 
     private int lastTickActive;
     private boolean naturalDeath = true;
@@ -180,14 +129,14 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     public void pick(Entity picker, Vector3f pickPoint) {
         this.pickerEntity = (EntityPlayer) picker;
         this.pickLocalHit = pickPoint;
-        this.dataManager.set(PICKER_ID, picker.getEntityId());
+        this.dataManager.set(PICKER_ID, Integer.valueOf(picker.getEntityId()));
         if (pickLocalHit != null)
-        this.dataManager.set(PICK_OFFSET, pickLocalHit);
+            this.dataManager.set(PICK_OFFSET, pickLocalHit);
     }
 
     public void unpick() {
         this.pickerEntity = null;
-        this.dataManager.set(PICKER_ID, -1);
+        this.dataManager.set(PICKER_ID, Integer.valueOf(-1));
         if (pickLocalHit != null)
             this.dataManager.set(PICK_OFFSET, pickLocalHit = new Vector3f());
     }
@@ -276,7 +225,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     @Override
     public void entityInit() {
         this.dataManager.register(PICK_OFFSET, pickLocalHit = new Vector3f());
-        this.dataManager.register(PICKER_ID, -1);
+        this.dataManager.register(PICKER_ID, Integer.valueOf(-1));
 
         onCommonInit();
         if (this.world.isRemote)
@@ -290,13 +239,13 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     public final void onUpdate() {
         super.onUpdate();
         if (this.world.isRemote) {
-            int pickerId = dataManager.get(PICKER_ID);
+            int pickerId =  ((Integer)this.getDataManager().get(PICKER_ID)).intValue();
             if (pickerId != -1) {
                 Entity entity = this.world.getEntityByID(pickerId);
                 if (entity instanceof EntityPlayer) {
                     this.pickerEntity = (EntityPlayer) entity;
                     if (this.pickerEntity != null) {
-                        this.pickLocalHit = dataManager.get(PICK_OFFSET);
+                        this.pickLocalHit = (Vector3f) dataManager.get(PICK_OFFSET);
                     } else {
                         this.pickLocalHit = null;
                     }
@@ -376,7 +325,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 //            ByteBufUtils.writeUTF8String(buffer, overworld.getMechanicsMap().inverse().get(savedMechanics.get(i)));
 //        }
 
-        buffer.writeInt(dataManager.get(PICKER_ID));
+        buffer.writeInt((Integer)(dataManager.get(PICKER_ID)).intValue());
 
         buffer.writeFloat(this.pickLocalHit.x);
         buffer.writeFloat(this.pickLocalHit.y);
