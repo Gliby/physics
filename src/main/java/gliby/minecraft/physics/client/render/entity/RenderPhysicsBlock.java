@@ -71,13 +71,11 @@ public class RenderPhysicsBlock extends RenderPhysics {
             GlStateManager.translate(-(0.5f), -(0.5f), -(0.5f));
 
             this.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder bufferbuilder = tessellator.getBuffer();
 
-            float red = (float) (color >> 16 & 255) / 255.0F;
-            float green = (float) (color >> 8 & 255) / 255.0F;
-            float blue = (float) (color & 255) / 255.0F;
-            blockModelRenderer.renderModelBrightnessColor(state, ibakedmodel, red, green, blue);
+            float red = (float) (entity.getTintIndex() >> 16 & 255) / 255.0F;
+            float green = (float) (entity.getTintIndex() >> 8 & 255) / 255.0F;
+            float blue = (float) (entity.getTintIndex() & 255) / 255.0F;
+            blockModelRenderer.renderModelBrightnessColor(state, ibakedmodel, !outline, red, green, blue);
 
 //            bufferbuilder.begin(7, DefaultVertexFormats.BLOCK);
 //            blockModelRenderer.renderModel(bufferbuilder, world, ibakedmodel, state, entity.getPosition(), entity.getBrightnessForRender());

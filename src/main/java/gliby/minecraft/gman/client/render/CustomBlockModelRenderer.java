@@ -266,45 +266,23 @@ public class CustomBlockModelRenderer
         }
     }
 
-    public void renderModelBrightnessColor(IBakedModel bakedModel, float red, float green, float blue)
+    public void renderModelBrightnessColor(IBakedModel bakedModel, float red, float green, float blue, boolean shouldTint)
     {
-        this.renderModelBrightnessColor((IBlockState)null, bakedModel, red, green, blue);
+        this.renderModelBrightnessColor((IBlockState)null, bakedModel, shouldTint, red, green, blue);
     }
 
-    public void renderModelBrightnessColor(IBlockState state, IBakedModel p_187495_2_, float red, float blue, float green)
+    public void renderModelBrightnessColor(IBlockState state, IBakedModel bakedModel, boolean shouldTint, float red, float blue, float green)
     {
         for (EnumFacing enumfacing : EnumFacing.values())
         {
-            this.renderModelBrightnessColorQuads(red, blue, green, p_187495_2_.getQuads(state, enumfacing, 0L));
+            this.renderModelBrightnessColorQuads(red, blue, green, shouldTint, bakedModel.getQuads(state, enumfacing, 0L));
         }
 
-        this.renderModelBrightnessColorQuads(red, blue, green, p_187495_2_.getQuads(state, (EnumFacing)null, 0L));
+        this.renderModelBrightnessColorQuads(red, blue, green, shouldTint, bakedModel.getQuads(state, (EnumFacing)null, 0L));
     }
 
-    public void renderModelBrightness(IBakedModel model, IBlockState state, float brightness, boolean p_178266_4_)
-    {
-        Block block = state.getBlock();
-        GlStateManager.rotate(90.0F, 0.0F, 1.0F, 0.0F);
-        int i = this.blockColors.colorMultiplier(state, (IBlockAccess)null, (BlockPos)null, 0);
 
-        if (EntityRenderer.anaglyphEnable)
-        {
-            i = TextureUtil.anaglyphColor(i);
-        }
-
-        float f = (float)(i >> 16 & 255) / 255.0F;
-        float f1 = (float)(i >> 8 & 255) / 255.0F;
-        float f2 = (float)(i & 255) / 255.0F;
-
-        if (!p_178266_4_)
-        {
-            GlStateManager.color(brightness, brightness, brightness, 1.0F);
-        }
-
-        this.renderModelBrightnessColor(state, model, f, f1, f2);
-    }
-
-    private void renderModelBrightnessColorQuads(float red, float green, float blue, List<BakedQuad> listQuads)
+    private void renderModelBrightnessColorQuads(float red, float green, float blue, boolean shouldTint, List<BakedQuad> listQuads)
     {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
@@ -316,7 +294,7 @@ public class CustomBlockModelRenderer
             bufferbuilder.begin(7, DefaultVertexFormats.ITEM);
             bufferbuilder.addVertexData(bakedquad.getVertexData());
 
-            if (bakedquad.hasTintIndex())
+            if (bakedquad.hasTintIndex() && shouldTint)
             {
                 bufferbuilder.putColorRGB_F4(red , green, blue );
             }
