@@ -5,6 +5,7 @@ import gliby.minecraft.physics.client.render.RenderHandler;
 import gliby.minecraft.physics.client.render.RenderUtilities;
 import gliby.minecraft.physics.common.entity.EntityPhysicsBase;
 import gliby.minecraft.physics.common.entity.EntityPhysicsBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
@@ -65,20 +66,20 @@ public class RenderPhysicsBlock extends RenderPhysics {
             GlStateManager.translate(-worldTranslation.x + 0.5f, -worldTranslation.y + 0.5f, -worldTranslation.z + 0.5f);
             // Apply transformation.
             glMultMatrix(renderMatrix);
+            GlStateManager.translate(-(0.5f), -(0.5f), -(0.5f));
 
             this.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
 
             bufferbuilder.begin(7, DefaultVertexFormats.BLOCK);
-            BlockPos blockpos = new BlockPos(entity.posX, entity.getEntityBoundingBox().maxY, entity.posZ);
-            blockrendererdispatcher.getBlockModelRenderer().renderModel(world, blockrendererdispatcher.getModelForState(state), state, blockpos, bufferbuilder, false, MathHelper.getPositionRandom(entity.getPosition()));
+            blockrendererdispatcher.getBlockModelRenderer().renderModel(world, ibakedmodel, state, BlockPos.ORIGIN, bufferbuilder, false, 0);
             tessellator.draw();
 
             GlStateManager.popMatrix();
-            System.out.println("im rendering!");
+//            System.out.println("im rendering!");
         }
-        System.out.println("im rendering 2!");
+//        System.out.println("im rendering 2!");
 
     }
 

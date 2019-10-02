@@ -92,11 +92,16 @@ public class Physics {
         }
     };
 
+    static {
+        DataSerializers.registerSerializer(VECTOR3F);
+        DataSerializers.registerSerializer(QUAT4F);
+    }
+
     public static final String VERSION = "@VERSION@";
     public static final String NAME = "Gliby's Physics";
     public static final String ID = "glibysphysics";
     private static final SimpleNetworkWrapper DISPATCHER = NetworkRegistry.INSTANCE.newSimpleChannel(ID);
-    private static final Logger LOGGER = LogManager.getLogger("Gliby's Physics");
+    private static final Logger LOGGER = LogManager.getLogger(NAME);
     /**
      * Cache that contains classes generated from configuration.
      */
@@ -138,8 +143,7 @@ public class Physics {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        DataSerializers.registerSerializer(VECTOR3F);
-        DataSerializers.registerSerializer(QUAT4F);
+
 
         MinecraftForge.EVENT_BUS.register(this);
         instance = this;
