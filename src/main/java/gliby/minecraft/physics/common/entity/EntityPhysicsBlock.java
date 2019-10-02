@@ -226,16 +226,14 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         float lightY = (float) (renderAABB.minY + (height / 2));
         float lightZ = (float) (renderAABB.minZ + (length / 2));
         blockPosition = new BlockPos(lightX, lightY, lightZ);
-        // TODO 1.12.2 port color tint
-//        if (tintIndex == 0)
-//            this.tintIndex = blockState.getBlock().color(worldObj, blockPosition, 0);
-//        if (this.worldObj.isBlockLoaded(blockPosition)) {
-//            int lightValue = this.worldObj.getCombinedLight(blockPosition, 0);
-//            return lightValue;
-//        } else {
-//            return 0;
-//        }
-        return 0;
+
+        if (tintIndex == 0)
+            this.tintIndex = blockState.getBlock().getMapColor(blockState, world, blockPosition).colorValue;
+
+        if (this.world.isBlockLoaded(blockPosition))
+            return this.world.getCombinedLight(blockPosition, 0);
+         else
+            return 0;
 
     }
 

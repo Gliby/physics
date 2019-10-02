@@ -46,7 +46,7 @@ public class RenderPhysicsBlock extends RenderPhysics {
     protected void draw(Entity castEntity, double entityX, double entityY, double entityZ, float partialTick,
                         int color, boolean outline) {
         EntityPhysicsBlock entity = (EntityPhysicsBlock) castEntity;
-        // Logic
+        //
         IBlockState state = entity.getBlockState();
         if (state.getRenderType() != EnumBlockRenderType.INVISIBLE) {
             Vector3f worldTranslation = RenderUtilities.getWorldTranslation(mc, partialTick);
@@ -62,25 +62,29 @@ public class RenderPhysicsBlock extends RenderPhysics {
             // start drawing
             GlStateManager.pushMatrix();
             World world = castEntity.getEntityWorld();
-            // Apply world translation with bullet specific offset.
+            // Apply world translation with bullet pivot offset.
             GlStateManager.translate(-worldTranslation.x + 0.5f, -worldTranslation.y + 0.5f, -worldTranslation.z + 0.5f);
             // Apply transformation.
             glMultMatrix(renderMatrix);
+
+            // fix pivot.
             GlStateManager.translate(-(0.5f), -(0.5f), -(0.5f));
 
             this.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
 
-            bufferbuilder.begin(7, DefaultVertexFormats.BLOCK);
-            blockrendererdispatcher.getBlockModelRenderer().renderModel(world, ibakedmodel, state, BlockPos.ORIGIN, bufferbuilder, false, 0);
-            tessellator.draw();
+            float red = (float) (color >> 16 & 255) / 255.0F;
+            float green = (float) (color >> 8 & 255) / 255.0F;
+            float blue = (float) (color & 255) / 255.0F;
+            blockModelRenderer.renderModelBrightnessColor(state, ibakedmodel, red, green, blue);
+
+//            bufferbuilder.begin(7, DefaultVertexFormats.BLOCK);
+//            blockModelRenderer.renderModel(bufferbuilder, world, ibakedmodel, state, entity.getPosition(), entity.getBrightnessForRender());
+//            tessellator.draw();
 
             GlStateManager.popMatrix();
-//            System.out.println("im rendering!");
         }
-//        System.out.println("im rendering 2!");
-
     }
 
     /*
