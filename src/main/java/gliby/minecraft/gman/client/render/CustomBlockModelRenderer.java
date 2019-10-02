@@ -25,6 +25,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -266,23 +267,18 @@ public class CustomBlockModelRenderer
         }
     }
 
-    public void renderModelBrightnessColor(IBakedModel bakedModel, float red, float green, float blue, boolean shouldTint)
-    {
-        this.renderModelBrightnessColor((IBlockState)null, bakedModel, shouldTint, red, green, blue);
-    }
-
-    public void renderModelBrightnessColor(IBlockState state, IBakedModel bakedModel, boolean shouldTint, float red, float blue, float green)
+    public void renderModelNoLightmap(World world, IBlockState state, BlockPos pos, IBakedModel bakedModel)
     {
         for (EnumFacing enumfacing : EnumFacing.values())
         {
-            this.renderModelBrightnessColorQuads(red, blue, green, shouldTint, bakedModel.getQuads(state, enumfacing, 0L));
+            this.renderModelBrightnessColorQuads(world, state, pos, bakedModel.getQuads(state, enumfacing, 0L));
         }
 
-        this.renderModelBrightnessColorQuads(red, blue, green, shouldTint, bakedModel.getQuads(state, (EnumFacing)null, 0L));
+        this.renderModelBrightnessColorQuads(world, state, pos, bakedModel.getQuads(state, (EnumFacing)null, 0L));
     }
 
 
-    private void renderModelBrightnessColorQuads(float red, float green, float blue, boolean shouldTint, List<BakedQuad> listQuads)
+    private void renderModelBrightnessColorQuads(World world, IBlockState state, BlockPos pos, List<BakedQuad> listQuads)
     {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
@@ -294,9 +290,37 @@ public class CustomBlockModelRenderer
             bufferbuilder.begin(7, DefaultVertexFormats.ITEM);
             bufferbuilder.addVertexData(bakedquad.getVertexData());
 
-            if (bakedquad.hasTintIndex() && shouldTint)
+            if (bakedquad.hasTintIndex())
             {
-                bufferbuilder.putColorRGB_F4(red , green, blue );
+                int colorValue = this.blockColors.colorMultiplier(state, world, pos, bakedquad.getTintIndex());
+
+                if (EntityRenderer.anaglyphEnable)
+                {
+                    colorValue = TextureUtil.anaglyphColor(colorValue);
+                }
+
+                float red = (float)(colorValue >> 16 & 255) / 255.0F;
+                float blue = (float)(colorValue >> 8 & 255) / 255.0F;
+                float green = (float)(colorValue & 255) / 255.0F;
+                if(bakedquad.shouldApplyDiffuseLighting())
+                {
+                    float diffuse = net.minecraftforge.client.model.pipeline.LightUtil.diffuseLight(bakedquad.getFace());
+                    red *= diffuse;
+                    blue *= diffuse;
+                    green *= diffuse;
+                }
+                bufferbuilder.putColorMultiplier(red, blue, green, 4);
+                bufferbuilder.putColorMultiplier(red, blue, green, 3);
+                bufferbuilder.putColorMultiplier(red, blue, green, 2);
+                bufferbuilder.putColorMultiplier(red, blue, green, 1);
+            }
+            else if(bakedquad.shouldApplyDiffuseLighting())
+            {
+                float diffuse = net.minecraftforge.client.model.pipeline.LightUtil.diffuseLight(bakedquad.getFace());
+                bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 4);
+                bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 3);
+                bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 2);
+                bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 1);
             }
 
             Vec3i vec3i = bakedquad.getFace().getDirectionVec();
