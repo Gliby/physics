@@ -28,7 +28,7 @@ public class PhysicsServer implements IPhysicsProxy {
 
     @SubscribeEvent
     public void playerJoinEvent(final PlayerLoggedInEvent event) {
-        Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+        event.player.getServer().addScheduledTask(new Runnable() {
 
             @Override
             public void run() {

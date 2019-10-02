@@ -130,8 +130,7 @@ public class ItemToolGun extends RawItem {
 
         @Override
         public IMessage onMessage(final PacketToolGunStoppedUsing packet, final MessageContext ctx) {
-            Minecraft mc = Minecraft.getMinecraft();
-            mc.addScheduledTask(new Runnable() {
+            ctx.getServerHandler().player.getServerWorld().addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
                     EntityPlayerMP player = ctx.getServerHandler().player;
@@ -189,8 +188,7 @@ public class ItemToolGun extends RawItem {
 
         @Override
         public IMessage onMessage(final PacketToolGunUse packet, final MessageContext ctx) {
-            Minecraft mc = Minecraft.getMinecraft();
-            mc.addScheduledTask(new Runnable() {
+            ctx.getServerHandler().player.getServerWorld().addScheduledTask(new Runnable() {
 
                 @Override
                 public void run() {

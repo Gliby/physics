@@ -122,7 +122,7 @@ public class ItemPhysicsGun extends RawItem {
 
         @Override
         public IMessage onMessage(final PacketPhysicsGunPick packet, final MessageContext ctx) {
-            Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+            ctx.getServerHandler().player.getServerWorld().addScheduledTask(new Runnable() {
                 @Override
                 public void run() {
                     EntityPlayerMP player = ctx.getServerHandler().player;
@@ -202,7 +202,7 @@ public class ItemPhysicsGun extends RawItem {
 
         @Override
         public IMessage onMessage(final PacketPhysicsGunWheel packet, final MessageContext ctx) {
-            Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+            ctx.getServerHandler().player.getServerWorld().addScheduledTask(new Runnable() {
 
                 @Override
                 public void run() {

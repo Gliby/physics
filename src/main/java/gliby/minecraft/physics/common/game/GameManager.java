@@ -81,14 +81,6 @@ public class GameManager {
         MinecraftForge.EVENT_BUS.register(itemPhysicsGun);
         MinecraftForge.EVENT_BUS.register(itemToolgun);
 
-        toolGunRegistry = new ToolGunActionRegistry();
-        toolGunRegistry.registerAction(new ToolGunReviveAction(), Physics.ID);
-        toolGunRegistry.registerAction(new ToolGunAttachAction(), Physics.ID);
-        toolGunRegistry.registerAction(new ToolGunAlignAction(), Physics.ID);
-        toolGunRegistry.registerAction(new ToolGunAttractAction(), Physics.ID);
-        toolGunRegistry.registerAction(new ToolGunChangeGravityAction(), Physics.ID);
-        toolGunRegistry.registerAction(new ToolGunRemoveAction(), Physics.ID);
-
     }
 
     @SubscribeEvent
@@ -111,8 +103,17 @@ public class GameManager {
          * GameRegistry.addRecipe(new ItemStack(Items.dye, 2, 15), "AB ", "AAC", "A  ",
          * 'A', Items.cookie, 'B', Blocks.dirt, 'C', new ItemStack(Items.dye, 1, 1));
          */
+
+        toolGunRegistry = new ToolGunActionRegistry();
+        toolGunRegistry.registerAction(new ToolGunReviveAction(), Physics.ID);
+        toolGunRegistry.registerAction(new ToolGunAttachAction(), Physics.ID);
+        toolGunRegistry.registerAction(new ToolGunAlignAction(), Physics.ID);
+        toolGunRegistry.registerAction(new ToolGunAttractAction(), Physics.ID);
+        toolGunRegistry.registerAction(new ToolGunChangeGravityAction(), Physics.ID);
+        toolGunRegistry.registerAction(new ToolGunRemoveAction(), Physics.ID);
         // toolGunRegistry.registerAction(new ToolGunMotorAction(),
         // Physics.MOD_ID);
+
     }
 
     public ToolGunActionRegistry getToolGunRegistry() {

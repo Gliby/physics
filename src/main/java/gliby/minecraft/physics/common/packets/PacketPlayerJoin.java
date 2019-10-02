@@ -45,7 +45,7 @@ public class PacketPlayerJoin extends MinecraftPacket implements IMessageHandler
 
     @Override
     public IMessage onMessage(final PacketPlayerJoin message, MessageContext ctx) {
-        Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+        ctx.getServerHandler().player.getServerWorld().addScheduledTask(new Runnable() {
 
             @Override
             public void run() {

@@ -32,8 +32,7 @@ public class ExplosionHandler {
     // TODO bug: fix explosions
     @SubscribeEvent
     public void handleEvent(final ExplosionEvent.Detonate event) {
-        Minecraft server = Minecraft.getMinecraft();
-        server.addScheduledTask(new Runnable() {
+        event.getWorld().getMinecraftServer().addScheduledTask(new Runnable() {
 
             @Override
             public void run() {

@@ -60,4 +60,5 @@ jar {
     }
 }
 
+// TODO: use for shading: https://mcforge.readthedocs.io/en/latest/gettingstarted/dependencymanagement/
 // TODO: add auto upload, https://github.com/mezz/JustEnoughItems/blob/1.12/build.gradle

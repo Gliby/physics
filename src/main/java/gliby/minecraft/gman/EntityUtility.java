@@ -30,7 +30,7 @@ public class EntityUtility {
     }
 
     public static Entity spawnEntityScheduled(final World world, final Entity entity) {
-        Minecraft.getMinecraft().addScheduledTask(new Runnable() {
+        world.getMinecraftServer().addScheduledTask(new Runnable() {
 
             @Override
             public void run() {
