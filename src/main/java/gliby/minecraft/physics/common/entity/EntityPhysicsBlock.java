@@ -206,6 +206,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
     @Override
     public void onCommonUpdate() {
+        System.out.println("privet");
         this.prevDistanceWalkedModified = this.distanceWalkedModified;
         this.prevPosX = this.posX;
         this.prevPosY = this.posY;

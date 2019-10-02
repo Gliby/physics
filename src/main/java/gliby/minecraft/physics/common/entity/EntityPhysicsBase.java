@@ -370,10 +370,11 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
         PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
 
-        buffer.writeInt(savedMechanics.size());
-        for (int i = 0; i < savedMechanics.size(); i++) {
-            ByteBufUtils.writeUTF8String(buffer, overworld.getMechanicsMap().inverse().get(savedMechanics.get(i)));
-        }
+        // TODO 1.12.2 write mechanics
+//        buffer.writeInt(savedMechanics.size());
+//        for (int i = 0; i < savedMechanics.size(); i++) {
+//            ByteBufUtils.writeUTF8String(buffer, overworld.getMechanicsMap().inverse().get(savedMechanics.get(i)));
+//        }
 
         buffer.writeInt(dataManager.get(PICKER_ID));
 
@@ -384,13 +385,15 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
     @Override
     public void readSpawnData(ByteBuf buffer) {
-        int size = buffer.readInt();
-        PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
-        for (int i = 0; i < size; i++) {
-            String mechanicName = ByteBufUtils.readUTF8String(buffer);
-            RigidBodyMechanic mechanic = overworld.getMechanicFromName(mechanicName);
-            mechanics.add(mechanic);
-        }
+        // TODO 1.12.2 read mechanics
+
+        //        int size = buffer.readInt();
+//        PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
+//        for (int i = 0; i < size; i++) {
+//            String mechanicName = ByteBufUtils.readUTF8String(buffer);
+//            RigidBodyMechanic mechanic = overworld.getMechanicFromName(mechanicName);
+//            mechanics.add(mechanic);
+//        }
 
         this.pickerEntity = (EntityPlayer) this.world.getEntityByID(buffer.readInt());
         Vector3f readPick = new Vector3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
