@@ -54,7 +54,6 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     protected static final DataParameter<Vector3f> PICK_OFFSET = EntityDataManager.<Vector3f>createKey(EntityPhysicsBase.class, Physics.VECTOR3F);
 
     private int lastTickActive;
-    private boolean naturalDeath = true;
 
 
 
@@ -122,9 +121,6 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
         super.setDead();
     }
 
-    public boolean isNaturalDeath() {
-        return naturalDeath;
-    }
 
     public void pick(Entity picker, Vector3f pickPoint) {
         this.pickerEntity = (EntityPlayer) picker;
@@ -295,7 +291,6 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
                 }
 
                 if (rigidBody.getProperties().containsKey(EnumRigidBodyProperty.DEAD.getName())) {
-                    this.naturalDeath = false;
                     this.setDead();
                 }
             }

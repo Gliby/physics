@@ -53,10 +53,6 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     @SideOnly(Side.CLIENT)
     public Quat4f renderRotation;
     /**
-     * Optional drop item.
-     */
-    private ItemStack dropItem;
-    /**
      * Block.
      */
     private IBlockState blockState;
@@ -151,11 +147,6 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
                 this.mechanics.addAll(metadata.mechanics);
         }
         setLocationAndAngles(physicsPosition.x, physicsPosition.y, physicsPosition.z, 0, 0);
-    }
-
-    public EntityPhysicsBlock setDropItem(ItemStack dropItem) {
-        this.dropItem = dropItem;
-        return this;
     }
 
     @Override
@@ -313,10 +304,6 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         tagCompound.setTag("AngularVelocity",
                 newFloatNBTList(angularVelocity.x, angularVelocity.y, angularVelocity.z));
 
-        if (dropItem != null) {
-            NBTTagCompound compound = dropItem.writeToNBT(new NBTTagCompound());
-            tagCompound.setTag("DropItem", compound);
-        }
         super.writeEntityToNBT(tagCompound);
 
     }
@@ -363,11 +350,6 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
             NBTTagList angularVelocity = tagCompound.getTagList("AngularVelocity", 5);
             this.linearVelocity = new Vector3f(angularVelocity.getFloatAt(0), angularVelocity.getFloatAt(1),
                     angularVelocity.getFloatAt(2));
-        }
-
-        if (tagCompound.hasKey("DropItem")) {
-            NBTTagCompound compound = tagCompound.getCompoundTag("DropItem");
-            this.dropItem.deserializeNBT(compound);
         }
 
         // Read from NBT gets called multiple times.
@@ -466,7 +448,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
     @Override
     protected boolean doesPhysicsObjectExist() {
-        return rigidBody != null;
+        return rigidBody != null && rigidBody.isValid();
     }
 
     /**
@@ -478,19 +460,15 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
     @Override
     protected void dispose() {
-        // Drops item.
-        if (dropItem != null && isNaturalDeath()) {
-            entityDropItem(dropItem, 0);
-            /*
-             * Vector3f centerOfMass = rigidBody.getCenterOfMassPosition();
-             * Block.spawnAsEntity(worldObj, new BlockPos(centerOfMass.x + 0.5f,
-             * centerOfMass.y + 0.5F, centerOfMass.z + 0.5F), new ItemStack(dropItem));
-             */
-        }
+        align();
 
         if (doesPhysicsObjectExist()) {
             physicsWorld.removeRigidBody(this.rigidBody);
         }
+    }
+
+    protected void align() {
+        world.setBlockState(new BlockPos(posX, posY + 0.5F, posZ), getBlockState());
     }
 
     @Override

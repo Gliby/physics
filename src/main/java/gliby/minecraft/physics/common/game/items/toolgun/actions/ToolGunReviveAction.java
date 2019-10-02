@@ -22,8 +22,7 @@ public class ToolGunReviveAction implements IToolGunAction {
             IBlockState state = player.world.getBlockState(position.getBlockPos());
             state = state.getBlock().getActualState(state, player.world, position.getBlockPos());
             EntityPhysicsBlock block = new EntityPhysicsBlock(player.world, physicsWorld, state,
-                    position.getBlockPos().getX(), position.getBlockPos().getY(), position.getBlockPos().getZ())
-                    .setDropItem(new ItemStack(Item.getItemFromBlock(state.getBlock())));
+                    position.getBlockPos().getX(), position.getBlockPos().getY(), position.getBlockPos().getZ());
             player.world.setBlockToAir(position.getBlockPos());
             player.world.spawnEntity(block);
             return true;

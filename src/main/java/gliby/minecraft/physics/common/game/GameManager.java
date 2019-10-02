@@ -110,7 +110,7 @@ public class GameManager {
         toolGunRegistry.registerAction(new ToolGunAlignAction(), Physics.ID);
         toolGunRegistry.registerAction(new ToolGunAttractAction(), Physics.ID);
         toolGunRegistry.registerAction(new ToolGunChangeGravityAction(), Physics.ID);
-        toolGunRegistry.registerAction(new ToolGunRemoveAction(), Physics.ID);
+//        toolGunRegistry.registerAction(new ToolGunRemoveAction(), Physics.ID);
         // toolGunRegistry.registerAction(new ToolGunMotorAction(),
         // Physics.MOD_ID);
 
