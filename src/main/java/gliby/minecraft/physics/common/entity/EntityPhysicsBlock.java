@@ -15,6 +15,7 @@ import gliby.minecraft.physics.common.physics.engine.IQuaternion;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import gliby.minecraft.physics.common.physics.engine.IVector3;
 import io.netty.buffer.ByteBuf;
+import javafx.scene.chart.Axis;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,6 +31,7 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
@@ -150,6 +152,12 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         super.entityInit();
 //        this.dataManager.register(PHYSICS_POSITION, physicsPosition = RenderUtilities.toVector3f(getPositionVector()));
         this.dataManager.register(PHYSICS_ROTATION, physicsRotation = new Quat4f());
+    }
+
+    @Nullable
+    @Override
+    public AxisAlignedBB getCollisionBoundingBox() {
+        return super.getEntityBoundingBox();
     }
 
     /**
@@ -458,6 +466,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
         if (doesPhysicsObjectExist()) {
             physicsWorld.removeRigidBody(this.rigidBody);
+            this.rigidBody = null;
         }
     }
 

@@ -33,16 +33,6 @@ public class PhysicsServer implements IPhysicsProxy {
             @Override
             public void run() {
                 // TODO get rid of this delay hack.
-                if (event.player instanceof EntityPlayerMP) {
-                    EntityPlayerMP player = (EntityPlayerMP) event.player;
-                    synchronized (this) {
-                        try {
-                            wait(player.ping + 20);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
                 Physics physics = Physics.getInstance();
                 Physics.getDispatcher().sendTo(new PacketPlayerJoin(physics.getGameManager().getToolGunRegistry().getValueDefinitions()),
                         (EntityPlayerMP) event.player);
