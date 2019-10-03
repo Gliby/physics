@@ -26,6 +26,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
@@ -151,7 +152,6 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     @Override
     public void entityInit() {
         super.entityInit();
-//        this.dataManager.register(PHYSICS_POSITION, physicsPosition = RenderUtilities.toVector3f(getPositionVector()));
         this.dataManager.register(PHYSICS_ROTATION, physicsRotation = new Quat4f());
     }
 
@@ -240,6 +240,9 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
             setPosition(newPosition.getX(), newPosition.getY(),
                     newPosition.getZ());
 
+            Vector3f velocity = new Vector3f();
+            setVelocity(velocity.getX(), velocity.getY(), velocity.getZ());
+
             // Update rotation from given rigid body.
             final IQuaternion newQuat = rigidBody.getRotation();
             physicsRotation.set(newQuat.getX(), newQuat.getY(), newQuat.getZ(),
@@ -263,12 +266,11 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         this.onGround = false;
 
         // Read dataWatcher objects, then set.
-//        physicsPosition = this.dataManager.get(PHYSICS_POSITION);
         physicsRotation = this.dataManager.get(PHYSICS_ROTATION);
 
         // Force vanilla entity bounding box to follow custom physics render
         // bounding box.
-        this.setEntityBoundingBox(getRenderBoundingBox());
+//        this.setEntityBoundingBox(getRenderBoundingBox());
         // setPosition(renderPosition.x + 0.5f, renderPosition.y,
         // renderPosition.z + 0.5f);
 
