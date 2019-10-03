@@ -3,6 +3,7 @@ package gliby.minecraft.physics;
 import com.google.common.base.Predicate;
 import gliby.minecraft.gman.GMan;
 import gliby.minecraft.gman.ModInfo;
+import gliby.minecraft.gman.client.render.ItemRendererManager;
 import gliby.minecraft.gman.settings.Setting;
 import gliby.minecraft.gman.settings.SettingsHandler;
 import gliby.minecraft.gman.settings.StringSetting;
@@ -87,8 +88,16 @@ public class Physics {
         return gman;
     }
 
+    public ItemRendererManager getItemRendererManager() {
+        return itemRendererManager;
+    }
+
+    ItemRendererManager itemRendererManager;
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        itemRendererManager = new ItemRendererManager();
+        MinecraftForge.EVENT_BUS.register(itemRendererManager);
 
 
         MinecraftForge.EVENT_BUS.register(this);

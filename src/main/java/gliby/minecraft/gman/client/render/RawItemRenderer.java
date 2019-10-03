@@ -11,9 +11,9 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformT
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
@@ -51,7 +51,7 @@ class RawItemOverrideList extends ItemOverrideList {
  */
 public abstract class RawItemRenderer implements IBakedModel {
 
-    public ModelResourceLocation resourceLocation;
+    public ModelResourceLocation modelResourceLocation;
     protected EntityPlayer owner;
     protected TextureManager textureManager;
     protected ModelBiped playerBiped;
@@ -60,12 +60,19 @@ public abstract class RawItemRenderer implements IBakedModel {
     protected TransformType transformType;
     private Pair<IBakedModel, Matrix4f> pair;
     protected RawItemOverrideList itemOverride;
+
+    public Item getItemInstance() {
+        return itemInstance;
+    }
+
+    protected Item itemInstance;
     private static final List<BakedQuad> DUMMY_LIST = Collections.emptyList();
 
     public RawItemRenderer(ModelResourceLocation resourceLocation) {
         this.mc = Minecraft.getMinecraft();
+        this.itemInstance = itemInstance;
         this.textureManager = mc.getTextureManager();
-        this.resourceLocation = resourceLocation;
+        this.modelResourceLocation = resourceLocation;
         this.pair = Pair.of((IBakedModel) this, null);
         this.playerBiped = new ModelBiped();
         this.playerBiped.textureWidth = 64;
@@ -73,8 +80,8 @@ public abstract class RawItemRenderer implements IBakedModel {
         this.itemOverride = new RawItemOverrideList(new ArrayList<ItemOverride>(), this);
     }
 
-    public abstract void render();
 
+    public abstract void render();
 
     @Override
     public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
@@ -98,7 +105,7 @@ public abstract class RawItemRenderer implements IBakedModel {
         if (onGround()) {
             GlStateManager.scale(-3f, -3f, -3f);
         }
-
+        System.out.println("render item");
         render();
         GlStateManager.popMatrix();
         // Reset the dynamic values.
@@ -110,6 +117,11 @@ public abstract class RawItemRenderer implements IBakedModel {
 
         bufferBuilder.begin(7, DefaultVertexFormats.ITEM);
         return DUMMY_LIST;
+    }
+
+    public RawItemRenderer setItemInstance(Item itemInstance) {
+        this.itemInstance = itemInstance;
+        return this;
     }
 
     protected boolean onGround() {
