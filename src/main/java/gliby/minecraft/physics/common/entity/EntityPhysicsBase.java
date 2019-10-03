@@ -307,7 +307,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
         List<String> savedMechanics = new ArrayList<String>();
         for (int i = 0; i < mechanics.size(); i++) {
             RigidBodyMechanic mechanic = mechanics.get(i);
-            String mechanicName = overworld.getMechanicsMap().inverse().get(savedMechanics.get(i));
+            String mechanicName = overworld.getMechanicsMap().inverse().get(mechanic);
             if (mechanic.isCommon() && !mechanicName.isEmpty()) {
                 savedMechanics.add(mechanicName);
             }

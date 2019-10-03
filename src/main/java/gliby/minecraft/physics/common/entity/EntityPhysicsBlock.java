@@ -1,6 +1,7 @@
 package gliby.minecraft.physics.common.entity;
 
 import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector;
 import com.bulletphysicsx.collision.broadphase.CollisionFilterGroups;
 import com.bulletphysicsx.linearmath.QuaternionUtil;
 import com.bulletphysicsx.linearmath.Transform;
@@ -55,12 +56,12 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
      * Client-side render position, basically a smoothed position.
      */
     @SideOnly(Side.CLIENT)
-    public Vector3f renderPosition;
+    public Vector3f renderPosition = new Vector3f();
     /**
      * Client-side render rotation, basically a smoothed rotation.
      */
     @SideOnly(Side.CLIENT)
-    public Quat4f renderRotation;
+    public Quat4f renderRotation = new Quat4f();
     /**
      * Common variable, physics object's absolute position.
      */
