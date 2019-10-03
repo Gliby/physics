@@ -121,17 +121,18 @@ public abstract class RenderPhysics extends Render {
                 GlStateManager.disableTexture2D();
                 GlStateManager.disableLighting();
                 OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 0);
+
                 bufferBuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
                 float beamRed = (float) (beamColor >> 16 & 255) / 255.0F;
                 float beamGreen = (float) (beamColor & 255) / 255.0F;
                 float beamBlue = (float) (beamColor >> 8 & 255) / 255.0F;
-                bufferBuilder.color(beamRed, beamGreen, beamBlue, 1);
+//                bufferBuilder.color(beamRed, beamGreen, beamBlue, 1);
                 byte points = 16;
                 for (int i = 0; i <= points; ++i) {
                     float curve = (float) i / (float) points;
                     bufferBuilder.pos(hitPoint.x + diffX * (double) curve,
                             hitPoint.y + (diffY + 0.0f) * (double) (curve * curve + curve) * 0.5D + 0.25D,
-                            hitPoint.z + diffZ * (double) curve).endVertex();
+                            hitPoint.z + diffZ * (double) curve).color(beamRed, beamBlue, beamGreen, 1.0f).endVertex();
                 }
                 tessellator.draw();
 
