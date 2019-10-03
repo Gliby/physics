@@ -40,7 +40,6 @@ public class RenderPhysicsBlock extends RenderPhysics {
     protected void draw(Entity castEntity, double entityX, double entityY, double entityZ, float partialTick,
                         int color, boolean outline) {
         EntityPhysicsBlock entity = (EntityPhysicsBlock) castEntity;
-        //
         IBlockState state = entity.getBlockState();
         if (state.getRenderType() != EnumBlockRenderType.INVISIBLE) {
             Vector3f worldTranslation = ConversionUtility.getWorldTranslation(mc, partialTick);
@@ -66,14 +65,7 @@ public class RenderPhysicsBlock extends RenderPhysics {
 
             this.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
-//            float red = (float) (entity.getTintIndex() >> 16 & 255) / 255.0F;
-//            float green = (float) (entity.getTintIndex() >> 8 & 255) / 255.0F;
-//            float blue = (float) (entity.getTintIndex() & 255) / 255.0F;
-            blockModelRenderer.renderModelNoLightmap(entity.world, state, entity.getPosition(), ibakedmodel);
-
-//            bufferbuilder.begin(7, DefaultVertexFormats.BLOCK);
-//            blockModelRenderer.renderModel(bufferbuilder, world, ibakedmodel, state, entity.getPosition(), entity.getBrightnessForRender());
-//            tessellator.draw();
+            blockModelRenderer.renderModelNoLightmap(entity.world, state, entity.getPosition(), ibakedmodel, !outline, ConversionUtility.fromColor(color));
 
             GlStateManager.popMatrix();
         }

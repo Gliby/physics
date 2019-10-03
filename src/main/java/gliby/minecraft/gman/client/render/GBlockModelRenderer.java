@@ -263,18 +263,18 @@ public class GBlockModelRenderer
         }
     }
 
-    public void renderModelNoLightmap(World world, IBlockState state, BlockPos pos, IBakedModel bakedModel)
+    public void renderModelNoLightmap(World world, IBlockState state, BlockPos pos, IBakedModel bakedModel, boolean applyTint, Vec3d customColor)
     {
         for (EnumFacing enumfacing : EnumFacing.values())
         {
-            this.renderModelBrightnessColorQuads(world, state, pos, bakedModel.getQuads(state, enumfacing, 0L));
+            this.renderModelBrightnessColorQuads(world, state, pos, bakedModel.getQuads(state, enumfacing, 0L), applyTint, customColor);
         }
 
-        this.renderModelBrightnessColorQuads(world, state, pos, bakedModel.getQuads(state, (EnumFacing)null, 0L));
+        this.renderModelBrightnessColorQuads(world, state, pos, bakedModel.getQuads(state, (EnumFacing)null, 0L), applyTint, customColor);
     }
 
 
-    private void renderModelBrightnessColorQuads(World world, IBlockState state, BlockPos pos, List<BakedQuad> listQuads)
+    private void renderModelBrightnessColorQuads(World world, IBlockState state, BlockPos pos, List<BakedQuad> listQuads, boolean applyTint, Vec3d customColor)
     {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
@@ -286,38 +286,36 @@ public class GBlockModelRenderer
             bufferbuilder.begin(7, DefaultVertexFormats.ITEM);
             bufferbuilder.addVertexData(bakedquad.getVertexData());
 
-            if (bakedquad.hasTintIndex())
-            {
-                int colorValue = this.blockColors.colorMultiplier(state, world, pos, bakedquad.getTintIndex());
+            if (applyTint) {
+                if (bakedquad.hasTintIndex()) {
+                    int colorValue = this.blockColors.colorMultiplier(state, world, pos, bakedquad.getTintIndex());
 
-                if (EntityRenderer.anaglyphEnable)
-                {
-                    colorValue = TextureUtil.anaglyphColor(colorValue);
-                }
+                    if (EntityRenderer.anaglyphEnable) {
+                        colorValue = TextureUtil.anaglyphColor(colorValue);
+                    }
 
-                float red = (float)(colorValue >> 16 & 255) / 255.0F;
-                float blue = (float)(colorValue >> 8 & 255) / 255.0F;
-                float green = (float)(colorValue & 255) / 255.0F;
-                if(bakedquad.shouldApplyDiffuseLighting())
-                {
+                    float red = (float) (colorValue >> 16 & 255) / 255.0F;
+                    float blue = (float) (colorValue >> 8 & 255) / 255.0F;
+                    float green = (float) (colorValue & 255) / 255.0F;
+                    if (bakedquad.shouldApplyDiffuseLighting()) {
+                        float diffuse = net.minecraftforge.client.model.pipeline.LightUtil.diffuseLight(bakedquad.getFace());
+                        red *= diffuse;
+                        blue *= diffuse;
+                        green *= diffuse;
+                    }
+                    bufferbuilder.putColorMultiplier(red, blue, green, 4);
+                    bufferbuilder.putColorMultiplier(red, blue, green, 3);
+                    bufferbuilder.putColorMultiplier(red, blue, green, 2);
+                    bufferbuilder.putColorMultiplier(red, blue, green, 1);
+                } else if (bakedquad.shouldApplyDiffuseLighting()) {
                     float diffuse = net.minecraftforge.client.model.pipeline.LightUtil.diffuseLight(bakedquad.getFace());
-                    red *= diffuse;
-                    blue *= diffuse;
-                    green *= diffuse;
+                    bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 4);
+                    bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 3);
+                    bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 2);
+                    bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 1);
                 }
-                bufferbuilder.putColorMultiplier(red, blue, green, 4);
-                bufferbuilder.putColorMultiplier(red, blue, green, 3);
-                bufferbuilder.putColorMultiplier(red, blue, green, 2);
-                bufferbuilder.putColorMultiplier(red, blue, green, 1);
-            }
-            else if(bakedquad.shouldApplyDiffuseLighting())
-            {
-                float diffuse = net.minecraftforge.client.model.pipeline.LightUtil.diffuseLight(bakedquad.getFace());
-                bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 4);
-                bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 3);
-                bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 2);
-                bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 1);
-            }
+            } else if(customColor != null) bufferbuilder.putColorRGB_F4((float) customColor.x, (float) customColor.y, (float) customColor.z);
+
 
             Vec3i vec3i = bakedquad.getFace().getDirectionVec();
             bufferbuilder.putNormal((float)vec3i.getX(), (float)vec3i.getY(), (float)vec3i.getZ());

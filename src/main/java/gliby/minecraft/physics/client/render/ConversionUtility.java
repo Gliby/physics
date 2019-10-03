@@ -37,6 +37,13 @@ public class ConversionUtility {
     public static Vec3d toVec3(Vector3f vec3) {
         return new Vec3d(vec3.x, vec3.y, vec3.z);
     }
+    public static Vec3d fromColor(int color) {
+        float red = (float) (color >> 16 & 255) / 255.0F;
+        float blue = (float) (color >> 8 & 255) / 255.0F;
+        float green = (float) (color & 255) / 255.0F;
+        return new Vec3d(red, green, blue);
+    }
+
 
     public static FloatBuffer setBufferFromTransform(FloatBuffer matrixBuffer, Transform transform) {
         transform.getOpenGLMatrix(buffer);
