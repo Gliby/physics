@@ -117,7 +117,7 @@ public class ItemHandler {
         public void onPlayerTick(TickEvent.PlayerTickEvent event) {
             Minecraft mc = Minecraft.getMinecraft();
             if (event.side.isClient()) {
-                ItemStack itemStack = event.player.getActiveItemStack();
+                ItemStack itemStack = event.player.getHeldItemMainhand();
                 boolean isClient = event.player == mc.getRenderViewEntity();
                 boolean isFirstPerson = mc.gameSettings.thirdPersonView == 0 && isClient;
 
@@ -127,10 +127,14 @@ public class ItemHandler {
                     if (itemInfo != null) {
                         if (!itemInfo.isSwingable() && isClient) {
                             // TODO 1.12.2 item renderer AT
-//                            mc.entityRenderer.itemRenderer.itemToRender = mc.thePlayer.inventory.getCurrentItem();
-//                            mc.entityRenderer.itemRenderer.equippedItemSlot = mc.thePlayer.inventory.currentItem;
+//                            mc.entityRenderer.itemRenderer.itemRenderer = mc.player.inventory.getCurrentItem();
+//                            mc.entityRenderer.itemRenderer.equippedItemSlot = mc.player.inventory.currentItem;
 //                            mc.entityRenderer.itemRenderer.equippedProgress = 1.0f;
 //                            mc.entityRenderer.itemRenderer.prevEquippedProgress = 1.0f;
+//                            mc.player.isSwingInProgress = false;
+//                            mc.player.swingProgressInt = 0;
+//                            mc.player.swingProgress = 0;
+                            mc.playerController.resetBlockRemoving();
                             mc.player.isSwingInProgress = false;
                             mc.player.swingProgressInt = 0;
                             mc.player.swingProgress = 0;
@@ -141,7 +145,7 @@ public class ItemHandler {
                                 event.player.resetActiveHand();
                                 // todo 1.12.2 port
 //                                event.player.setActiveHand();
-//                                event.player.setItemInUse(itemStack, Integer.MAX_VALUE);
+//                                event.player.setActiveHand(itemStack, Integer.MAX_VALUE);
                             }
                         }
                     }
@@ -155,8 +159,8 @@ public class ItemHandler {
         @SideOnly(Side.CLIENT)
         @SubscribeEvent
         public void onBlockBreak(BlockEvent.BreakEvent event) {
-            if (event.getPlayer().getActiveItemStack() != null) {
-                AlwaysUsedItem itemInfo = getAlwaysUsedItem(event.getPlayer().getActiveItemStack().getItem());
+            if (event.getPlayer().getHeldItemMainhand() != null) {
+                AlwaysUsedItem itemInfo = getAlwaysUsedItem(event.getPlayer().getHeldItemMainhand().getItem());
                 if (itemInfo != null && !itemInfo.canHit()) {
                     event.setCanceled(true);
                 }

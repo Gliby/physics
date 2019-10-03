@@ -2,21 +2,13 @@ package gliby.minecraft.physics.client.render.world;
 
 import com.bulletphysicsx.linearmath.Transform;
 import gliby.minecraft.physics.Physics;
-import gliby.minecraft.physics.client.render.RenderUtilities;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;
-import gliby.minecraft.physics.common.physics.PhysicsWorld;
-import gliby.minecraft.physics.common.physics.engine.ICollisionShapeChildren;
-import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.BufferUtils;
 
-import javax.vecmath.Vector3f;
 import java.nio.FloatBuffer;
-import java.util.List;
-
-import static org.lwjgl.opengl.GL11.*;
 
 /**
  *

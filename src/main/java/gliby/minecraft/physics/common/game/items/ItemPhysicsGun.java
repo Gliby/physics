@@ -132,8 +132,8 @@ public class ItemPhysicsGun extends RawItem {
                     PickUpMechanic mechanic = (PickUpMechanic) physicsWorld.getMechanics().get("PickUp");
                     if (player != null && physicsWorld != null && mechanic != null) {
                         if (packet.picking) {
-                            if (player.getActiveItemStack() != null
-                                    && player.getActiveItemStack().getItem() instanceof ItemPhysicsGun) {
+                            if (player.getHeldItemMainhand() != null
+                                    && player.getHeldItemMainhand().getItem() instanceof ItemPhysicsGun) {
                                 Vector3f offset = new Vector3f(0.5f, 0.5f, 0.5f);
                                 Vector3f eyePos = EntityUtility.getPositionEyes(player);
                                 Vector3f eyeLook = EntityUtility.toVector3f(player.getLook(1));
@@ -210,8 +210,8 @@ public class ItemPhysicsGun extends RawItem {
                     World world = player.world;
                     PhysicsWorld physicsWorld = Physics.getInstance().getPhysicsOverworld()
                             .getPhysicsByWorld(player.world);
-                    if (player.getActiveItemStack() != null
-                            && player.getActiveItemStack().getItem() instanceof ItemPhysicsGun) {
+                    if (player.getHeldItemMainhand() != null
+                            && player.getHeldItemMainhand().getItem() instanceof ItemPhysicsGun) {
                         PickUpMechanic mechanic = (PickUpMechanic) physicsWorld.getMechanics().get("PickUp");
                         if (mechanic != null) {
                             OwnedPickedObject object = mechanic.getOwnedPickedObject(player);

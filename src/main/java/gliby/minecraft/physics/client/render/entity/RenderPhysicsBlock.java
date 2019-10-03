@@ -2,7 +2,7 @@ package gliby.minecraft.physics.client.render.entity;
 
 import com.bulletphysicsx.linearmath.Transform;
 import gliby.minecraft.physics.client.render.RenderHandler;
-import gliby.minecraft.physics.client.render.RenderUtilities;
+import gliby.minecraft.physics.client.render.ConversionUtility;
 import gliby.minecraft.physics.common.entity.EntityPhysicsBase;
 import gliby.minecraft.physics.common.entity.EntityPhysicsBlock;
 import net.minecraft.block.state.IBlockState;
@@ -43,7 +43,7 @@ public class RenderPhysicsBlock extends RenderPhysics {
         //
         IBlockState state = entity.getBlockState();
         if (state.getRenderType() != EnumBlockRenderType.INVISIBLE) {
-            Vector3f worldTranslation = RenderUtilities.getWorldTranslation(mc, partialTick);
+            Vector3f worldTranslation = ConversionUtility.getWorldTranslation(mc, partialTick);
             BlockRendererDispatcher blockrendererdispatcher = mc.getBlockRendererDispatcher();
             IBakedModel ibakedmodel = blockrendererdispatcher.getModelForState(state);
 
@@ -51,7 +51,7 @@ public class RenderPhysicsBlock extends RenderPhysics {
             tempTransform.setIdentity();
             tempTransform.setRotation(entity.renderRotation);
             tempTransform.origin.set(entity.renderPosition);
-            RenderUtilities.setBufferFromTransform(renderMatrix, tempTransform);
+            ConversionUtility.setBufferFromTransform(renderMatrix, tempTransform);
 
             // start drawing
             GlStateManager.pushMatrix();
@@ -88,7 +88,7 @@ public class RenderPhysicsBlock extends RenderPhysics {
     @Override
     public Vector3f getRenderHitPoint(EntityPhysicsBase entity, float partialTick) {
         EntityPhysicsBlock entityBlock = (EntityPhysicsBlock) entity;
-        Vector3f worldTranslation = RenderUtilities.getWorldTranslation(Minecraft.getMinecraft(), partialTick);
+        Vector3f worldTranslation = ConversionUtility.getWorldTranslation(Minecraft.getMinecraft(), partialTick);
         Vector3f hitPoint = new Vector3f(entityBlock.renderPosition);
         hitPoint.add(entity.pickLocalHit);
         hitPoint.add(new Vector3f(0.5f, 0.5f, 0.5f));

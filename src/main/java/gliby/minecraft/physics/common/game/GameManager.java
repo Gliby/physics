@@ -45,7 +45,7 @@ public class GameManager {
                     .entity(EntityPhysicsBlock.class)
                     .id(new ResourceLocation(Physics.ID, "physicsblock"), ++networkId)
                     .name("physicsblock")
-                    .tracker(64, 1, false)
+                    .tracker(64, 20, false)
                     .build(),
             // tool gun beam
             EntityEntryBuilder.create()
@@ -58,7 +58,6 @@ public class GameManager {
 
     @SubscribeEvent
     public void registerEntities(RegistryEvent.Register<EntityEntry> event) {
-        System.out.println("ENTITY REGISTRY!!!!");
         final IForgeRegistry<EntityEntry> registry = event.getRegistry();
         for (final EntityEntry entityEntry : SET_ENTITIES)
         {

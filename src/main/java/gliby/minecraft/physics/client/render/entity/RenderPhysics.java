@@ -2,7 +2,7 @@ package gliby.minecraft.physics.client.render.entity;
 
 import gliby.minecraft.gman.client.render.CustomBlockModelRenderer;
 import gliby.minecraft.physics.client.render.RenderHandler;
-import gliby.minecraft.physics.client.render.RenderUtilities;
+import gliby.minecraft.physics.client.render.ConversionUtility;
 import gliby.minecraft.physics.common.entity.EntityPhysicsBase;
 import gliby.minecraft.physics.common.game.items.ItemPhysicsGun;
 import net.minecraft.client.Minecraft;
@@ -21,7 +21,6 @@ import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
 
 import javax.vecmath.Vector3f;
-import java.nio.Buffer;
 
 public abstract class RenderPhysics extends Render {
 
@@ -67,75 +66,86 @@ public abstract class RenderPhysics extends Render {
         EntityPhysicsBase entity = (EntityPhysicsBase) uncast;
         drawBeam:
         if (entity.pickerEntity != null) {
-            Item item = entity.pickerEntity.getActiveItemStack() != null ? entity.pickerEntity.getActiveItemStack().getItem() : null;
+            Item item = entity.pickerEntity.getHeldItemMainhand() != null ? entity.pickerEntity.getHeldItemMainhand().getItem() : null;
             if (item instanceof ItemPhysicsGun) {
+
+
                 Vector3f hitPoint = getRenderHitPoint(entity, partialTick);
                 Vec3d firstPersonOffset = new Vec3d(-0.22D, -0.08D, 0.35D);
+
                 firstPersonOffset = firstPersonOffset.rotatePitch(-(entity.pickerEntity.prevRotationPitch
                         + (entity.pickerEntity.rotationPitch - entity.pickerEntity.prevRotationPitch) * partialTick)
                         * (float) Math.PI / 180.0F);
+
                 firstPersonOffset = firstPersonOffset.rotateYaw(-(entity.pickerEntity.prevRotationYaw
                         + (entity.pickerEntity.rotationYaw - entity.pickerEntity.prevRotationYaw) * partialTick)
                         * (float) Math.PI / 180.0F);
 
-                double d3 = entity.pickerEntity.prevPosX
+                double targetX = entity.pickerEntity.prevPosX
                         + (entity.pickerEntity.posX - entity.pickerEntity.prevPosX) * (double) partialTick
                         + firstPersonOffset.x;
-                double d4 = entity.pickerEntity.prevPosY
+                double targetY = entity.pickerEntity.prevPosY
                         + (entity.pickerEntity.posY - entity.pickerEntity.prevPosY) * (double) partialTick
                         + firstPersonOffset.y;
-                double d5 = entity.pickerEntity.prevPosZ
+                double targetZ = entity.pickerEntity.prevPosZ
                         + (entity.pickerEntity.posZ - entity.pickerEntity.prevPosZ) * (double) partialTick
                         + firstPersonOffset.z;
 
                 if (this.renderManager.options.thirdPersonView != 0 || entity.pickerEntity != mc.player) {
-                    Vec3d beamStart = RenderUtilities.calculateRay(entity.pickerEntity, 1.0f, partialTick,
+                    Vec3d beamStart = ConversionUtility.calculateRay(entity.pickerEntity, 1.0f, partialTick,
                             new Vector3f(-0.1f, -0.25F, 0));
-                    d3 = beamStart.x;
-                    d4 = beamStart.y;
-                    d5 = beamStart.z;
-                    GL11.glLineWidth(2.0f);
-                } else {
-                    if (!Minecraft.isGuiEnabled()) {
-                        break drawBeam;
-                    }
-                    GL11.glLineWidth(10.0f);
-                }
-                double d6 = entity.pickerEntity.getEyeHeight();
+                    targetX = beamStart.x;
+                    targetY = beamStart.y;
+                    targetZ = beamStart.z;
+                    GlStateManager.glLineWidth(2.0f);
 
-                double d16 = (entity.prevPosX + (entity.posX - entity.prevPosX) * (double) partialTick) + hitPoint.x
-                        - entityX;
-                double d8 = (entity.prevPosY + (entity.posY - entity.prevPosY) * (double) partialTick + 0.25D)
+                } else {
+                    // stop drawing beam if gui disabled
+                    if (!Minecraft.isGuiEnabled())
+                        break drawBeam;
+
+                    GlStateManager.glLineWidth(10.0f);
+                }
+                double eyeHeight = entity.pickerEntity.getEyeHeight();
+
+                double x = (entity.prevPosX + (entity.posX - entity.prevPosX) * (double) partialTick) + hitPoint.x - entityX;
+                double y = (entity.prevPosY + (entity.posY - entity.prevPosY) * (double) partialTick + 0.25D)
                         + hitPoint.y - entityY;
-                double d10 = (entity.prevPosZ + (entity.posZ - entity.prevPosZ) * (double) partialTick) + hitPoint.z
+                double z = (entity.prevPosZ + (entity.posZ - entity.prevPosZ) * (double) partialTick) + hitPoint.z
                         - entityZ;
-                double d12 = (float) (d3 - d16);
-                double d14 = (double) ((float) (d4 - d8)) + d6;
-                double d15 = (float) (d5 - d10);
+                double diffX = (float) (targetX - x);
+                double diffY = (double) ((float) (targetY - y)) + eyeHeight;
+                double diffZ = (float) (targetZ - z);
+
+                int beamColor = getBeamColor(entity.pickerEntity);
                 GlStateManager.disableTexture2D();
                 GlStateManager.disableLighting();
                 OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 0);
-                bufferBuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-                bufferBuilder.putColor4(getBeamColor(entity.pickerEntity));
-                byte b2 = 16;
-                for (int i = 0; i <= b2; ++i) {
-                    float f12 = (float) i / (float) b2;
-                    bufferBuilder.pos(hitPoint.x + d12 * (double) f12,
-                            hitPoint.y + (d14 + 0.0f) * (double) (f12 * f12 + f12) * 0.5D + 0.25D,
-                            hitPoint.z + d15 * (double) f12);
+                bufferBuilder.begin(3, DefaultVertexFormats.POSITION);
+//                bufferBuilder.color(getBeamColor(entity.pickerEntity));
+                byte points = 16;
+                for (int i = 0; i <= points; ++i) {
+                    float curve = (float) i / (float) points;
+                    bufferBuilder.pos(hitPoint.x + diffX * (double) curve,
+                            hitPoint.y + (diffY + 0.0f) * (double) (curve * curve + curve) * 0.5D + 0.25D,
+                            hitPoint.z + diffZ * (double) curve);
                 }
                 tessellator.draw();
 
-                // Outline
-                GL11.glLineWidth(3);
-                GL11.glPolygonMode(GL11.GL_FRONT, GL11.GL_LINE);
-                GL11.glDisable(GL11.GL_DEPTH_TEST);
-                GL11.glDisable(GL11.GL_TEXTURE_2D);
-                draw(uncast, entityX, entityY, entityZ, partialTick, getBeamColor(entity.pickerEntity), true);
-                GL11.glEnable(GL11.GL_DEPTH_TEST);
-                GL11.glLineWidth(3);
-                GL11.glPolygonMode(GL11.GL_FRONT, GL11.GL_FILL);
-                GL11.glEnable(GL11.GL_TEXTURE_2D);
+                // draw outline
+                GlStateManager.glLineWidth(3);
+                GlStateManager.glPolygonMode(GL11.GL_FRONT,GL11.GL_LINE);
+                GlStateManager.disableTexture2D();
+                GlStateManager.disableDepth();
+                GlStateManager.enableRescaleNormal();
+
+                draw(uncast, entityX, entityY, entityZ, partialTick, beamColor, true);
+
+                GlStateManager.disableRescaleNormal();
+                GlStateManager.enableDepth();
+                GlStateManager.enableTexture2D();
+                GlStateManager.glPolygonMode(GL11.GL_FRONT,GL11.GL_FILL);
+                GlStateManager.glLineWidth(3);
 
                 // Entity lighting
                 int brightness = entity.getBrightnessForRender();
@@ -146,9 +156,10 @@ public abstract class RenderPhysics extends Render {
 
                 GlStateManager.enableLighting();
                 GlStateManager.enableTexture2D();
-                GL11.glLineWidth(1.0f);
+                GlStateManager.glLineWidth(1.0f);
             }
         }
+
         draw(uncast, entityX, entityY, entityZ, partialTick, -1, false);
     }
 

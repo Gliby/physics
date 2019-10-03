@@ -137,8 +137,8 @@ public class ItemToolGun extends RawItem {
                     World world = player.world;
                     Physics physics = Physics.getInstance();
                     PhysicsWorld physicsWorld = Physics.getInstance().getPhysicsOverworld().getPhysicsByWorld(world);
-                    if (player.getActiveItemStack() != null
-                            && player.getActiveItemStack().getItem() instanceof ItemToolGun) {
+                    if (player.getHeldItemMainhand() != null
+                            && player.getHeldItemMainhand().getItem() instanceof ItemToolGun) {
                         IToolGunAction toolGunAction;
                         if ((toolGunAction = physics.getGameManager().getToolGunRegistry().getActions()
                                 .get(packet.mode)) != null) {
@@ -196,8 +196,8 @@ public class ItemToolGun extends RawItem {
                     World world = player.world;
                     Physics physics = Physics.getInstance();
                     PhysicsWorld physicsWorld = physics.getPhysicsOverworld().getPhysicsByWorld(world);
-                    if (player.getActiveItemStack() != null
-                            && player.getActiveItemStack().getItem() instanceof ItemToolGun) {
+                    if (player.getHeldItemMainhand() != null
+                            && player.getHeldItemMainhand().getItem() instanceof ItemToolGun) {
                         IToolGunAction toolGunAction;
                         if ((toolGunAction = physics.getGameManager().getToolGunRegistry().getActions()
                                 .get(packet.mode)) != null) {
