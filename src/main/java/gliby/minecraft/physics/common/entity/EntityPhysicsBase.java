@@ -1,6 +1,7 @@
 package gliby.minecraft.physics.common.entity;
 
 import com.google.gson.Gson;
+import gliby.minecraft.gman.networking.GDataSerializers;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
 import gliby.minecraft.physics.common.game.items.ItemPhysicsGun;
@@ -14,9 +15,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializer;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.EnumHand;
@@ -28,14 +27,12 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 // TODO feature implement proper collision detection/response, stop using minecraft AABB
-//TODO feature: Replace death timer with physics object limit.
+// TODO feature: Replace death timer with physics object limit.
 
 /**
  *
@@ -51,7 +48,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     protected PhysicsWorld physicsWorld;
 
     protected static final DataParameter<Integer> PICKER_ID = EntityDataManager.<Integer>createKey(EntityPhysicsBase.class, DataSerializers.VARINT);
-    protected static final DataParameter<Vector3f> PICK_OFFSET = EntityDataManager.<Vector3f>createKey(EntityPhysicsBase.class, Physics.VECTOR3F);
+    protected static final DataParameter<Vector3f> PICK_OFFSET = EntityDataManager.<Vector3f>createKey(EntityPhysicsBase.class, GDataSerializers.VECTOR3F);
 
     private int lastTickActive;
 
@@ -304,21 +301,22 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
     @Override
     public void writeSpawnData(ByteBuf buffer) {
-        List<RigidBodyMechanic> savedMechanics = new ArrayList<RigidBodyMechanic>();
-        for (int i = 0; i < mechanics.size(); i++) {
-            RigidBodyMechanic mechanic = mechanics.get(i);
-            if (mechanic.isCommon()) {
-                savedMechanics.add(mechanic);
-            }
-        }
 
         PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
 
-        // TODO 1.12.2 write mechanics
-//        buffer.writeInt(savedMechanics.size());
-//        for (int i = 0; i < savedMechanics.size(); i++) {
-//            ByteBufUtils.writeUTF8String(buffer, overworld.getMechanicsMap().inverse().get(savedMechanics.get(i)));
-//        }
+        List<String> savedMechanics = new ArrayList<String>();
+        for (int i = 0; i < mechanics.size(); i++) {
+            RigidBodyMechanic mechanic = mechanics.get(i);
+            String mechanicName = overworld.getMechanicsMap().inverse().get(savedMechanics.get(i));
+            if (mechanic.isCommon() && !mechanicName.isEmpty()) {
+                savedMechanics.add(mechanicName);
+            }
+        }
+
+        buffer.writeInt(savedMechanics.size());
+        for (int i = 0; i < savedMechanics.size(); i++) {
+            ByteBufUtils.writeUTF8String(buffer, (String) savedMechanics.get(i));
+        }
 
         buffer.writeInt((Integer)(dataManager.get(PICKER_ID)).intValue());
 
@@ -329,15 +327,13 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
     @Override
     public void readSpawnData(ByteBuf buffer) {
-        // TODO 1.12.2 read mechanics
-
-        //        int size = buffer.readInt();
-//        PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
-//        for (int i = 0; i < size; i++) {
-//            String mechanicName = ByteBufUtils.readUTF8String(buffer);
-//            RigidBodyMechanic mechanic = overworld.getMechanicFromName(mechanicName);
-//            mechanics.add(mechanic);
-//        }
+        int size = buffer.readInt();
+        PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
+        for (int i = 0; i < size; i++) {
+            String mechanicName = ByteBufUtils.readUTF8String(buffer);
+            RigidBodyMechanic mechanic = overworld.getMechanicFromName(mechanicName);
+            mechanics.add(mechanic);
+        }
 
         this.pickerEntity = (EntityPlayer) this.world.getEntityByID(buffer.readInt());
         Vector3f readPick = new Vector3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());

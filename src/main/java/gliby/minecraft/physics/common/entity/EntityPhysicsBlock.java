@@ -4,6 +4,7 @@ import com.bulletphysicsx.collision.broadphase.CollisionFilterGroups;
 import com.bulletphysicsx.linearmath.QuaternionUtil;
 import com.bulletphysicsx.linearmath.Transform;
 import gliby.minecraft.gman.BlockStateToMetadata;
+import gliby.minecraft.gman.networking.GDataSerializers;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.client.render.RenderHandler;
 import gliby.minecraft.physics.client.render.ConversionUtility;
@@ -93,7 +94,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     private Vector3f linearVelocity, angularVelocity;
 
 //    protected static final DataParameter<Vector3f> PHYSICS_POSITION = EntityDataManager.<Vector3f>createKey(EntityPhysicsBlock.class, Physics.VECTOR3F);
-    protected static final DataParameter<Quat4f> PHYSICS_ROTATION = EntityDataManager.<Quat4f>createKey(EntityPhysicsBlock.class, Physics.QUAT4F);
+    protected static final DataParameter<Quat4f> PHYSICS_ROTATION = EntityDataManager.<Quat4f>createKey(EntityPhysicsBlock.class, GDataSerializers.QUAT4F);
 
 
     @SideOnly(Side.CLIENT)

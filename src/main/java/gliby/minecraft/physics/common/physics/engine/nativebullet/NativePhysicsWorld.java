@@ -29,7 +29,6 @@ import java.util.List;
  *
  */
 
-// TODO FIXME, still leaks like crazy.
 // IVector and
 // IQuaternion, IMatrix, replace with custom vector stuff or MC Vec3.
 public class NativePhysicsWorld extends PhysicsWorld {

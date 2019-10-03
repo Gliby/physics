@@ -45,7 +45,7 @@ public class EnvironmentResponseMechanic extends RigidBodyMechanic {
                 BlockStateAndLocation block = blocks.get(i);
                 Material liquidMaterial = block.getBlockState().getBlock().getMaterial(block.getBlockState());
                 BlockDynamicLiquid liquidBlock = BlockLiquid.getFlowingBlock(liquidMaterial);
-                // TODO 1.12.2 port, fix flow direction
+                // TODO 1.12.2 port, fix flow direction (not worth)
 //                Vec3d vec3 = getFlowVector(rigidBody.getOwner().world, block.getBlockPosition(),
 //                        block.getBlockState().getBlock(), liquidMaterial);
                 Vec3d flow = Vec3d.ZERO;

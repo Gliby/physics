@@ -1,6 +1,6 @@
 package gliby.minecraft.physics.client.render.entity;
 
-import gliby.minecraft.gman.client.render.CustomBlockModelRenderer;
+import gliby.minecraft.gman.client.render.GBlockModelRenderer;
 import gliby.minecraft.physics.client.render.RenderHandler;
 import gliby.minecraft.physics.client.render.ConversionUtility;
 import gliby.minecraft.physics.common.entity.EntityPhysicsBase;
@@ -27,10 +27,10 @@ public abstract class RenderPhysics extends Render {
     protected static Minecraft mc;
     private final int DEFAULT_PHYSICS_COLOR = 0xFF87FFFF;
     private RenderHandler renderHandler;
-    // TODO What if beam color is actually -1 ?
+
     private int beamColor = -1;
 
-    protected static final CustomBlockModelRenderer blockModelRenderer = new CustomBlockModelRenderer(Minecraft.getMinecraft().getBlockColors());
+    protected static final GBlockModelRenderer blockModelRenderer = new GBlockModelRenderer(Minecraft.getMinecraft().getBlockColors());
 
     /**
      * @param renderManager

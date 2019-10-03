@@ -429,8 +429,7 @@ public class EntityPhysicsRagdoll extends EntityPhysicsBase implements IEntityAd
 	 
 	@Override
 	protected void createPhysicsObject(OldWorldPhysicsSimulator physicsWorld) {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	 (non-Javadoc)
@@ -438,7 +437,6 @@ public class EntityPhysicsRagdoll extends EntityPhysicsBase implements IEntityAd
 	 
 	@Override
 	public OwnedRigidBody getRigidBody() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

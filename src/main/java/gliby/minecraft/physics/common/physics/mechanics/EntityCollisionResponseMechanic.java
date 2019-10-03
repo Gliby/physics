@@ -53,7 +53,7 @@ public class EntityCollisionResponseMechanic extends PhysicsMechanic {
             AxisAlignedBB axisAlignedBB = new AxisAlignedBB(minBB.x, minBB.y, minBB.z, maxBB.x, maxBB.y, maxBB.z)
                     .offset(0.5f, 0.5f, 0.5f);
             List<Entity> intersectingEntites;
-            // todo port 1.12.2
+            // todo port 1.12.2 (disabled originally because of concurrency issues, could work now.)
 //            MinecraftServer server = MinecraftServer.getServer();
 //            intersectingEntites = world.getEntitiesWithinAABB(Entity.class, axisAlignedBB,
 //                    IEntityPhysics.NOT_PHYSICS_OBJECT);

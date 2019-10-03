@@ -72,7 +72,6 @@ public abstract class PhysicsWorld {
     protected ICollisionShape createBlockShape(final World worldObj, final BlockPos blockPos, final IBlockState blockState) {
         if (!blockState.getBlock().isNormalCube(blockState)) {
             final List<AxisAlignedBB> collisionBBs = new ArrayList<AxisAlignedBB>();
-            // todo 1.12.2 port possible bug
             blockState.getBlock().addCollisionBoxToList(blockState, worldObj, blockPos, WorldUtility.MAX_BB,
                     collisionBBs, null, true);
             return buildCollisionShape(collisionBBs, new Vector3f(blockPos.getX(), blockPos.getY(), blockPos.getZ()));

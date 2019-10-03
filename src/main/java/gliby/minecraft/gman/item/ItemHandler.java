@@ -126,14 +126,6 @@ public class ItemHandler {
                     AlwaysUsedItem itemInfo = getAlwaysUsedItem(item);
                     if (itemInfo != null) {
                         if (!itemInfo.isSwingable() && isClient) {
-                            // TODO 1.12.2 item renderer AT
-//                            mc.entityRenderer.itemRenderer.itemRenderer = mc.player.inventory.getCurrentItem();
-//                            mc.entityRenderer.itemRenderer.equippedItemSlot = mc.player.inventory.currentItem;
-//                            mc.entityRenderer.itemRenderer.equippedProgress = 1.0f;
-//                            mc.entityRenderer.itemRenderer.prevEquippedProgress = 1.0f;
-//                            mc.player.isSwingInProgress = false;
-//                            mc.player.swingProgressInt = 0;
-//                            mc.player.swingProgress = 0;
                             mc.playerController.resetBlockRemoving();
                             mc.player.isSwingInProgress = false;
                             mc.player.swingProgressInt = 0;
@@ -143,9 +135,6 @@ public class ItemHandler {
                         if (event.phase.equals(TickEvent.Phase.END)) {
                             if (event.player.getItemInUseCount() <= 0 && !isFirstPerson) {
                                 event.player.resetActiveHand();
-                                // todo 1.12.2 port
-//                                event.player.setActiveHand();
-//                                event.player.setActiveHand(itemStack, Integer.MAX_VALUE);
                             }
                         }
                     }
