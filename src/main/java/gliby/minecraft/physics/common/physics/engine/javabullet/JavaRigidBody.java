@@ -24,11 +24,6 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
     private ICollisionShape collisionShape;
 
     private Map<String, Object> properties;
-    private Vector3f centerOfMass;
-    private Quat4f quatRotation;
-    private JavaQuaternion rotation;
-    private Transform worldTransform;
-    private JavaVector3 position;
 
     public JavaRigidBody(PhysicsWorld physicsWorld, RigidBody body, Entity owner) {
         super(physicsWorld, owner, body);
@@ -36,10 +31,6 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
         this.owner = owner;
         this.collisionShape = new JavaCollisionShape(physicsWorld, body.getCollisionShape());
         this.properties = new HashMap<String, Object>();
-        this.quatRotation = new Quat4f();
-        this.rotation = new JavaQuaternion(quatRotation);
-        this.worldTransform = new Transform();
-        this.position = new JavaVector3(worldTransform.origin);
     }
 
     @Override
@@ -58,23 +49,23 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
     }
 
     @Override
-    public Vector3f getAngularVelocity(Vector3f out) {
-        return rigidBody.getAngularVelocity(out);
+    public Vector3f getAngularVelocity() {
+        return rigidBody.getAngularVelocity(new Vector3f());
     }
 
     @Override
-    public Vector3f getLinearVelocity(Vector3f out) {
-        return rigidBody.getLinearVelocity(out);
+    public Vector3f getLinearVelocity() {
+        return rigidBody.getLinearVelocity(new Vector3f());
     }
 
     @Override
-    public Vector3f getCenterOfMassPosition(Vector3f out) {
-        return rigidBody.getCenterOfMassPosition(out);
+    public Vector3f getCenterOfMassPosition() {
+        return rigidBody.getCenterOfMassPosition(new Vector3f());
     }
 
     @Override
-    public Transform getWorldTransform(Transform transform) {
-        return rigidBody.getWorldTransform(transform);
+    public Transform getWorldTransform() {
+        return rigidBody.getWorldTransform(new Transform());
     }
 
     @Override
@@ -145,8 +136,8 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
     }
 
     @Override
-    public Transform getCenterOfMassTransform(Transform transform) {
-        return rigidBody.getCenterOfMassTransform(transform);
+    public Transform getCenterOfMassTransform() {
+        return rigidBody.getCenterOfMassTransform(new Transform());
 
     }
 
@@ -167,24 +158,14 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
     }
 
     @Override
-    public Vector3f getCenterOfMassPosition() {
-        if (centerOfMass == null)
-            centerOfMass = new Vector3f();
-        this.rigidBody.getCenterOfMassPosition(centerOfMass);
-        return centerOfMass;
+    public Quat4f getRotation() {
+        return rigidBody.getOrientation(new Quat4f());
 
     }
 
     @Override
-    public IQuaternion getRotation() {
-        return rotation.set(rigidBody.getOrientation(quatRotation));
-
-    }
-
-    @Override
-    public IVector3 getPosition() {
-        return position.set(rigidBody.getWorldTransform(worldTransform).origin);
-
+    public Vector3f getPosition() {
+        return rigidBody.getWorldTransform(new Transform()).origin;
     }
 
     @Override

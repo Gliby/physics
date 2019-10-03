@@ -101,7 +101,7 @@ public class PickUpMechanic extends PhysicsMechanic {
     public void addPickedObject(PickedObject object) {
         if (object.getRigidBody() != null) {
             Vector3f pickPosition = new Vector3f(object.getRayCallback().getHitPointWorld());
-            Transform centerOfMassTransform = object.getRigidBody().getCenterOfMassTransform(new Transform());
+            Transform centerOfMassTransform = object.getRigidBody().getCenterOfMassTransform();
             centerOfMassTransform.inverse();
             Vector3f relativePivot = new Vector3f(pickPosition);
             centerOfMassTransform.transform(relativePivot);
@@ -111,7 +111,7 @@ public class PickUpMechanic extends PhysicsMechanic {
             Vector3f posToEye = new Vector3f();
             posToEye.sub(pickPosition, object.getRayFromWorld());
             object.setPickDistance(posToEye.length());
-            object.setOriginalCenterOfMassTransform(object.getRigidBody().getCenterOfMassTransform(new Transform()));
+            object.setOriginalCenterOfMassTransform(object.getRigidBody().getCenterOfMassTransform());
             // p2p.setImpulseClamp(3.0f);
             p2p.setTau(0.1f);
             this.physicsWorld.addConstraint(p2p);

@@ -38,7 +38,7 @@ public class ToolGunMotorAction implements IToolGunAction, IToolGunTickable {
         if (ray.getCollisionObject() != null && ray.hasHit()) {
             IRigidBody body = physicsWorld.upCastRigidBody(ray.getCollisionObject());
             if (body != null) {
-                Transform centerOfMassTransform = body.getCenterOfMassTransform(new Transform());
+                Transform centerOfMassTransform = body.getCenterOfMassTransform();
 
                 centerOfMassTransform.inverse();
                 Vector3f relativePivot = new Vector3f(ray.getHitPointWorld());

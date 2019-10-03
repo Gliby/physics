@@ -1,10 +1,15 @@
 package gliby.minecraft.physics.client.render;
 
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector3;
 import com.bulletphysicsx.linearmath.Transform;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.Vec3d;
 
+import javax.vecmath.Matrix4f;
+import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 import java.nio.FloatBuffer;
 
@@ -12,6 +17,7 @@ import java.nio.FloatBuffer;
  *
  */
 public class ConversionUtility {
+
 
     private static float[] buffer = new float[16];
 
@@ -34,9 +40,27 @@ public class ConversionUtility {
         return new Vector3f((float) vec3.x, (float) vec3.y, (float) vec3.z);
     }
 
+    public static Vector3f toVector3f(Vector3 vec3) {
+        return new Vector3f((float) vec3.x, (float) vec3.y, (float) vec3.z);
+    }
+
+    public static Vector3 toVector3(Vec3d vec3) {
+        return new Vector3((float) vec3.x, (float) vec3.y, (float) vec3.z);
+    }
+
+    public static Vector3 toVector3(Vector3f vec3) {
+        return new Vector3((float) vec3.x, (float) vec3.y, (float) vec3.z);
+    }
+
+
     public static Vec3d toVec3(Vector3f vec3) {
         return new Vec3d(vec3.x, vec3.y, vec3.z);
     }
+
+    public static Vec3d toVec3(Vector3 vec3) {
+        return new Vec3d(vec3.x, vec3.y, vec3.z);
+    }
+
     public static Vec3d fromColor(int color) {
         float red = (float) (color >> 16 & 255) / 255.0F;
         float blue = (float) (color >> 8 & 255) / 255.0F;
@@ -61,49 +85,59 @@ public class ConversionUtility {
         return new Vec3d((float) vec32.x, (float) vec32.y, (float) vec32.z);
     }
 
-    public static void drawCube(float extent, boolean fill) {
-//        Tessellator tessellator = Tessellator.getInstance();
-//        WorldRenderer worldRenderer = tessellator.getWorldRenderer();
-//        extent = extent * 0.5f;
-//        if (!fill) {
-//            glPolygonMode(GL_FRONT, GL_LINE);
-//            glPolygonMode(GL_BACK, GL_LINE);
-//        }
-//        worldRenderer.startDrawingQuads();
-//        worldRenderer.setNormal(1f, 0f, 0f);
-//        worldRenderer.addVertex(+extent, -extent, +extent);
-//        worldRenderer.addVertex(+extent, -extent, -extent);
-//        worldRenderer.addVertex(+extent, +extent, -extent);
-//        worldRenderer.addVertex(+extent, +extent, +extent);
-//        worldRenderer.setNormal(0f, 1f, 0f);
-//        worldRenderer.addVertex(+extent, +extent, +extent);
-//        worldRenderer.addVertex(+extent, +extent, -extent);
-//        worldRenderer.addVertex(-extent, +extent, -extent);
-//        worldRenderer.addVertex(-extent, +extent, +extent);
-//        worldRenderer.setNormal(0f, 0f, 1f);
-//        worldRenderer.addVertex(+extent, +extent, +extent);
-//        worldRenderer.addVertex(-extent, +extent, +extent);
-//        worldRenderer.addVertex(-extent, -extent, +extent);
-//        worldRenderer.addVertex(+extent, -extent, +extent);
-//        worldRenderer.setNormal(-1f, 0f, 0f);
-//        worldRenderer.addVertex(-extent, -extent, +extent);
-//        worldRenderer.addVertex(-extent, +extent, +extent);
-//        worldRenderer.addVertex(-extent, +extent, -extent);
-//        worldRenderer.addVertex(-extent, -extent, -extent);
-//        worldRenderer.setNormal(0f, -1f, 0f);
-//        worldRenderer.addVertex(-extent, -extent, +extent);
-//        worldRenderer.addVertex(-extent, -extent, -extent);
-//        worldRenderer.addVertex(+extent, -extent, -extent);
-//        worldRenderer.addVertex(+extent, -extent, +extent);
-//        worldRenderer.setNormal(0f, 0f, -1f);
-//        worldRenderer.addVertex(-extent, -extent, -extent);
-//        worldRenderer.addVertex(-extent, +extent, -extent);
-//        worldRenderer.addVertex(+extent, +extent, -extent);
-//        worldRenderer.addVertex(+extent, -extent, -extent);
-//        tessellator.draw();
-//        if (!fill) {
-//            glPolygonMode(GL_FRONT, GL_FILL);
-//            glPolygonMode(GL_BACK, GL_FILL);
-//        }
+    public static float[] getMatrix4Values(Matrix4 matrix4f) {
+        return matrix4f.getValues();
+    }
+
+    public static float[] getMatrix4Values(Matrix4f matrix4f) {
+        final float[] matrix = {
+                matrix4f.m00,
+                matrix4f.m01,
+                matrix4f.m02,
+                matrix4f.m03,
+
+                matrix4f.m10,
+                matrix4f.m11,
+                matrix4f.m12,
+                matrix4f.m13,
+
+                matrix4f.m20,
+                matrix4f.m21,
+                matrix4f.m22,
+                matrix4f.m23,
+
+                matrix4f.m30,
+                matrix4f.m31,
+                matrix4f.m32,
+                matrix4f.m33,
+        };
+        return matrix;
+    }
+
+    public static Matrix4f toMatrix4f(Matrix4 matrix4f) {
+        return new Matrix4f(getMatrix4Values(matrix4f));
+    }
+
+    public static Matrix4 toMatrix4(Matrix4f matrix4f) {
+        return new Matrix4(getMatrix4Values(matrix4f));
+    }
+
+    public static Matrix4 toMatrix4(Transform transform) {
+        return new Matrix4(getMatrix4Values(transform.getMatrix(new Matrix4f())));
+    }
+
+    public static Matrix4f inverse(Matrix4f centerOfMassTransform) {
+        Transform trans = new Transform(centerOfMassTransform);
+        trans.inverse();
+        centerOfMassTransform.setIdentity();
+        return trans.getMatrix(centerOfMassTransform);
+    }
+
+    public static Transform toTransform(Matrix4 mat4) {
+        return new Transform(toMatrix4f(mat4));
+    }
+
+    public static Quat4f toQuat4f(Quaternion orientation) {
+        return new Quat4f(orientation.x, orientation.y, orientation.z, orientation.w);
     }
 }

@@ -29,7 +29,6 @@ import java.util.List;
 
 public class JavaPhysicsWorld extends PhysicsWorld {
 
-    private static final Transform transform = new Transform();
     private final PhysicsOverworld physicsOverworld;
     private final Physics physics;
     private List<IRigidBody> rigidBodies;
@@ -323,6 +322,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
             final Vector3f extents = new Vector3f((float) relativeBB.maxX - (float) relativeBB.minX,
                     (float) relativeBB.maxY - (float) relativeBB.minY,
                     (float) relativeBB.maxZ - (float) relativeBB.minZ);
+            Transform transform = new Transform();
             transform.setIdentity();
             transform.origin.set((float) relativeBB.minX + (float) relativeBB.maxX - 0.5f,
                     (float) relativeBB.minY + (float) relativeBB.maxY - 0.5f,

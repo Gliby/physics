@@ -62,7 +62,7 @@ public class ExplosionHandler {
                         .getFloatValue();
                 for (int i = 0; i < affectedEntities.size(); i++) {
                     IRigidBody body = affectedEntities.get(i).getRigidBody();
-                    Vector3f centerOfMass = body.getCenterOfMassPosition(new Vector3f());
+                    Vector3f centerOfMass = body.getCenterOfMassPosition();
                     Vector3f direction = new Vector3f();
                     direction.sub(explosion, centerOfMass);
                     float distance = direction.length();

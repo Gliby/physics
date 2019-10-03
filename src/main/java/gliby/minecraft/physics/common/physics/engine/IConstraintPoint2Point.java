@@ -17,7 +17,7 @@ public interface IConstraintPoint2Point extends IConstraint {
 
     void setPivotB(Vector3f newPos);
 
-    Vector3f getPivotInA(Vector3f vector3f);
+    Vector3f getPivotInA();
 
-    Vector3f getPivotInB(Vector3f vector3f);
+    Vector3f getPivotInB();
 }

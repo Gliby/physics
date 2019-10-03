@@ -235,7 +235,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     public void onServerUpdate() {
         if (rigidBody != null && rigidBody.isValid()) {
             // Update position from given rigid body.
-            final IVector3 newPosition = rigidBody.getPosition();
+            final Vector3f newPosition = rigidBody.getPosition();
 
             setPosition(newPosition.getX(), newPosition.getY(),
                     newPosition.getZ());
@@ -244,7 +244,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
             setVelocity(velocity.getX(), velocity.getY(), velocity.getZ());
 
             // Update rotation from given rigid body.
-            final IQuaternion newQuat = rigidBody.getRotation();
+            final Quat4f newQuat = rigidBody.getRotation();
             physicsRotation.set(newQuat.getX(), newQuat.getY(), newQuat.getZ(),
                     newQuat.getW());
             // Set location and angles, so client could have proper bounding
@@ -302,10 +302,10 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
         tagCompound.setTag("Rotation", newFloatNBTList(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.w));
 
-        Vector3f linearVelocity = rigidBody.getLinearVelocity(new Vector3f());
+        Vector3f linearVelocity = rigidBody.getLinearVelocity();
         tagCompound.setTag("LinearVelocity",
                 newFloatNBTList(linearVelocity.x, linearVelocity.y, linearVelocity.z));
-        Vector3f angularVelocity = rigidBody.getAngularVelocity(new Vector3f());
+        Vector3f angularVelocity = rigidBody.getAngularVelocity();
         tagCompound.setTag("AngularVelocity",
                 newFloatNBTList(angularVelocity.x, angularVelocity.y, angularVelocity.z));
 

@@ -51,13 +51,13 @@ public class JavaConstraintPoint2Point implements IConstraintPoint2Point {
     }
 
     @Override
-    public Vector3f getPivotInA(Vector3f out) {
-        return constraint.getPivotInA(out);
+    public Vector3f getPivotInA() {
+        return constraint.getPivotInA(new Vector3f());
     }
 
     @Override
-    public Vector3f getPivotInB(Vector3f out) {
-        return constraint.getPivotInB(out);
+    public Vector3f getPivotInB() {
+        return constraint.getPivotInB(new Vector3f());
     }
 
     @Override

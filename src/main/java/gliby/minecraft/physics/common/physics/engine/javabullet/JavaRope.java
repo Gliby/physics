@@ -29,7 +29,7 @@ public class JavaRope implements IRope {
     public List<Vector3f> getSpherePositions() {
         List<Vector3f> points = new ArrayList<Vector3f>();
         for (int i = 0; i < rigidBodies.size(); i++) {
-            points.add(rigidBodies.get(i).getCenterOfMassPosition(new Vector3f()));
+            points.add(rigidBodies.get(i).getCenterOfMassPosition());
         }
         return points;
     }

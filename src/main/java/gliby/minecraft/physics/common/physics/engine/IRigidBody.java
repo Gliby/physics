@@ -2,6 +2,7 @@ package gliby.minecraft.physics.common.physics.engine;
 
 import com.bulletphysicsx.linearmath.Transform;
 
+import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 import java.util.Map;
 
@@ -22,29 +23,16 @@ public interface IRigidBody extends ICollisionObject {
      */
     boolean isActive();
 
-    /**
-     * @param vector3f
-     * @return
-     */
-    Vector3f getAngularVelocity(Vector3f vector3f);
 
-    /**
-     * @param vector3f
-     * @return
-     */
-    Vector3f getLinearVelocity(Vector3f vector3f);
+    Vector3f getAngularVelocity();
 
-    /**
-     * @param centerOfMass
-     * @return
-     */
-    Vector3f getCenterOfMassPosition(Vector3f centerOfMass);
 
-    /**
-     * @param transform
-     * @return
-     */
-    Transform getWorldTransform(Transform transform);
+    Vector3f getLinearVelocity();
+
+
+    Vector3f getCenterOfMassPosition();
+
+    Transform getWorldTransform();
 
     /**
      * @param transform
@@ -101,7 +89,7 @@ public interface IRigidBody extends ICollisionObject {
      * @param transform
      * @return
      */
-    Transform getCenterOfMassTransform(Transform transform);
+    Transform getCenterOfMassTransform();
 
     /**
      * @return
@@ -123,11 +111,9 @@ public interface IRigidBody extends ICollisionObject {
      */
     Vector3f getGravity(Vector3f gravity);
 
-    Vector3f getCenterOfMassPosition();
+    Quat4f getRotation();
 
-    IQuaternion getRotation();
-
-    IVector3 getPosition();
+    Vector3f getPosition();
 
     void applyTorque(Vector3f vector);
 

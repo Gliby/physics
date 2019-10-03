@@ -3,6 +3,7 @@ package gliby.minecraft.physics.common.physics.engine.nativebullet;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btPairCachingGhostObject;
 import com.bulletphysicsx.linearmath.Transform;
+import gliby.minecraft.physics.client.render.ConversionUtility;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import gliby.minecraft.physics.common.physics.engine.IGhostObject;
@@ -39,7 +40,7 @@ class NativePairCachingGhostObject implements IGhostObject {
 
     @Override
     public void setWorldTransform(final Transform entityTransform) {
-        ghostObject.setWorldTransform(NativePhysicsWorld.fromTransformToMatrix4(entityTransform));
+        ghostObject.setWorldTransform(ConversionUtility.toMatrix4(entityTransform));
 
     }
 
@@ -59,7 +60,7 @@ class NativePairCachingGhostObject implements IGhostObject {
     @Override
     public void setInterpolationWorldTransform(final Transform entityTransform) {
 
-        ghostObject.setInterpolationWorldTransform(NativePhysicsWorld.fromTransformToMatrix4(entityTransform));
+        ghostObject.setInterpolationWorldTransform(ConversionUtility.toMatrix4(entityTransform));
 
     }
 
