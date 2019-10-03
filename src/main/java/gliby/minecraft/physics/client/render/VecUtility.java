@@ -16,7 +16,7 @@ import java.nio.FloatBuffer;
 /**
  *
  */
-public class ConversionUtility {
+public class VecUtility {
 
 
     private static float[] buffer = new float[16];

@@ -5,7 +5,7 @@ import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCompoundShape;
 import com.bulletphysicsx.linearmath.Transform;
-import gliby.minecraft.physics.client.render.ConversionUtility;
+import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShapeChildren;
@@ -63,7 +63,7 @@ class NativeCollisionShape implements ICollisionShape {
 
     @Override
     public void getHalfExtentsWithMargin(Vector3f halfExtent) {
-        halfExtent.set(ConversionUtility.toVector3f(((btBoxShape) shape).getHalfExtentsWithMargin()));
+        halfExtent.set(VecUtility.toVector3f(((btBoxShape) shape).getHalfExtentsWithMargin()));
     }
 
     @Override
@@ -74,7 +74,7 @@ class NativeCollisionShape implements ICollisionShape {
             final int index = i;
             final Transform transform = new Transform();
             transform.setIdentity();
-            transform.set(ConversionUtility.toMatrix4f(compoundShape.getChildTransform(index)));
+            transform.set(VecUtility.toMatrix4f(compoundShape.getChildTransform(index)));
             shapeList.add(new ICollisionShapeChildren() {
                 @Override
                 public Transform getTransform() {
@@ -99,7 +99,7 @@ class NativeCollisionShape implements ICollisionShape {
 
     @Override
     public void setLocalScaling(final Vector3f localScaling) {
-        shape.setLocalScaling(ConversionUtility.toVector3(localScaling));
+        shape.setLocalScaling(VecUtility.toVector3(localScaling));
     }
 
     @Override

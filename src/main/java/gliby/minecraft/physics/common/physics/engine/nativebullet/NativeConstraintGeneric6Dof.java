@@ -2,7 +2,7 @@ package gliby.minecraft.physics.common.physics.engine.nativebullet;
 
 import com.badlogic.gdx.physics.bullet.dynamics.btGeneric6DofConstraint;
 import com.bulletphysicsx.linearmath.Transform;
-import gliby.minecraft.physics.client.render.ConversionUtility;
+import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IConstraintGeneric6Dof;
 
@@ -36,14 +36,14 @@ class NativeConstraintGeneric6Dof implements IConstraintGeneric6Dof {
 
     @Override
     public Transform getGlobalFrameOffsetA(Transform transform) {
-        transform.set(ConversionUtility.toMatrix4f(constraint.getCalculatedTransformA()));
+        transform.set(VecUtility.toMatrix4f(constraint.getCalculatedTransformA()));
         return transform;
 
     }
 
     @Override
     public Transform getGlobalFrameOffsetB(Transform transform) {
-        transform.set(ConversionUtility.toMatrix4f(constraint.getCalculatedTransformB()));
+        transform.set(VecUtility.toMatrix4f(constraint.getCalculatedTransformB()));
         return transform;
     }
 

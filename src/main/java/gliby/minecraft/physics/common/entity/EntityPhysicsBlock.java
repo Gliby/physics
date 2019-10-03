@@ -1,5 +1,6 @@
 package gliby.minecraft.physics.common.entity;
 
+import com.badlogic.gdx.math.Quaternion;
 import com.bulletphysicsx.collision.broadphase.CollisionFilterGroups;
 import com.bulletphysicsx.linearmath.QuaternionUtil;
 import com.bulletphysicsx.linearmath.Transform;
@@ -7,27 +8,30 @@ import gliby.minecraft.gman.BlockStateToMetadata;
 import gliby.minecraft.gman.networking.GDataSerializers;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.client.render.RenderHandler;
-import gliby.minecraft.physics.client.render.ConversionUtility;
+import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.blocks.PhysicsBlockMetadata;
 import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
-import gliby.minecraft.physics.common.physics.engine.IQuaternion;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
-import gliby.minecraft.physics.common.physics.engine.IVector3;
 import io.netty.buffer.ByteBuf;
-import javafx.scene.chart.Axis;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockHorizontal;
+import net.minecraft.block.BlockLog;
+import net.minecraft.block.BlockRotatedPillar;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
@@ -45,6 +49,8 @@ import javax.vecmath.Vector3f;
 // TODO improvement: Remove ability to spawn tile-entites.
 public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAdditionalSpawnData {
 
+    //    protected static final DataParameter<Vector3f> PHYSICS_POSITION = EntityDataManager.<Vector3f>createKey(EntityPhysicsBlock.class, Physics.VECTOR3F);
+    protected static final DataParameter<Quat4f> PHYSICS_ROTATION = EntityDataManager.<Quat4f>createKey(EntityPhysicsBlock.class, GDataSerializers.QUAT4F);
     /**
      * Client-side render position, basically a smoothed position.
      */
@@ -56,13 +62,13 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     @SideOnly(Side.CLIENT)
     public Quat4f renderRotation;
     /**
-     * Block.
-     */
-    private IBlockState blockState;
-    /**
      * Common variable, physics object's absolute position.
      */
 //    private Vector3f physicsPosition = new Vector3f();
+    /**
+     * Block.
+     */
+    private IBlockState blockState;
     /**
      * Common variable, physics object's absolute rotation.
      */
@@ -93,11 +99,6 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
      */
     private float friction;
     private Vector3f linearVelocity, angularVelocity;
-
-//    protected static final DataParameter<Vector3f> PHYSICS_POSITION = EntityDataManager.<Vector3f>createKey(EntityPhysicsBlock.class, Physics.VECTOR3F);
-    protected static final DataParameter<Quat4f> PHYSICS_ROTATION = EntityDataManager.<Quat4f>createKey(EntityPhysicsBlock.class, GDataSerializers.QUAT4F);
-
-
     @SideOnly(Side.CLIENT)
     private BlockPos blockPosition;
     private @SideOnly(Side.CLIENT)
@@ -124,7 +125,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         Physics physics = Physics.getInstance();
 
         PhysicsBlockMetadata metadata = physics.getBlockManager().getPhysicsBlockMetadata()
-                .get(physics.getBlockManager().getBlockIdentity(blockState.getBlock()));
+                .get(physics.getBlockManager().getBlockIdentity(getBlockState().getBlock()));
         boolean metadataExists = metadata != null;
 
         this.mass = metadataExists ? metadata.mass : 10;
@@ -135,7 +136,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         if (this.defaultCollisionShape)
             this.collisionShape = physicsWorld.getDefaultShape();
         else
-            this.collisionShape = physicsWorld.getBlockCache().getShape(world, new BlockPos(x, y, z), blockState);
+            this.collisionShape = physicsWorld.getBlockCache().getShape(world, new BlockPos(x, y, z), getBlockState());
 
 
 //        Physics.getLogger().error("Block doesn't exist, couldn't create collision shape");
@@ -175,7 +176,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     protected void createPhysicsObject(PhysicsWorld physicsWorld) {
         Transform transform = new Transform();
         transform.setIdentity();
-        transform.origin.set(ConversionUtility.toVector3f(getPositionVector()));
+        transform.origin.set(VecUtility.toVector3f(getPositionVector()));
         transform.setRotation(this.physicsRotation);
         rigidBody = physicsWorld.createRigidBody(this, transform, Math.abs(mass), collisionShape);
         rigidBody.getProperties().put(EnumRigidBodyProperty.BLOCKSTATE.getName(), blockState);
@@ -226,7 +227,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
         if (this.world.isBlockLoaded(blockPosition))
             return this.world.getCombinedLight(blockPosition, 0);
-         else
+        else
             return 0;
 
     }
@@ -279,9 +280,9 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     @Override
     public void writeEntityToNBT(final NBTTagCompound tagCompound) {
 
-        ResourceLocation resourcelocation = ForgeRegistries.BLOCKS.getKey(blockState.getBlock());
+        ResourceLocation resourcelocation = ForgeRegistries.BLOCKS.getKey(getBlockState().getBlock());
         tagCompound.setString("Block", resourcelocation == null ? "" : resourcelocation.toString());
-        tagCompound.setByte("Data", (byte) blockState.getBlock().getMetaFromState(blockState));
+        tagCompound.setByte("Data", (byte) getBlockState().getBlock().getMetaFromState(getBlockState()));
 
         tagCompound.setFloat("Mass", mass);
         tagCompound.setFloat("Friction", friction);
@@ -370,7 +371,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     protected void updatePhysicsObject(PhysicsWorld physicsWorld) {
         Transform transform = new Transform();
         transform.setIdentity();
-        transform.origin.set(ConversionUtility.toVector3f(getPositionVector()));
+        transform.origin.set(VecUtility.toVector3f(getPositionVector()));
         transform.setRotation(this.physicsRotation);
         rigidBody.setWorldTransform(transform);
         // Used for specific block mechanics.
@@ -408,11 +409,11 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         this.collisionEnabled = buffer.readBoolean();
 //        this.physicsPosition = new Vector3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         this.physicsRotation = new Quat4f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
-        this.renderPosition = ConversionUtility.toVector3f(getPositionVector());
+        this.renderPosition = VecUtility.toVector3f(getPositionVector());
         this.renderRotation = new Quat4f(physicsRotation);
         // Create dynamic light source if we can!
-        if (blockState.getBlock().getLightValue(this.blockState) > 0 && !hasLight) {
-            RenderHandler.getLightHandler().create(this, blockState.getBlock().getLightValue(this.blockState));
+        if (getBlockState().getBlock().getLightValue(this.blockState) > 0 && !hasLight) {
+            RenderHandler.getLightHandler().create(this, getBlockState().getBlock().getLightValue(this.blockState));
             hasLight = true;
         }
 
@@ -463,6 +464,16 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         return rigidBody;
     }
 
+
+    // Returns the direction of the block based on the RigidBody.
+    public Vector3f getDirection(Vector3f base) {
+        Vector3f up = base;
+        Vector3f direction = QuaternionUtil.quatRotate(physicsRotation, up, new Vector3f());
+        direction.normalize();
+        return direction;
+    }
+
+
     @Override
     protected void dispose() {
         align();
@@ -473,13 +484,52 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         }
     }
 
+    // Replace physics block back to world.
     protected void align() {
-        world.setBlockState(new BlockPos(posX, posY + 0.5F, posZ), getBlockState());
+        if (rigidBody != null && rigidBody.isValid()) {
+            // Calculate blockpos
+            Vec3d position = getPositionVector().addVector(0.5f, 1, 0.5f);
+            BlockPos pos = new BlockPos(MathHelper.floor(position.x), MathHelper.floor(position.y), MathHelper.floor(position.z));
+
+            // Calculate forward.
+            Vector3f forward = new Vector3f(0, 1, 0);
+//
+
+//            if (getBlockState().getPropertyKeys().contains(BlockHorizontal.FACING)) {
+//                EnumFacing blockFacing = getBlockState().getValue(BlockHorizontal.FACING);
+//                if (blockFacing != null) {
+//                    Vec3i blockDirection = blockFacing.getDirectionVec();
+//                    forward.set(blockDirection.getX(), blockDirection.getY(), blockDirection.getZ());
+//                    forward.scale(-1);
+//                }
+//            }
+
+            // Get direction of rigid body
+            Vector3f direction = getDirection(forward);
+            // Get EnumFacing based of rigidbody direction.
+            EnumFacing enumFacing = EnumFacing.getFacingFromVector(direction.x, direction.y, direction.z);
+
+            // Create fake player, used for block placement emulation.
+            FakePlayer fakePlayer = FakePlayerFactory.getMinecraft((WorldServer)world);
+            // Create LibGDX quat, useful for getting euler angles.
+            Quaternion eulerQuat = new Quaternion(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.w);
+            // Set new orientation of player.
+//            fakePlayer.setPositionAndRotation(fakePlayer.posX, fakePlayer.posX, fakePlayer. posZ, eulerQuat.getYaw(), eulerQuat.getPitch());
+
+            // create new state.
+            IBlockState state = getBlockState().getBlock().getStateForPlacement(world, pos, enumFacing, pos.getX(), pos.getY(), pos.getZ(),
+                    getBlockState().getBlock().getMetaFromState(getBlockState()), fakePlayer);
+
+            // place block.
+            world.setBlockState(pos, state);
+        } else
+            world.setBlockState(new BlockPos(posX, posY + 0.5F, posZ), getBlockState());
     }
+
 
     @Override
     public void interpolate() {
-        this.renderPosition.interpolate(ConversionUtility.toVector3f(getPositionVector()), 0.15f);
+        this.renderPosition.interpolate(VecUtility.toVector3f(getPositionVector()), 0.15f);
         this.renderRotation.interpolate(physicsRotation, 0.15f);
     }
 

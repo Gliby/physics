@@ -1,7 +1,7 @@
 package gliby.minecraft.physics.client.render.entity;
 
 import gliby.minecraft.physics.client.render.RenderHandler;
-import gliby.minecraft.physics.client.render.ConversionUtility;
+import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.entity.EntityToolGunBeam;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -32,7 +32,7 @@ public class RenderToolGunBeam extends Render {
         EntityToolGunBeam entity = (EntityToolGunBeam) uncast;
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuffer();
-        Vector3f worldTranslation = ConversionUtility.getWorldTranslation(mc, partialTick);
+        Vector3f worldTranslation = VecUtility.getWorldTranslation(mc, partialTick);
         GlStateManager.disableTexture2D();
         GlStateManager.disableLighting();
         GlStateManager.enableBlend();

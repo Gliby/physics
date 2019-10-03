@@ -1,6 +1,6 @@
 package gliby.minecraft.physics.common.entity;
 
-import gliby.minecraft.physics.client.render.ConversionUtility;
+import gliby.minecraft.physics.client.render.VecUtility;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -109,12 +109,12 @@ public class EntityToolGunBeam extends Entity implements IEntityAdditionalSpawnD
                             * (float) Math.PI / 180.0F);
             firstPersonOffset = firstPersonOffset.rotateYaw(
                     -(owner.prevRotationYaw + (owner.rotationYaw - owner.prevRotationYaw)) * (float) Math.PI / 180.0F);
-            clientOrigin = ConversionUtility.toVector3f(firstPersonOffset);
+            clientOrigin = VecUtility.toVector3f(firstPersonOffset);
             clientOrigin.add(
                     new Vector3f((float) owner.posX, (float) owner.posY + owner.getEyeHeight(), (float) owner.posZ));
         }
-        worldOrigin = ConversionUtility.toVector3f(
-                ConversionUtility.calculateRay(owner, 1.0f, 1.0f, new Vector3f(-0.30f, owner.getEyeHeight(), 0)));
+        worldOrigin = VecUtility.toVector3f(
+                VecUtility.calculateRay(owner, 1.0f, 1.0f, new Vector3f(-0.30f, owner.getEyeHeight(), 0)));
         timeCreated = System.currentTimeMillis();
     }
 }

@@ -1,7 +1,5 @@
 package gliby.minecraft.physics.common.physics.engine.nativebullet;
 
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.BulletBase;
@@ -11,7 +9,7 @@ import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstruct
 import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
 import com.bulletphysicsx.linearmath.Transform;
 import gliby.minecraft.physics.Physics;
-import gliby.minecraft.physics.client.render.ConversionUtility;
+import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.physics.IPhysicsWorldConfiguration;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
@@ -20,8 +18,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +68,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
         dynamicsWorld = new btDiscreteDynamicsWorld(collisionDispatcher, broadphase,
                 sequentialSolver = new btSequentialImpulseConstraintSolver(), collisionConfiguration);
-        dynamicsWorld.setGravity(ConversionUtility.toVector3(getPhysicsConfiguration().getRegularGravity()));
+        dynamicsWorld.setGravity(VecUtility.toVector3(getPhysicsConfiguration().getRegularGravity()));
 
         voxelShape = new btVoxelShape(
                 voxelProvider = new NativeVoxelProvider(voxelInfo = new btVoxelInfo(), getPhysicsConfiguration().getWorld(), this, physics),
@@ -102,7 +98,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
         if (mass != 0) {
             shape.calculateLocalInertia(mass, localInertia);
         }
-        btDefaultMotionState motionState = new btDefaultMotionState(ConversionUtility.toMatrix4(transform));
+        btDefaultMotionState motionState = new btDefaultMotionState(VecUtility.toMatrix4(transform));
         btRigidBodyConstructionInfo constructionInfo = new btRigidBodyConstructionInfo(mass, motionState,
                 (btCollisionShape) shape.getCollisionShape(), localInertia);
 
@@ -115,7 +111,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
     @Override
     public IRigidBody createInertialessRigidbody(Entity owner, Transform transform, float mass,
                                                  ICollisionShape shape) {
-        btDefaultMotionState motionState = new btDefaultMotionState(ConversionUtility.toMatrix4(transform));
+        btDefaultMotionState motionState = new btDefaultMotionState(VecUtility.toMatrix4(transform));
         btRigidBodyConstructionInfo constructionInfo = new btRigidBodyConstructionInfo(mass, motionState,
                 (btCollisionShape) shape.getCollisionShape());
 
@@ -127,7 +123,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
     @Override
     public ICollisionShape createBoxShape(Vector3f extents) {
-        btBoxShape nativeBox = new btBoxShape(ConversionUtility.toVector3(extents));
+        btBoxShape nativeBox = new btBoxShape(VecUtility.toVector3(extents));
         NativeCollisionShape shape = new NativeCollisionShape(this, nativeBox);
         return shape;
     }
@@ -136,7 +132,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
     public IRayResult createClosestRayResultCallback(Vector3f rayFromWorld, Vector3f rayToWorld) {
         ClosestRayResultCallback nativeCallback;
         NativeClosestRayResultCallback callback = new NativeClosestRayResultCallback(
-                nativeCallback = new ClosestRayResultCallback(ConversionUtility.toVector3(rayFromWorld), ConversionUtility.toVector3(rayToWorld)));
+                nativeCallback = new ClosestRayResultCallback(VecUtility.toVector3(rayFromWorld), VecUtility.toVector3(rayToWorld)));
         return callback;
     }
 
@@ -194,7 +190,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
          * dynamicsWorld.rayTest(toVector3(rayFromWorld), toVector3(rayToWorld),
          * (RayResultCallback) resultCallback.getRayResultCallback());
          */
-        dynamicsWorld.rayTest(ConversionUtility.toVector3(rayFromWorld), ConversionUtility.toVector3(rayToWorld),
+        dynamicsWorld.rayTest(VecUtility.toVector3(rayFromWorld), VecUtility.toVector3(rayToWorld),
                 (RayResultCallback) resultCallback.getRayResultCallback());
 
 
@@ -217,7 +213,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
     @Override
     public void setGravity(final Vector3f newGravity) {
 
-        dynamicsWorld.setGravity(ConversionUtility.toVector3(newGravity));
+        dynamicsWorld.setGravity(VecUtility.toVector3(newGravity));
 
     }
 
@@ -267,7 +263,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
         btPoint2PointConstraint nativeConstraint;
         NativePoint2PointConstraint p2p = new NativePoint2PointConstraint(this,
                 nativeConstraint = new btPoint2PointConstraint((btRigidBody) rigidBody.getBody(),
-                        ConversionUtility.toVector3(relativePivot)));
+                        VecUtility.toVector3(relativePivot)));
         return p2p;
     }
 
@@ -296,7 +292,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
                                                               Transform frameInB, boolean useLinearReferenceFrameA) {
 
         btGeneric6DofConstraint nativeConstraint = new btGeneric6DofConstraint((btRigidBody) rbA.getBody(), (btRigidBody) rbB.getBody(),
-                ConversionUtility.toMatrix4(frameInA), ConversionUtility.toMatrix4(frameInB),
+                VecUtility.toMatrix4(frameInA), VecUtility.toMatrix4(frameInB),
                 useLinearReferenceFrameA);
 
         NativeConstraintGeneric6Dof constraint = new NativeConstraintGeneric6Dof(this, nativeConstraint);
@@ -368,7 +364,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
             transform.origin.set((float) relativeBB.minX + (float) relativeBB.maxX - 0.5f,
                     (float) relativeBB.minY + (float) relativeBB.maxY - 0.5f,
                     (float) relativeBB.minZ + (float) relativeBB.maxZ - 0.5f);
-            compoundShape.addChildShape(ConversionUtility.toMatrix4(transform), new btBoxShape(ConversionUtility.toVector3(extents)));
+            compoundShape.addChildShape(VecUtility.toMatrix4(transform), new btBoxShape(VecUtility.toVector3(extents)));
         }
         NativeCollisionShape collisionShape = new NativeCollisionShape(this, compoundShape);
         return collisionShape;

@@ -2,7 +2,7 @@ package gliby.minecraft.physics.client.render.entity;
 
 import gliby.minecraft.gman.client.render.GBlockModelRenderer;
 import gliby.minecraft.physics.client.render.RenderHandler;
-import gliby.minecraft.physics.client.render.ConversionUtility;
+import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.entity.EntityPhysicsBase;
 import gliby.minecraft.physics.common.game.items.ItemPhysicsGun;
 import net.minecraft.client.Minecraft;
@@ -92,7 +92,7 @@ public abstract class RenderPhysics extends Render {
                         + firstPersonOffset.z;
 
                 if (this.renderManager.options.thirdPersonView != 0 || entity.pickerEntity != mc.player) {
-                    Vec3d beamStart = ConversionUtility.calculateRay(entity.pickerEntity, 1.0f, partialTick,
+                    Vec3d beamStart = VecUtility.calculateRay(entity.pickerEntity, 1.0f, partialTick,
                             new Vector3f(-0.1f, -0.25F, 0));
                     targetX = beamStart.x;
                     targetY = beamStart.y;
@@ -131,7 +131,7 @@ public abstract class RenderPhysics extends Render {
                     float curve = (float) i / (float) points;
                     bufferBuilder.pos(hitPoint.x + diffX * (double) curve,
                             hitPoint.y + (diffY + 0.0f) * (double) (curve * curve + curve) * 0.5D + 0.25D,
-                            hitPoint.z + diffZ * (double) curve);
+                            hitPoint.z + diffZ * (double) curve).endVertex();
                 }
                 tessellator.draw();
 

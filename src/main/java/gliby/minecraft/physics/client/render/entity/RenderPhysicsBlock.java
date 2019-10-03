@@ -2,32 +2,36 @@ package gliby.minecraft.physics.client.render.entity;
 
 import com.bulletphysicsx.linearmath.Transform;
 import gliby.minecraft.physics.client.render.RenderHandler;
-import gliby.minecraft.physics.client.render.ConversionUtility;
+import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.entity.EntityPhysicsBase;
 import gliby.minecraft.physics.common.entity.EntityPhysicsBlock;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import org.lwjgl.BufferUtils;
 
 import javax.vecmath.Vector3f;
+import java.nio.Buffer;
 import java.nio.FloatBuffer;
 
-import static org.lwjgl.opengl.GL11.glMultMatrix;
+import static org.lwjgl.opengl.GL11.*;
 
 /**
  *
  */
 public class RenderPhysicsBlock extends RenderPhysics {
 
-    private Transform tempTransform = new Transform();
     private static FloatBuffer renderMatrix = BufferUtils.createFloatBuffer(16);
 
     /**
@@ -39,24 +43,46 @@ public class RenderPhysicsBlock extends RenderPhysics {
 
     protected void draw(Entity castEntity, double entityX, double entityY, double entityZ, float partialTick,
                         int color, boolean outline) {
+        Transform transform = new Transform();
         EntityPhysicsBlock entity = (EntityPhysicsBlock) castEntity;
         IBlockState state = entity.getBlockState();
         if (state.getRenderType() != EnumBlockRenderType.INVISIBLE) {
-            Vector3f worldTranslation = ConversionUtility.getWorldTranslation(mc, partialTick);
+            Vector3f worldTranslation = VecUtility.getWorldTranslation(mc, partialTick);
             BlockRendererDispatcher blockrendererdispatcher = mc.getBlockRendererDispatcher();
             IBakedModel ibakedmodel = blockrendererdispatcher.getModelForState(state);
 
-            // setup transform;
-            tempTransform.setIdentity();
-            tempTransform.setRotation(entity.renderRotation);
-            tempTransform.origin.set(entity.renderPosition);
-            ConversionUtility.setBufferFromTransform(renderMatrix, tempTransform);
+
 
             // start drawing
             GlStateManager.pushMatrix();
             World world = castEntity.getEntityWorld();
             // Apply world translation with bullet pivot offset.
             GlStateManager.translate(-worldTranslation.x + 0.5f, -worldTranslation.y + 0.5f, -worldTranslation.z + 0.5f);
+
+            // render debug direction
+//            GlStateManager.pushMatrix();
+//            transform.setIdentity();
+//            transform.origin.set(entity.renderPosition);
+//            VecUtility.setBufferFromTransform(renderMatrix, transform);
+//            glMultMatrix(renderMatrix);
+////            GlStateManager.translate(-(0.5f), -(0.5f), -(0.5f));
+//            Vector3f direction = entity.getDirection();
+//            direction.scale(500);
+//            Tessellator tessellator = Tessellator.getInstance();
+//            BufferBuilder builder = tessellator.getBuffer();
+//            builder.begin(GL_LINES, DefaultVertexFormats.POSITION);
+//            builder.pos(0, 0,0).endVertex();
+//            builder.pos(direction.x, direction.y, direction.z).endVertex();
+//            tessellator.draw();
+//
+//            GlStateManager.popMatrix();
+
+            // setup transform;
+            transform.setIdentity();
+            transform.setRotation(entity.renderRotation);
+            transform.origin.set(entity.renderPosition);
+            VecUtility.setBufferFromTransform(renderMatrix, transform);
+
             // Apply transformation.
             glMultMatrix(renderMatrix);
 
@@ -65,7 +91,7 @@ public class RenderPhysicsBlock extends RenderPhysics {
 
             this.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
-            blockModelRenderer.renderModelNoLightmap(entity.world, state, entity.getPosition(), ibakedmodel, !outline, ConversionUtility.fromColor(color));
+            blockModelRenderer.renderModelNoLightmap(entity.world, state, entity.getPosition(), ibakedmodel, !outline, VecUtility.fromColor(color));
 
             GlStateManager.popMatrix();
         }
@@ -80,7 +106,7 @@ public class RenderPhysicsBlock extends RenderPhysics {
     @Override
     public Vector3f getRenderHitPoint(EntityPhysicsBase entity, float partialTick) {
         EntityPhysicsBlock entityBlock = (EntityPhysicsBlock) entity;
-        Vector3f worldTranslation = ConversionUtility.getWorldTranslation(Minecraft.getMinecraft(), partialTick);
+        Vector3f worldTranslation = VecUtility.getWorldTranslation(Minecraft.getMinecraft(), partialTick);
         Vector3f hitPoint = new Vector3f(entityBlock.renderPosition);
         hitPoint.add(entity.pickLocalHit);
         hitPoint.add(new Vector3f(0.5f, 0.5f, 0.5f));
