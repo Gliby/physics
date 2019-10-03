@@ -44,10 +44,6 @@ public class ItemHandler {
 
         if (!forcedAnimationItem.contains(item.getClass())) {
             forcedAnimationItem.add(new AlwaysUsedItem(shouldSwing, canHitBlocks, item.getClass()));
-        } else try {
-            throw new Exception("Excuse me?! Sadly this here program attempted to register multiple 'forced to use' items. Quite a no-no, I'd say.");
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

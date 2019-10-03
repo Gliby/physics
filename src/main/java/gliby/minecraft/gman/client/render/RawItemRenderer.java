@@ -60,6 +60,7 @@ public abstract class RawItemRenderer implements IBakedModel {
     protected TransformType transformType;
     private Pair<IBakedModel, Matrix4f> pair;
     protected RawItemOverrideList itemOverride;
+    private static final List<BakedQuad> DUMMY_LIST = Collections.emptyList();
 
     public RawItemRenderer(ModelResourceLocation resourceLocation) {
         this.mc = Minecraft.getMinecraft();
@@ -107,8 +108,8 @@ public abstract class RawItemRenderer implements IBakedModel {
         // Method that this gets called is expecting that we are still using
         // startDrawingQuads.
 
-        bufferBuilder.begin(7, DefaultVertexFormats.BLOCK);
-        return Collections.EMPTY_LIST;
+        bufferBuilder.begin(7, DefaultVertexFormats.ITEM);
+        return DUMMY_LIST;
     }
 
     protected boolean onGround() {
