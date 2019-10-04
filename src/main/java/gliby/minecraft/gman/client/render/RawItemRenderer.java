@@ -10,15 +10,19 @@ import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeModContainer;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.vecmath.Matrix4f;
 import java.util.ArrayList;
@@ -52,14 +56,18 @@ class RawItemOverrideList extends ItemOverrideList {
 public abstract class RawItemRenderer implements IBakedModel {
 
     public ModelResourceLocation modelResourceLocation;
-    protected EntityPlayer owner;
-    protected TextureManager textureManager;
+
     protected ModelBiped playerBiped;
-    protected Minecraft mc;
-    protected ItemStack itemStack;
+
     protected TransformType transformType;
+
     private Pair<IBakedModel, Matrix4f> pair;
-    protected RawItemOverrideList itemOverride;
+
+    private RawItemOverrideList itemOverride;
+
+    // Entity Data
+    protected EntityPlayer owner;
+    protected ItemStack itemStack;
 
     public Item getItemInstance() {
         return itemInstance;
@@ -69,10 +77,8 @@ public abstract class RawItemRenderer implements IBakedModel {
     private static final List<BakedQuad> DUMMY_LIST = Collections.emptyList();
 
     public RawItemRenderer(ModelResourceLocation resourceLocation) {
-        this.mc = Minecraft.getMinecraft();
-        this.itemInstance = itemInstance;
-        this.textureManager = mc.getTextureManager();
         this.modelResourceLocation = resourceLocation;
+
         this.pair = Pair.of((IBakedModel) this, null);
         this.playerBiped = new ModelBiped();
         this.playerBiped.textureWidth = 64;
@@ -85,12 +91,20 @@ public abstract class RawItemRenderer implements IBakedModel {
 
     @Override
     public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
+        if (side != null || !Tessellator.getInstance().getBuffer().isDrawing) {
+            return DUMMY_LIST;
+        }
+
         // Method that this get's called in, is using startDrawingQuads. We
         // finish
         // drawing it so we can move on to render our own thing.
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuffer();
-        tessellator.draw();
+        // finish drawing, if we are.
+        boolean isDrawing = tessellator.getBuffer().isDrawing;
+        if (isDrawing)
+            tessellator.draw();
+
         GlStateManager.pushMatrix();
         GlStateManager.translate(0.5F, 0.5F, 0.5F);
         GlStateManager.scale(-1.0F, -1.0F, 1.0F);
@@ -105,9 +119,11 @@ public abstract class RawItemRenderer implements IBakedModel {
         if (onGround()) {
             GlStateManager.scale(-3f, -3f, -3f);
         }
-        System.out.println("render item");
+
         render();
+        rebindTexture();
         GlStateManager.popMatrix();
+
         // Reset the dynamic values.
         this.owner = null;
         this.itemStack = null;
@@ -115,8 +131,23 @@ public abstract class RawItemRenderer implements IBakedModel {
         // Method that this gets called is expecting that we are still using
         // startDrawingQuads.
 
-        bufferBuilder.begin(7, DefaultVertexFormats.ITEM);
+        if(isDrawing) //restart the drawing of the tessellator
+        {
+            BufferBuilder bufferbuilder = tessellator.getBuffer();
+            bufferbuilder.begin(7, DefaultVertexFormats.ITEM);
+        }
+
         return DUMMY_LIST;
+    }
+
+    public void bindTexture(@Nonnull ResourceLocation rs)
+    {
+        Minecraft.getMinecraft().getRenderManager().renderEngine.bindTexture(rs);
+    }
+
+    protected void rebindTexture()
+    {
+        Minecraft.getMinecraft().getRenderManager().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
     }
 
     public RawItemRenderer setItemInstance(Item itemInstance) {

@@ -69,12 +69,7 @@ public class GameManager {
     public void registerItems(RegistryEvent.Register<Item> event) {
         final IForgeRegistry<Item> registry = event.getRegistry();
 
-        itemToolgun = new ItemToolGun(physics);
-        itemToolgun.setRegistryName(itemToolgun.getUnlocalizedName());
         registry.register(itemToolgun);
-
-        itemPhysicsGun = new ItemPhysicsGun(physics);
-        itemPhysicsGun.setRegistryName(itemPhysicsGun.getUnlocalizedName());
         registry.register(itemPhysicsGun);
 
         MinecraftForge.EVENT_BUS.register(itemPhysicsGun);
@@ -102,6 +97,12 @@ public class GameManager {
          * GameRegistry.addRecipe(new ItemStack(Items.dye, 2, 15), "AB ", "AAC", "A  ",
          * 'A', Items.cookie, 'B', Blocks.dirt, 'C', new ItemStack(Items.dye, 1, 1));
          */
+
+        itemToolgun = new ItemToolGun(physics);
+        itemToolgun.setRegistryName(itemToolgun.getUnlocalizedName());
+
+        itemPhysicsGun = new ItemPhysicsGun(physics);
+        itemPhysicsGun.setRegistryName(itemPhysicsGun.getUnlocalizedName());
 
         toolGunRegistry = new ToolGunActionRegistry();
         toolGunRegistry.registerAction(new ToolGunReviveAction(), Physics.ID);

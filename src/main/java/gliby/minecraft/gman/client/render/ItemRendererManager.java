@@ -50,7 +50,7 @@ public class ItemRendererManager {
         for (int i = 0; i < itemRenderer.size(); i++) {
             RawItemRenderer itemRender = itemRenderer.get(i);
             ModelLoader.setCustomModelResourceLocation(itemRender.getItemInstance(), 0, itemRender.modelResourceLocation);
-            ModelBakery.registerItemVariants(itemRender.getItemInstance(), itemRender.modelResourceLocation);
+//            ModelBakery.registerItemVariants(itemRender.getItemInstance(), itemRender.modelResourceLocation);
 
         }
     }

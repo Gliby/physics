@@ -18,6 +18,7 @@ compileJava {
     sourceCompatibility = targetCompatibility = '1.8'
 }
 
+// todo look into versioning
 minecraft {
     version = "1.12.2-14.23.5.2768"
     runDir = "run"

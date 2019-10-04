@@ -3,6 +3,7 @@ package gliby.minecraft.physics.client.render.items;
 import gliby.minecraft.gman.client.render.RawItemRenderer;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.game.items.toolgun.ItemToolGun;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -39,7 +40,7 @@ public class RenderItemToolGun extends RawItemRenderer {
     // TODO When not held, use super low resolution textures.
     @Override
     public void render() {
-        float scale = -0.0625f;
+        float scale = -(1.0f / 16.0f);
         String text = "Fine in 4K";
 
         if (owner != null) {
@@ -50,7 +51,7 @@ public class RenderItemToolGun extends RawItemRenderer {
                 GlStateManager.translate(-0.5F, 0.27F, -0.2F);
                 text = ((ItemToolGun) itemStack.getItem()).getModeName();
                 if (!owner.isInvisible()) {
-                    textureManager.bindTexture(mc.player.getLocationSkin());
+                    bindTexture(Minecraft.getMinecraft().player.getLocationSkin());
                     GlStateManager.pushMatrix();
                     GlStateManager.scale(1.25f, 1.25f, 1.25f);
                     GlStateManager.translate(-0.4f, -0.17f, -0.89f);
@@ -60,23 +61,25 @@ public class RenderItemToolGun extends RawItemRenderer {
                 }
             }
         }
+        bindTexture(modelTexture);
 
-        textureManager.bindTexture(modelTexture);
         modelToolGun.render(null, 0, 0, 0, 0, 0, scale);
         // if (transformType == TransformType.FIRST_PERSON) {
 
         GlStateManager.disableLighting();
         OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 0);
         GlStateManager.pushMatrix();
-        scale *= 0.125f;
+        scale *= 1.0f / 8.0f;
         // GlStateManager.disableTexture2D();
         GlStateManager.rotate(180, 0, 1, 0);
         GlStateManager.scale(scale, scale, scale);
         GlStateManager.rotate(modelToolGun.screen.rotateAngleX * (180F / (float) Math.PI), 1.0F, 0.0F, 0.0F);
         GlStateManager.translate(-16, 0, -62.41f);
 
+        Minecraft mc = Minecraft.getMinecraft();
+
         GlStateManager.pushMatrix();
-        textureManager.bindTexture(screenTexture);
+        mc.getTextureManager().bindTexture(screenTexture);
         GlStateManager.scale(0.25f, 0.25f, 1);
         Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 128, 128, 128, 128);
         GlStateManager.popMatrix();

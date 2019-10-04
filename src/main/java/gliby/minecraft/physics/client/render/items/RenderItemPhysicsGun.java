@@ -61,7 +61,7 @@ public class RenderItemPhysicsGun extends RawItemRenderer {
                 GlStateManager.rotate(20.0F, 1.0F, 0.0F, 0.0F);
                 GlStateManager.translate(-0.7F, 0.8F, -0.2F);
                 if (!owner.isInvisible()) {
-                    textureManager.bindTexture(mc.player.getLocationSkin());
+                    bindTexture(Minecraft.getMinecraft().player.getLocationSkin());
                     GlStateManager.pushMatrix();
                     GlStateManager.translate(-0.19f, 0.05f, -0.55f);
                     this.bipedLeftArm.rotateAngleY = 15 / (180F / (float) Math.PI);
@@ -76,7 +76,7 @@ public class RenderItemPhysicsGun extends RawItemRenderer {
             }
         }
 
-        textureManager.bindTexture(textureColorable);
+        bindTexture(textureColorable);
         model.setLightValue(lightValue);
         model.render(null, 0, 0, 0, 0, 0, scale);
 

@@ -17,6 +17,7 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.HashMap;
@@ -66,19 +67,11 @@ public class RenderHandler {
      *
      * @param event
      */
-    public void init(FMLInitializationEvent event) {
-        MinecraftForge.EVENT_BUS.register(new RenderAdditionalPlayer());
+    public void preInit(FMLPreInitializationEvent event) {
+//        MinecraftForge.EVENT_BUS.register(new RenderAdditionalPlayer());
         Minecraft mc = Minecraft.getMinecraft();
 
-        RenderingRegistry.registerEntityRenderingHandler(EntityPhysicsBlock.class,
-                new RenderPhysicsBlock(this, mc.getRenderManager()));
-        // RenderingRegistry.registerEntityRenderingHandler(EntityPhysicsRagdoll.class,
-        // new RenderPhysicsRagdoll(mc.getRenderManager()));
-//        RenderingRegistry.registerEntityRenderingHandler(EntityPhysicsModelPart.class,
-//                new RenderPhysicsModelPart(this, mc.getRenderManager()));
-        RenderingRegistry.registerEntityRenderingHandler(EntityToolGunBeam.class, new RenderToolGunBeam(this, mc.getRenderManager()));
         ItemRendererManager itemRenderManager = physics.getItemRendererManager();
-
         // Create fake-model resource, doesn't need any file to function.
         // Create actual RawItemRenderer instance, simply a class that
         // "extends RawItemRenderer".
@@ -88,6 +81,17 @@ public class RenderHandler {
         itemRenderManager.registerItemRenderer(physics.getGameManager().itemToolgun,
                 new RenderItemToolGun(new ModelResourceLocation(Physics.ID, "toolgun")));
 
+    }
+
+    public void init(FMLInitializationEvent event) {
+        Minecraft mc = Minecraft.getMinecraft();
+        RenderingRegistry.registerEntityRenderingHandler(EntityPhysicsBlock.class,
+                new RenderPhysicsBlock(this, mc.getRenderManager()));
+        // RenderingRegistry.registerEntityRenderingHandler(EntityPhysicsRagdoll.class,
+        // new RenderPhysicsRagdoll(mc.getRenderManager()));
+//        RenderingRegistry.registerEntityRenderingHandler(EntityPhysicsModelPart.class,
+//                new RenderPhysicsModelPart(this, mc.getRenderManager()));
+        RenderingRegistry.registerEntityRenderingHandler(EntityToolGunBeam.class, new RenderToolGunBeam(this, mc.getRenderManager()));
     }
 
 }
