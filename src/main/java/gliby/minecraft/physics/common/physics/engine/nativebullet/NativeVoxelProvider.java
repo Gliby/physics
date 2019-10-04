@@ -30,7 +30,6 @@ class NativeVoxelProvider extends btVoxelContentProvider {
         if (world != null && !world.playerEntities.isEmpty()) {
             final BlockPos blockPosition = new BlockPos(x, y, z);
             final IBlockState state = world.getBlockState(blockPosition);
-            info.setTracable(false);
             info.setBlocking(state.getBlock().getMaterial(state).isSolid());
             info.setCollisionShape((btCollisionShape) physicsWorld.getBlockCache()
                     .getShape(world, blockPosition, state).getCollisionShape());

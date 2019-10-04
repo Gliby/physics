@@ -21,6 +21,8 @@ public class JavaVoxelProvider implements VoxelPhysicsWorld {
         this.physicsWorld = new SoftReference<JavaPhysicsWorld>(physicsWorld);
     }
 
+
+    // TODO use block metadata if key exists.
     @Override
     public VoxelInfo getCollisionShapeAt(final int x, final int y, final int z) {
         World world = worldRef.get();
@@ -32,7 +34,7 @@ public class JavaVoxelProvider implements VoxelPhysicsWorld {
 
             @Override
             public boolean isColliding() {
-                return blockState.getMaterial().isLiquid();
+                return blockState.getBlock().getMaterial(blockState).isLiquid();
             }
 
             @Override
