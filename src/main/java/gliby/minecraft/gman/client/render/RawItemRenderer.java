@@ -118,7 +118,7 @@ public abstract class RawItemRenderer implements IBakedModel {
             tessellator.draw();
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0.55f, 0.25f, 0.55F);
+        GlStateManager.translate(0.55f, 0.25f, 0.5F);
         GlStateManager.scale(-1.0F, -1.0F, 1.0F);
 
         if (owner != null) {
