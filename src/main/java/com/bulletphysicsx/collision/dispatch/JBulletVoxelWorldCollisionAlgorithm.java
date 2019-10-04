@@ -179,12 +179,12 @@ public class JBulletVoxelWorldCollisionAlgorithm extends CollisionAlgorithm {
 		 * PerformanceMonitor.startActivity("World Calculate Time Of Impact");
 		 * CollisionObject colObj = isSwapped ? body1 : body0; CollisionObject
 		 * otherObj = isSwapped ? body0 : body1;
-		 * 
+		 *
 		 * assert (colObj.getCollisionShape().getShapeType() ==
 		 * BroadphaseNativeType.INVALID_SHAPE_PROXYTYPE);
-		 * 
+		 *
 		 * WorldShape worldShape = (WorldShape) colObj.getCollisionShape();
-		 * 
+		 *
 		 * Transform otherObjTransform = new Transform(); Vector3f
 		 * otherLinearVelocity = new Vector3f(); Vector3f otherAngularVelocity =
 		 * new Vector3f();
@@ -194,39 +194,39 @@ public class JBulletVoxelWorldCollisionAlgorithm extends CollisionAlgorithm {
 		 * Vector3f aabbMin = new Vector3f(); Vector3f aabbMax = new Vector3f();
 		 * otherObj.getCollisionShape().getAabb(otherObjTransform, aabbMin,
 		 * aabbMax);
-		 * 
+		 *
 		 * Region3i region = Region3i.createFromMinMax(new Vector3i(aabbMin,
 		 * 0.5f), new Vector3i(aabbMax, 0.5f));
-		 * 
+		 *
 		 * Transform orgTrans = new Transform(); Transform childTrans = new
 		 * Transform(); float hitFraction = 1f;
-		 * 
+		 *
 		 * Matrix3f rot = new Matrix3f(); rot.setIdentity();
-		 * 
+		 *
 		 * for (Vector3i blockPos : region) { Block block =
 		 * worldShape.getWorld().getBlock(blockPos); if (block.isPenetrable())
 		 * continue;
-		 * 
+		 *
 		 * // recurse, using each shape within the block. CollisionShape
 		 * childShape = defaultBox;
-		 * 
+		 *
 		 * // backup colObj.getWorldTransform(orgTrans);
-		 * 
+		 *
 		 * childTrans.set(new Matrix4f(rot, blockPos.toVector3f(), 1.0f));
 		 * colObj.setWorldTransform(childTrans);
-		 * 
+		 *
 		 * // the contactpoint is still projected back using the original
 		 * inverted worldtrans CollisionShape tmpShape =
 		 * colObj.getCollisionShape();
 		 * colObj.internalSetTemporaryCollisionShape(childShape);
 		 * colObj.setUserPointer(blockPos);
-		 * 
+		 *
 		 * CollisionAlgorithm collisionAlg =
 		 * collisionAlgorithmFactory.dispatcher1.findAlgorithm(colObj,
 		 * otherObj); usedCollisionAlgorithms.add(collisionAlg); float frac =
 		 * collisionAlg.calculateTimeOfImpact(colObj, otherObj, dispatchInfo,
 		 * resultOut); if (frac < hitFraction) { hitFraction = frac; }
-		 * 
+		 *
 		 * // revert back colObj.internalSetTemporaryCollisionShape(tmpShape);
 		 * colObj.setWorldTransform(orgTrans); }
 		 * PerformanceMonitor.endActivity(); return hitFraction;
