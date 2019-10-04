@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import org.lwjgl.opengl.GL11;
 
 import javax.vecmath.Vector3f;
 
@@ -36,18 +37,17 @@ public class RenderToolGunBeam extends Render {
         GlStateManager.disableTexture2D();
         GlStateManager.disableLighting();
         GlStateManager.enableBlend();
-        GlStateManager.blendFunc(770, 1);
+        GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, 1);
         GlStateManager.pushMatrix();
         GlStateManager.translate(-worldTranslation.x, -worldTranslation.y, -worldTranslation.z);
         float alpha = (entity.msUntilGone - MathHelper.clamp((System.currentTimeMillis() - entity.timeCreated), 0, entity.msUntilGone)) / entity.msUntilGone;
         bufferBuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
-        bufferBuilder.color(1, 1, 1, alpha);
         if (entity.clientOrigin != null && renderManager.options.thirdPersonView == 0) {
-            bufferBuilder.pos(entity.clientOrigin.x, entity.clientOrigin.y, entity.clientOrigin.z);
+            bufferBuilder.pos(entity.clientOrigin.x, entity.clientOrigin.y, entity.clientOrigin.z).color(1, 1, 1, alpha).endVertex();
         } else {
-            bufferBuilder.pos(entity.worldOrigin.x, entity.worldOrigin.y, entity.worldOrigin.z);
+            bufferBuilder.pos(entity.worldOrigin.x, entity.worldOrigin.y, entity.worldOrigin.z).color(1, 1, 1, alpha).endVertex();
         }
-        bufferBuilder.pos(entity.hit.x, entity.hit.y, entity.hit.z);
+        bufferBuilder.pos(entity.hit.x, entity.hit.y, entity.hit.z).color(1, 1, 1, alpha).endVertex();
         tessellator.draw();
 
         //Render lighting

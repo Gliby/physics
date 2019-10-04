@@ -28,6 +28,7 @@ public class EntityToolGunBeam extends Entity implements IEntityAdditionalSpawnD
     public Vector3f hit;
     public Entity owner;
 
+    // TODO use ingame time instead of System
     public int msUntilGone = 200;
     public long timeCreated;
 
