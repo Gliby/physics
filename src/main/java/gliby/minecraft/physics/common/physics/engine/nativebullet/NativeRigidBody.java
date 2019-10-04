@@ -34,7 +34,7 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 
     @Override
     public Object getBody() {
-        return rigidBody;
+        return rigidBody.get();
     }
 
     @Override
@@ -189,5 +189,6 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
         if (isValid()) {
             rigidBody.get().dispose();
         }
+        rigidBody = null;
     }
 }

@@ -32,7 +32,7 @@ class NativeCollisionShape implements ICollisionShape {
 
     @Override
     public Object getCollisionShape() {
-        return shape;
+        return shape.get();
     }
 
     @Override
@@ -98,6 +98,7 @@ class NativeCollisionShape implements ICollisionShape {
     @Override
     public void dispose() {
         if (shape.get() != null && !shape.get().isDisposed()) shape.get().dispose();
+        shape = null;
     }
 
     @Override

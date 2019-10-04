@@ -6,11 +6,13 @@ import com.bulletphysicsx.collision.shapes.CollisionShape;
 import com.bulletphysicsx.collision.shapes.CompoundShape;
 import com.bulletphysicsx.collision.shapes.CompoundShapeChild;
 import com.bulletphysicsx.linearmath.Transform;
+import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShapeChildren;
 
 import javax.vecmath.Vector3f;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,48 +21,48 @@ import java.util.List;
  */
 public class JavaCollisionShape implements ICollisionShape {
 
-    protected PhysicsWorld physicsWorld;
-    private CollisionShape shape;
+    protected WeakReference<PhysicsWorld> physicsWorld;
+    private WeakReference<CollisionShape> shape;
 
     JavaCollisionShape(PhysicsWorld physicsWorld, CollisionShape shape) {
-        this.physicsWorld = physicsWorld;
-        this.shape = shape;
+        this.physicsWorld = new WeakReference<PhysicsWorld>(physicsWorld);
+        this.shape = new WeakReference<CollisionShape>(shape);
     }
 
     @Override
     public Object getCollisionShape() {
-        return shape;
+        return shape.get();
     }
 
     @Override
     public int getShapeType() {
-        return shape.getShapeType().ordinal();
+        return shape.get().getShapeType().ordinal();
     }
 
     @Override
     public boolean isBoxShape() {
-        return shape.getShapeType() == BroadphaseNativeType.BOX_SHAPE_PROXYTYPE;
+        return shape.get().getShapeType() == BroadphaseNativeType.BOX_SHAPE_PROXYTYPE;
     }
 
     @Override
     public boolean isCompoundShape() {
-        return shape.isCompound();
+        return shape.get().isCompound();
     }
 
     @Override
     public void calculateLocalInertia(final float mass, final Object localInertia) {
-        shape.calculateLocalInertia(mass, (Vector3f) localInertia);
+        shape.get().calculateLocalInertia(mass, (Vector3f) localInertia);
     }
 
     @Override
     public void getHalfExtentsWithMargin(Vector3f halfExtent) {
-        ((BoxShape) shape).getHalfExtentsWithMargin(halfExtent);
+        ((BoxShape) shape.get()).getHalfExtentsWithMargin(halfExtent);
     }
 
     @Override
     public List<ICollisionShapeChildren> getChildren() {
         ArrayList<ICollisionShapeChildren> shapeList = new ArrayList<ICollisionShapeChildren>();
-        final CompoundShape compoundShape = (CompoundShape) shape;
+        final CompoundShape compoundShape = (CompoundShape) shape.get();
         for (int i = 0; i < compoundShape.getChildList().size(); i++) {
             final CompoundShapeChild child = compoundShape.getChildList().get(i);
             shapeList.add(new ICollisionShapeChildren() {
@@ -71,7 +73,7 @@ public class JavaCollisionShape implements ICollisionShape {
 
                 @Override
                 public ICollisionShape getCollisionShape() {
-                    return new JavaCollisionShape(physicsWorld, child.childShape);
+                    return new JavaCollisionShape(physicsWorld.get(), child.childShape);
                 }
 
             });
@@ -87,12 +89,12 @@ public class JavaCollisionShape implements ICollisionShape {
 
     @Override
     public void setLocalScaling(final Vector3f localScaling) {
-        shape.setLocalScaling(localScaling);
+        shape.get().setLocalScaling(localScaling);
     }
 
     @Override
     public PhysicsWorld getPhysicsWorld() {
-        return physicsWorld;
+        return physicsWorld.get();
     }
 
 }

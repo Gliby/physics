@@ -24,7 +24,7 @@ class NativeConstraintGeneric6Dof implements IConstraintGeneric6Dof {
 
     @Override
     public Object getConstraint() {
-        return constraint;
+        return constraint.get();
     }
 
     @Override
