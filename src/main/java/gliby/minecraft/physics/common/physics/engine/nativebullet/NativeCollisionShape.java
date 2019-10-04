@@ -5,12 +5,14 @@ import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCompoundShape;
 import com.bulletphysicsx.linearmath.Transform;
+import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShapeChildren;
 
 import javax.vecmath.Vector3f;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,12 +21,13 @@ import java.util.List;
  */
 class NativeCollisionShape implements ICollisionShape {
     private static final int BOX_SHAPE = 0;
-    protected PhysicsWorld physicsWorld;
-    private btCollisionShape shape;
+
+    protected WeakReference<PhysicsWorld> physicsWorld;
+    private WeakReference<btCollisionShape> shape;
 
     NativeCollisionShape(PhysicsWorld physicsWorld, btCollisionShape shape) {
-        this.physicsWorld = physicsWorld;
-        this.shape = shape;
+        this.physicsWorld = new WeakReference<PhysicsWorld>(physicsWorld);
+        this.shape = new WeakReference<btCollisionShape>(shape);
     }
 
     @Override
@@ -34,17 +37,17 @@ class NativeCollisionShape implements ICollisionShape {
 
     @Override
     public int getShapeType() {
-        return shape.getShapeType();
+        return shape.get().getShapeType();
     }
 
     @Override
     public boolean isBoxShape() {
-        return shape.getShapeType() == BOX_SHAPE;
+        return shape.get().getShapeType() == BOX_SHAPE;
     }
 
     @Override
     public boolean isCompoundShape() {
-        return shape.isCompound();
+        return shape.get().isCompound();
     }
 
     @Override
@@ -54,7 +57,7 @@ class NativeCollisionShape implements ICollisionShape {
          *
          * @Override public void run() {
          */
-        shape.calculateLocalInertia(mass, (Vector3) localInertia);
+        shape.get().calculateLocalInertia(mass, (Vector3) localInertia);
 
         /*
          * System.out.println("calculated inertia"); } });
@@ -63,13 +66,13 @@ class NativeCollisionShape implements ICollisionShape {
 
     @Override
     public void getHalfExtentsWithMargin(Vector3f halfExtent) {
-        halfExtent.set(VecUtility.toVector3f(((btBoxShape) shape).getHalfExtentsWithMargin()));
+        halfExtent.set(VecUtility.toVector3f(((btBoxShape) shape.get()).getHalfExtentsWithMargin()));
     }
 
     @Override
     public List<ICollisionShapeChildren> getChildren() {
         ArrayList<ICollisionShapeChildren> shapeList = new ArrayList<ICollisionShapeChildren>();
-        final btCompoundShape compoundShape = (btCompoundShape) shape;
+        final btCompoundShape compoundShape = (btCompoundShape) shape.get();
         for (int i = 0; i < compoundShape.getNumChildShapes(); i++) {
             final int index = i;
             final Transform transform = new Transform();
@@ -83,7 +86,7 @@ class NativeCollisionShape implements ICollisionShape {
 
                 @Override
                 public ICollisionShape getCollisionShape() {
-                    return new NativeCollisionShape(physicsWorld, compoundShape.getChildShape(index));
+                    return new NativeCollisionShape(physicsWorld.get(), compoundShape.getChildShape(index));
                 }
 
             });
@@ -94,17 +97,17 @@ class NativeCollisionShape implements ICollisionShape {
 
     @Override
     public void dispose() {
-        if (!shape.isDisposed()) shape.dispose();
+        if (shape.get() != null && !shape.get().isDisposed()) shape.get().dispose();
     }
 
     @Override
     public void setLocalScaling(final Vector3f localScaling) {
-        shape.setLocalScaling(VecUtility.toVector3(localScaling));
+        shape.get().setLocalScaling(VecUtility.toVector3(localScaling));
     }
 
     @Override
     public PhysicsWorld getPhysicsWorld() {
-        return physicsWorld;
+        return physicsWorld.get();
     }
 
 }

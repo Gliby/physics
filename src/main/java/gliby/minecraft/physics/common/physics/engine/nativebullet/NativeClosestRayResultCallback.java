@@ -6,47 +6,48 @@ import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.physics.engine.IRayResult;
 
 import javax.vecmath.Vector3f;
+import java.lang.ref.WeakReference;
 
 /**
  *
  */
 class NativeClosestRayResultCallback implements IRayResult {
 
-    private ClosestRayResultCallback callback;
+    private WeakReference<ClosestRayResultCallback> callback;
 
     /**
      * @param callback
      */
     NativeClosestRayResultCallback(ClosestRayResultCallback callback) {
-        this.callback = callback;
+        this.callback = new WeakReference<ClosestRayResultCallback>(callback);
     }
 
     @Override
     public Object getRayResultCallback() {
-        return callback;
+        return callback.get();
     }
 
     @Override
     public boolean hasHit() {
-        return callback.hasHit();
+        return callback.get().hasHit();
     }
 
     @Override
     public Object getCollisionObject() {
-        return callback.getCollisionObject();
+        return callback.get().getCollisionObject();
     }
 
     @Override
     public Vector3f getHitPointWorld() {
         Vector3 vec = new Vector3();
-        callback.getHitPointWorld(vec);
+        callback.get().getHitPointWorld(vec);
         return VecUtility.toVector3f(vec);
     }
 
     @Override
     public Vector3f getHitPointNormal() {
         Vector3 vector = new Vector3();
-        callback.getHitNormalWorld(vector);
+        callback.get().getHitNormalWorld(vector);
         return VecUtility.toVector3f(vector);
     }
 }

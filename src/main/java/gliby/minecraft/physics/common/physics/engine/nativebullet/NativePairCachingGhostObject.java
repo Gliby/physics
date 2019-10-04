@@ -9,73 +9,70 @@ import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import gliby.minecraft.physics.common.physics.engine.IGhostObject;
 import net.minecraft.entity.Entity;
 
+import java.lang.ref.WeakReference;
+
 /**
  *
  */
 class NativePairCachingGhostObject implements IGhostObject {
 
-    protected NativePhysicsWorld physicsWorld;
-    Entity owner;
-    private btPairCachingGhostObject ghostObject;
+    protected WeakReference<NativePhysicsWorld> physicsWorld;
+    protected WeakReference<Entity> owner;
+    private WeakReference<btPairCachingGhostObject> ghostObject;
 
     NativePairCachingGhostObject(PhysicsWorld physicsWorld, btPairCachingGhostObject object) {
-        this.physicsWorld = (NativePhysicsWorld) physicsWorld;
-        this.ghostObject = object;
+        this.physicsWorld = new WeakReference<NativePhysicsWorld>((NativePhysicsWorld) physicsWorld);
+        this.ghostObject = new WeakReference<btPairCachingGhostObject>(object);
     }
 
     NativePairCachingGhostObject(PhysicsWorld physicsWorld, Entity owner, btPairCachingGhostObject object) {
         this(physicsWorld, object);
-        this.owner = owner;
+        this.owner = new WeakReference<Entity>(owner);
     }
 
     @Override
     public Object getGhostObject() {
-        return ghostObject;
+        return ghostObject.get();
     }
 
     @Override
     public Object getCollisionObject() {
-        return ghostObject;
+        return ghostObject.get();
     }
 
     @Override
     public void setWorldTransform(final Transform entityTransform) {
-        ghostObject.setWorldTransform(VecUtility.toMatrix4(entityTransform));
+        ghostObject.get().setWorldTransform(VecUtility.toMatrix4(entityTransform));
 
     }
 
     @Override
     public void setCollisionShape(final ICollisionShape collisionShape) {
-
-        ghostObject.setCollisionShape((btCollisionShape) collisionShape.getCollisionShape());
+        ghostObject.get().setCollisionShape((btCollisionShape) collisionShape.getCollisionShape());
     }
 
     @Override
     public void setCollisionFlags(final int characterObject) {
-
-        ghostObject.setCollisionFlags(characterObject);
-
+        ghostObject.get().setCollisionFlags(characterObject);
     }
 
     @Override
     public void setInterpolationWorldTransform(final Transform entityTransform) {
-
-        ghostObject.setInterpolationWorldTransform(VecUtility.toMatrix4(entityTransform));
-
+        ghostObject.get().setInterpolationWorldTransform(VecUtility.toMatrix4(entityTransform));
     }
 
     @Override
     public boolean isValid() {
-        return ghostObject != null;
+        return ghostObject != null && ghostObject.get() != null && !ghostObject.get().isDisposed();
     }
 
     @Override
     public Entity getOwner() {
-        return owner;
+        return owner.get();
     }
 
     @Override
     public PhysicsWorld getPhysicsWorld() {
-        return physicsWorld;
+        return physicsWorld.get();
     }
 }

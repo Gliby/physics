@@ -2,21 +2,24 @@ package gliby.minecraft.physics.common.physics.engine.nativebullet;
 
 import com.badlogic.gdx.physics.bullet.dynamics.btGeneric6DofConstraint;
 import com.bulletphysicsx.linearmath.Transform;
+import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IConstraintGeneric6Dof;
+
+import java.lang.ref.WeakReference;
 
 /**
  *
  */
 class NativeConstraintGeneric6Dof implements IConstraintGeneric6Dof {
 
-    protected PhysicsWorld physicsWorld;
-    private btGeneric6DofConstraint constraint;
+    protected WeakReference<PhysicsWorld> physicsWorld;
+    private WeakReference<btGeneric6DofConstraint> constraint;
 
     NativeConstraintGeneric6Dof(PhysicsWorld physicsWorld, btGeneric6DofConstraint constraint) {
-        this.constraint = constraint;
-        this.physicsWorld = physicsWorld;
+        this.constraint = new WeakReference<btGeneric6DofConstraint>(constraint);
+        this.physicsWorld = new WeakReference<PhysicsWorld>(physicsWorld);
     }
 
     @Override
@@ -36,14 +39,14 @@ class NativeConstraintGeneric6Dof implements IConstraintGeneric6Dof {
 
     @Override
     public Transform getGlobalFrameOffsetA(Transform transform) {
-        transform.set(VecUtility.toMatrix4f(constraint.getCalculatedTransformA()));
+        transform.set(VecUtility.toMatrix4f(constraint.get().getCalculatedTransformA()));
         return transform;
 
     }
 
     @Override
     public Transform getGlobalFrameOffsetB(Transform transform) {
-        transform.set(VecUtility.toMatrix4f(constraint.getCalculatedTransformB()));
+        transform.set(VecUtility.toMatrix4f(constraint.get().getCalculatedTransformB()));
         return transform;
     }
 
@@ -54,7 +57,7 @@ class NativeConstraintGeneric6Dof implements IConstraintGeneric6Dof {
 
     @Override
     public PhysicsWorld getPhysicsWorld() {
-        return physicsWorld;
+        return physicsWorld.get();
     }
 
 }

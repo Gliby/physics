@@ -11,6 +11,7 @@ import net.minecraft.entity.Entity;
 
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,14 +20,14 @@ import java.util.Map;
  */
 class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 
-    private btRigidBody rigidBody;
+    private WeakReference<btRigidBody> rigidBody;
     private ICollisionShape collisionShape;
     private Map<String, Object> properties;
 
     public NativeRigidBody(PhysicsWorld physicsWorld, btRigidBody rigidBody, Entity entity) {
         super(physicsWorld, entity, rigidBody);
-        this.physicsWorld = (NativePhysicsWorld) physicsWorld;
-        this.rigidBody = rigidBody;
+        this.physicsWorld = new WeakReference<NativePhysicsWorld>((NativePhysicsWorld)physicsWorld);
+        this.rigidBody = new WeakReference<btRigidBody>(rigidBody);
         this.collisionShape = new NativeCollisionShape(physicsWorld, rigidBody.getCollisionShape());
         this.properties = new HashMap<String, Object>();
     }
@@ -43,18 +44,18 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 
     @Override
     public boolean isActive() {
-        return rigidBody.isActive();
+        return rigidBody.get().isActive();
 
     }
 
     @Override
     public Vector3f getAngularVelocity() {
-        return VecUtility.toVector3f(rigidBody.getAngularVelocity());
+        return VecUtility.toVector3f(rigidBody.get().getAngularVelocity());
     }
 
     @Override
     public Vector3f getLinearVelocity() {
-        return VecUtility.toVector3f(rigidBody.getLinearVelocity());
+        return VecUtility.toVector3f(rigidBody.get().getLinearVelocity());
 
     }
 
@@ -66,70 +67,70 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
      */
     @Override
     public Transform getWorldTransform() {
-        return VecUtility.toTransform(rigidBody.getWorldTransform());
+        return VecUtility.toTransform(rigidBody.get().getWorldTransform());
     }
 
     public void setWorldTransform(final Transform transform) {
-        rigidBody.setWorldTransform(VecUtility.toMatrix4(transform));
+        rigidBody.get().setWorldTransform(VecUtility.toMatrix4(transform));
 
     }
 
     @Override
     public boolean isValid() {
-        return !rigidBody.isDisposed();
+        return rigidBody != null && rigidBody.get() != null && !rigidBody.get().isDisposed();
     }
 
     @Override
     public void setGravity(final Vector3f acceleration) {
-        rigidBody.setGravity(VecUtility.toVector3(acceleration));
+        rigidBody.get().setGravity(VecUtility.toVector3(acceleration));
 
     }
 
     @Override
     public void setFriction(final float friction) {
-        rigidBody.setFriction(friction);
+        rigidBody.get().setFriction(friction);
 
     }
 
     @Override
     public void setLinearVelocity(final Vector3f linearVelocity) {
-        rigidBody.setLinearVelocity(VecUtility.toVector3(linearVelocity));
+        rigidBody.get().setLinearVelocity(VecUtility.toVector3(linearVelocity));
 
     }
 
     @Override
     public void setAngularVelocity(Vector3f angularVelocity) {
-        rigidBody.setAngularVelocity(VecUtility.toVector3(angularVelocity));
+        rigidBody.get().setAngularVelocity(VecUtility.toVector3(angularVelocity));
 
     }
 
     @Override
     public void applyCentralImpulse(final Vector3f direction) {
-        rigidBody.applyCentralImpulse(VecUtility.toVector3(direction));
+        rigidBody.get().applyCentralImpulse(VecUtility.toVector3(direction));
 
     }
 
     @Override
     public boolean hasContactResponse() {
-        return rigidBody.hasContactResponse();
+        return rigidBody.get().hasContactResponse();
 
     }
 
     @Override
     public float getInvMass() {
-        return rigidBody.getInvMass();
+        return rigidBody.get().getInvMass();
     }
 
     @Override
     public void activate() {
-        rigidBody.activate();
+        rigidBody.get().activate();
 
     }
 
     @Override
     public void getAabb(Vector3f aabbMin, Vector3f aabbMax) {
         Vector3 min = new Vector3(), max = new Vector3();
-        rigidBody.getAabb(min, max);
+        rigidBody.get().getAabb(min, max);
         aabbMin.set(VecUtility.toVector3f(min));
         aabbMin.set(VecUtility.toVector3f(max));
 
@@ -137,7 +138,7 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 
     @Override
     public Transform getCenterOfMassTransform() {
-        return VecUtility.toTransform(rigidBody.getCenterOfMassTransform());
+        return VecUtility.toTransform(rigidBody.get().getCenterOfMassTransform());
     }
 
     @Override
@@ -147,46 +148,46 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 
     @Override
     public void applyCentralForce(final Vector3f force) {
-        rigidBody.applyCentralForce(VecUtility.toVector3(force));
+        rigidBody.get().applyCentralForce(VecUtility.toVector3(force));
 
     }
 
     @Override
     public Vector3f getGravity(Vector3f vector3f) {
-        vector3f.set(VecUtility.toVector3f(rigidBody.getGravity()));
+        vector3f.set(VecUtility.toVector3f(rigidBody.get().getGravity()));
         return vector3f;
     }
 
     @Override
     public Vector3f getCenterOfMassPosition() {
-        return VecUtility.toVector3f(rigidBody.getCenterOfMassPosition());
+        return VecUtility.toVector3f(rigidBody.get().getCenterOfMassPosition());
     }
 
     @Override
     public Quat4f getRotation() {
-        return VecUtility.toQuat4f(rigidBody.getOrientation());
+        return VecUtility.toQuat4f(rigidBody.get().getOrientation());
     }
 
     @Override
     public Vector3f getPosition() {
-        return VecUtility.toVector3f(rigidBody.getWorldTransform().getTranslation(new Vector3()));
+        return VecUtility.toVector3f(rigidBody.get().getWorldTransform().getTranslation(new Vector3()));
     }
 
     @Override
     public void applyTorque(final Vector3f vector) {
-        rigidBody.applyTorque(VecUtility.toVector3(vector));
+        rigidBody.get().applyTorque(VecUtility.toVector3(vector));
 
     }
 
     @Override
     public void applyTorqueImpulse(final Vector3f vector) {
-        rigidBody.applyTorqueImpulse(VecUtility.toVector3(vector));
+        rigidBody.get().applyTorqueImpulse(VecUtility.toVector3(vector));
     }
 
     @Override
     public void dispose() {
-        if (!rigidBody.isDisposed()) {
-            rigidBody.dispose();
+        if (isValid()) {
+            rigidBody.get().dispose();
         }
     }
 }
