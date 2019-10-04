@@ -15,6 +15,8 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
@@ -52,7 +54,7 @@ public abstract class RenderPhysics extends Render {
     public final boolean shouldRender(Entity entity, ICamera camera, double camX, double camY, double camZ) {
         EntityPhysicsBase interpolatableEntity = (EntityPhysicsBase) entity;
         interpolatableEntity.interpolate();
-        return interpolatableEntity.pickerEntity != null
+        return interpolatableEntity.getPickerEntity() != null
                 || entity.isInRangeToRender3d(camX, camY, camZ) && (entity.ignoreFrustumCheck
                 || camera.isBoundingBoxInFrustum(interpolatableEntity.getRenderBoundingBox()));
     }
@@ -60,39 +62,38 @@ public abstract class RenderPhysics extends Render {
     protected abstract void draw(Entity uncast, double entityX, double entityY, double entityZ, float partialTick,
                                  int color, boolean outline);
 
-    public void doRender(Entity uncast, double entityX, double entityY, double entityZ, float twen, float partialTick) {
+    public void doRender(Entity uncast, double entityX, double entityY, double entityZ, float twen, float deltaTime) {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuffer();
         EntityPhysicsBase entity = (EntityPhysicsBase) uncast;
         drawBeam:
-        if (entity.pickerEntity != null) {
-            Item item = entity.pickerEntity.getHeldItemMainhand() != null ? entity.pickerEntity.getHeldItemMainhand().getItem() : null;
+        if (entity.getPickerEntity() != null) {
+            EntityPlayer pickerEntity = entity.getPickerEntity();
+            Item item = pickerEntity.getHeldItemMainhand() != null ? pickerEntity.getHeldItemMainhand().getItem() : null;
             if (item instanceof ItemPhysicsGun) {
 
-
-                Vector3f hitPoint = getRenderHitPoint(entity, partialTick);
+                Vector3f hitPoint = getRenderHitPoint(entity, deltaTime);
                 Vec3d firstPersonOffset = new Vec3d(-0.22D, -0.08D, 0.35D);
-
-                firstPersonOffset = firstPersonOffset.rotatePitch(-(entity.pickerEntity.prevRotationPitch
-                        + (entity.pickerEntity.rotationPitch - entity.pickerEntity.prevRotationPitch) * partialTick)
+                firstPersonOffset = firstPersonOffset.rotatePitch(-(pickerEntity.prevRotationPitch
+                        + (pickerEntity.rotationPitch - pickerEntity.prevRotationPitch) * deltaTime)
                         * (float) Math.PI / 180.0F);
 
-                firstPersonOffset = firstPersonOffset.rotateYaw(-(entity.pickerEntity.prevRotationYaw
-                        + (entity.pickerEntity.rotationYaw - entity.pickerEntity.prevRotationYaw) * partialTick)
+                firstPersonOffset = firstPersonOffset.rotateYaw(-(pickerEntity.prevRotationYaw
+                        + (pickerEntity.rotationYaw - pickerEntity.prevRotationYaw) * deltaTime)
                         * (float) Math.PI / 180.0F);
 
-                double targetX = entity.pickerEntity.prevPosX
-                        + (entity.pickerEntity.posX - entity.pickerEntity.prevPosX) * (double) partialTick
+                double targetX = pickerEntity.prevPosX
+                        + (pickerEntity.posX - pickerEntity.prevPosX) * (double) deltaTime
                         + firstPersonOffset.x;
-                double targetY = entity.pickerEntity.prevPosY
-                        + (entity.pickerEntity.posY - entity.pickerEntity.prevPosY) * (double) partialTick
+                double targetY = pickerEntity.prevPosY
+                        + (pickerEntity.posY - pickerEntity.prevPosY) * (double) deltaTime
                         + firstPersonOffset.y;
-                double targetZ = entity.pickerEntity.prevPosZ
-                        + (entity.pickerEntity.posZ - entity.pickerEntity.prevPosZ) * (double) partialTick
+                double targetZ = pickerEntity.prevPosZ
+                        + (pickerEntity.posZ - pickerEntity.prevPosZ) * (double) deltaTime
                         + firstPersonOffset.z;
 
-                if (this.renderManager.options.thirdPersonView != 0 || entity.pickerEntity != mc.player) {
-                    Vec3d beamStart = VecUtility.calculateRay(entity.pickerEntity, 1.0f, partialTick,
+                if (this.renderManager.options.thirdPersonView != 0 || pickerEntity != mc.player) {
+                    Vec3d beamStart = VecUtility.calculateRay(pickerEntity, 1.0f, deltaTime,
                             new Vector3f(-0.1f, -0.25F, 0));
                     targetX = beamStart.x;
                     targetY = beamStart.y;
@@ -106,18 +107,19 @@ public abstract class RenderPhysics extends Render {
 
                     GlStateManager.glLineWidth(10.0f);
                 }
-                double eyeHeight = entity.pickerEntity.getEyeHeight();
 
-                double x = (entity.prevPosX + (entity.posX - entity.prevPosX) * (double) partialTick) + hitPoint.x - entityX;
-                double y = (entity.prevPosY + (entity.posY - entity.prevPosY) * (double) partialTick + 0.25D)
+                double eyeHeight = pickerEntity.getEyeHeight();
+
+                double x = (entity.prevPosX + (entity.posX - entity.prevPosX) * (double) deltaTime) + hitPoint.x - entityX;
+                double y = (entity.prevPosY + (entity.posY - entity.prevPosY) * (double) deltaTime + 0.25D)
                         + hitPoint.y - entityY;
-                double z = (entity.prevPosZ + (entity.posZ - entity.prevPosZ) * (double) partialTick) + hitPoint.z
+                double z = (entity.prevPosZ + (entity.posZ - entity.prevPosZ) * (double) deltaTime) + hitPoint.z
                         - entityZ;
                 double diffX = (float) (targetX - x);
                 double diffY = (double) ((float) (targetY - y)) + eyeHeight;
                 double diffZ = (float) (targetZ - z);
 
-                int beamColor = getBeamColor(entity.pickerEntity);
+                int beamColor = getBeamColor(pickerEntity);
                 GlStateManager.disableTexture2D();
                 GlStateManager.disableLighting();
                 OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, 240, 0);
@@ -144,7 +146,7 @@ public abstract class RenderPhysics extends Render {
                 GlStateManager.disableCull();
                 GlStateManager.enableRescaleNormal();
 
-                draw(uncast, entityX, entityY, entityZ, partialTick, beamColor, true);
+                draw(uncast, entityX, entityY, entityZ, deltaTime, beamColor, true);
 
                 GlStateManager.disableRescaleNormal();
                 GlStateManager.enableCull();
@@ -166,7 +168,7 @@ public abstract class RenderPhysics extends Render {
             }
         }
 
-        draw(uncast, entityX, entityY, entityZ, partialTick, -1, false);
+        draw(uncast, entityX, entityY, entityZ, deltaTime, -1, false);
     }
 
     public int getBeamColor(Entity pickerEntity) {

@@ -61,12 +61,6 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see net.gliby.physics.common.physics.IRigidBody#getWorldTransform(com.
-     * bulletphysics.linearmath.Transform)
-     */
     @Override
     public Transform getWorldTransform() {
         return VecUtility.toTransform(rigidBody.get().getWorldTransform());
@@ -74,9 +68,7 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 
     @Override
     public void setWorldTransform(final Transform transform) {
-        System.out.println("in transform: " + transform.origin);
         Matrix4 mat4 = VecUtility.toMatrix4(transform);
-        System.out.println("out mat4    : " + mat4.getTranslation(new Vector3()));
         rigidBody.get().setWorldTransform(mat4);
 
     }

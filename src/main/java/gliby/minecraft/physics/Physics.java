@@ -139,6 +139,8 @@ public class Physics {
 
         settings.registerString("Miscellaneous", "LastVersion", VERSION, Setting.Side.BOTH);
         settings.registerBoolean("Miscellaneous", "DisableAllowFlight", true, Setting.Side.BOTH);
+        settings.registerFloat("Render", "BlockInterpolation", 0.15f, Setting.Side.CLIENT);
+
         settings.load();
         gman = GMan.create(getLogger(), new ModInfo(ID, event.getModMetadata().updateUrl), MinecraftForge.MC_VERSION,
                 VERSION);

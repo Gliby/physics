@@ -8,24 +8,19 @@ import gliby.minecraft.physics.common.entity.EntityPhysicsBlock;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import org.lwjgl.BufferUtils;
 
 import javax.vecmath.Vector3f;
-import java.nio.Buffer;
 import java.nio.FloatBuffer;
 
-import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL11.glMultMatrix;
 
 /**
  *
@@ -41,13 +36,13 @@ public class RenderPhysicsBlock extends RenderPhysics {
         super(renderHandler, renderManager);
     }
 
-    protected void draw(Entity castEntity, double entityX, double entityY, double entityZ, float partialTick,
+    protected void draw(Entity castEntity, double entityX, double entityY, double entityZ, float deltaTime,
                         int color, boolean outline) {
         Transform transform = new Transform();
         EntityPhysicsBlock entity = (EntityPhysicsBlock) castEntity;
         IBlockState state = entity.getBlockState();
         if (state.getRenderType() != EnumBlockRenderType.INVISIBLE) {
-            Vector3f worldTranslation = VecUtility.getWorldTranslation(mc, partialTick);
+            Vector3f worldTranslation = VecUtility.getWorldTranslation(mc, deltaTime);
             BlockRendererDispatcher blockrendererdispatcher = mc.getBlockRendererDispatcher();
             IBakedModel ibakedmodel = blockrendererdispatcher.getModelForState(state);
 
@@ -79,8 +74,8 @@ public class RenderPhysicsBlock extends RenderPhysics {
 
             // setup transform;
             transform.setIdentity();
-            transform.setRotation(entity.renderRotation);
-            transform.origin.set(entity.renderPosition);
+            transform.setRotation(entity.getRenderRotation());
+            transform.origin.set(entity.getRenderPosition());
             VecUtility.setBufferFromTransform(renderMatrix, transform);
 
             // Apply transformation.
@@ -107,8 +102,8 @@ public class RenderPhysicsBlock extends RenderPhysics {
     public Vector3f getRenderHitPoint(EntityPhysicsBase entity, float partialTick) {
         EntityPhysicsBlock entityBlock = (EntityPhysicsBlock) entity;
         Vector3f worldTranslation = VecUtility.getWorldTranslation(Minecraft.getMinecraft(), partialTick);
-        Vector3f hitPoint = new Vector3f(entityBlock.renderPosition);
-        hitPoint.add(entity.pickLocalHit);
+        Vector3f hitPoint = new Vector3f(entityBlock.getRenderPosition());
+        hitPoint.add(entity.getPickLocalHit());
         hitPoint.add(new Vector3f(0.5f, 0.5f, 0.5f));
         hitPoint.sub(worldTranslation);
         return hitPoint;

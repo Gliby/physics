@@ -8,6 +8,7 @@ import com.bulletphysicsx.linearmath.QuaternionUtil;
 import com.bulletphysicsx.linearmath.Transform;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 
 import javax.vecmath.Matrix4f;
@@ -21,15 +22,8 @@ import java.nio.FloatBuffer;
 public class VecUtility {
 
 
-    public static final int M01 = 3;
-    public static final int M02 = 6;
-    public static final int M10 = 1;
-    public static final int M11 = 4;
-    public static final int M12 = 7;
-    public static final int M20 = 2;
-    public static final int M21 = 5;
-    public static final int M22 = 8;
-    static final int M00 = 0;
+
+    public static final AxisAlignedBB ZERO_BB = new AxisAlignedBB(Vec3d.ZERO, Vec3d.ZERO);
     private static float[] buffer = new float[16];
 
     /**

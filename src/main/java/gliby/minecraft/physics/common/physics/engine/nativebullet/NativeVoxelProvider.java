@@ -14,17 +14,15 @@ import java.lang.ref.WeakReference;
 
 class NativeVoxelProvider extends btVoxelContentProvider {
 
-    private Physics physics;
 
     private World world;
     private PhysicsWorld physicsWorld;
     private btVoxelInfo info;
 
-    NativeVoxelProvider(btVoxelInfo info, World world, PhysicsWorld physicsWorld, Physics physics) {
+    NativeVoxelProvider(btVoxelInfo info, World world, PhysicsWorld physicsWorld) {
         this.world = world;
         this.physicsWorld = physicsWorld;
         this.info = info;
-        this.physics = physics;
     }
 
     @Override
@@ -33,10 +31,10 @@ class NativeVoxelProvider extends btVoxelContentProvider {
             final BlockPos blockPosition = new BlockPos(x, y, z);
             final IBlockState state = world.getBlockState(blockPosition);
             info.setTracable(false);
-            info.setBlocking(state.getBlock().getMaterial(state).isSolid());
+            info.setBlocking(state.getMaterial().isSolid());
             info.setCollisionShape((btCollisionShape) physicsWorld.getBlockCache()
                     .getShape(world, blockPosition, state).getCollisionShape());
-            info.setFriction((1 - state.getBlock().slipperiness) * 5);
+            info.setFriction((1 - state.getBlock().getSlipperiness(state, world, blockPosition, null)) * 5);
         }
         return info;
 

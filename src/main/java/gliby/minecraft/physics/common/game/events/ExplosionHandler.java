@@ -29,7 +29,7 @@ public class ExplosionHandler {
         this.physics = physics;
     }
 
-    // TODO bug: fix explosions
+    // TODO explosion tuning: some blocks are too heavy for explosions. while other are too light.
     @SubscribeEvent
     public void handleEvent(final ExplosionEvent.Detonate event) {
         event.getWorld().getMinecraftServer().addScheduledTask(new Runnable() {
@@ -48,8 +48,8 @@ public class ExplosionHandler {
                     PhysicsBlockMetadata metadata = physics.getBlockManager().getPhysicsBlockMetadata()
                             .get(physics.getBlockManager().getBlockIdentity(blockState.getBlock()));
                     boolean shouldSpawnInExplosions = metadata == null || metadata.spawnInExplosions;
-                    if (blockState.getBlock().getMaterial(blockState) != Material.AIR && shouldSpawnInExplosions) {
-                        blockState = blockState.getBlock().getActualState(blockState, event.getWorld(), pos);
+                    if (blockState.getMaterial() != Material.AIR && shouldSpawnInExplosions) {
+                        blockState = blockState.getActualState(event.getWorld(), pos);
                         EntityPhysicsBlock analog = new EntityPhysicsBlock(event.getWorld(), physicsWorld, blockState,
                                 pos.getX(), pos.getY(), pos.getZ());
                         event.getWorld().spawnEntity(analog);
@@ -64,12 +64,14 @@ public class ExplosionHandler {
                     IRigidBody body = affectedEntities.get(i).getRigidBody();
                     Vector3f centerOfMass = body.getCenterOfMassPosition();
                     Vector3f direction = new Vector3f();
-                    direction.sub(explosion, centerOfMass);
+                    direction.sub(centerOfMass, explosion);
                     float distance = direction.length();
                     if (distance <= explosionRadius && body.isValid()) {
                         direction.normalize();
-                        float forceMultiplier = explosionRadius / (1 + explosionRadius - distance);
-                        direction.scale(force * Math.abs(forceMultiplier));
+//                        direction.scale(-1);
+                        // blocks closer to the explosion will receive more force.
+//                        float forceMultiplier = explosionRadius / (1 + explosionRadius - distance);
+                        direction.scale(force);
                         body.applyCentralImpulse(direction);
                     }
                 }

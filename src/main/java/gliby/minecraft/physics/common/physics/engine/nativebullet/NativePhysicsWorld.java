@@ -71,7 +71,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
         dynamicsWorld.setGravity(VecUtility.toVector3(getPhysicsConfiguration().getRegularGravity()));
 
         voxelShape = new btVoxelShape(
-                voxelProvider = new NativeVoxelProvider(voxelInfo = new btVoxelInfo(), getPhysicsConfiguration().getWorld(), this, physics),
+                voxelProvider = new NativeVoxelProvider(voxelInfo = new btVoxelInfo(), getPhysicsConfiguration().getWorld(), this),
                 new Vector3(-Integer.MAX_VALUE, -Integer.MAX_VALUE, -Integer.MAX_VALUE),
                 new Vector3(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE));
         voxelBody = new btCollisionObject();

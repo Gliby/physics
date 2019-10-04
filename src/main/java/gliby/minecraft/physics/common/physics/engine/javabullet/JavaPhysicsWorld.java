@@ -66,7 +66,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
         // Create block collision connection to bullet.
         final JBulletVoxelWorldShape blockCollisionHandler = new JBulletVoxelWorldShape(
-                new JavaVoxelProvider(getPhysicsConfiguration().getWorld(), physics, this));
+                new JavaVoxelProvider(getPhysicsConfiguration().getWorld(), this));
         blockCollisionHandler.calculateLocalInertia(0, new Vector3f());
         final RigidBodyConstructionInfo blockConsInf = new RigidBodyConstructionInfo(0,
                 new DefaultMotionState(identityTransform), blockCollisionHandler, new Vector3f());

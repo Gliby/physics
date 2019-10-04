@@ -3,22 +3,25 @@ package gliby.minecraft.gman.settings;
 import com.google.gson.Gson;
 import gliby.minecraft.gman.settings.INIProperties.INIPropertiesReadFailure;
 import gliby.minecraft.gman.settings.Setting.Side;
+import org.codehaus.plexus.util.FastMap;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+// TODO improvement replace with better INI handler.
+// TODO better null key support.
+
 /**
- *
+ * INI based, key->value mutable settings handler.
  */
-// TODO improvement replace settings with json
 public class SettingsHandler {
 
     private static Gson gson;
     private final File file;
     private final File directory;
-    boolean firstTime;
+    private boolean firstTime;
     private Map<String, Setting> settings;
     private INIProperties properties;
 
@@ -26,7 +29,7 @@ public class SettingsHandler {
         this.directory = directory;
         this.file = settingsFile;
         properties = new INIProperties(settingsFile);
-        settings = new HashMap<String, Setting>();
+        settings = new HashMap<>();
     }
 
     public Map<String, Setting> getSettings() {

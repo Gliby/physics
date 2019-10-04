@@ -1,5 +1,6 @@
 package gliby.minecraft.physics.common.entity;
 
+import com.bulletphysicsx.dynamics.RigidBody;
 import com.google.gson.Gson;
 import gliby.minecraft.gman.networking.GDataSerializers;
 import gliby.minecraft.physics.Physics;
@@ -28,6 +29,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.vecmath.Vector3f;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,26 +43,23 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
 
     public static final int TICKS_PER_SECOND = 20;
-    public List<RigidBodyMechanic> mechanics = new ArrayList<RigidBodyMechanic>();
-    public EntityPlayer pickerEntity;
-    // Shared
-    public Vector3f pickLocalHit;
-    // TODO convert to soft ref
-    protected PhysicsWorld physicsWorld;
-
     protected static final DataParameter<Integer> PICKER_ID = EntityDataManager.<Integer>createKey(EntityPhysicsBase.class, DataSerializers.VARINT);
     protected static final DataParameter<Vector3f> PICK_OFFSET = EntityDataManager.<Vector3f>createKey(EntityPhysicsBase.class, GDataSerializers.VECTOR3F);
+    protected List<RigidBodyMechanic> mechanics = new ArrayList<RigidBodyMechanic>();
 
+    protected WeakReference<EntityPlayer> pickerEntity;
+    protected WeakReference<PhysicsWorld> physicsWorld;
+
+    protected Vector3f pickLocalHit;
+    // TODO convert to soft ref
     private int lastTickActive;
-
-
-
     /**
      * Client or Load constructor.
      *
      * @param world
      */
     public EntityPhysicsBase(World world) {
+
         super(world);
     }
 
@@ -72,7 +71,29 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
     public EntityPhysicsBase(World world, PhysicsWorld physicsWorld) {
         super(world);
-        this.physicsWorld = physicsWorld;
+        this.physicsWorld = new WeakReference<PhysicsWorld>(physicsWorld);
+    }
+
+    public Vector3f getPickLocalHit() {
+        return pickLocalHit;
+    }
+
+    public List<RigidBodyMechanic> getMechanics() {
+        return mechanics;
+    }
+
+    public void setMechanics(List<RigidBodyMechanic> mechanics) {
+        this.mechanics = mechanics;
+    }
+
+    public EntityPlayer getPickerEntity() {
+        if (pickerEntity != null)
+            return pickerEntity.get();
+        return null;
+    }
+
+    public void setPickerEntity(EntityPlayer pickerEntity) {
+        this.pickerEntity = new WeakReference<EntityPlayer>(pickerEntity);
     }
 
     /**
@@ -102,16 +123,16 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     @Override
     public void setDead() {
         spawnRemoveParticle();
-        for (int i = 0; i < mechanics.size(); i++) {
-            mechanics.get(i).dispose();
+        for (int i = 0; i < getMechanics().size(); i++) {
+            getMechanics().get(i).dispose();
         }
-        mechanics.clear();
+        getMechanics().clear();
 
         if (!world.isRemote) {
             if (doesPhysicsObjectExist()) {
                 Vector3f minBB = new Vector3f(), maxBB = new Vector3f();
                 getRigidBody().getAabb(minBB, maxBB);
-                physicsWorld.awakenArea(minBB, maxBB);
+                getPhysicsWorld().awakenArea(minBB, maxBB);
             }
             dispose();
         }
@@ -121,7 +142,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
 
     public void pick(Entity picker, Vector3f pickPoint) {
-        this.pickerEntity = (EntityPlayer) picker;
+        this.setPickerEntity((EntityPlayer) picker);
         this.pickLocalHit = pickPoint;
         this.dataManager.set(PICKER_ID, Integer.valueOf(picker.getEntityId()));
         if (pickLocalHit != null)
@@ -157,6 +178,10 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     @SideOnly(Side.CLIENT)
     public abstract void interpolate();
 
+    public PhysicsWorld getPhysicsWorld() {
+        return physicsWorld.get();
+    }
+
     /**
      * @return
      */
@@ -179,7 +204,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     @Override
     public void readEntityFromNBT(NBTTagCompound tagCompound) {
         if (!world.isRemote) {
-            mechanics.clear();
+            getMechanics().clear();
             PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
             // TODO improvement: block property nbt saving
 
@@ -195,7 +220,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
                     String mechanicString = mechanicsByNames.get(i);
                     RigidBodyMechanic mechanic = overworld.getMechanicFromName(mechanicString);
                     if (mechanic != null)
-                        mechanics.add(overworld.getMechanicFromName(mechanicString));
+                        getMechanics().add(overworld.getMechanicFromName(mechanicString));
                 }
             }
         }
@@ -203,9 +228,9 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
     public void writeEntityToNBT(final NBTTagCompound tagCompound) {
         ArrayList<String> mechanicsByNames = new ArrayList<String>();
-        for (int i = 0; i < mechanics.size(); i++) {
+        for (int i = 0; i < getMechanics().size(); i++) {
             mechanicsByNames
-                    .add(Physics.getInstance().getPhysicsOverworld().getMechanicsMap().inverse().get(mechanics.get(i)));
+                    .add(Physics.getInstance().getPhysicsOverworld().getMechanicsMap().inverse().get(getMechanics().get(i)));
         }
         // TODO improvement: block property nbt saving
         Gson gson = new Gson();
@@ -233,34 +258,35 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     public final void onUpdate() {
         super.onUpdate();
         if (this.world.isRemote) {
-            int pickerId =  ((Integer)this.getDataManager().get(PICKER_ID)).intValue();
+            int pickerId = ((Integer) this.getDataManager().get(PICKER_ID)).intValue();
             if (pickerId != -1) {
                 Entity entity = this.world.getEntityByID(pickerId);
                 if (entity instanceof EntityPlayer) {
-                    this.pickerEntity = (EntityPlayer) entity;
-                    if (this.pickerEntity != null) {
+                    setPickerEntity((EntityPlayer) entity);
+                    if (this.getPickerEntity() != null) {
                         this.pickLocalHit = (Vector3f) dataManager.get(PICK_OFFSET);
                     } else {
                         this.pickLocalHit = null;
                     }
                 }
             } else {
-                this.pickerEntity = null;
+                setPickerEntity(null);
             }
             onClientUpdate();
         } else {
             onServerUpdate();
             // Check if picker exists.
-            if (pickerEntity != null) {
-                PickUpMechanic mechanic = (PickUpMechanic) physicsWorld.getMechanics().get("PickUp");
+            if (getPickerEntity() != null) {
+                PickUpMechanic mechanic = (PickUpMechanic) getPhysicsWorld().getMechanics().get("PickUp");
                 // Continue if mechanic exists.
                 if (mechanic != null) {
-                    Item item = pickerEntity.getHeldItem(EnumHand.MAIN_HAND) != null ? pickerEntity.getHeldItem(EnumHand.MAIN_HAND).getItem() : null;
+                    EntityPlayer picker = getPickerEntity();
+                    Item item = picker.getHeldItem(EnumHand.MAIN_HAND) != null ? picker.getHeldItem(EnumHand.MAIN_HAND).getItem() : null;
                     // Check if held item isn't physics gun.
                     if (!(item instanceof ItemPhysicsGun)) {
                         OwnedPickedObject object = null;
                         // Continue if picked object exists.
-                        if ((object = mechanic.getOwnedPickedObject(pickerEntity)) != null) {
+                        if ((object = mechanic.getOwnedPickedObject(picker)) != null) {
                             // Alert's dataWatcher that item shouldn't be
                             // picked.
                             unpick();
@@ -282,10 +308,10 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
                     this.setDead();
                 }
                 // Update mechanics.
-                for (int i = 0; i < mechanics.size(); i++) {
-                    RigidBodyMechanic mechanic = mechanics.get(i);
+                for (int i = 0; i < getMechanics().size(); i++) {
+                    RigidBodyMechanic mechanic = getMechanics().get(i);
                     if (mechanic.isEnabled())
-                        mechanic.update(getRigidBody(), physicsWorld, this, world.isRemote ? Side.CLIENT : Side.SERVER);
+                        mechanic.update(getRigidBody(), getPhysicsWorld(), this, world.isRemote ? Side.CLIENT : Side.SERVER);
                 }
 
                 if (rigidBody.getProperties().containsKey(EnumRigidBodyProperty.DEAD.getName())) {
@@ -306,8 +332,8 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
         PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
 
         List<String> savedMechanics = new ArrayList<String>();
-        for (int i = 0; i < mechanics.size(); i++) {
-            RigidBodyMechanic mechanic = mechanics.get(i);
+        for (int i = 0; i < getMechanics().size(); i++) {
+            RigidBodyMechanic mechanic = getMechanics().get(i);
             String mechanicName = overworld.getMechanicsMap().inverse().get(mechanic);
             if (mechanic.isCommon() && !mechanicName.isEmpty()) {
                 savedMechanics.add(mechanicName);
@@ -319,7 +345,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
             ByteBufUtils.writeUTF8String(buffer, (String) savedMechanics.get(i));
         }
 
-        buffer.writeInt((Integer)(dataManager.get(PICKER_ID)).intValue());
+        buffer.writeInt((Integer) (dataManager.get(PICKER_ID)).intValue());
 
         buffer.writeFloat(this.pickLocalHit.x);
         buffer.writeFloat(this.pickLocalHit.y);
@@ -333,12 +359,12 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
         for (int i = 0; i < size; i++) {
             String mechanicName = ByteBufUtils.readUTF8String(buffer);
             RigidBodyMechanic mechanic = overworld.getMechanicFromName(mechanicName);
-            mechanics.add(mechanic);
+            getMechanics().add(mechanic);
         }
 
-        this.pickerEntity = (EntityPlayer) this.world.getEntityByID(buffer.readInt());
+        this.setPickerEntity((EntityPlayer) this.world.getEntityByID(buffer.readInt()));
         Vector3f readPick = new Vector3f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
-        if (pickerEntity != null)
+        if (getPickerEntity() != null)
             this.pickLocalHit = readPick;
     }
 
