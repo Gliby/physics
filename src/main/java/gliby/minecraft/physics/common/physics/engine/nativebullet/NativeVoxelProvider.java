@@ -9,32 +9,37 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import java.lang.ref.WeakReference;
+
 class NativeVoxelProvider extends btVoxelContentProvider {
 
-    private World world;
     private Physics physics;
-    private PhysicsWorld physicsWorld;
-    private btVoxelInfo info;
 
-    NativeVoxelProvider(btVoxelInfo info, final World world, PhysicsWorld physicsWorld, Physics physics) {
-        this.world = world;
-        this.physicsWorld = physicsWorld;
+    private WeakReference<World> worldRef;
+    private WeakReference<PhysicsWorld> physicsWorld;
+    private WeakReference<btVoxelInfo> info;
+
+    NativeVoxelProvider(btVoxelInfo info, World world, PhysicsWorld physicsWorld, Physics physics) {
+        this.worldRef = new WeakReference<World>(world);
+        this.physicsWorld = new WeakReference<PhysicsWorld>(physicsWorld);
+        this.info = new WeakReference<btVoxelInfo>(info);
         this.physics = physics;
-        this.info = info;
     }
 
     @Override
     public btVoxelInfo getVoxel(int x, int y, int z) {
-        if (!world.playerEntities.isEmpty()) {
+        btVoxelInfo voxelInfo = info.get();
+        World world = worldRef.get();
+        if (world != null && !world.playerEntities.isEmpty()) {
             final BlockPos blockPosition = new BlockPos(x, y, z);
             final IBlockState state = world.getBlockState(blockPosition);
-            info.setTracable(false);
-            info.setBlocking(state.getBlock().getMaterial(state).isSolid());
-            info.setCollisionShape((btCollisionShape) physicsWorld.getBlockCache()
+            voxelInfo.setTracable(false);
+            voxelInfo.setBlocking(state.getBlock().getMaterial(state).isSolid());
+            voxelInfo.setCollisionShape((btCollisionShape) physicsWorld.get().getBlockCache()
                     .getShape(world, blockPosition, state).getCollisionShape());
-            info.setFriction((1 - state.getBlock().slipperiness) * 5);
+            voxelInfo.setFriction((1 - state.getBlock().slipperiness) * 5);
         }
-        return info;
+        return voxelInfo;
 
     }
 

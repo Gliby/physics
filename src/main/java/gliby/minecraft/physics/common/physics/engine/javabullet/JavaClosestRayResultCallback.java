@@ -4,44 +4,45 @@ import com.bulletphysicsx.collision.dispatch.CollisionWorld;
 import gliby.minecraft.physics.common.physics.engine.IRayResult;
 
 import javax.vecmath.Vector3f;
+import java.lang.ref.WeakReference;
 
 /**
  *
  */
 class JavaClosestRayResultCallback implements IRayResult {
 
-    private CollisionWorld.ClosestRayResultCallback rayCallback;
+    private WeakReference<CollisionWorld.ClosestRayResultCallback> rayCallback;
 
     /**
      *
      */
     JavaClosestRayResultCallback(CollisionWorld.ClosestRayResultCallback rayCallback) {
-        this.rayCallback = rayCallback;
+        this.rayCallback = new WeakReference<CollisionWorld.ClosestRayResultCallback> (rayCallback);
     }
 
     @Override
     public Object getRayResultCallback() {
-        return rayCallback;
+        return rayCallback.get();
     }
 
     @Override
     public boolean hasHit() {
-        return rayCallback.hasHit();
+        return rayCallback.get().hasHit();
     }
 
     @Override
     public Object getCollisionObject() {
-        return rayCallback.collisionObject;
+        return rayCallback.get().collisionObject;
     }
 
     @Override
     public Vector3f getHitPointWorld() {
-        return rayCallback.hitPointWorld;
+        return rayCallback.get().hitPointWorld;
     }
 
     @Override
     public Vector3f getHitPointNormal() {
-        return rayCallback.hitNormalWorld;
+        return rayCallback.get().hitNormalWorld;
     }
 
 }

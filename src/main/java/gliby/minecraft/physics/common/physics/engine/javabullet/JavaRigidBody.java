@@ -4,13 +4,12 @@ import com.bulletphysicsx.dynamics.RigidBody;
 import com.bulletphysicsx.linearmath.Transform;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
-import gliby.minecraft.physics.common.physics.engine.IQuaternion;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
-import gliby.minecraft.physics.common.physics.engine.IVector3;
 import net.minecraft.entity.Entity;
 
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +27,7 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
     public JavaRigidBody(PhysicsWorld physicsWorld, RigidBody body, Entity owner) {
         super(physicsWorld, owner, body);
         this.rigidBody = body;
-        this.owner = owner;
+        this.owner = new WeakReference<Entity>(owner);
         this.collisionShape = new JavaCollisionShape(physicsWorld, body.getCollisionShape());
         this.properties = new HashMap<String, Object>();
     }

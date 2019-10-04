@@ -22,16 +22,12 @@ class NativePoint2PointConstraint implements IConstraintPoint2Point {
 
     @Override
     public void setImpulseClamp(final float f) {
-
         constraint.getSetting().setImpulseClamp(f);
-
     }
 
     @Override
     public void setTau(final float f) {
-
         constraint.getSetting().setTau(f);
-
     }
 
     @Override
