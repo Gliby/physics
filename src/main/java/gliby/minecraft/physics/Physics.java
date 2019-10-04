@@ -39,8 +39,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
-
-// TODO: look into ObjectPooling.
+// Gliby's Physics Roadmap
+// TODO: (0.7.0) Add cosmetic physics.
+// TODO: (0.6.0) look into ObjectPooling. (JBullet)
+// TODO  (0.6.0) look into NativeBullet by the Terasology, might solve memory leaks in the native PhysicsWorld and improve simulation perf.
+// TODO  (0.6.0) FIXME: something is leaking memory every time we create/destroy a PhysicsWorld.
+// TODO (0.5.0) Add per event based Death timings for blocks. (So an explosion will quickly clear up PhysicsBlocks,
+//  but player created physics blocks will stay for a longer time.)
+// TODO (0.5.0) Make falling sand a physics block will a low death timer.
 @Mod(modid = Physics.ID, name = Physics.NAME, guiFactory = "gliby.minecraft.physics.client.gui.options.GuiFactory")
 public class Physics {
 
