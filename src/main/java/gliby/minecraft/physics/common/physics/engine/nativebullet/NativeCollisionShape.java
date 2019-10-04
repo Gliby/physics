@@ -24,31 +24,31 @@ class NativeCollisionShape implements ICollisionShape {
     private static final int BOX_SHAPE = 0;
 
     protected SoftReference<PhysicsWorld> physicsWorld;
-    private SoftReference<btCollisionShape> shape;
+    private btCollisionShape shape;
 
     NativeCollisionShape(PhysicsWorld physicsWorld, btCollisionShape shape) {
         this.physicsWorld = new SoftReference<PhysicsWorld>(physicsWorld);
-        this.shape = new SoftReference<btCollisionShape>(shape);
+        this.shape = (shape);
     }
 
     @Override
     public Object getCollisionShape() {
-        return shape.get();
+        return shape;
     }
 
     @Override
     public int getShapeType() {
-        return shape.get().getShapeType();
+        return shape.getShapeType();
     }
 
     @Override
     public boolean isBoxShape() {
-        return shape.get().getShapeType() == BOX_SHAPE;
+        return shape.getShapeType() == BOX_SHAPE;
     }
 
     @Override
     public boolean isCompoundShape() {
-        return shape.get().isCompound();
+        return shape.isCompound();
     }
 
     @Override
@@ -58,7 +58,7 @@ class NativeCollisionShape implements ICollisionShape {
          *
          * @Override public void run() {
          */
-        shape.get().calculateLocalInertia(mass, (Vector3) localInertia);
+        shape.calculateLocalInertia(mass, (Vector3) localInertia);
 
         /*
          * System.out.println("calculated inertia"); } });
@@ -67,13 +67,13 @@ class NativeCollisionShape implements ICollisionShape {
 
     @Override
     public void getHalfExtentsWithMargin(Vector3f halfExtent) {
-        halfExtent.set(VecUtility.toVector3f(((btBoxShape) shape.get()).getHalfExtentsWithMargin()));
+        halfExtent.set(VecUtility.toVector3f(((btBoxShape) shape).getHalfExtentsWithMargin()));
     }
 
     @Override
     public List<ICollisionShapeChildren> getChildren() {
         ArrayList<ICollisionShapeChildren> shapeList = new ArrayList<ICollisionShapeChildren>();
-        final btCompoundShape compoundShape = (btCompoundShape) shape.get();
+        final btCompoundShape compoundShape = (btCompoundShape) shape;
         for (int i = 0; i < compoundShape.getNumChildShapes(); i++) {
             final int index = i;
             final Transform transform = new Transform();
@@ -87,7 +87,7 @@ class NativeCollisionShape implements ICollisionShape {
 
                 @Override
                 public ICollisionShape getCollisionShape() {
-                    return new NativeCollisionShape(physicsWorld.get(), compoundShape.getChildShape(index));
+                    return new NativeCollisionShape(getPhysicsWorld(), compoundShape.getChildShape(index));
                 }
 
             });
@@ -98,12 +98,12 @@ class NativeCollisionShape implements ICollisionShape {
 
     @Override
     public void dispose() {
-        if (shape.get() != null && !shape.get().isDisposed()) shape.get().dispose();
+        if (shape != null && !shape.isDisposed()) shape.dispose();
     }
 
     @Override
     public void setLocalScaling(final Vector3f localScaling) {
-        shape.get().setLocalScaling(VecUtility.toVector3(localScaling));
+        shape.setLocalScaling(VecUtility.toVector3(localScaling));
     }
 
     @Override

@@ -19,11 +19,11 @@ class NativePairCachingGhostObject implements IGhostObject {
 
     protected SoftReference<NativePhysicsWorld> physicsWorld;
     protected SoftReference<Entity> owner;
-    private SoftReference<btPairCachingGhostObject> ghostObject;
+    private btPairCachingGhostObject ghostObject;
 
     NativePairCachingGhostObject(PhysicsWorld physicsWorld, btPairCachingGhostObject object) {
         this.physicsWorld = new SoftReference<NativePhysicsWorld>((NativePhysicsWorld) physicsWorld);
-        this.ghostObject = new SoftReference<btPairCachingGhostObject>(object);
+        this.ghostObject = object;
     }
 
     NativePairCachingGhostObject(PhysicsWorld physicsWorld, Entity owner, btPairCachingGhostObject object) {
@@ -33,38 +33,38 @@ class NativePairCachingGhostObject implements IGhostObject {
 
     @Override
     public Object getGhostObject() {
-        return ghostObject.get();
+        return ghostObject;
     }
 
     @Override
     public Object getCollisionObject() {
-        return ghostObject.get();
+        return ghostObject;
     }
 
     @Override
     public void setWorldTransform(final Transform entityTransform) {
-        ghostObject.get().setWorldTransform(VecUtility.toMatrix4(entityTransform));
+        ghostObject.setWorldTransform(VecUtility.toMatrix4(entityTransform));
 
     }
 
     @Override
     public void setCollisionShape(final ICollisionShape collisionShape) {
-        ghostObject.get().setCollisionShape((btCollisionShape) collisionShape.getCollisionShape());
+        ghostObject.setCollisionShape((btCollisionShape) collisionShape.getCollisionShape());
     }
 
     @Override
     public void setCollisionFlags(final int characterObject) {
-        ghostObject.get().setCollisionFlags(characterObject);
+        ghostObject.setCollisionFlags(characterObject);
     }
 
     @Override
     public void setInterpolationWorldTransform(final Transform entityTransform) {
-        ghostObject.get().setInterpolationWorldTransform(VecUtility.toMatrix4(entityTransform));
+        ghostObject.setInterpolationWorldTransform(VecUtility.toMatrix4(entityTransform));
     }
 
     @Override
     public boolean isValid() {
-        return ghostObject != null && ghostObject.get() != null && !ghostObject.get().isDisposed();
+        return ghostObject != null && ghostObject != null && !ghostObject.isDisposed();
     }
 
     @Override

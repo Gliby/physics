@@ -16,16 +16,16 @@ import java.lang.ref.WeakReference;
 class NativeConstraintGeneric6Dof implements IConstraintGeneric6Dof {
 
     protected SoftReference<PhysicsWorld> physicsWorld;
-    private SoftReference<btGeneric6DofConstraint> constraint;
+    private btGeneric6DofConstraint constraint;
 
     NativeConstraintGeneric6Dof(PhysicsWorld physicsWorld, btGeneric6DofConstraint constraint) {
-        this.constraint = new SoftReference<btGeneric6DofConstraint>(constraint);
+        this.constraint = constraint;
         this.physicsWorld = new SoftReference<PhysicsWorld>(physicsWorld);
     }
 
     @Override
     public Object getConstraint() {
-        return constraint.get();
+        return constraint;
     }
 
     @Override
@@ -40,14 +40,14 @@ class NativeConstraintGeneric6Dof implements IConstraintGeneric6Dof {
 
     @Override
     public Transform getGlobalFrameOffsetA(Transform transform) {
-        transform.set(VecUtility.toMatrix4f(constraint.get().getCalculatedTransformA()));
+        transform.set(VecUtility.toMatrix4f(constraint.getCalculatedTransformA()));
         return transform;
 
     }
 
     @Override
     public Transform getGlobalFrameOffsetB(Transform transform) {
-        transform.set(VecUtility.toMatrix4f(constraint.get().getCalculatedTransformB()));
+        transform.set(VecUtility.toMatrix4f(constraint.getCalculatedTransformB()));
         return transform;
     }
 

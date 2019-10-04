@@ -14,41 +14,41 @@ import java.lang.ref.WeakReference;
  */
 class NativeClosestRayResultCallback implements IRayResult {
 
-    private SoftReference<ClosestRayResultCallback> callback;
+    private ClosestRayResultCallback callback;
 
     /**
      * @param callback
      */
     NativeClosestRayResultCallback(ClosestRayResultCallback callback) {
-        this.callback = new SoftReference<ClosestRayResultCallback>(callback);
+        this.callback = callback;
     }
 
     @Override
     public Object getRayResultCallback() {
-        return callback.get();
+        return callback;
     }
 
     @Override
     public boolean hasHit() {
-        return callback.get().hasHit();
+        return callback.hasHit();
     }
 
     @Override
     public Object getCollisionObject() {
-        return callback.get().getCollisionObject();
+        return callback.getCollisionObject();
     }
 
     @Override
     public Vector3f getHitPointWorld() {
         Vector3 vec = new Vector3();
-        callback.get().getHitPointWorld(vec);
+        callback.getHitPointWorld(vec);
         return VecUtility.toVector3f(vec);
     }
 
     @Override
     public Vector3f getHitPointNormal() {
         Vector3 vector = new Vector3();
-        callback.get().getHitNormalWorld(vector);
+        callback.getHitNormalWorld(vector);
         return VecUtility.toVector3f(vector);
     }
 }

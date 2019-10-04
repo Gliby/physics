@@ -1,46 +1,44 @@
 package gliby.minecraft.physics.common.physics.engine.nativebullet;
 
 import com.badlogic.gdx.physics.bullet.dynamics.btPoint2PointConstraint;
-import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IConstraintPoint2Point;
 
 import javax.vecmath.Vector3f;
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 
 /**
  *
  */
 class NativePoint2PointConstraint implements IConstraintPoint2Point {
 
-    protected SoftReference<PhysicsWorld> physicsWorld;
-    private SoftReference<btPoint2PointConstraint> constraint;
+    protected PhysicsWorld physicsWorld;
+    private btPoint2PointConstraint constraint;
 
     NativePoint2PointConstraint(PhysicsWorld physicsWorld, btPoint2PointConstraint constraint) {
-        this.physicsWorld = new SoftReference<PhysicsWorld>(physicsWorld);
-        this.constraint = new SoftReference<btPoint2PointConstraint>(constraint);
+        this.physicsWorld = physicsWorld;
+        this.constraint = (constraint);
     }
 
     @Override
     public void setImpulseClamp(final float f) {
-        constraint.get().getSetting().setImpulseClamp(f);
+        constraint.getSetting().setImpulseClamp(f);
     }
 
     @Override
     public void setTau(final float f) {
-        constraint.get().getSetting().setTau(f);
+        constraint.getSetting().setTau(f);
     }
 
     @Override
     public void setPivotB(final Vector3f newPos) {
-        constraint.get().setPivotB(VecUtility.toVector3(newPos));
+        constraint.setPivotB(VecUtility.toVector3(newPos));
     }
 
     @Override
     public Object getConstraint() {
-        return constraint.get();
+        return constraint;
     }
 
     @Override
@@ -50,12 +48,12 @@ class NativePoint2PointConstraint implements IConstraintPoint2Point {
 
     @Override
     public Vector3f getPivotInA() {
-        return VecUtility.toVector3f(constraint.get().getPivotInA());
+        return VecUtility.toVector3f(constraint.getPivotInA());
     }
 
     @Override
     public Vector3f getPivotInB() {
-        return VecUtility.toVector3f(constraint.get().getPivotInB());
+        return VecUtility.toVector3f(constraint.getPivotInB());
     }
 
     @Override
@@ -70,6 +68,6 @@ class NativePoint2PointConstraint implements IConstraintPoint2Point {
 
     @Override
     public PhysicsWorld getPhysicsWorld() {
-        return physicsWorld.get();
+        return physicsWorld;
     }
 }
