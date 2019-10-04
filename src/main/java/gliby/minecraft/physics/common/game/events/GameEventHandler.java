@@ -38,34 +38,41 @@ public class GameEventHandler {
 
     @SubscribeEvent
     public void handleExplosion(final EntityJoinWorldEvent event) {
-        boolean replaceFallingBlocks = physics.getSettings().getBooleanSetting("Game.ReplaceFallingBlocks").getBooleanValue();
-        if (replaceFallingBlocks && event.getEntity() instanceof EntityFallingBlock) {
-            final EntityFallingBlock entityFallingBlock = (EntityFallingBlock) event.getEntity();
-            event.setCanceled(true);
-            event.getWorld().getMinecraftServer().addScheduledTask(new Runnable() {
-                @Override
-                public void run() {
-                    final World world = event.getWorld();
-                    Physics physics = Physics.getInstance();
-                    PhysicsWorld physicsWorld = physics.getPhysicsOverworld().getPhysicsByWorld(event.getWorld());
+        if (event.getWorld().isRemote)
+            return;
+        if (event.getEntity() instanceof EntityFallingBlock) {
+            boolean replaceFallingBlocks = physics.getSettings().getBooleanSetting("Game.ReplaceFallingBlocks").getBooleanValue();
+            if (replaceFallingBlocks) {
+                final EntityFallingBlock entityFallingBlock = (EntityFallingBlock) event.getEntity();
+                event.setCanceled(true);
+                event.getWorld().getMinecraftServer().addScheduledTask(new Runnable() {
+                    @Override
+                    public void run() {
+                        final World world = event.getWorld();
+                        Physics physics = Physics.getInstance();
+                        PhysicsWorld physicsWorld = physics.getPhysicsOverworld().getPhysicsByWorld(event.getWorld());
 
-                    // Remove block.
-                    BlockPos pos = entityFallingBlock.getOrigin();
-                    world.setBlockToAir(pos);
+                        // Remove block.
+                        BlockPos pos = entityFallingBlock.getOrigin();
+                        world.setBlockToAir(pos);
 
-                    // Spawn phyics block.
-                    IBlockState blockState = entityFallingBlock.getBlock();
-                    EntityPhysicsBlock analog = new EntityPhysicsBlock(event.getWorld(), physicsWorld, blockState,
-                            entityFallingBlock.posX - PhysicsOverworld.OFFSET, entityFallingBlock.posY - PhysicsOverworld.OFFSET, entityFallingBlock.posZ - PhysicsOverworld.OFFSET);
-                    event.getWorld().spawnEntity(analog.setGameSpawned(true));
-                }
-            });
+                        // Spawn phyics block.
+                        IBlockState blockState = entityFallingBlock.getBlock();
+                        EntityPhysicsBlock analog = new EntityPhysicsBlock(event.getWorld(), physicsWorld, blockState,
+                                entityFallingBlock.posX - PhysicsOverworld.OFFSET, entityFallingBlock.posY - PhysicsOverworld.OFFSET, entityFallingBlock.posZ - PhysicsOverworld.OFFSET);
+                        event.getWorld().spawnEntity(analog.setGameSpawned(true));
+                    }
+                });
+            }
         }
     }
 
     // TODO explosion tuning: some blocks are too heavy for explosions. while other are too light.
     @SubscribeEvent
     public void handleExplosion(final ExplosionEvent.Detonate event) {
+        if (event.getWorld().isRemote)
+            return;
+
         event.getWorld().getMinecraftServer().addScheduledTask(new Runnable() {
 
             @Override
