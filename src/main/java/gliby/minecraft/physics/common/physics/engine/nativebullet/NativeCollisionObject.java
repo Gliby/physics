@@ -20,11 +20,11 @@ class NativeCollisionObject implements ICollisionObject {
 
     protected SoftReference<NativePhysicsWorld> physicsWorld;
     protected SoftReference<Entity> owner;
-    private btCollisionObject collisionObject;
+    private SoftReference<btCollisionObject> collisionObject;
 
     NativeCollisionObject(PhysicsWorld physicsWorld, btCollisionObject object) {
         this.physicsWorld = new SoftReference<NativePhysicsWorld> ((NativePhysicsWorld) physicsWorld);
-        this.collisionObject = object;
+        this.collisionObject = new SoftReference<btCollisionObject>(object);
     }
 
     NativeCollisionObject(PhysicsWorld physicsWorld, Entity owner, btCollisionObject object) {
@@ -34,36 +34,36 @@ class NativeCollisionObject implements ICollisionObject {
 
     @Override
     public Object getCollisionObject() {
-        return collisionObject;
+        return collisionObject.get();
     }
 
     @Override
     public void setWorldTransform(final Transform transform) {
-        collisionObject.setWorldTransform(VecUtility.toMatrix4(transform));
+        collisionObject.get().setWorldTransform(VecUtility.toMatrix4(transform));
 
     }
 
     @Override
     public void setCollisionShape(final ICollisionShape shape) {
-        collisionObject.setCollisionShape((btCollisionShape) shape.getCollisionShape());
+        collisionObject.get().setCollisionShape((btCollisionShape) shape.getCollisionShape());
 
     }
 
     @Override
     public void setCollisionFlags(final int characterObject) {
-        collisionObject.setCollisionFlags(characterObject);
+        collisionObject.get().setCollisionFlags(characterObject);
 
     }
 
     @Override
     public void setInterpolationWorldTransform(final Transform transform) {
-        collisionObject.setInterpolationWorldTransform(VecUtility.toMatrix4(transform));
+        collisionObject.get().setInterpolationWorldTransform(VecUtility.toMatrix4(transform));
 
     }
 
     @Override
     public boolean isValid() {
-        return collisionObject != null && !collisionObject.isDisposed();
+        return collisionObject != null && getCollisionObject() != null && !collisionObject.get().isDisposed();
     }
 
     @Override
