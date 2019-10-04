@@ -1,5 +1,6 @@
 package gliby.minecraft.physics.common.physics.engine.javabullet;
 
+import com.bulletphysicsx.BulletGlobals;
 import com.bulletphysicsx.collision.broadphase.DbvtBroadphase;
 import com.bulletphysicsx.collision.dispatch.*;
 import com.bulletphysicsx.collision.dispatch.CollisionWorld.RayResultCallback;
@@ -17,6 +18,7 @@ import gliby.minecraft.physics.common.physics.IPhysicsWorldConfiguration;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.*;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
 
@@ -82,7 +84,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
         if (dynamicsWorld != null) {
             final float delta = getDelta();
             final int maxSubStep = Math.max(1, Math.round(delta / 10));
-            dynamicsWorld.stepSimulation(1, maxSubStep);
+            dynamicsWorld.stepSimulation(1, getMaxSubstep());
             super.update();
         }
     }
@@ -359,6 +361,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
         dynamicsWorld.clearForces();
         dynamicsWorld.destroy();
         dynamicsWorld = null;
+        BulletGlobals.cleanCurrentThread();
         super.dispose();
     }
 

@@ -6,10 +6,12 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.bulletphysicsx.linearmath.QuaternionUtil;
 import com.bulletphysicsx.linearmath.Transform;
+import com.bulletphysicsx.util.ObjectPool;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
+import scala.swing.model.Matrix;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Quat4f;
@@ -21,6 +23,12 @@ import java.nio.FloatBuffer;
  */
 public class VecUtility {
 
+    public static ObjectPool<Matrix4f> MAT4F_POOL = ObjectPool.get(Matrix4f.class);
+    public static ObjectPool<Transform> TRANS_POOL = ObjectPool.get(Transform.class);
+    public static ObjectPool<Vector3f> VEC3F_POOL = ObjectPool.get(Vector3f.class);
+    public static ObjectPool<Vector3> VEC3_POOL = ObjectPool.get(Vector3.class);
+    public static ObjectPool<Quaternion> QUAT_POOL = ObjectPool.get(Quaternion.class);
+    public static ObjectPool<Quat4f> QUAT4F_POOL = ObjectPool.get(Quat4f.class);
 
 
     public static final AxisAlignedBB ZERO_BB = new AxisAlignedBB(Vec3d.ZERO, Vec3d.ZERO);
@@ -89,33 +97,39 @@ public class VecUtility {
 
 
     public static Matrix4f toMatrix4f(Matrix4 matrix4) {
-        Matrix4f mat4 = new Matrix4f(toQuat4f(matrix4.getRotation(new Quaternion())), toVector3f(matrix4.getTranslation(new Vector3())), 1);
-        return new Matrix4f();
-    }
+        Quaternion rotation = QUAT_POOL.get();
+        matrix4.getRotation(rotation);
 
-//    public static Matrix4 toMatrix4(Matrix4f matrix4f) {
-//        Matrix4 mat4 = new Matrix4();
-//        Transform trans =new Transform(matrix4f);
-//        mat4.set()
-//
-//    }
+        Vector3 position = VEC3_POOL.get();
+        matrix4.getTranslation(position);
+        Matrix4f mat4 = new Matrix4f(toQuat4f(rotation), toVector3f(position), 1);
+
+        QUAT_POOL.release(rotation);
+        VEC3_POOL.release(position);
+        return mat4;
+    }
 
     public static Matrix4 toMatrix4(Transform transform) {
         Matrix4 mat4 = new Matrix4();
         mat4.idt();
-        mat4.set(toVector3(transform.origin), toQuaternion(transform.getRotation(new Quat4f())));
+
+        Quat4f rotation = QUAT4F_POOL.get();
+        mat4.set(toVector3(transform.origin), toQuaternion(transform.getRotation(rotation)));
+        QUAT4F_POOL.release(rotation);
         return mat4;
     }
 
     public static Matrix4f inverse(Matrix4f centerOfMassTransform) {
-        Transform trans = new Transform(centerOfMassTransform);
+        Transform trans = TRANS_POOL.get();
+        trans.set(centerOfMassTransform);
         trans.inverse();
         centerOfMassTransform.setIdentity();
-        return trans.getMatrix(centerOfMassTransform);
+        Matrix4f result = trans.getMatrix(centerOfMassTransform);
+        TRANS_POOL.release(trans);
+        return result;
     }
 
     public static Transform toTransform(Matrix4 mat4) {
-        Transform transform = new Transform();
         return new Transform(toMatrix4f(mat4));
     }
 

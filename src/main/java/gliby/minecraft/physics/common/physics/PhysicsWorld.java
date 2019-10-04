@@ -10,6 +10,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import javax.vecmath.Vector3f;
@@ -145,6 +146,13 @@ public abstract class PhysicsWorld {
         }
         fps++;
     }
+
+    public int getMaxSubstep() {
+        final float delta = getDelta();
+        final int maxSubStep = MathHelper.clamp(Math.round(delta / 10), 1 , 10);
+        return maxSubStep;
+    }
+
 
     protected abstract ICollisionShape buildCollisionShape(List<AxisAlignedBB> bbs, Vector3f offset);
 

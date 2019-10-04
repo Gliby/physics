@@ -16,6 +16,7 @@ import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 import javax.vecmath.Vector3f;
@@ -85,9 +86,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
     @Override
     protected void update() {
         if (dynamicsWorld != null && !dynamicsWorld.isDisposed() && voxelBody != null && !voxelBody.isDisposed()) {
-            final float delta = getDelta();
-            final int maxSubStep = Math.max(1, Math.round(delta / 10));
-            dynamicsWorld.stepSimulation(1, maxSubStep);
+            dynamicsWorld.stepSimulation(1, getMaxSubstep());
             super.update();
         }
     }

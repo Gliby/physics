@@ -1,5 +1,6 @@
 package gliby.minecraft.physics.common.physics.mechanics.gravitymagnets;
 
+import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.entity.EnumRigidBodyProperty;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
@@ -32,7 +33,7 @@ public class GravityModifierMechanic extends PhysicsMechanic {
             for (int j = 0; j < physicsWorld.getRigidBodies().size(); j++) {
                 IRigidBody body = physicsWorld.getRigidBodies().get(j);
                 Vector3f centerOfMassPosition = body.getCenterOfMassPosition();
-                Vector3f distance = new Vector3f();
+                Vector3f distance = VecUtility.VEC3F_POOL.get();
                 distance.sub(centerOfMassPosition, magnetPosition);
                 float dist = distance.length();
                 if (distance.length() <= magnet.getAttractionDistance()) {
@@ -53,6 +54,7 @@ public class GravityModifierMechanic extends PhysicsMechanic {
                     }
                     body.getProperties().put(EnumRigidBodyProperty.MAGNET.getName(), magnet);
                 }
+                VecUtility.VEC3F_POOL.release(distance);
             }
         }
     }
