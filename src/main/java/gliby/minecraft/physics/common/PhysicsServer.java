@@ -2,11 +2,9 @@ package gliby.minecraft.physics.common;
 
 import gliby.minecraft.gman.settings.BooleanSetting;
 import gliby.minecraft.physics.Physics;
-import gliby.minecraft.physics.common.game.events.ExplosionHandler;
+import gliby.minecraft.physics.common.game.events.GameEventHandler;
 import gliby.minecraft.physics.common.packets.PacketPlayerJoin;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.*;
@@ -43,7 +41,8 @@ public class PhysicsServer implements IPhysicsProxy {
 
     public final void serverAboutToStart(Physics physics, FMLServerAboutToStartEvent event) {
         if (!hasStarted) {
-            MinecraftForge.EVENT_BUS.register(new ExplosionHandler(physics));
+            MinecraftForge.EVENT_BUS.register(new GameEventHandler(physics));
+
             hasStarted = true;
         }
     }

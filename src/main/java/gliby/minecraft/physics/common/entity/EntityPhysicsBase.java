@@ -1,6 +1,5 @@
 package gliby.minecraft.physics.common.entity;
 
-import com.bulletphysicsx.dynamics.RigidBody;
 import com.google.gson.Gson;
 import gliby.minecraft.gman.networking.GDataSerializers;
 import gliby.minecraft.physics.Physics;
@@ -49,10 +48,14 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
     protected WeakReference<EntityPlayer> pickerEntity;
     protected WeakReference<PhysicsWorld> physicsWorld;
-
+    /**
+     *  Spawned by player or game event?
+     */
+    protected boolean gameSpawned;
     protected Vector3f pickLocalHit;
     // TODO convert to soft ref
     private int lastTickActive;
+
     /**
      * Client or Load constructor.
      *
@@ -62,7 +65,6 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
         super(world);
     }
-
     /**
      * Server constructor.
      *
@@ -72,6 +74,15 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     public EntityPhysicsBase(World world, PhysicsWorld physicsWorld) {
         super(world);
         this.physicsWorld = new WeakReference<PhysicsWorld>(physicsWorld);
+    }
+
+    public boolean isGameSpawned() {
+        return gameSpawned;
+    }
+
+    public EntityPhysicsBase setGameSpawned(boolean gameSpawned) {
+        this.gameSpawned = gameSpawned;
+        return this;
     }
 
     public Vector3f getPickLocalHit() {
@@ -204,6 +215,8 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     @Override
     public void readEntityFromNBT(NBTTagCompound tagCompound) {
         if (!world.isRemote) {
+            setGameSpawned(tagCompound.getBoolean("GameSpawned"));
+
             getMechanics().clear();
             PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
             // TODO improvement: block property nbt saving
@@ -223,10 +236,12 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
                         getMechanics().add(overworld.getMechanicFromName(mechanicString));
                 }
             }
+
         }
     }
 
     public void writeEntityToNBT(final NBTTagCompound tagCompound) {
+        tagCompound.setBoolean("GameSpawned", isGameSpawned());
         ArrayList<String> mechanicsByNames = new ArrayList<String>();
         for (int i = 0; i < getMechanics().size(); i++) {
             mechanicsByNames
@@ -303,8 +318,12 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
                 if (rigidBody.isActive())
                     lastTickActive = ticksExisted;
 
+
+
+                String deathKey = gameSpawned ? "PhysicsEntities.GameSpawnedDeathTime" : "PhysicsEntities.PlayerSpawnedDeathTime";
+
                 if ((ticksExisted - lastTickActive) / TICKS_PER_SECOND > Physics.getInstance().getSettings()
-                        .getFloatSetting("PhysicsEntities.InactivityDeathTime").getFloatValue()) {
+                        .getFloatSetting(deathKey).getFloatValue()) {
                     this.setDead();
                 }
                 // Update mechanics.

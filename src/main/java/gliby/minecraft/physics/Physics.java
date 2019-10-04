@@ -127,11 +127,16 @@ public class Physics {
 
         settings.registerInteger("PhysicsEngine", "TickRate", 20, Setting.Side.BOTH);
         settings.registerFloat("PhysicsEngine", "GravityForce", -9.8f, Setting.Side.BOTH);
-        settings.registerFloat("PhysicsEntities", "InactivityDeathTime", 30, Setting.Side.BOTH);
+        settings.registerFloat("PhysicsEntities", "PlayerSpawnedDeathTime", 30, Setting.Side.BOTH);
+        settings.registerFloat("PhysicsEntities", "GameSpawnedDeathTime", 5, Setting.Side.BOTH);
+
         settings.registerFloat("PhysicsEntities", "EntityColliderCleanupTime", 0.25f, Setting.Side.BOTH);
         settings.registerFloat("Game", "ProjectileImpulseForce", 30, Setting.Side.BOTH);
         settings.registerFloat("Game", "ExplosionImpulseRadius", 16, Setting.Side.BOTH);
         settings.registerFloat("Game", "ExplosionImpulseForce", 100, Setting.Side.BOTH);
+        settings.registerBoolean("Game", "ReplaceFallingBlocks", true, Setting.Side.BOTH);
+
+
         settings.registerInteger("Tools", "AttractRadius", 16, Setting.Side.BOTH);
         settings.registerInteger("Tools", "GravitizerRadius", 16, Setting.Side.BOTH);
         settings.registerInteger("Tools", "GravitizerForce", 10, Setting.Side.BOTH);

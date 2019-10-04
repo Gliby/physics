@@ -12,6 +12,7 @@ import gliby.minecraft.physics.client.render.RenderHandler;
 import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.blocks.PhysicsBlockMetadata;
 import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
+import gliby.minecraft.physics.common.physics.PhysicsOverworld;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
@@ -109,8 +110,8 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         setSize(0.85f, 1.05f);
     }
 
-    public EntityPhysicsBlock(World world, PhysicsWorld physicsWorld, IBlockState blockState, float x, float y,
-                              float z) {
+    public EntityPhysicsBlock(World world, PhysicsWorld physicsWorld, IBlockState blockState, double x, double y,
+                              double z) {
         super(world, physicsWorld);
 
         this.blockState = blockState;
@@ -118,7 +119,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         this.physicsRotation.set(physicsRotation);
 
         if (world.isRemote) {
-            this.renderPosition = new Vector3f(x, y, z);
+            this.renderPosition = new Vector3f((float) x, (float) y, (float) z);
             this.renderRotation = new Quat4f(physicsRotation);
         }
         Physics physics = Physics.getInstance();

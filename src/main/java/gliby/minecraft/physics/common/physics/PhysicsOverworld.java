@@ -24,12 +24,13 @@ import javax.vecmath.Vector3f;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO FIXME PhysicsWorld: create ability to choose between multi-thread of single thread physics world, should solve crashes relating to concurrency.
-
+// TODO bind step speed to match game speed.
 public class PhysicsOverworld {
 
+    // Bullet Offset.
+    public static final float OFFSET = 0.5f;
+
     private static final AxisAlignedBB BLOCK_BREAK_BB = new AxisAlignedBB(-1.75, -1.75, -1.75, 1.75, 1.75, 1.75);
-    static int world;
     private final BiMap<String, RigidBodyMechanic> mechanicsMap = HashBiMap.create();
     private final Physics physics;
     protected Map<World, PhysicsWorld> physicsWorlds = new HashMap<World, PhysicsWorld>();
@@ -97,6 +98,7 @@ public class PhysicsOverworld {
 
     @SubscribeEvent
     public void onWorldTick(final TickEvent.WorldTickEvent event) {
+        // Simulate physics on World Tick.
         if (event.world.playerEntities.size() > 0 && !event.world.isRemote) {
             getPhysicsByWorld(event.world).update();
         }
@@ -105,6 +107,7 @@ public class PhysicsOverworld {
 
     @SubscribeEvent
     public void onUnload(final WorldEvent.Unload event) {
+        // Destroy physics world on unload.
         final PhysicsWorld physicsWorld;
         if ((physicsWorld = getPhysicsWorldMap().get(event.getWorld())) != null) {
             physicsWorld.dispose();
@@ -115,6 +118,7 @@ public class PhysicsOverworld {
 
     @SubscribeEvent
     public void onBlockEvent(final BlockEvent event) {
+        // Wake up rigid bodies on BlockEvent.
         final PhysicsWorld physicsWorld;
         if ((physicsWorld = getPhysicsWorldMap().get(event.getWorld())) != null) {
             final AxisAlignedBB bb = BLOCK_BREAK_BB.offset(event.getPos().getX(), event.getPos().getY(), event.getPos().getZ());
