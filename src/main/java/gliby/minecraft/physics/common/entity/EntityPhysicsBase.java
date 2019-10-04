@@ -33,8 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 // TODO feature implement proper collision detection/response, stop using minecraft AABB
-// TODO feature: Replace death timer with physics object limit.
-
 /**
  *
  */
@@ -52,8 +50,9 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
      *  Spawned by player or game event?
      */
     protected boolean gameSpawned;
+
     protected Vector3f pickLocalHit;
-    // TODO convert to soft ref
+
     private int lastTickActive;
 
     /**
@@ -242,6 +241,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
     public void writeEntityToNBT(final NBTTagCompound tagCompound) {
         tagCompound.setBoolean("GameSpawned", isGameSpawned());
+
         ArrayList<String> mechanicsByNames = new ArrayList<String>();
         for (int i = 0; i < getMechanics().size(); i++) {
             mechanicsByNames
@@ -322,7 +322,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
                 String deathKey = gameSpawned ? "PhysicsEntities.GameSpawnedDeathTime" : "PhysicsEntities.PlayerSpawnedDeathTime";
 
-                if ((ticksExisted - lastTickActive) / TICKS_PER_SECOND > Physics.getInstance().getSettings()
+                if (((ticksExisted - lastTickActive) / TICKS_PER_SECOND + 1)> Physics.getInstance().getSettings()
                         .getFloatSetting(deathKey).getFloatValue()) {
                     this.setDead();
                 }

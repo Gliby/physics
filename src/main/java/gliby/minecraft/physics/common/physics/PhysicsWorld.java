@@ -304,6 +304,7 @@ public abstract class PhysicsWorld {
                 shape.dispose();
             }
             cache.clear();
+            physicsWorld = null;
         }
     }
 }

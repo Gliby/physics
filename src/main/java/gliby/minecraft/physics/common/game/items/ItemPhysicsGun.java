@@ -134,6 +134,7 @@ public class ItemPhysicsGun extends RawItem {
                         if (packet.picking) {
                             if (player.getHeldItemMainhand() != null
                                     && player.getHeldItemMainhand().getItem() instanceof ItemPhysicsGun) {
+                                // TODO convert this into a getter.
                                 Vector3f offset = new Vector3f(0.5f, 0.5f, 0.5f);
                                 Vector3f eyePos = EntityUtility.getPositionEyes(player);
                                 Vector3f eyeLook = EntityUtility.toVector3f(player.getLook(1));
@@ -142,6 +143,8 @@ public class ItemPhysicsGun extends RawItem {
                                 lookAt.add(eyeLook);
                                 eyePos.sub(offset);
                                 lookAt.sub(offset);
+                                // ^
+
 
                                 IRayResult rayCallback = physicsWorld.createClosestRayResultCallback(eyePos, lookAt);
                                 physicsWorld.rayTest(eyePos, lookAt, rayCallback);

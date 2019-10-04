@@ -20,6 +20,7 @@ import org.lwjgl.util.vector.Vector3f;
 /**
  *
  */
+@SuppressWarnings("deprecation")
 public class RenderItemToolGun extends RawItemRenderer {
 
     private ModelRenderer bipedRightArm;
@@ -107,9 +108,10 @@ public class RenderItemToolGun extends RawItemRenderer {
         // }
     }
 
-    ItemCameraTransforms transforms = new ItemCameraTransforms(new ItemTransformVec3f(new Vector3f(90, 0, 0), new Vector3f(0, 0.2f, -0.15f),new Vector3f(0.5f, 0.5f, -0.5f)),
+    ItemCameraTransforms transforms = new ItemCameraTransforms(
+            new ItemTransformVec3f(new Vector3f(90, 0, 0), new Vector3f(0, 0.2f, -0.15f),new Vector3f(0.5f, 0.5f, -0.5f)),
             new ItemTransformVec3f(new Vector3f(27, -39, 8), new Vector3f(0.2f, 0.3f, -0.1f), new Vector3f(-1.15f, -1.15f, -1.15f)),
-            ItemTransformVec3f.DEFAULT,
+            new ItemTransformVec3f(new Vector3f(0, 90, 0), new Vector3f(-0.15f, 0, 0), new Vector3f(-1.25F, -1.25F, -1.25F)),
             new ItemTransformVec3f(new Vector3f(0, 90, 0), new Vector3f(-0.15f, 0, 0), new Vector3f(-1.25F, -1.25F, -1.25F)),
             ItemTransformVec3f.DEFAULT,
             ItemTransformVec3f.DEFAULT,

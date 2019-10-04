@@ -42,13 +42,13 @@ public class JavaVoxelProvider implements VoxelPhysicsWorld {
             }
 
             public float getFriction() {
-                float friction = (1 - blockState.getBlock().getSlipperiness(blockState, world, blockPos, null)) * 5;
+                float friction = (1 - blockState.getBlock().slipperiness);
                 return friction;
             }
 
             @Override
             public boolean isBlocking() {
-                return blockState.getMaterial().isSolid();
+                return blockState.getBlock().getMaterial(blockState).isSolid();
             }
 
             @Override

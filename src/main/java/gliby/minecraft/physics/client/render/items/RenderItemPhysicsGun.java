@@ -19,15 +19,16 @@ import org.lwjgl.util.vector.Vector3f;
 /**
  *
  */
+@SuppressWarnings("deprecation")
 public class RenderItemPhysicsGun extends RawItemRenderer {
 
     private ItemCameraTransforms transforms = new ItemCameraTransforms(
             new ItemTransformVec3f(new Vector3f(-90, -180, 0), new Vector3f(0.1f, 0.19f, -0.1F), new Vector3f(-1, 1, 1)),
+            new ItemTransformVec3f(new Vector3f(-90, -180, 0), new Vector3f(0.1f, 0.19f, -0.1F), new Vector3f(-1, 1, 1)),
             new ItemTransformVec3f(new Vector3f(27, -40, 8), new Vector3f(-0.33f, 0.14f, 0.25f),new Vector3f(-1, -1, -1)),
-            new ItemTransformVec3f(new Vector3f(), new Vector3f(), new Vector3f()),
+            new ItemTransformVec3f(new Vector3f(27, -40, 8), new Vector3f(-0.33f, 0.14f, 0.25f),new Vector3f(-1, -1, -1)),
+            ItemTransformVec3f.DEFAULT,
             new ItemTransformVec3f(new Vector3f(0, -90, 0), new Vector3f(-0.05f, 0, 0), new Vector3f(-1.5f, -1.5f, -1.5f)),
-            ItemTransformVec3f.DEFAULT,
-            ItemTransformVec3f.DEFAULT,
             ItemTransformVec3f.DEFAULT,
             ItemTransformVec3f.DEFAULT);
 
