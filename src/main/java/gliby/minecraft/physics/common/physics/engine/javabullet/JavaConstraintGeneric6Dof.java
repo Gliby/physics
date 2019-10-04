@@ -6,6 +6,7 @@ import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IConstraintGeneric6Dof;
 
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 
 /**
@@ -13,12 +14,12 @@ import java.lang.ref.WeakReference;
  */
 public class JavaConstraintGeneric6Dof implements IConstraintGeneric6Dof {
 
-    protected WeakReference<PhysicsWorld> physicsWorld;
-    private WeakReference<Generic6DofConstraint> constraint;
+    protected SoftReference<PhysicsWorld> physicsWorld;
+    private SoftReference<Generic6DofConstraint> constraint;
 
     JavaConstraintGeneric6Dof(PhysicsWorld physicsWorld, Generic6DofConstraint constraint) {
-        this.physicsWorld = new WeakReference<PhysicsWorld>(physicsWorld);
-        this.constraint = new WeakReference<Generic6DofConstraint>(constraint);
+        this.physicsWorld = new SoftReference<PhysicsWorld>(physicsWorld);
+        this.constraint = new SoftReference<Generic6DofConstraint>(constraint);
     }
 
     @Override

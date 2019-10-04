@@ -5,6 +5,7 @@ import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IConstraintPoint2Point;
 
 import javax.vecmath.Vector3f;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 
 /**
@@ -12,12 +13,12 @@ import java.lang.ref.WeakReference;
  */
 public class JavaConstraintPoint2Point implements IConstraintPoint2Point {
 
-    protected WeakReference<PhysicsWorld> physicsWorld;
-    private WeakReference<Point2PointConstraint> constraint;
+    protected SoftReference<PhysicsWorld> physicsWorld;
+    private SoftReference<Point2PointConstraint> constraint;
 
     JavaConstraintPoint2Point(PhysicsWorld physicsWorld, Point2PointConstraint constraint) {
-        this.physicsWorld = new WeakReference<PhysicsWorld>(physicsWorld);
-        this.constraint = new WeakReference<Point2PointConstraint>(constraint);
+        this.physicsWorld = new SoftReference<PhysicsWorld>(physicsWorld);
+        this.constraint = new SoftReference<Point2PointConstraint>(constraint);
     }
 
     @Override

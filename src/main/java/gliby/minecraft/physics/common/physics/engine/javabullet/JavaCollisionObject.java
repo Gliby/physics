@@ -9,6 +9,7 @@ import gliby.minecraft.physics.common.physics.engine.ICollisionObject;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import net.minecraft.entity.Entity;
 
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 
 /**
@@ -16,18 +17,18 @@ import java.lang.ref.WeakReference;
  */
 public class JavaCollisionObject implements ICollisionObject {
 
-    protected WeakReference<PhysicsWorld> physicsWorld;
-    protected WeakReference<Entity> owner;
-    private WeakReference<CollisionObject> collisionObject;
+    protected SoftReference<PhysicsWorld> physicsWorld;
+    protected SoftReference<Entity> owner;
+    private SoftReference<CollisionObject> collisionObject;
 
     JavaCollisionObject(PhysicsWorld physicsWorld, CollisionObject object) {
-        this.physicsWorld = new WeakReference<PhysicsWorld>(physicsWorld);
-        this.collisionObject = new WeakReference<CollisionObject>(object);
+        this.physicsWorld = new SoftReference<PhysicsWorld>(physicsWorld);
+        this.collisionObject = new SoftReference<CollisionObject>(object);
     }
 
     JavaCollisionObject(PhysicsWorld physicsWorld, Entity owner, CollisionObject object) {
         this(physicsWorld, object);
-        this.owner = new WeakReference<Entity>(owner);
+        this.owner = new SoftReference<Entity>(owner);
     }
 
     @Override

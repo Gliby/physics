@@ -12,6 +12,7 @@ import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShapeChildren;
 
 import javax.vecmath.Vector3f;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +23,12 @@ import java.util.List;
 class NativeCollisionShape implements ICollisionShape {
     private static final int BOX_SHAPE = 0;
 
-    protected WeakReference<PhysicsWorld> physicsWorld;
-    private WeakReference<btCollisionShape> shape;
+    protected SoftReference<PhysicsWorld> physicsWorld;
+    private SoftReference<btCollisionShape> shape;
 
     NativeCollisionShape(PhysicsWorld physicsWorld, btCollisionShape shape) {
-        this.physicsWorld = new WeakReference<PhysicsWorld>(physicsWorld);
-        this.shape = new WeakReference<btCollisionShape>(shape);
+        this.physicsWorld = new SoftReference<PhysicsWorld>(physicsWorld);
+        this.shape = new SoftReference<btCollisionShape>(shape);
     }
 
     @Override
@@ -98,7 +99,6 @@ class NativeCollisionShape implements ICollisionShape {
     @Override
     public void dispose() {
         if (shape.get() != null && !shape.get().isDisposed()) shape.get().dispose();
-        shape = null;
     }
 
     @Override

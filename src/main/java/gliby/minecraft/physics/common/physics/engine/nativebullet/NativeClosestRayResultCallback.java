@@ -6,6 +6,7 @@ import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.physics.engine.IRayResult;
 
 import javax.vecmath.Vector3f;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 
 /**
@@ -13,13 +14,13 @@ import java.lang.ref.WeakReference;
  */
 class NativeClosestRayResultCallback implements IRayResult {
 
-    private WeakReference<ClosestRayResultCallback> callback;
+    private SoftReference<ClosestRayResultCallback> callback;
 
     /**
      * @param callback
      */
     NativeClosestRayResultCallback(ClosestRayResultCallback callback) {
-        this.callback = new WeakReference<ClosestRayResultCallback>(callback);
+        this.callback = new SoftReference<ClosestRayResultCallback>(callback);
     }
 
     @Override

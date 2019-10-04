@@ -9,6 +9,7 @@ import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import gliby.minecraft.physics.common.physics.engine.IGhostObject;
 import net.minecraft.entity.Entity;
 
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 
 /**
@@ -16,18 +17,18 @@ import java.lang.ref.WeakReference;
  */
 public class JavaPairCachingGhostObject implements IGhostObject {
 
-    protected WeakReference<PhysicsWorld> physicsWorld;
-    protected WeakReference<Entity> owner;
-    private WeakReference<PairCachingGhostObject> pairCache;
+    protected SoftReference<PhysicsWorld> physicsWorld;
+    protected SoftReference<Entity> owner;
+    private SoftReference<PairCachingGhostObject> pairCache;
 
     JavaPairCachingGhostObject(PhysicsWorld physicsWorld, PairCachingGhostObject object) {
-        this.physicsWorld = new WeakReference<PhysicsWorld>(physicsWorld);
-        this.pairCache = new WeakReference<PairCachingGhostObject>(object);
+        this.physicsWorld = new SoftReference<PhysicsWorld>(physicsWorld);
+        this.pairCache = new SoftReference<PairCachingGhostObject>(object);
     }
 
     JavaPairCachingGhostObject(PhysicsWorld physicsWorld, Entity entity, PairCachingGhostObject object) {
         this(physicsWorld, object);
-        this.owner = new WeakReference<Entity>(entity);
+        this.owner = new SoftReference<Entity>(entity);
     }
 
 

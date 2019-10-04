@@ -10,6 +10,7 @@ import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import net.minecraft.entity.Entity;
 
 import java.lang.annotation.Native;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 
 /**
@@ -17,18 +18,18 @@ import java.lang.ref.WeakReference;
  */
 class NativeCollisionObject implements ICollisionObject {
 
-    protected WeakReference<NativePhysicsWorld> physicsWorld;
-    protected WeakReference<Entity> owner;
-    private WeakReference<btCollisionObject> collisionObject;
+    protected SoftReference<NativePhysicsWorld> physicsWorld;
+    protected SoftReference<Entity> owner;
+    private SoftReference<btCollisionObject> collisionObject;
 
     NativeCollisionObject(PhysicsWorld physicsWorld, btCollisionObject object) {
-        this.physicsWorld = new WeakReference<NativePhysicsWorld> ((NativePhysicsWorld) physicsWorld);
-        this.collisionObject = new WeakReference<btCollisionObject>(object);
+        this.physicsWorld = new SoftReference<NativePhysicsWorld> ((NativePhysicsWorld) physicsWorld);
+        this.collisionObject = new SoftReference<btCollisionObject>(object);
     }
 
     NativeCollisionObject(PhysicsWorld physicsWorld, Entity owner, btCollisionObject object) {
         this(physicsWorld, object);
-        this.owner = new WeakReference<Entity>(owner);
+        this.owner = new SoftReference<Entity>(owner);
     }
 
     @Override

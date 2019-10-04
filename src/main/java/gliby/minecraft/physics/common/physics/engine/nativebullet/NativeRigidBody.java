@@ -11,6 +11,7 @@ import net.minecraft.entity.Entity;
 
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,14 +21,14 @@ import java.util.Map;
  */
 class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 
-    private WeakReference<btRigidBody> rigidBody;
+    private SoftReference<btRigidBody> rigidBody;
     private ICollisionShape collisionShape;
     private Map<String, Object> properties;
 
     public NativeRigidBody(PhysicsWorld physicsWorld, btRigidBody rigidBody, Entity entity) {
         super(physicsWorld, entity, rigidBody);
-        this.physicsWorld = new WeakReference<NativePhysicsWorld>((NativePhysicsWorld)physicsWorld);
-        this.rigidBody = new WeakReference<btRigidBody>(rigidBody);
+        this.physicsWorld = new SoftReference<NativePhysicsWorld>((NativePhysicsWorld)physicsWorld);
+        this.rigidBody = new SoftReference<btRigidBody>(rigidBody);
         this.collisionShape = new NativeCollisionShape(physicsWorld, rigidBody.getCollisionShape());
         this.properties = new HashMap<String, Object>();
     }
@@ -189,7 +190,6 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
         if (isValid()) {
             rigidBody.get().dispose();
         }
-        rigidBody = null;
         properties.clear();
     }
 }
