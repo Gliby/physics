@@ -89,10 +89,10 @@ public abstract class RawItemRenderer implements IBakedModel {
 
 
             for (ItemTransformVec3f transform : fixed) {
-                transform.rotation.set((float) Math.toRadians(transform.rotation.x),
-                        (float) Math.toRadians(transform.rotation.y),
-                        (float) Math.toRadians(transform.rotation.z));
-                transform.translation.translate(-ItemCameraTransforms.offsetTranslateX, -ItemCameraTransforms.offsetTranslateY, -ItemCameraTransforms.offsetTranslateZ);
+//                transform.rotation.set((float) Math.toRadians(transform.rotation.x),
+//                        (float) Math.toRadians(transform.rotation.y),
+//                        (float) Math.toRadians(transform.rotation.z));
+//                transform.translation.scale(2);
             }
         }
 
@@ -118,7 +118,7 @@ public abstract class RawItemRenderer implements IBakedModel {
             tessellator.draw();
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0.5F, 0.5F, 0.5F);
+        GlStateManager.translate(0.55f, 0.25f, 0.55F);
         GlStateManager.scale(-1.0F, -1.0F, 1.0F);
 
         if (owner != null) {
@@ -203,27 +203,41 @@ public abstract class RawItemRenderer implements IBakedModel {
         this.transformType = cameraTransformType;
         switch (cameraTransformType) {
             case FIRST_PERSON_LEFT_HAND:
-                ItemCameraTransforms.applyTransformSide(getItemCameraTransforms().firstperson_left, true);
+                applyVanillaTransform(getItemCameraTransforms().firstperson_left, true);
                 break;
             case FIRST_PERSON_RIGHT_HAND:
-                ItemCameraTransforms.applyTransformSide(getItemCameraTransforms().firstperson_right, false);
+                applyVanillaTransform(getItemCameraTransforms().firstperson_right, false);
                 break;
             case GUI:
-                ItemCameraTransforms.applyTransformSide(getItemCameraTransforms().gui, false);
+                applyVanillaTransform(getItemCameraTransforms().gui, false);
                 break;
             case HEAD:
-                ItemCameraTransforms.applyTransformSide(getItemCameraTransforms().head, false);
+                applyVanillaTransform(getItemCameraTransforms().head, false);
                 break;
             case THIRD_PERSON_LEFT_HAND:
-                ItemCameraTransforms.applyTransformSide(getItemCameraTransforms().thirdperson_left, true);
+                applyVanillaTransform(getItemCameraTransforms().thirdperson_left, true);
                 break;
             case THIRD_PERSON_RIGHT_HAND:
-                ItemCameraTransforms.applyTransformSide(getItemCameraTransforms().thirdperson_right, false);
+                applyVanillaTransform(getItemCameraTransforms().thirdperson_right, false);
                 break;
             default:
                 break;
         }
         return pair;
+    }
+
+    public static void applyVanillaTransform(ItemTransformVec3f transform, boolean leftHand)
+    {
+        if (transform != ItemTransformVec3f.DEFAULT)
+        {
+            int swap = 1;
+
+            GlStateManager.translate(transform.translation.x * swap, transform.translation.y , transform.translation.z);
+            GlStateManager.rotate((float) Math.toRadians(transform.rotation.y), 0.0F, 1.0F, 0.0F);
+            GlStateManager.rotate((float) Math.toRadians(transform.rotation.x * swap), 1.0F, 0.0F, 0.0F);
+            GlStateManager.rotate((float) Math.toRadians(transform.rotation.z * swap), 0.0F, 0.0F, 1.0F);
+            GlStateManager.scale(transform.scale.x , transform.scale.y, transform.scale.z);
+        }
     }
 
     @Override
