@@ -47,6 +47,8 @@ import java.util.Map;
 // TODO (0.5.0) Add per event based Death timings for blocks. (So an explosion will quickly clear up PhysicsBlocks quickly,
 //  but player created physics blocks will stay for a longer time.)
 // TODO (0.5.0) Make falling sand a physics block, with a low death timer.
+// TODO (0.5.0) replace every reference of PhysicsWorld with a Weak/Soft Ref or a cached getter.
+// TODO (0.5.0)  Mod glibysphysics is missing the required element 'version' and a version.properties file could not be found. Falling back to metadata version 0.4.2
 @Mod(modid = Physics.ID, name = Physics.NAME, guiFactory = "gliby.minecraft.physics.client.gui.options.GuiFactory")
 public class Physics {
 

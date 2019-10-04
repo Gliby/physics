@@ -45,6 +45,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     public EntityPlayer pickerEntity;
     // Shared
     public Vector3f pickLocalHit;
+    // TODO convert to soft ref
     protected PhysicsWorld physicsWorld;
 
     protected static final DataParameter<Integer> PICKER_ID = EntityDataManager.<Integer>createKey(EntityPhysicsBase.class, DataSerializers.VARINT);

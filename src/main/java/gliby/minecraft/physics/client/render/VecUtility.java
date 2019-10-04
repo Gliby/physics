@@ -1,8 +1,10 @@
 package gliby.minecraft.physics.client.render;
 
+import com.badlogic.gdx.math.Matrix3;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.bulletphysicsx.linearmath.QuaternionUtil;
 import com.bulletphysicsx.linearmath.Transform;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -19,6 +21,15 @@ import java.nio.FloatBuffer;
 public class VecUtility {
 
 
+    public static final int M01 = 3;
+    public static final int M02 = 6;
+    public static final int M10 = 1;
+    public static final int M11 = 4;
+    public static final int M12 = 7;
+    public static final int M20 = 2;
+    public static final int M21 = 5;
+    public static final int M22 = 8;
+    static final int M00 = 0;
     private static float[] buffer = new float[16];
 
     /**
@@ -52,7 +63,6 @@ public class VecUtility {
         return new Vector3((float) vec3.x, (float) vec3.y, (float) vec3.z);
     }
 
-
     public static Vec3d toVec3(Vector3f vec3) {
         return new Vec3d(vec3.x, vec3.y, vec3.z);
     }
@@ -68,7 +78,6 @@ public class VecUtility {
         return new Vec3d(red, green, blue);
     }
 
-
     public static FloatBuffer setBufferFromTransform(FloatBuffer matrixBuffer, Transform transform) {
         transform.getOpenGLMatrix(buffer);
         matrixBuffer.clear();
@@ -77,7 +86,6 @@ public class VecUtility {
         return matrixBuffer;
     }
 
-
     public static Vec3d calculateRay(Entity base, float distance, float partialTick, Vector3f offset) {
         Vec3d vec3 = toVec3(getSmoothedEntityPosition(base, partialTick)).add(toVec3(offset));
         Vec3d vec31 = base.getLook(partialTick);
@@ -85,45 +93,24 @@ public class VecUtility {
         return new Vec3d((float) vec32.x, (float) vec32.y, (float) vec32.z);
     }
 
-    public static float[] getMatrix4Values(Matrix4 matrix4f) {
-        return matrix4f.getValues();
+
+    public static Matrix4f toMatrix4f(Matrix4 matrix4) {
+        Matrix4f mat4 = new Matrix4f(toQuat4f(matrix4.getRotation(new Quaternion())), toVector3f(matrix4.getTranslation(new Vector3())), 1);
+        return new Matrix4f();
     }
 
-    public static float[] getMatrix4Values(Matrix4f matrix4f) {
-        final float[] matrix = {
-                matrix4f.m00,
-                matrix4f.m01,
-                matrix4f.m02,
-                matrix4f.m03,
-
-                matrix4f.m10,
-                matrix4f.m11,
-                matrix4f.m12,
-                matrix4f.m13,
-
-                matrix4f.m20,
-                matrix4f.m21,
-                matrix4f.m22,
-                matrix4f.m23,
-
-                matrix4f.m30,
-                matrix4f.m31,
-                matrix4f.m32,
-                matrix4f.m33,
-        };
-        return matrix;
-    }
-
-    public static Matrix4f toMatrix4f(Matrix4 matrix4f) {
-        return new Matrix4f(getMatrix4Values(matrix4f));
-    }
-
-    public static Matrix4 toMatrix4(Matrix4f matrix4f) {
-        return new Matrix4(getMatrix4Values(matrix4f));
-    }
+//    public static Matrix4 toMatrix4(Matrix4f matrix4f) {
+//        Matrix4 mat4 = new Matrix4();
+//        Transform trans =new Transform(matrix4f);
+//        mat4.set()
+//
+//    }
 
     public static Matrix4 toMatrix4(Transform transform) {
-        return new Matrix4(getMatrix4Values(transform.getMatrix(new Matrix4f())));
+        Matrix4 mat4 = new Matrix4();
+        mat4.idt();
+        mat4.set(toVector3(transform.origin), toQuaternion(transform.getRotation(new Quat4f())));
+        return mat4;
     }
 
     public static Matrix4f inverse(Matrix4f centerOfMassTransform) {
@@ -134,10 +121,15 @@ public class VecUtility {
     }
 
     public static Transform toTransform(Matrix4 mat4) {
+        Transform transform = new Transform();
         return new Transform(toMatrix4f(mat4));
     }
 
     public static Quat4f toQuat4f(Quaternion orientation) {
         return new Quat4f(orientation.x, orientation.y, orientation.z, orientation.w);
+    }
+
+    public static Quaternion toQuaternion(Quat4f orientation) {
+        return new Quaternion(orientation.x, orientation.y, orientation.z, orientation.w);
     }
 }

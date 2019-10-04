@@ -1,5 +1,6 @@
 package gliby.minecraft.physics.common.physics.engine.nativebullet;
 
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.bulletphysicsx.linearmath.Transform;
@@ -71,8 +72,12 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
         return VecUtility.toTransform(rigidBody.get().getWorldTransform());
     }
 
+    @Override
     public void setWorldTransform(final Transform transform) {
-        rigidBody.get().setWorldTransform(VecUtility.toMatrix4(transform));
+        System.out.println("in transform: " + transform.origin);
+        Matrix4 mat4 = VecUtility.toMatrix4(transform);
+        System.out.println("out mat4    : " + mat4.getTranslation(new Vector3()));
+        rigidBody.get().setWorldTransform(mat4);
 
     }
 
@@ -171,7 +176,7 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 
     @Override
     public Vector3f getPosition() {
-        return VecUtility.toVector3f(rigidBody.get().getWorldTransform().getTranslation(new Vector3()));
+        return VecUtility.toVector3f( rigidBody.get().getWorldTransform().getTranslation(new Vector3()) );
     }
 
     @Override

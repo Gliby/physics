@@ -35,6 +35,7 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.Sys;
 
 import javax.annotation.Nullable;
 import javax.vecmath.Quat4f;
@@ -239,6 +240,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
             setPosition(newPosition.getX(), newPosition.getY(),
                     newPosition.getZ());
+
 
             Vector3f velocity = new Vector3f();
             setVelocity(velocity.getX(), velocity.getY(), velocity.getZ());
