@@ -170,7 +170,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     public AxisAlignedBB getEntityBoundingBox() {
         return collisionEnabled ? new AxisAlignedBB(0.20f, 0, 0.20f, 0.80f, 1.05f, 0.80f).offset(
                 Math.round(posX * 100.0f) / 100.0f, Math.round(posY * 100.0f) / 100.0f,
-                Math.round(posZ * 100.0f) / 100.0f) : null;
+                Math.round(posZ * 100.0f) / 100.0f) : new AxisAlignedBB(Vec3d.ZERO, Vec3d.ZERO);
     }
 
     @Override
