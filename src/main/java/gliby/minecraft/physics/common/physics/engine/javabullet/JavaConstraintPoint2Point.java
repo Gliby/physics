@@ -5,44 +5,39 @@ import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IConstraintPoint2Point;
 
 import javax.vecmath.Vector3f;
+import java.lang.ref.WeakReference;
 
 /**
  *
  */
 public class JavaConstraintPoint2Point implements IConstraintPoint2Point {
 
-    protected PhysicsWorld physicsWorld;
-    private Point2PointConstraint constraint;
+    protected WeakReference<PhysicsWorld> physicsWorld;
+    private WeakReference<Point2PointConstraint> constraint;
 
     JavaConstraintPoint2Point(PhysicsWorld physicsWorld, Point2PointConstraint constraint) {
-        this.physicsWorld = physicsWorld;
-        this.constraint = constraint;
+        this.physicsWorld = new WeakReference<PhysicsWorld>(physicsWorld);
+        this.constraint = new WeakReference<Point2PointConstraint>(constraint);
     }
 
     @Override
     public void setImpulseClamp(final float f) {
-
-        constraint.setting.impulseClamp = f;
-
+        constraint.get().setting.impulseClamp = f;
     }
 
     @Override
     public void setTau(final float f) {
-
-        constraint.setting.tau = f;
-
+        constraint.get().setting.tau = f;
     }
 
     @Override
     public void setPivotB(final Vector3f newPos) {
-
-        constraint.setPivotB(newPos);
-
+        constraint.get().setPivotB(newPos);
     }
 
     @Override
     public Object getConstraint() {
-        return constraint;
+        return constraint.get();
     }
 
     @Override
@@ -52,12 +47,12 @@ public class JavaConstraintPoint2Point implements IConstraintPoint2Point {
 
     @Override
     public Vector3f getPivotInA() {
-        return constraint.getPivotInA(new Vector3f());
+        return constraint.get().getPivotInA(new Vector3f());
     }
 
     @Override
     public Vector3f getPivotInB() {
-        return constraint.getPivotInB(new Vector3f());
+        return constraint.get().getPivotInB(new Vector3f());
     }
 
     @Override
@@ -72,7 +67,7 @@ public class JavaConstraintPoint2Point implements IConstraintPoint2Point {
 
     @Override
     public PhysicsWorld getPhysicsWorld() {
-        return physicsWorld;
+        return physicsWorld.get();
     }
 
 }

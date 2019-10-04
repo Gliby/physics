@@ -3,17 +3,19 @@ package gliby.minecraft.physics.common.physics.engine.javabullet;
 import com.bulletphysicsx.dynamics.constraintsolver.SliderConstraint;
 import gliby.minecraft.physics.common.physics.engine.IConstraintSlider;
 
+import java.lang.ref.WeakReference;
+
 public class JavaConstraintSlider implements IConstraintSlider {
 
-    private SliderConstraint constraint;
+    private WeakReference<SliderConstraint> constraint;
 
     JavaConstraintSlider(SliderConstraint sliderConstraint) {
-        this.constraint = sliderConstraint;
+        this.constraint = new WeakReference<SliderConstraint>(sliderConstraint);
     }
 
     @Override
     public Object getConstraint() {
-        return constraint;
+        return constraint.get();
     }
 
     @Override

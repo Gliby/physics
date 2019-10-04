@@ -190,5 +190,6 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
             rigidBody.get().dispose();
         }
         rigidBody = null;
+        properties.clear();
     }
 }
