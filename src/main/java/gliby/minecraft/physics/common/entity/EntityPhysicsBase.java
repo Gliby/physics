@@ -32,7 +32,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO feature implement proper collision detection/response, stop using minecraft AABB
+// TODO (0.8.0) feature implement proper collision detection/response, stop using minecraft AABB
 /**
  *
  */
@@ -201,9 +201,6 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
     protected abstract void createPhysicsObject(PhysicsWorld physicsWorld);
 
-    // TODO bug: entity tracker has a hard time keeping up with physics base
-    // entities and eventually crashes the game.
-
     protected abstract void updatePhysicsObject(PhysicsWorld physicsWorld);
 
     /**
@@ -218,7 +215,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
             getMechanics().clear();
             PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
-            // TODO improvement: block property nbt saving
+            // TODO (0.6.0) improvement: block property nbt saving
 
             Gson gson = new Gson();
             /*
@@ -245,9 +242,9 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
         ArrayList<String> mechanicsByNames = new ArrayList<String>();
         for (int i = 0; i < getMechanics().size(); i++) {
             mechanicsByNames
-                    .add(Physics.getInstance().getPhysicsOverworld().getMechanicsMap().inverse().get(getMechanics().get(i)));
+                    .add(Physics.getInstance().getPhysicsOverworld().getRigidBodyMechanicsMap().inverse().get(getMechanics().get(i)));
         }
-        // TODO improvement: block property nbt saving
+        // TODO (0.6.0) improvement: block property nbt saving
         Gson gson = new Gson();
         /*
          * tagCompound.setString("Properties",
@@ -353,7 +350,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
         List<String> savedMechanics = new ArrayList<String>();
         for (int i = 0; i < getMechanics().size(); i++) {
             RigidBodyMechanic mechanic = getMechanics().get(i);
-            String mechanicName = overworld.getMechanicsMap().inverse().get(mechanic);
+            String mechanicName = overworld.getRigidBodyMechanicsMap().inverse().get(mechanic);
             if (mechanic.isCommon() && !mechanicName.isEmpty()) {
                 savedMechanics.add(mechanicName);
             }

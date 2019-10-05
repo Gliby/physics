@@ -5,6 +5,7 @@ import gliby.minecraft.physics.client.render.VecUtility;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -31,7 +32,7 @@ public class EntityToolGunBeam extends Entity implements IEntityAdditionalSpawnD
     public Vector3f hit;
     public Entity owner;
 
-    // TODO use ingame time instead of System
+    // TODO (0.6.0 ) use ingame time instead of System
     public int msUntilGone = 200;
     public long timeCreated;
 
@@ -71,10 +72,10 @@ public class EntityToolGunBeam extends Entity implements IEntityAdditionalSpawnD
                     soundPosition.normalize();
                     soundPosition.scale(MathHelper.clamp(distance, 0, 16));
                     soundPosition.add(clientOrigin != null ? clientOrigin : worldOrigin);
-// todo 1.12.2 port
-
+                    // TODO (0.5.0) get sound working
                     SoundEvent soundEvent = SoundHandler.getSoundByIdentifier("ToolGun.Beam");
-                    world.playSound(soundPosition.x, soundPosition.y, soundPosition.z, soundEvent, SoundCategory.PLAYERS, 0.2F, 1.0F, false);
+                    world.playSound((EntityPlayer)null, soundPosition.x, soundPosition.y, soundPosition.z, soundEvent, SoundCategory.PLAYERS, 1, 1.0F);
+
                 }
             }
             float val = MathHelper.clamp((System.currentTimeMillis() - timeCreated), 0, msUntilGone)

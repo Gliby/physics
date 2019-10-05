@@ -36,7 +36,7 @@ public class EntityDeathHandler {
 
     public EntityDeathHandler(PhysicsOverworld overworld) {
         this.physicsOverworld = overworld;
-        // TODO improvement: Import from .json instead of this.
+        // TODO (0.7.0) improvement: Import from disk instead of using Reflection.
         RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
         for (Object obj : renderManager.entityRenderMap.entrySet()) {
             Map.Entry<Class<? extends Entity>, RenderLiving> entry = (Map.Entry<Class<? extends Entity>, RenderLiving>) obj;

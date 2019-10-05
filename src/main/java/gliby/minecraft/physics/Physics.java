@@ -8,18 +8,17 @@ import gliby.minecraft.gman.settings.Setting;
 import gliby.minecraft.gman.settings.SettingsHandler;
 import gliby.minecraft.gman.settings.StringSetting;
 import gliby.minecraft.physics.client.PhysicsClient;
-import gliby.minecraft.physics.client.SoundHandler;
 import gliby.minecraft.physics.common.IPhysicsProxy;
 import gliby.minecraft.physics.common.PhysicsServer;
 import gliby.minecraft.physics.common.blocks.BlockManager;
+import gliby.minecraft.physics.common.entity.EntityPhysicsBase;
+import gliby.minecraft.physics.common.entity.EntityPhysicsBlock;
+import gliby.minecraft.physics.common.entity.EntityToolGunBeam;
 import gliby.minecraft.physics.common.entity.models.MobModelManager;
 import gliby.minecraft.physics.common.game.GameManager;
-import gliby.minecraft.physics.common.packets.PacketPlayerJoin;
+import gliby.minecraft.physics.common.packets.PacketReceiveTools;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializer;
-import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -34,19 +33,18 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.vecmath.Quat4f;
-import javax.vecmath.Vector3f;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
-// Gliby's Physics Roadmap
-// TODO: (0.7.0) Add cosmetic physics.
+// Gliby's Physics Central Roadmap
+// TODO: (0.7.0)  Add cosmetic physics.
 // TODO: (0.6.0) look into ObjectPooling. (JBullet)
 // TODO  (0.6.0) look into NativeBullet by the Terasology, might solve memory leaks in the native PhysicsWorld and improve simulation perf.
 // TODO  (0.6.0) FIXME: something is leaking memory every time we create/destroy a PhysicsWorld.
 // TODO (0.5.0)  Mod glibysphysics is missing the required element 'version' and a version.properties file could not be found. Falling back to metadata version 0.4.2
-// TODO (0.6.0) FIXME seemingly random slow downs. Could be either Server throttling or PhysicsWorld chugging.
+// TODO (0.5.0) Generate and pack new blocks for 1.12.2
+// TODO (0.6.0) FIXME: seemingly random slow downs, happen mostly on Java Physics. Could be either Server throttling or PhysicsWorld chugging.
+
 @Mod(modid = Physics.ID, name = Physics.NAME, guiFactory = "gliby.minecraft.physics.client.gui.options.GuiFactory")
 public class Physics {
 
@@ -63,7 +61,7 @@ public class Physics {
     private static Physics instance;
     @SidedProxy(serverSide = "gliby.minecraft.physics.common.PhysicsServer", clientSide = "gliby.minecraft.physics.client.PhysicsClient")
     private static PhysicsServer proxy;
-    private static int entityIDIndex = 0;
+
     private static int packetIDIndex;
     /**
      * Manages anything game related, e.g items.
@@ -129,6 +127,9 @@ public class Physics {
         settings.registerFloat("PhysicsEntities", "PlayerSpawnedDeathTime", 30, Setting.Side.BOTH);
         settings.registerFloat("PhysicsEntities", "GameSpawnedDeathTime", 2.5f, Setting.Side.BOTH);
         settings.registerFloat("PhysicsEntities", "EntityColliderCleanupTime", 0.25f, Setting.Side.BOTH);
+        settings.registerObject("PhysicsEntities", "EntityColliderBlacklist", new
+                String[] { EntityPhysicsBlock.class.getName(), EntityPhysicsBase.class.getName(), EntityToolGunBeam.class.getName(), EntityItem.class.getName() }, Setting.Side.BOTH);
+
 
         settings.registerFloat("Game", "ProjectileImpulseForce", 30, Setting.Side.BOTH);
         settings.registerFloat("Game", "ExplosionImpulseRadius", 16, Setting.Side.BOTH);
@@ -202,7 +203,7 @@ public class Physics {
 
         gameManager.preInit();
 
-        registerPacket(PacketPlayerJoin.class, PacketPlayerJoin.class, Side.CLIENT);
+        registerPacket(PacketReceiveTools.class, PacketReceiveTools.class, Side.CLIENT);
 
         physicsOverworld = new PhysicsOverworld(this);
         blockManager = new BlockManager(this);

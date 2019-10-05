@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  *
  */
-// TODO finish implementing motor action
+// TODO (0.7.0) finish implementing motor action
 public class ToolGunMotorAction implements IToolGunAction, IToolGunTickable {
     private Map<Integer, ToolGunHit> hits = new HashMap<Integer, ToolGunHit>();
     private List<Motor> motors = new ArrayList<Motor>();

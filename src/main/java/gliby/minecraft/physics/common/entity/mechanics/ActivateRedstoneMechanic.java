@@ -6,7 +6,8 @@ import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.relauncher.Side;
 
 /**
- * Used for slime blocks.
+ * Used for Redstone related Blocks, like Redstone Block or Redstone Torch.
+ *
  */
 public class ActivateRedstoneMechanic extends RigidBodyMechanic {
 

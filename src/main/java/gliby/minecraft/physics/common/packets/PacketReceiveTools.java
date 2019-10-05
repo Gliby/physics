@@ -2,7 +2,6 @@ package gliby.minecraft.physics.common.packets;
 
 import gliby.minecraft.physics.Physics;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -15,14 +14,14 @@ import java.util.List;
 /**
  *
  */
-public class PacketPlayerJoin extends MinecraftPacket implements IMessageHandler<PacketPlayerJoin, IMessage> {
+public class PacketReceiveTools extends MinecraftPacket implements IMessageHandler<PacketReceiveTools, IMessage> {
 
     private List<String> actions;
 
-    public PacketPlayerJoin() {
+    public PacketReceiveTools() {
     }
 
-    public PacketPlayerJoin(List<String> actions) {
+    public PacketReceiveTools(List<String> actions) {
         this.actions = actions;
     }
 
@@ -45,7 +44,7 @@ public class PacketPlayerJoin extends MinecraftPacket implements IMessageHandler
     }
 
     @Override
-    public IMessage onMessage(final PacketPlayerJoin message, MessageContext ctx) {
+    public IMessage onMessage(final PacketReceiveTools message, MessageContext ctx) {
         FMLCommonHandler.instance().getMinecraftServerInstance()
                 .addScheduledTask(new Runnable() {
 

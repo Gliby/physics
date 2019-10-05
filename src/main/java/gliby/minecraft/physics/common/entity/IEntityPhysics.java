@@ -33,6 +33,7 @@ public interface IEntityPhysics {
                         e.printStackTrace();
                     }
                 }
+
                 if (clazz.isInstance(entityIn)) {
                     return false;
                 }

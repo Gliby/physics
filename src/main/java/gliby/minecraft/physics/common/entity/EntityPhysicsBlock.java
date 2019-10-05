@@ -42,7 +42,6 @@ import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 import java.lang.ref.WeakReference;
 
-// TODO improvement: Remove/add ability to spawn tile-entites.
 public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAdditionalSpawnData {
 
     protected static final DataParameter<Quat4f> PHYSICS_ROTATION = EntityDataManager.<Quat4f>createKey(EntityPhysicsBlock.class, GDataSerializers.QUAT4F);

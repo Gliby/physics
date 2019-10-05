@@ -20,7 +20,7 @@
 ///**
 // *
 // */
-////TODO improvement: needs rewrite
+////TODO (0.8.0)  EntityPhysicsModelPart, needs rewrite
 //public class EntityPhysicsModelPart extends EntityPhysicsBase implements IEntityAdditionalSpawnData {
 //    @SideOnly(Side.CLIENT)
 //    public Vector3f renderPosition = new Vector3f();

@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class GameEventHandler {
 
-    Physics physics;
+    protected Physics physics;
 
     public GameEventHandler(Physics physics) {
         this.physics = physics;
@@ -40,6 +40,7 @@ public class GameEventHandler {
     public void handleExplosion(final EntityJoinWorldEvent event) {
         if (event.getWorld().isRemote)
             return;
+
         if (event.getEntity() instanceof EntityFallingBlock) {
             boolean replaceFallingBlocks = physics.getSettings().getBooleanSetting("Game.ReplaceFallingBlocks").getBooleanValue();
             if (replaceFallingBlocks) {
@@ -61,7 +62,7 @@ public class GameEventHandler {
                         EntityPhysicsBlock analog = new EntityPhysicsBlock(event.getWorld(), physicsWorld, blockState,
                                 entityFallingBlock.posX - PhysicsOverworld.OFFSET, entityFallingBlock.posY - PhysicsOverworld.OFFSET, entityFallingBlock.posZ - PhysicsOverworld.OFFSET);
                         // Disable collision, because playing survival with Physics Falling blocks is annoying.
-                        // TODO (0.7.0) FEATURE Survival collision issues, could be fixed if Physics Block were diggable.
+                        // TODO (0.8.0) FEATURE Survival collision issues, could be fixed if Physics Block were diggable.
                         event.getWorld().spawnEntity(analog.setCollisionEnabled(false).setGameSpawned(true));
                     }
                 });

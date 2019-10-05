@@ -154,8 +154,6 @@ public class PickUpMechanic extends PhysicsMechanic {
      */
     @Override
     public void init() {
-        // TODO Auto-generated method stub
-
     }
 
     @Override

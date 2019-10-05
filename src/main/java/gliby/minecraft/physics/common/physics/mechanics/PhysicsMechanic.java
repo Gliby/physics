@@ -3,7 +3,7 @@ package gliby.minecraft.physics.common.physics.mechanics;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 
 /**
- *
+ * Global extensions to PhysicsWorld.
  */
 public abstract class PhysicsMechanic {
 

@@ -33,8 +33,6 @@ public class BlockManager {
         this.physics = physics;
         blockGenerators = new HashMap<String, IBlockGenerator>();
         defaultGenerator = new DefaultBlockGenerator();
-        // TODO When metadata has finished loading, copy concurrenthashmap from
-        // MetadataLoader to physicsBlockMetadata hashmap.
         File tempFile = null;
         ZipFile tempZip = null;
         if ((tempFile = new File(physics.getSettings().getDirectory(), "/custom/blocks.zip")).exists()) {

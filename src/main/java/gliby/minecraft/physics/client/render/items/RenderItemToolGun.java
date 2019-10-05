@@ -48,7 +48,7 @@ public class RenderItemToolGun extends RawItemRenderer {
         this.bipedRightArm.setRotationPoint(-5.0F, 2.0F + 0, 0.0F);
     }
 
-    // TODO When not held, use super low resolution textures.
+    // TODO When not held, use lower resolution screen textures.
     @Override
     public void render() {
         float scale = -(1.0f / 16.0f);

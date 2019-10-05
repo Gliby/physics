@@ -3,7 +3,11 @@ package gliby.minecraft.physics.common.physics.mechanics;
 import gliby.minecraft.physics.common.physics.engine.IGhostObject;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 
-//TODO feature: finish
+//TODO (0.7.0) feature: finish
+
+/**
+ * Physics Mechanic event.
+ */
 public class PhysicsMechanicEvent {
 
     public static class TouchedEntity {

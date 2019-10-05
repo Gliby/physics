@@ -147,6 +147,7 @@ public abstract class PhysicsWorld {
         fps++;
     }
 
+    // TODO (0.5.0) might not be suitable for java step
     public int getMaxSubstep() {
         final float delta = getDelta();
         final int maxSubStep = MathHelper.clamp(Math.round(delta / 10), 1 , 100);

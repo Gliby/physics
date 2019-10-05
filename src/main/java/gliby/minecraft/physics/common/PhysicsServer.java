@@ -3,7 +3,7 @@ package gliby.minecraft.physics.common;
 import gliby.minecraft.gman.settings.BooleanSetting;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.game.events.GameEventHandler;
-import gliby.minecraft.physics.common.packets.PacketPlayerJoin;
+import gliby.minecraft.physics.common.packets.PacketReceiveTools;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -30,9 +30,8 @@ public class PhysicsServer implements IPhysicsProxy {
 
             @Override
             public void run() {
-                // TODO get rid of this delay hack.
                 Physics physics = Physics.getInstance();
-                Physics.getDispatcher().sendTo(new PacketPlayerJoin(physics.getGameManager().getToolGunRegistry().getValueDefinitions()),
+                Physics.getDispatcher().sendTo(new PacketReceiveTools(physics.getGameManager().getToolGunRegistry().getValueDefinitions()),
                         (EntityPlayerMP) event.player);
             }
 

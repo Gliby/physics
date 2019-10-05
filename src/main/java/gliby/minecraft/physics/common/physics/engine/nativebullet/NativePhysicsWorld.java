@@ -158,7 +158,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
         dynamicsWorld.addConstraint((btTypedConstraint) p2p.getConstraint());
     }
 
-    // TODO NativePhysicsWorld: Dispose of object on remove.
     @Override
     public void removeRigidBody(final IRigidBody body) {
         rigidBodies.remove(body);
@@ -303,28 +302,22 @@ public class NativePhysicsWorld extends PhysicsWorld {
         return getClass().getSimpleName() + "[" + this.rigidBodies.size() + " rigid bodies" + "]";
     }
 
-    // TODO NativePhysicsWorld: Add rope support
 
     @Override
     public void addRope(IRope object) {
-        // TODO NativePhysicsWorld: rope feature
     }
 
     @Override
     public List<IRope> getRopes() {
-        // TODO NativePhysicsWorld: rope feature
         return null;
     }
 
     @Override
     public void removeRope(IRope rope) {
-        // TODO NativePhysicsWorld: rope feature
-
     }
 
     @Override
     public IRope createRope(Vector3f startPos, Vector3f endPos, int detail) {
-        // TODO NativePhysicsWorld: rope feature
         return null;
     }
 
@@ -341,7 +334,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
         return !dynamicsWorld.isDisposed();
     }
 
-    // TODO NativePhysicsWorld: Add slider constraint
+    // TODO (0.8.0) NativePhysicsWorld: Add slider constraint
     @Override
     public IConstraintSlider createSliderConstraint(IRigidBody rbA, IRigidBody rbB, Transform frameInA,
                                                     Transform frameInB, boolean useLinearReferenceFrameA) {

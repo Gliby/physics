@@ -3,12 +3,10 @@ package gliby.minecraft.physics.common.physics;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import gliby.minecraft.physics.Physics;
-import gliby.minecraft.physics.common.entity.mechanics.BounceMechanic;
-import gliby.minecraft.physics.common.entity.mechanics.EnvironmentGravityMechanic;
-import gliby.minecraft.physics.common.entity.mechanics.EnvironmentResponseMechanic;
-import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
+import gliby.minecraft.physics.common.entity.mechanics.*;
 import gliby.minecraft.physics.common.physics.engine.javabullet.JavaPhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.nativebullet.NativePhysicsWorld;
+import gliby.minecraft.physics.common.physics.mechanics.EntityCollisionResponseMechanic;
 import gliby.minecraft.physics.common.physics.mechanics.ToolMechanics;
 import gliby.minecraft.physics.common.physics.mechanics.gravitymagnets.GravityModifierMechanic;
 import gliby.minecraft.physics.common.physics.mechanics.physicsgun.PickUpMechanic;
@@ -24,30 +22,34 @@ import javax.vecmath.Vector3f;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO bind step speed to match game speed.
+// TODO (0.8.0) bind step speed to match game speed.
 public class PhysicsOverworld {
 
     // Bullet Offset.
     public static final float OFFSET = 0.5f;
 
     private static final AxisAlignedBB BLOCK_BREAK_BB = new AxisAlignedBB(-1.75, -1.75, -1.75, 1.75, 1.75, 1.75);
-    private final BiMap<String, RigidBodyMechanic> mechanicsMap = HashBiMap.create();
-    private final Physics physics;
+
+    private final BiMap<String, RigidBodyMechanic> rigidBodyMechanics = HashBiMap.create();
+
+    protected Physics physics;
+
     protected Map<World, PhysicsWorld> physicsWorlds = new HashMap<World, PhysicsWorld>();
 
     public PhysicsOverworld(final Physics physics) {
-        MinecraftForge.EVENT_BUS.register(this);
         this.physics = physics;
-        // Registers available mechanics.
-        // TODO finish: mechanics
-        getMechanicsMap().put("EnvironmentGravity", new EnvironmentGravityMechanic());
-        getMechanicsMap().put("EnvironmentResponse", new EnvironmentResponseMechanic());
-        getMechanicsMap().put("Bounce", new BounceMechanic());
 
-        // TODO feature: get these mechanics working properly
-        //getMechanicsMap().put("ActivateRedstone", new ActivateRedstoneMechanic());
-        //getMechanicsMap().put("BlockInheritance", new BlockInheritanceMechanic());
+        // Registers available mechanics.
+        // TODO (0.6.0) finish: global mechanics
+        getRigidBodyMechanicsMap().put("EnvironmentGravity", new EnvironmentGravityMechanic());
+        getRigidBodyMechanicsMap().put("EnvironmentResponse", new EnvironmentResponseMechanic());
+        getRigidBodyMechanicsMap().put("Bounce", new BounceMechanic());
+
+        // TODO (0.6.0) feature: get these rigidbody mechanics working properly
+        getRigidBodyMechanicsMap().put("ActivateRedstone", new ActivateRedstoneMechanic());
+//        getMechanicsMap().put("BlockInheritance", new BlockInheritanceMechanic());
         //getMechanicsMap().put("ClientBlockInheritance", new ClientBlockInheritanceMechanic().setCommon(true));
+        MinecraftForge.EVENT_BUS.register(this);
     }
 
     /**
@@ -84,10 +86,8 @@ public class PhysicsOverworld {
             physicsWorld.getMechanics().put("PickUp", new PickUpMechanic(physicsWorld, 20));
             physicsWorld.getMechanics().put("GravityMagnet", new GravityModifierMechanic(physicsWorld, 20));
             physicsWorld.getMechanics().put("ToolMan", new ToolMechanics(physics.getGameManager().getToolGunRegistry(), physicsWorld, 20));
-            // worldStepSimulator.getMechanics().put("EntityCollision",
-            // new EntityCollisionResponseMechanic(world, worldStepSimulator,
-            // true,
-            // 20));
+            physicsWorld.getMechanics().put("EntityCollision", new EntityCollisionResponseMechanic(access, physicsWorld,20));
+
             physicsWorld.create();
             getPhysicsWorldMap().put(access, physicsWorld);
             Physics.getLogger().info(String.format("Started running new physics world on %s (%s tick(s) per second.)", physicsWorld.toString(), physicsWorld.getPhysicsConfiguration().getTicksPerSecond()));
@@ -130,8 +130,8 @@ public class PhysicsOverworld {
     /**
      * @return the mechanicsMap
      */
-    public BiMap<String, RigidBodyMechanic> getMechanicsMap() {
-        return mechanicsMap;
+    public BiMap<String, RigidBodyMechanic> getRigidBodyMechanicsMap() {
+        return rigidBodyMechanics;
     }
 
     /**
@@ -139,7 +139,7 @@ public class PhysicsOverworld {
      * @return
      */
     public RigidBodyMechanic getMechanicFromName(final String string) {
-        final RigidBodyMechanic mechanic = mechanicsMap.get(string);
+        final RigidBodyMechanic mechanic = rigidBodyMechanics.get(string);
         if (mechanic == null) {
             Physics.getLogger().debug("Mechanic: " + string + " doesn't exists, or is misspelled.");
         }

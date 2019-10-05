@@ -14,6 +14,11 @@ import net.minecraftforge.fml.relauncher.Side;
 import javax.vecmath.Vector3f;
 import java.util.List;
 
+/**
+ * Block Inheritance is a mechanic that aims to replicate the original blocks principles.
+ * For example the Cactus Block deals damage when you collide with it,
+ * let's try to inherit that mechanic from the game and apply to our Physics Blocks.
+ */
 public class BlockInheritanceMechanic extends RigidBodyMechanic {
 
     @Override

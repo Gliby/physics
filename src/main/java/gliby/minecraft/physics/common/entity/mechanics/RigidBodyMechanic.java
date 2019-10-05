@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Per RigidBody mechanic, acts like an extension.
  */
 public abstract class RigidBodyMechanic {
 

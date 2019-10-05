@@ -11,7 +11,6 @@ import javax.vecmath.Vector3f;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO JavaRope: implement decent rope algorithm
 public class JavaRope implements IRope {
 
     private ArrayList<IRigidBody> rigidBodies;

@@ -23,7 +23,7 @@ public class JavaVoxelProvider implements VoxelPhysicsWorld {
         this.physicsWorld = physicsWorld;
     }
 
-    // TODO use block metadata if key exists.
+    // TODO (0.6.0) use block metadata if key exists.
     @Override
     public VoxelInfo getCollisionShapeAt(final int x, final int y, final int z) {
         final BlockPos blockPos = new BlockPos(x, y, z);

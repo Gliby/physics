@@ -86,7 +86,7 @@ public class GameManager {
 
     public void preInit() {
 
-        // TODO add recipes back 1.12.2
+        // TODO (0.5.0) add recipes back 1.12.2
 //        GameRegistry.addRecipe(new ItemStack(itemPhysicsGun), "AAA", "BCB", "AAA", 'A', Blocks.obsidian, 'B',
 //                Items.redstone, 'C', Items.diamond);
 //

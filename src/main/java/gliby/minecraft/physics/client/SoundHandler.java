@@ -30,7 +30,7 @@ public class SoundHandler {
     public void registerSounds(RegistryEvent.Register<SoundEvent> event) {
         final IForgeRegistry<SoundEvent> registry = event.getRegistry();
         for (SoundEvent soundEvent : soundRegistry.values()) {
-            soundEvent.setRegistryName(soundEvent.getSoundName().getResourcePath());
+            soundEvent.setRegistryName(soundEvent.getSoundName());
             registry.register(soundEvent);
         }
 
@@ -38,7 +38,9 @@ public class SoundHandler {
 
 
     public static SoundEvent getSoundByIdentifier(String soundName) {
-        return soundRegistry.get(soundName);
+        SoundEvent event = soundRegistry.get(soundName);
+        System.out.println("sound: " + soundName + ", event: " + event);
+        return event;
     }
 
     public static void playLocalSound(Minecraft mc, String soundName) {

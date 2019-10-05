@@ -23,7 +23,7 @@ public class BounceMechanic extends RigidBodyMechanic {
      * net.gliby.physics.common.physics.entitymechanics.RigidBodyMechanic#update
      * ()
      */
-    // TODO bug: bounce code needs a rework
+    // TODO (0.7.0) FEATURE: bounce code needs a rework.
     @Override
     public void update(IRigidBody rigidBody, PhysicsWorld physicsWorld, Entity entity, Side side) {
         if (rigidBody.isActive()) {
