@@ -112,14 +112,7 @@ public class Physics {
 
         settings = new SettingsHandler(dir, new File(dir, "Settings.ini"));
 
-        settings.registerBoolean("PhysicsEngine", "UseJavaPhysics", true, Setting.Side.BOTH);
-
-        // TODO re-implement: entity blacklist
-        /*
-         * settings.registerObject("PhysicsEntities", "EntityColliderBlacklist", new
-         * String[] { IEntityPhysics.class.getName(), EntityToolGunBeam.class.getName(),
-         * EntityItem.class.getName() }, Setting.Side.BOTH);
-         */
+        settings.registerBoolean("PhysicsEngine", "UseJavaPhysics", false, Setting.Side.BOTH);
 
         settings.registerInteger("PhysicsEngine", "TickRate", 20, Setting.Side.BOTH);
         settings.registerFloat("PhysicsEngine", "GravityForce", -9.8f, Setting.Side.BOTH);
