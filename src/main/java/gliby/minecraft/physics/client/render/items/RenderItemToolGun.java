@@ -30,7 +30,7 @@ public class RenderItemToolGun extends RawItemRenderer {
             new ItemTransformVec3f(new Vector3f(8, 1f, 0.0f), new Vector3f(0, 0.25f, -1), new Vector3f(-1, -1, -1)),
             ItemTransformVec3f.DEFAULT,
             new ItemTransformVec3f(new Vector3f(30, 135, 0), new Vector3f(-0.135f, -0.080f, 0), new Vector3f(-0.9f, -0.9f, -0.9f)),
-            ItemTransformVec3f.DEFAULT,
+            new ItemTransformVec3f(new Vector3f(0, 0, 0), new Vector3f(0,0,0), new Vector3f(0.25f,0.25f,0.25f)),
             ItemTransformVec3f.DEFAULT);
 
     private ModelRenderer bipedRightArm;

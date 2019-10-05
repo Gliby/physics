@@ -130,7 +130,7 @@ public abstract class RawItemRenderer implements IBakedModel {
         }
 
         if (onGround()) {
-            GlStateManager.scale(-3f, -3f, -3f);
+            GlStateManager.scale(-0.75f, -0.75f, -0.75f);
         }
 
         render();
@@ -162,7 +162,7 @@ public abstract class RawItemRenderer implements IBakedModel {
     }
 
     protected boolean onGround() {
-        return transformType == null;
+        return transformType == TransformType.GROUND;
     }
 
 
