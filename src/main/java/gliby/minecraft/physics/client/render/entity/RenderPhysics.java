@@ -63,7 +63,6 @@ public abstract class RenderPhysics extends Render {
                                  int color, boolean outline);
 
 
-    // TODO cosmetic fix beam start
     public void doRender(Entity uncast, double entityX, double entityY, double entityZ, float twen, float deltaTime) {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuffer();
@@ -75,7 +74,8 @@ public abstract class RenderPhysics extends Render {
             if (item instanceof ItemPhysicsGun) {
 
                 Vector3f hitPoint = getRenderHitPoint(entity, deltaTime);
-                Vec3d firstPersonOffset = new Vec3d(-0.22D, -0.08D, 0.35D);
+                Vec3d firstPersonOffset = new Vec3d(-0.10f, -0.05D, 0.35D);
+
                 firstPersonOffset = firstPersonOffset.rotatePitch(-(pickerEntity.prevRotationPitch
                         + (pickerEntity.rotationPitch - pickerEntity.prevRotationPitch) * deltaTime)
                         * (float) Math.PI / 180.0F);

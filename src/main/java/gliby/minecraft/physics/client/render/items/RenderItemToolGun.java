@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.block.model.ItemTransformVec3f;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.realms.RealmsMth;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.util.vector.Vector3f;
@@ -23,6 +22,16 @@ import org.lwjgl.util.vector.Vector3f;
  */
 @SuppressWarnings("deprecation")
 public class RenderItemToolGun extends RawItemRenderer {
+
+    ItemCameraTransforms transforms = new ItemCameraTransforms(
+            new ItemTransformVec3f(new Vector3f(180, 0, 0), new Vector3f(0, 0, 0), new Vector3f(-0.5f, 0.5f, 0.5f)),
+            new ItemTransformVec3f(new Vector3f(180, 0, 0), new Vector3f(0, 0.1F, -0.25f), new Vector3f(-0.75f, 0.75f, 0.75f)),
+            new ItemTransformVec3f(new Vector3f(8, 1f, 0.0f), new Vector3f(0, 0.25f, -1), new Vector3f(-1, -1, -1)),
+            new ItemTransformVec3f(new Vector3f(8, 1f, 0.0f), new Vector3f(0, 0.25f, -1), new Vector3f(-1, -1, -1)),
+            ItemTransformVec3f.DEFAULT,
+            new ItemTransformVec3f(new Vector3f(30, 135, 0), new Vector3f(-0.135f, -0.080f, 0), new Vector3f(-0.9f, -0.9f, -0.9f)),
+            ItemTransformVec3f.DEFAULT,
+            ItemTransformVec3f.DEFAULT);
 
     private ModelRenderer bipedRightArm;
     private ModelItemToolGun modelToolGun = new ModelItemToolGun();
@@ -45,22 +54,8 @@ public class RenderItemToolGun extends RawItemRenderer {
         float scale = -(1.0f / 16.0f);
         String text = "Fine in 4K";
 
-        transforms = new ItemCameraTransforms(
-                new ItemTransformVec3f(new Vector3f(180, 0, 0), new Vector3f(0, 0,0 ), new Vector3f(-0.5f, 0.5f, 0.5f)),
-                new ItemTransformVec3f(new Vector3f(180, 0, 0), new Vector3f(0, 0.1F,-0.25f ), new Vector3f(-0.75f, 0.75f, 0.75f)),
-                new ItemTransformVec3f(new Vector3f(8, 1f, 0.0f), new Vector3f(0, 0.25f, -1),new Vector3f(-1, -1, -1)),
-                new ItemTransformVec3f(new Vector3f(8, 1f, 0.0f), new Vector3f(0, 0.25f, -1),new Vector3f(-1, -1, -1)),
-                ItemTransformVec3f.DEFAULT,
-                new ItemTransformVec3f(new Vector3f(30, 135, 0), new Vector3f(-0.135f, -0.080f, 0), new Vector3f(-0.9f, -0.9f, -0.9f)),
-                ItemTransformVec3f.DEFAULT,
-                ItemTransformVec3f.DEFAULT);
-
         if (owner != null) {
             if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND || transformType == TransformType.FIRST_PERSON_LEFT_HAND) {
-                GlStateManager.rotate(-2f, 0.0F, 0.0F, 1.0F);
-                GlStateManager.rotate(9.0F, 0.0F, 1.0F, 0.0F);
-                GlStateManager.rotate(22.0F, 1.0F, 0.0F, 0.0F);
-                GlStateManager.translate(-0.5F, 0.27F, -0.2F);
                 text = ((ItemToolGun) itemStack.getItem()).getModeName();
                 if (!owner.isInvisible()) {
                     bindTexture(Minecraft.getMinecraft().player.getLocationSkin());
@@ -120,16 +115,6 @@ public class RenderItemToolGun extends RawItemRenderer {
         GlStateManager.enableLighting();
         // }
     }
-
-    ItemCameraTransforms transforms = new ItemCameraTransforms(
-            new ItemTransformVec3f(new Vector3f(90, 0, 0), new Vector3f(0, 0.2f, -0.15f),new Vector3f(0.5f, 0.5f, -0.5f)),
-            new ItemTransformVec3f(new Vector3f(27, -39, 8), new Vector3f(0.2f, 0.3f, -0.1f), new Vector3f(-1.15f, -1.15f, -1.15f)),
-            new ItemTransformVec3f(new Vector3f(0, 90, 0), new Vector3f(-0.15f, 0, 0), new Vector3f(-1.25F, -1.25F, -1.25F)),
-            new ItemTransformVec3f(new Vector3f(0, 90, 0), new Vector3f(-0.15f, 0, 0), new Vector3f(-1.25F, -1.25F, -1.25F)),
-            ItemTransformVec3f.DEFAULT,
-            ItemTransformVec3f.DEFAULT,
-            ItemTransformVec3f.DEFAULT,
-            ItemTransformVec3f.DEFAULT);
 
     @Override
     public ItemCameraTransforms getItemCameraTransforms() {

@@ -39,6 +39,7 @@ class RawItemOverrideList extends ItemOverrideList {
     @Override
     public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, @Nullable World world, @Nullable EntityLivingBase entity) {
         this.rawItem.handleItemState(stack);
+        this.rawItem.setOwner(entity);
         return super.handleItemState(originalModel, stack, world, entity);
     }
 }
@@ -60,7 +61,7 @@ public abstract class RawItemRenderer implements IBakedModel {
     protected ModelBiped playerBiped;
     protected TransformType transformType;
     // Entity Data
-    protected EntityPlayer owner;
+    protected EntityLivingBase owner;
     protected ItemStack itemStack;
     protected Item itemInstance;
     private Pair<IBakedModel, Matrix4f> pair;
@@ -194,7 +195,7 @@ public abstract class RawItemRenderer implements IBakedModel {
         return this;
     }
 
-    public void setOwner(EntityPlayer player) {
+    public void setOwner(EntityLivingBase player) {
         this.owner = player;
     }
 

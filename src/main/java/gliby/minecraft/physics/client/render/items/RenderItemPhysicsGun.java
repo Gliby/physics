@@ -59,10 +59,6 @@ public class RenderItemPhysicsGun extends RawItemRenderer {
 
         if (owner != null) {
             if (transformType == TransformType.FIRST_PERSON_LEFT_HAND || transformType == TransformType.FIRST_PERSON_RIGHT_HAND) {
-                GlStateManager.rotate(1.0f, 0.0F, 0.0F, 1.0F);
-                GlStateManager.rotate(12.0F, 0.0F, 1.0F, 0.0F);
-                GlStateManager.rotate(20.0F, 1.0F, 0.0F, 0.0F);
-                GlStateManager.translate(-0.7F, 0.8F, -0.2F);
                 if (!owner.isInvisible()) {
                     bindTexture(Minecraft.getMinecraft().player.getLocationSkin());
                     GlStateManager.pushMatrix();
