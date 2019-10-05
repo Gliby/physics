@@ -60,7 +60,9 @@ public class GameEventHandler {
                         IBlockState blockState = entityFallingBlock.getBlock();
                         EntityPhysicsBlock analog = new EntityPhysicsBlock(event.getWorld(), physicsWorld, blockState,
                                 entityFallingBlock.posX - PhysicsOverworld.OFFSET, entityFallingBlock.posY - PhysicsOverworld.OFFSET, entityFallingBlock.posZ - PhysicsOverworld.OFFSET);
-                        event.getWorld().spawnEntity(analog.setGameSpawned(true));
+                        // Disable collision, because playing survival with Physics Falling blocks is annoying.
+                        // TODO (0.7.0) FEATURE Survival collision issues, could be fixed if Physics Block were diggable.
+                        event.getWorld().spawnEntity(analog.setCollisionEnabled(false).setGameSpawned(true));
                     }
                 });
             }

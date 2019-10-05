@@ -22,13 +22,14 @@ import org.lwjgl.util.vector.Vector3f;
 @SuppressWarnings("deprecation")
 public class RenderItemPhysicsGun extends RawItemRenderer {
 
-    private ItemCameraTransforms transforms = new ItemCameraTransforms(
-            new ItemTransformVec3f(new Vector3f(-90, -180, 0), new Vector3f(0.1f, 0.19f, -0.1F), new Vector3f(-1, 1, 1)),
-            new ItemTransformVec3f(new Vector3f(-90, -180, 0), new Vector3f(0.1f, 0.19f, -0.1F), new Vector3f(-1, 1, 1)),
-            new ItemTransformVec3f(new Vector3f(27, -40, 8), new Vector3f(-0.33f, 0.14f, 0.25f),new Vector3f(-1, -1, -1)),
-            new ItemTransformVec3f(new Vector3f(27, -40, 8), new Vector3f(-0.33f, 0.14f, 0.25f),new Vector3f(-1, -1, -1)),
+    private ItemCameraTransforms
+            transforms = new ItemCameraTransforms(
+            new ItemTransformVec3f(new Vector3f(180, 0, 0), new Vector3f(0, 0,0 ), new Vector3f(-1, 1, 1)),
+            new ItemTransformVec3f(new Vector3f(180, 0, 0), new Vector3f(0, 0,0 ), new Vector3f(-1, 1, 1)),
+            new ItemTransformVec3f(new Vector3f(10, 1, -0.5f), new Vector3f(-0.25f, 0.25f, -1.0f / 16.0f),new Vector3f(-1, -1, -1)),
+            new ItemTransformVec3f(new Vector3f(10, 1, -0.5f), new Vector3f(-0.25f, 0.25f, -1.0f / 16.0f),new Vector3f(-1, -1, -1)),
             ItemTransformVec3f.DEFAULT,
-            new ItemTransformVec3f(new Vector3f(0, -90, 0), new Vector3f(-0.05f, 0, 0), new Vector3f(-1.5f, -1.5f, -1.5f)),
+            new ItemTransformVec3f(new Vector3f(30, 135, 0), new Vector3f(0.05f, 0.075f, 0), new Vector3f(-0.9f, -0.9f, -0.9f)),
             ItemTransformVec3f.DEFAULT,
             ItemTransformVec3f.DEFAULT);
 
@@ -55,6 +56,7 @@ public class RenderItemPhysicsGun extends RawItemRenderer {
         float f1 = 40F - MathHelper.abs(
                 MathHelper.sin((float) (Minecraft.getSystemTime() % 1000L) / 1000.0F * (float) Math.PI * 1.0F) * 40F);
         int lightValue = (int) MathHelper.clamp((200 + f1), 0, 250);
+
         if (owner != null) {
             if (transformType == TransformType.FIRST_PERSON_LEFT_HAND || transformType == TransformType.FIRST_PERSON_RIGHT_HAND) {
                 GlStateManager.rotate(1.0f, 0.0F, 0.0F, 1.0F);

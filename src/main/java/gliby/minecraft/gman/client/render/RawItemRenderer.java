@@ -118,7 +118,7 @@ public abstract class RawItemRenderer implements IBakedModel {
             tessellator.draw();
 
         GlStateManager.pushMatrix();
-        GlStateManager.translate(0.32f + 0.16f, 0.32f, 0.64f);
+        GlStateManager.translate(0.5f, 0.5f, 0.5f);
         GlStateManager.scale(-1.0F, -1.0F, 1.0F);
 
         if (owner != null) {
@@ -203,22 +203,22 @@ public abstract class RawItemRenderer implements IBakedModel {
         this.transformType = cameraTransformType;
         switch (cameraTransformType) {
             case FIRST_PERSON_LEFT_HAND:
-                applyVanillaTransform(getItemCameraTransforms().firstperson_left, true);
+                ItemCameraTransforms.applyTransformSide(getItemCameraTransforms().firstperson_left, true);
                 break;
             case FIRST_PERSON_RIGHT_HAND:
-                applyVanillaTransform(getItemCameraTransforms().firstperson_right, false);
+                ItemCameraTransforms.applyTransformSide(getItemCameraTransforms().firstperson_right, false);
                 break;
             case GUI:
-                applyVanillaTransform(getItemCameraTransforms().gui, false);
+                ItemCameraTransforms.applyTransformSide(getItemCameraTransforms().gui, false);
                 break;
             case HEAD:
-                applyVanillaTransform(getItemCameraTransforms().head, false);
+                ItemCameraTransforms.applyTransformSide(getItemCameraTransforms().head, false);
                 break;
             case THIRD_PERSON_LEFT_HAND:
-                applyVanillaTransform(getItemCameraTransforms().thirdperson_left, true);
+                ItemCameraTransforms.applyTransformSide(getItemCameraTransforms().thirdperson_left, true);
                 break;
             case THIRD_PERSON_RIGHT_HAND:
-                applyVanillaTransform(getItemCameraTransforms().thirdperson_right, false);
+                ItemCameraTransforms.applyTransformSide(getItemCameraTransforms().thirdperson_right, false);
                 break;
             default:
                 break;
@@ -226,19 +226,19 @@ public abstract class RawItemRenderer implements IBakedModel {
         return pair;
     }
 
-    public static void applyVanillaTransform(ItemTransformVec3f transform, boolean leftHand)
-    {
-        if (transform != ItemTransformVec3f.DEFAULT)
-        {
-            int swap = 1;
-
-            GlStateManager.translate(transform.translation.x * swap, transform.translation.y , transform.translation.z);
-            GlStateManager.rotate((float) Math.toRadians(transform.rotation.y), 0.0F, 1.0F, 0.0F);
-            GlStateManager.rotate((float) Math.toRadians(transform.rotation.x * swap), 1.0F, 0.0F, 0.0F);
-            GlStateManager.rotate((float) Math.toRadians(transform.rotation.z * swap), 0.0F, 0.0F, 1.0F);
-            GlStateManager.scale(transform.scale.x , transform.scale.y, transform.scale.z);
-        }
-    }
+//    public static void applyVanillaTransform(ItemTransformVec3f transform, boolean leftHand)
+//    {
+//        if (transform != ItemTransformVec3f.DEFAULT)
+//        {
+//            int swap = 1;
+//
+//            GlStateManager.translate(transform.translation.x * swap, transform.translation.y , transform.translation.z);
+//            GlStateManager.rotate((float) Math.toRadians(transform.rotation.y), 0.0F, 1.0F, 0.0F);
+//            GlStateManager.rotate((float) Math.toRadians(transform.rotation.x * swap), 1.0F, 0.0F, 0.0F);
+//            GlStateManager.rotate((float) Math.toRadians(transform.rotation.z * swap), 0.0F, 0.0F, 1.0F);
+//            GlStateManager.scale(transform.scale.x , transform.scale.y, transform.scale.z);
+//        }
+//    }
 
     @Override
     public TextureAtlasSprite getParticleTexture() {

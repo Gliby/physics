@@ -12,7 +12,6 @@ import gliby.minecraft.physics.client.render.RenderHandler;
 import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.blocks.PhysicsBlockMetadata;
 import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
-import gliby.minecraft.physics.common.physics.PhysicsOverworld;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
@@ -92,12 +91,9 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
      * Friction.
      */
     private float friction;
-
     private Vector3f linearVelocity, angularVelocity;
-
     @SideOnly(Side.CLIENT)
     private BlockPos blockPosition;
-
     /**
      * How much lighting this block has.
      */
@@ -145,6 +141,15 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
             if (metadata.mechanics != null)
                 this.mechanics.addAll(metadata.mechanics);
         }
+    }
+
+    public boolean isCollisionEnabled() {
+        return collisionEnabled;
+    }
+
+    public EntityPhysicsBlock setCollisionEnabled(boolean collisionEnabled) {
+        this.collisionEnabled = collisionEnabled;
+        return this;
     }
 
     @SideOnly(Side.CLIENT)
@@ -526,6 +531,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
     /**
      * Returns the BlockPos of the physics block, as if it were aligned to the voxel grid.
+     *
      * @return
      */
     private BlockPos getPhysicsBlockPos() {

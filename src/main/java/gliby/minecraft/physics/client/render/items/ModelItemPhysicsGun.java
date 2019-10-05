@@ -184,13 +184,20 @@ public class ModelItemPhysicsGun extends ModelBase {
         this.Shape1_11.render(f5);
         this.Shape1_12.render(f5);
         this.Shape1_10.render(f5);
-        GlStateManager.disableLighting();
-        OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightX, 0);
+
+        if (lightX > 0) {
+            GlStateManager.disableLighting();
+            OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lightX, 0);
+        }
+
         GlStateManager.color(r, g, b, a);
         this.Shape1_1.render(f5);
         this.Shape1.render(f5);
         GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-        GlStateManager.enableLighting();
+
+        if (lightX > 0) {
+            GlStateManager.enableLighting();
+        }
     }
 
     public void setColor(int value) {

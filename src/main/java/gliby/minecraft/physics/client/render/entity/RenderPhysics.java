@@ -62,6 +62,8 @@ public abstract class RenderPhysics extends Render {
     protected abstract void draw(Entity uncast, double entityX, double entityY, double entityZ, float partialTick,
                                  int color, boolean outline);
 
+
+    // TODO cosmetic fix beam start
     public void doRender(Entity uncast, double entityX, double entityY, double entityZ, float twen, float deltaTime) {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuffer();
