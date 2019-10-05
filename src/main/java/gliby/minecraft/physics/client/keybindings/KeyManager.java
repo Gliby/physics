@@ -60,7 +60,6 @@ public class KeyManager {
             keyEvents.add((KeyEvent) object);
         }
         registerKeyBindings();
-        FMLCommonHandler.instance().bus().register(this);
         MinecraftForge.EVENT_BUS.register(this);
     }
 

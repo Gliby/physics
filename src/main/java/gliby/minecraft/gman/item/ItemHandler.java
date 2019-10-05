@@ -38,7 +38,7 @@ public class ItemHandler {
     public void addAlwaysUsedItem(Item item, boolean shouldSwing, boolean canHitBlocks) {
         if (forcedAnimationHandler == null) {
             forcedAnimationItem = new ArrayList<AlwaysUsedItem>();
-            FMLCommonHandler.instance().bus().register(forcedAnimationHandler = new ForcedAnimationHandler());
+            MinecraftForge.EVENT_BUS.register(forcedAnimationHandler = new ForcedAnimationHandler());
             MinecraftForge.EVENT_BUS.register(itemBreakHandler = new ItemBreakHandler());
         }
 

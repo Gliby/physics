@@ -200,11 +200,11 @@ public class Physics {
 
         physicsOverworld = new PhysicsOverworld(this);
         blockManager = new BlockManager(this);
-        // TODO feature: finish this, would help with server-side ragdolls.
+        // TODO (0.7.0) feature: finish this, would help with server-side ragdolls.
         // mobModelManager = new MobModelManager(this);
 
-        FMLCommonHandler.instance().bus().register(physicsOverworld);
-        FMLCommonHandler.instance().bus().register(this);
+        MinecraftForge.EVENT_BUS.register(physicsOverworld);
+        MinecraftForge.EVENT_BUS.register(this);
         proxy.preInit(this, event);
         getLogger().info("Pre-initialization completed on " + FMLCommonHandler.instance().getEffectiveSide());
     }
