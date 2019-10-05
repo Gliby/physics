@@ -419,7 +419,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
     @Override
     public boolean canBeCollidedWith() {
-        return true;
+        return false;
     }
 
     @Override
