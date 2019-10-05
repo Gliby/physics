@@ -46,6 +46,7 @@ import java.util.Map;
 // TODO  (0.6.0) look into NativeBullet by the Terasology, might solve memory leaks in the native PhysicsWorld and improve simulation perf.
 // TODO  (0.6.0) FIXME: something is leaking memory every time we create/destroy a PhysicsWorld.
 // TODO (0.5.0)  Mod glibysphysics is missing the required element 'version' and a version.properties file could not be found. Falling back to metadata version 0.4.2
+// TODO (0.6.0) FIXME seemingly random slow downs. Could be either Server throttling or PhysicsWorld chugging.
 @Mod(modid = Physics.ID, name = Physics.NAME, guiFactory = "gliby.minecraft.physics.client.gui.options.GuiFactory")
 public class Physics {
 

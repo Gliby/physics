@@ -1,0 +1,12 @@
+{
+  "toolgun_beam": {
+    "category": "player",
+    "subtitle": "subtitle.toolgun_beam",
+    "sounds": [ "glibysphysics:toolgun_beam0", "glibysphysics:toolgun_beam1" ]
+  },
+  "toolgun_scroll": {
+    "category": "player",
+    "subtitle": "subtitle.toolgun_scroll",
+    "sounds": [ "glibysphysics:toolgun_scroll" ]
+  }
+}
