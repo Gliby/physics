@@ -20,12 +20,12 @@ public class IntegerSetting extends Setting {
     @Override
     public void read(INIProperties ini) throws INIPropertiesReadFailure {
         data = new Integer(
-                ini.readInteger(category, name, ((Integer) data).intValue()));
+                ini.readInteger(section, name, ((Integer) data).intValue()));
     }
 
     @Override
     public void write(INIProperties ini) {
-        ini.writeInteger(category, name, ((Integer) data).intValue());
+        ini.writeInteger(section, name, ((Integer) data).intValue());
         lastData = data;
     }
 

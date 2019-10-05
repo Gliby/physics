@@ -48,7 +48,7 @@ public class MobModelManager {
                 }
 
                 int loaded = 0;
-                // TODO port 1.12.2 (unfinished)
+                // TODO (0.7.0) (unfinished)
 //              net.minecraftforge.fml.common.registry.EntityEntry entry = net.minecraftforge.registries.GameData.getEntityRegistry();
 
 //                Gson gson = new Gson();

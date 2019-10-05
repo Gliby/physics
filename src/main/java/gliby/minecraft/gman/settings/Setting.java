@@ -10,7 +10,7 @@ import java.util.ArrayList;
  */
 public abstract class Setting {
 
-    public final String name, category;
+    public final String name, section;
     public final Side side;
     public Object data;
     private boolean hidden;
@@ -21,13 +21,20 @@ public abstract class Setting {
      * @param data
      * @param name
      */
-    Setting(String category, String name, Object data, Side side) {
-        this.category = category;
+    Setting(String section, String name, Object data, Side side) {
+        this.section = section;
         this.name = name;
         this.data = data;
         this.side = side;
         this.readListeners = new ArrayList<Setting.Listener>();
         this.writeListeners = new ArrayList<Setting.Listener>();
+    }
+
+    protected String comment;
+
+    public Setting setComment(String comment) {
+        this.comment = comment;
+        return this;
     }
 
     public Object getSettingData() {
@@ -39,6 +46,15 @@ public abstract class Setting {
     public abstract void read(final INIProperties ini) throws INIPropertiesReadFailure;
 
     public abstract void write(final INIProperties ini);
+
+    protected boolean wroteComment;
+
+    protected void writeComment(final INIProperties ini) {
+        if (comment != null && !comment.isEmpty() && !wroteComment) {
+            ini.writeComment(section, comment);
+            wroteComment = true;
+        }
+    }
 
     @Override
     public String toString() {

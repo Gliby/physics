@@ -1,12 +1,12 @@
 package gliby.minecraft.gman.settings;
 
 import com.google.gson.Gson;
+import gliby.minecraft.gman.GMan;
 
 /**
  * Use JSON!
  */
 public class ObjectSetting extends Setting {
-    private static Gson gson = new Gson();
     private Class objectClass;
     private Object lastData;
 
@@ -22,12 +22,12 @@ public class ObjectSetting extends Setting {
 
     @Override
     public void read(INIProperties ini) {
-        data = gson.fromJson(ini.readString(category, name, gson.toJson(data)), objectClass);
+        data = GMan.getGSON().fromJson(ini.readString(section, name, GMan.getGSON().toJson(data)), objectClass);
     }
 
     @Override
     public void write(INIProperties ini) {
-        ini.writeString(category, name, gson.toJson(data, objectClass));
+        ini.writeString(section, name, GMan.getGSON().toJson(data, objectClass));
         lastData = data;
     }
 

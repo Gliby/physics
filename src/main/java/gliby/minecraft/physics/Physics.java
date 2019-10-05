@@ -117,11 +117,12 @@ public class Physics {
         settings.registerInteger("PhysicsEngine", "TickRate", 20, Setting.Side.BOTH);
         settings.registerFloat("PhysicsEngine", "GravityForce", -9.8f, Setting.Side.BOTH);
 
-        settings.registerBoolean("PhysicsEntities", "EntityCollisionResponse", false, Setting.Side.BOTH);
+        settings.registerBoolean("PhysicsEntities", "EntityCollisionResponse", false, Setting.Side.BOTH).
+                setComment("Control physics block related properties.");
 
         settings.registerFloat("PhysicsEntities", "PlayerSpawnedDeathTime", 30, Setting.Side.BOTH);
         settings.registerFloat("PhysicsEntities", "GameSpawnedDeathTime", 2.5f, Setting.Side.BOTH);
-        settings.registerFloat("PhysicsEntities", "EntityColliderCleanupTime", 0.25f, Setting.Side.BOTH);
+        settings.registerFloat("PhysicsEntities", "EntityColliderCleanupTime", 1.0f, Setting.Side.BOTH);
         settings.registerObject("PhysicsEntities", "EntityColliderBlacklist", new
                 String[] { EntityPhysicsBlock.class.getName(), EntityPhysicsBase.class.getName(), EntityToolGunBeam.class.getName(), EntityItem.class.getName() }, Setting.Side.BOTH);
 
@@ -130,15 +131,15 @@ public class Physics {
         settings.registerFloat("Game", "ExplosionImpulseRadius", 16, Setting.Side.BOTH);
         settings.registerFloat("Game", "ExplosionImpulseForce", 1000, Setting.Side.BOTH);
         settings.registerBoolean("Game", "ReplaceFallingBlocks", true, Setting.Side.BOTH);
-
         // Aggressive distance culling.
-        settings.registerInteger("Game", "FallingBlockSpawnDistance", 32, Setting.Side.BOTH);
+        settings.registerInteger("Game", "FallingBlockSpawnDistance", 32, Setting.Side.BOTH)
+                .setComment("Controls game related events like Explosions or Falling Blocks.");
 
 
         settings.registerInteger("Tools", "AttractRadius", 16, Setting.Side.BOTH);
         settings.registerInteger("Tools", "GravitizerRadius", 16, Setting.Side.BOTH);
         settings.registerInteger("Tools", "GravitizerForce", 10, Setting.Side.BOTH);
-        settings.registerInteger("Tools", "AttractForce", 10, Setting.Side.BOTH);
+        settings.registerInteger("Tools", "AttractForce", 10, Setting.Side.BOTH).setComment("Controls properties relating to the Tooling Master 3000.");
 
         settings.registerString("Miscellaneous", "LastVersion", VERSION, Setting.Side.BOTH);
         settings.registerBoolean("Miscellaneous", "DisableAllowFlight", true, Setting.Side.BOTH);

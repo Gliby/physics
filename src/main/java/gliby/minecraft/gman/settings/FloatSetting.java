@@ -19,12 +19,12 @@ public class FloatSetting extends Setting {
 
     @Override
     public void read(INIProperties ini) throws INIPropertiesReadFailure {
-        data = new Float(ini.readFloat(category, name, (Float) data));
+        data = new Float(ini.readFloat(section, name, (Float) data));
     }
 
     @Override
     public void write(INIProperties ini) {
-        ini.writeFloat(category, name, ((Float) data).floatValue());
+        ini.writeFloat(section, name, ((Float) data).floatValue());
         this.lastData = data;
     }
 

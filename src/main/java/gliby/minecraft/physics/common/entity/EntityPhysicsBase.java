@@ -1,6 +1,7 @@
 package gliby.minecraft.physics.common.entity;
 
 import com.google.gson.Gson;
+import gliby.minecraft.gman.GMan;
 import gliby.minecraft.gman.networking.GDataSerializers;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
@@ -31,8 +32,10 @@ import javax.vecmath.Vector3f;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 // TODO (0.8.0) feature implement proper collision detection/response, stop using minecraft AABB
+
 /**
  *
  */
@@ -47,7 +50,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     protected WeakReference<EntityPlayer> pickerEntity;
     protected WeakReference<PhysicsWorld> physicsWorld;
     /**
-     *  Spawned by player or game event?
+     * Spawned by player or game event?
      */
     protected boolean gameSpawned;
 
@@ -64,6 +67,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
         super(world);
     }
+
     /**
      * Server constructor.
      *
@@ -121,10 +125,10 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
                 double d2 = this.rand.nextGaussian() * 0.02D;
                 double d3 = 10.0D;
                 this.world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL,
-                        this.posX + (double) (this.rand.nextFloat() * this.width/2 * 2.0F) - (double) this.width/2
+                        this.posX + (double) (this.rand.nextFloat() * this.width / 2 * 2.0F) - (double) this.width / 2
                                 - d0 * d3,
-                        this.posY + (double) (this.rand.nextFloat() * this.height/2) - d1 * d3, this.posZ
-                                + (double) (this.rand.nextFloat() * this.width/2 * 2.0F) - (double) this.width/2 - d2 * d3,
+                        this.posY + (double) (this.rand.nextFloat() * this.height / 2) - d1 * d3, this.posZ
+                                + (double) (this.rand.nextFloat() * this.width / 2 * 2.0F) - (double) this.width / 2 - d2 * d3,
                         d0, d1, d2);
             }
         }
@@ -148,6 +152,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
     /**
      * Wake up surrounding RigidBodies.
+     *
      * @return
      */
     public EntityPhysicsBase wakeUp() {
@@ -225,15 +230,13 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
             getMechanics().clear();
             PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
-            // TODO (0.6.0) improvement: block property nbt saving
 
-            Gson gson = new Gson();
-            /*
-             * if (tagCompound.hasKey("Properties")) { this.getRigidBody().getProperties()
-             * .putAll(gson.fromJson(tagCompound.getString("Properties"), Map.class)); }
-             */
+//            if (tagCompound.hasKey("Properties")) {
+//                this.getRigidBody().getProperties()
+//                        .putAll(GMan.getGSON().fromJson(tagCompound.getString("Properties"), Map.class));
+//            }
 
-            ArrayList<String> mechanicsByNames = gson.fromJson(tagCompound.getString("Mechanics"), ArrayList.class);
+            ArrayList<String> mechanicsByNames = GMan.getGSON().fromJson(tagCompound.getString("Mechanics"), ArrayList.class);
             if (mechanicsByNames != null) {
                 for (int i = 0; i < mechanicsByNames.size(); i++) {
                     String mechanicString = mechanicsByNames.get(i);
@@ -254,13 +257,11 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
             mechanicsByNames
                     .add(Physics.getInstance().getPhysicsOverworld().getRigidBodyMechanicsMap().inverse().get(getMechanics().get(i)));
         }
-        // TODO (0.6.0) improvement: block property nbt saving
-        Gson gson = new Gson();
-        /*
-         * tagCompound.setString("Properties",
-         * gson.toJson(this.getRigidBody().getProperties()));
-         */
-        tagCompound.setString("Mechanics", gson.toJson(mechanicsByNames));
+
+//        tagCompound.setString("Properties",
+//                GMan.getGSON().toJson(this.getRigidBody().getProperties()));
+
+        tagCompound.setString("Mechanics", GMan.getGSON().toJson(mechanicsByNames));
     }
 
     @Override
@@ -326,10 +327,9 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
                     lastTickActive = ticksExisted;
 
 
-
                 String deathKey = gameSpawned ? "PhysicsEntities.GameSpawnedDeathTime" : "PhysicsEntities.PlayerSpawnedDeathTime";
 
-                if (((ticksExisted - lastTickActive) / TICKS_PER_SECOND + 1)> Physics.getInstance().getSettings()
+                if (((ticksExisted - lastTickActive) / TICKS_PER_SECOND + 1) > Physics.getInstance().getSettings()
                         .getFloatSetting(deathKey).getFloatValue()) {
                     this.setDead();
                 }

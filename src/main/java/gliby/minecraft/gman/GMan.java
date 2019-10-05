@@ -32,6 +32,12 @@ public class GMan {
     private String minecraftVersion;
     private String modVersion;
 
+    public static Gson getGSON() {
+        return GSON;
+    }
+
+    protected static final Gson GSON = new Gson();
+
     public GMan(Logger logger, ModInfo modInfo, String minecraftVersion, String modVersion) {
         this.logger = logger;
         this.modInfo = modInfo;
@@ -51,7 +57,7 @@ public class GMan {
         builder.append(LOCATION);
         builder.append(modInfo.modId);
         builder.append("/mod.json");
-        final Gson gson = new Gson();
+        final Gson gson = GMan.getGSON();
         Reader reader = null;
         try {
             reader = new InputStreamReader(new URL(builder.toString()).openStream());
@@ -116,7 +122,7 @@ public class GMan {
             e.printStackTrace();
         }
         if (reader != null)
-            return new Gson().fromJson(reader, clz);
+            return GMan.getGSON().fromJson(reader, clz);
         return null;
     }
 
@@ -155,7 +161,7 @@ public class GMan {
             e.printStackTrace();
         }
         if (reader != null)
-            return new Gson().fromJson(reader, Map.class);
+            return GMan.getGSON().fromJson(reader, Map.class);
         return null;
     }
 

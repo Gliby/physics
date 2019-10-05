@@ -2,6 +2,7 @@ package gliby.minecraft.physics.common.blocks;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import gliby.minecraft.gman.GMan;
 import gliby.minecraft.gman.io.MinecraftResourceLoader;
 import gliby.minecraft.physics.MetadataLoader;
 import gliby.minecraft.physics.Physics;
@@ -56,7 +57,7 @@ public class BlockManager {
                         if (stream != null) {
                             String s = IOUtils.toString(stream);
                             stream.close();
-                            return new Gson().fromJson(s, Map.class);
+                            return GMan.getGSON().fromJson(s, Map.class);
                         }
                     }
                 }
@@ -64,7 +65,7 @@ public class BlockManager {
                         MinecraftResourceLoader.getResource(Physics.getLogger(), FMLCommonHandler.instance().getSide(),
                                 new ResourceLocation(Physics.ID, "blocks/" + name + ".json")));
                 if (text != null) {
-                    Map<String, Object> json = new Gson().fromJson(text, Map.class);
+                    Map<String, Object> json = GMan.getGSON().fromJson(text, Map.class);
                     return json;
                 }
                 return null;

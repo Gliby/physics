@@ -13,6 +13,7 @@ import com.bulletphysicsx.dynamics.constraintsolver.*;
 import com.bulletphysicsx.linearmath.DefaultMotionState;
 import com.bulletphysicsx.linearmath.Transform;
 import com.google.gson.Gson;
+import gliby.minecraft.gman.GMan;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.physics.IPhysicsWorldConfiguration;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;
@@ -216,7 +217,6 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
     @Override
     public String writeBlockCollisionShape(final ICollisionShape collisionShape) {
-        final Gson gson = new Gson();
         final ArrayList<CollisionPart> collisionParts = new ArrayList<CollisionPart>();
         if (collisionShape.isBoxShape()) {
             collisionParts.add(new CollisionPart(false, null,
@@ -229,13 +229,12 @@ public class JavaPhysicsWorld extends PhysicsWorld {
                         new CollisionPart(true, child.transform, ((BoxShape) child.childShape).getOriginalExtent()));
             }
         }
-        return gson.toJson(collisionParts.toArray(), CollisionPart[].class);
+        return GMan.getGSON().toJson(collisionParts.toArray(), CollisionPart[].class);
     }
 
     @Override
     public ICollisionShape readBlockCollisionShape(final String json) {
-        final Gson gson = new Gson();
-        final List collisionParts = Arrays.asList(gson.fromJson(json, CollisionPart[].class));
+        final List collisionParts = Arrays.asList(GMan.getGSON().fromJson(json, CollisionPart[].class));
         final CompoundShape shape = new CompoundShape();
         if (collisionParts.size() == 1) {
             final CollisionPart part = (CollisionPart) collisionParts.get(0);

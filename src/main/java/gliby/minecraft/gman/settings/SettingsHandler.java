@@ -94,6 +94,7 @@ public class SettingsHandler {
                             setting.getWriteListeners().get(i).listen(properties);
                         }
                         setting.write(properties);
+                        setting.writeComment(properties);
                     }
                     // }
                 }
@@ -146,8 +147,6 @@ public class SettingsHandler {
     }
 
     public Setting registerObject(String category, String name, Object object, Setting.Side side) {
-        if (gson == null)
-            gson = new Gson();
         Setting setting;
         settings.put(category + "." + name,
                 setting = new ObjectSetting(category, name, object, object.getClass(), side));

@@ -17,12 +17,12 @@ public class StringSetting extends Setting {
 
     @Override
     public void read(INIProperties ini) {
-        data = ini.readString(category, name, ((String) data));
+        data = ini.readString(section, name, ((String) data));
     }
 
     @Override
     public void write(INIProperties ini) {
-        ini.writeString(category, name, ((String) data));
+        ini.writeString(section, name, ((String) data));
         lastData = data;
     }
 

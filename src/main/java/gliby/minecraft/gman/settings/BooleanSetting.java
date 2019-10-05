@@ -27,13 +27,13 @@ public class BooleanSetting extends Setting {
 
     @Override
     public void read(INIProperties ini) throws INIPropertiesReadFailure {
-        booleanValue = ini.readBoolean(category, name, booleanValue);
+        booleanValue = ini.readBoolean(section, name, booleanValue);
         data = booleanValue;
     }
 
     @Override
     public void write(INIProperties ini) {
-        ini.writeBoolean(category, name, booleanValue);
+        ini.writeBoolean(section, name, booleanValue);
         this.lastData = data;
     }
 
@@ -53,6 +53,6 @@ public class BooleanSetting extends Setting {
 
     @Override
     public String toString() {
-        return category + "." + name;
+        return section + "." + name;
     }
 }
