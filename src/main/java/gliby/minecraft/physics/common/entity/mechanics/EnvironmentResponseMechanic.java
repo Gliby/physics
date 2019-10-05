@@ -25,7 +25,6 @@ import java.util.List;
  */
 public class EnvironmentResponseMechanic extends RigidBodyMechanic {
 
-    private static final PropertyInteger LEVEL = PropertyInteger.create("level", 0, 15);
 
     @Override
     public void update(IRigidBody rigidBody, PhysicsWorld physicsWorld, Entity entity, Side side) {
@@ -58,18 +57,6 @@ public class EnvironmentResponseMechanic extends RigidBodyMechanic {
         }
     }
 
-    /**
-     * Used to getLevel of block.
-     */
-    protected int getLevel(IBlockAccess worldIn, BlockStateAndLocation stateAndLocation, Material blockMaterial) {
-        return worldIn.getBlockState(stateAndLocation.getBlockPosition()).getBlock().getMaterial(stateAndLocation.getBlockState()) == blockMaterial
-                ? ((Integer) worldIn.getBlockState(stateAndLocation.getBlockPosition()).getValue(LEVEL)).intValue() : -1;
-    }
-
-    protected int getEffectiveFlowDecay(IBlockAccess worldIn, BlockStateAndLocation stateAndLocation, Material blockMaterial) {
-        int i = getLevel(worldIn, stateAndLocation, blockMaterial);
-        return i >= 8 ? 0 : i;
-    }
 
 
 

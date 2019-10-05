@@ -325,13 +325,10 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
                 newFloatNBTList(angularVelocity.x, angularVelocity.y, angularVelocity.z));
 
         super.writeEntityToNBT(tagCompound);
-
     }
 
     @Override
     public void readEntityFromNBT(NBTTagCompound tagCompound) {
-        super.readEntityFromNBT(tagCompound);
-
         this.physicsWorld = new WeakReference<PhysicsWorld>(Physics.getInstance().getPhysicsOverworld().getPhysicsByWorld(world));
 
         int data = tagCompound.getByte("Data") & 255;
@@ -379,7 +376,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         } else {
             updatePhysicsObject(getPhysicsWorld());
         }
-
+        super.readEntityFromNBT(tagCompound);
     }
 
     @Override

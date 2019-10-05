@@ -1,5 +1,6 @@
 package gliby.minecraft.physics.common.entity.mechanics;
 
+import com.google.gson.annotations.Expose;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import net.minecraft.block.state.IBlockState;
@@ -18,7 +19,10 @@ import java.util.List;
  */
 public abstract class RigidBodyMechanic {
 
+    @Expose
     private boolean enabled = true;
+
+    @Expose
     private boolean common;
 
     public boolean isEnabled() {

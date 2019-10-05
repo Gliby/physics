@@ -1,6 +1,7 @@
 package gliby.minecraft.physics.common.entity;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import gliby.minecraft.gman.GMan;
 import gliby.minecraft.gman.networking.GDataSerializers;
 import gliby.minecraft.physics.Physics;
@@ -27,12 +28,13 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.Sys;
 
 import javax.vecmath.Vector3f;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 // TODO (0.8.0) feature implement proper collision detection/response, stop using minecraft AABB
 
@@ -223,6 +225,11 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
      */
     public abstract IRigidBody getRigidBody();
 
+    Gson inclusiveGSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+
+
+
+
     @Override
     public void readEntityFromNBT(NBTTagCompound tagCompound) {
         if (!world.isRemote) {
@@ -231,10 +238,10 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
             getMechanics().clear();
             PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
 
-//            if (tagCompound.hasKey("Properties")) {
-//                this.getRigidBody().getProperties()
-//                        .putAll(GMan.getGSON().fromJson(tagCompound.getString("Properties"), Map.class));
-//            }
+            if (tagCompound.hasKey("Properties")) {
+                this.getRigidBody().getProperties()
+                        .putAll(inclusiveGSON.fromJson(tagCompound.getString("Properties"), HashMap.class));
+            }
 
             ArrayList<String> mechanicsByNames = GMan.getGSON().fromJson(tagCompound.getString("Mechanics"), ArrayList.class);
             if (mechanicsByNames != null) {
@@ -258,8 +265,9 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
                     .add(Physics.getInstance().getPhysicsOverworld().getRigidBodyMechanicsMap().inverse().get(getMechanics().get(i)));
         }
 
-//        tagCompound.setString("Properties",
-//                GMan.getGSON().toJson(this.getRigidBody().getProperties()));
+        String gson = inclusiveGSON.toJson(this.getRigidBody().getProperties());
+        tagCompound.setString("Properties", gson);
+        System.out.println(gson);
 
         tagCompound.setString("Mechanics", GMan.getGSON().toJson(mechanicsByNames));
     }
