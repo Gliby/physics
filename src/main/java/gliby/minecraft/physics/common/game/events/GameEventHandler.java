@@ -9,6 +9,7 @@ import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityFallingBlock;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -30,22 +31,42 @@ public class GameEventHandler {
         this.physics = physics;
     }
 
+
     @SubscribeEvent
     public void handleExplosion(final EntityJoinWorldEvent event) {
         if (event.getWorld().isRemote)
             return;
 
+        World world = event.getWorld();
+
         if (event.getEntity() instanceof EntityFallingBlock) {
             boolean replaceFallingBlocks = physics.getSettings().getBooleanSetting("Game.ReplaceFallingBlocks").getBooleanValue();
             if (replaceFallingBlocks) {
+                int fallingBlockDistance = physics.getSettings().getIntegerSetting("Game.FallingBlockSpawnDistance").getIntValue();
                 final EntityFallingBlock entityFallingBlock = (EntityFallingBlock) event.getEntity();
+                final BlockPos blockPos = (entityFallingBlock.getOrigin());
+
+                // 1. we check if we have a player near us.
+                EntityPlayer closestsPlayer = world.getClosestPlayer(blockPos.getX(), blockPos.getY(), blockPos.getZ(), fallingBlockDistance, false);
+                boolean spawnPhysicsBlock = world.isBlockLoaded(blockPos) && world.isAreaLoaded(blockPos, 1);
+
+                // Check if the player is near enough, if not abort.
+                if (closestsPlayer != null) {
+                    double dist = closestsPlayer.getDistanceSqToCenter(blockPos);
+                    if (dist > fallingBlockDistance) spawnPhysicsBlock = false;
+                } else spawnPhysicsBlock = false;
+
+                // Abort if conditions not met.
+                if (!spawnPhysicsBlock)
+                    return;
+
+                // Spawn the actual block.
                 event.setCanceled(true);
                 event.getWorld().getMinecraftServer().addScheduledTask(new Runnable() {
                     @Override
                     public void run() {
-                        final World world = event.getWorld();
                         Physics physics = Physics.getInstance();
-                        PhysicsWorld physicsWorld = physics.getPhysicsOverworld().getPhysicsByWorld(event.getWorld());
+                        PhysicsWorld physicsWorld = physics.getPhysicsOverworld().getPhysicsByWorld(world);
 
                         // Remove block.
                         BlockPos pos = entityFallingBlock.getOrigin();
@@ -57,7 +78,7 @@ public class GameEventHandler {
                                 entityFallingBlock.posX - PhysicsOverworld.OFFSET, entityFallingBlock.posY - PhysicsOverworld.OFFSET, entityFallingBlock.posZ - PhysicsOverworld.OFFSET);
                         // Disable collision, because playing survival with Physics Falling blocks is annoying.
                         // TODO (0.8.0) FEATURE Survival collision issues, could be fixed if Physics Block were diggable.
-                        event.getWorld().spawnEntity(analog.setEntityCollisionEnabled(false).setGameSpawned(true));
+                        world.spawnEntity(analog.setEntityCollisionEnabled(false).setGameSpawned(true));
                     }
                 });
             }

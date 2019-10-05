@@ -9,6 +9,7 @@ import net.minecraftforge.fml.relauncher.Side;
  * Used for Redstone related Blocks, like Redstone Block or Redstone Torch.
  *
  */
+// TODO (0.6.0) reimplement with isBlockIndirectlyGettingPowered
 public class ActivateRedstoneMechanic extends RigidBodyMechanic {
 
     @Override

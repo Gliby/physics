@@ -129,6 +129,9 @@ public class Physics {
         settings.registerFloat("Game", "ExplosionImpulseForce", 1000, Setting.Side.BOTH);
         settings.registerBoolean("Game", "ReplaceFallingBlocks", true, Setting.Side.BOTH);
 
+        // Aggressive distance culling.
+        settings.registerInteger("Game", "FallingBlockSpawnDistance", 32, Setting.Side.BOTH);
+
 
         settings.registerInteger("Tools", "AttractRadius", 16, Setting.Side.BOTH);
         settings.registerInteger("Tools", "GravitizerRadius", 16, Setting.Side.BOTH);
