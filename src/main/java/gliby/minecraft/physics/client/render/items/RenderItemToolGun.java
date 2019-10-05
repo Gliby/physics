@@ -36,7 +36,7 @@ public class RenderItemToolGun extends RawItemRenderer {
     private ModelRenderer bipedRightArm;
     private ModelItemToolGun modelToolGun = new ModelItemToolGun();
     private ResourceLocation modelTexture = new ResourceLocation(Physics.ID, "textures/tool_gun.png");
-    private ResourceLocation screenTexture = new ResourceLocation(Physics.ID, "textures/tool_gunScreen.png");
+    private ResourceLocation screenTexture = new ResourceLocation(Physics.ID, "textures/tool_gun_screen.png");
 
     /**
      * @param resourceLocation
