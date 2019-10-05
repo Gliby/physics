@@ -4,22 +4,28 @@ import gliby.minecraft.physics.client.SoundHandler;
 import gliby.minecraft.physics.client.render.VecUtility;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.audio.Sound;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IWorldEventListener;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.Sys;
 
+import javax.annotation.Nullable;
 import javax.vecmath.Vector3f;
 
 /**
- *
+ * Client-side only entity.
  */
 public class EntityToolGunBeam extends Entity implements IEntityAdditionalSpawnData {
 
@@ -43,6 +49,7 @@ public class EntityToolGunBeam extends Entity implements IEntityAdditionalSpawnD
         super(worldIn);
         setSize(0.1F, 0.1F);
         this.ignoreFrustumCheck = true;
+        this.setSilent(false);
     }
 
     public EntityToolGunBeam(World worldIn, Entity owner, Vector3f hitPoint) {
@@ -72,9 +79,9 @@ public class EntityToolGunBeam extends Entity implements IEntityAdditionalSpawnD
                     soundPosition.normalize();
                     soundPosition.scale(MathHelper.clamp(distance, 0, 16));
                     soundPosition.add(clientOrigin != null ? clientOrigin : worldOrigin);
-                    // TODO (0.5.0) get sound working
+
                     SoundEvent soundEvent = SoundHandler.getSoundByIdentifier("ToolGun.Beam");
-                    world.playSound((EntityPlayer)null, soundPosition.x, soundPosition.y, soundPosition.z, soundEvent, SoundCategory.PLAYERS, 1, 1.0F);
+                    SoundHandler.playSound(Minecraft.getMinecraft(), soundEvent, SoundCategory.PLAYERS, 1.0f, 1.0f, soundPosition);
 
                 }
             }
@@ -85,6 +92,7 @@ public class EntityToolGunBeam extends Entity implements IEntityAdditionalSpawnD
             setPosition(toBe.x, toBe.y, toBe.z);
         }
     }
+
 
     @Override
     protected void readEntityFromNBT(NBTTagCompound tagCompund) {

@@ -1,16 +1,20 @@
 package gliby.minecraft.physics.client;
 
+import com.badlogic.gdx.math.Vector3;
 import gliby.minecraft.physics.Physics;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.audio.Sound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.registries.IForgeRegistry;
 
+import javax.vecmath.Vector3f;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,12 +40,18 @@ public class SoundHandler {
 
     }
 
-
     public static SoundEvent getSoundByIdentifier(String soundName) {
         SoundEvent event = soundRegistry.get(soundName);
         System.out.println("sound: " + soundName + ", event: " + event);
         return event;
     }
+
+    public static void playSound(Minecraft mc, SoundEvent soundIn, SoundCategory categoryIn, float volumeIn, float pitchIn, Vector3f pos)
+    {
+        PositionedSoundRecord sound = new PositionedSoundRecord(soundIn, categoryIn, volumeIn, pitchIn, (float)pos.getX(), (float)pos.getY(), (float)pos.getZ());
+        mc.getSoundHandler().playSound(sound);
+    }
+
 
     public static void playLocalSound(Minecraft mc, String soundName) {
         mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(getSoundByIdentifier(soundName), 1.0f));

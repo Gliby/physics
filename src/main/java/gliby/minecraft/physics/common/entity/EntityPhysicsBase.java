@@ -115,16 +115,16 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
     public void spawnRemoveParticle() {
         if (this.world.isRemote) {
-            for (int i = 0; i < 20; ++i) {
+            for (int i = 0; i < 5; ++i) {
                 double d0 = this.rand.nextGaussian() * 0.02D;
                 double d1 = this.rand.nextGaussian() * 0.02D;
                 double d2 = this.rand.nextGaussian() * 0.02D;
                 double d3 = 10.0D;
                 this.world.spawnParticle(EnumParticleTypes.EXPLOSION_NORMAL,
-                        this.posX + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width
+                        this.posX + (double) (this.rand.nextFloat() * this.width/2 * 2.0F) - (double) this.width/2
                                 - d0 * d3,
-                        this.posY + (double) (this.rand.nextFloat() * this.height) - d1 * d3, this.posZ
-                                + (double) (this.rand.nextFloat() * this.width * 2.0F) - (double) this.width - d2 * d3,
+                        this.posY + (double) (this.rand.nextFloat() * this.height/2) - d1 * d3, this.posZ
+                                + (double) (this.rand.nextFloat() * this.width/2 * 2.0F) - (double) this.width/2 - d2 * d3,
                         d0, d1, d2);
             }
         }
