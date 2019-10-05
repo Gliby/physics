@@ -479,6 +479,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         if (doesPhysicsObjectExist()) {
             getPhysicsWorld().removeRigidBody(this.rigidBody);
             this.rigidBody = null;
+
         }
     }
 

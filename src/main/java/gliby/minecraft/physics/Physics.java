@@ -130,7 +130,7 @@ public class Physics {
 
         settings.registerFloat("Game", "ProjectileImpulseForce", 30, Setting.Side.BOTH);
         settings.registerFloat("Game", "ExplosionImpulseRadius", 16, Setting.Side.BOTH);
-        settings.registerFloat("Game", "ExplosionImpulseForce", 100, Setting.Side.BOTH);
+        settings.registerFloat("Game", "ExplosionImpulseForce", 1000, Setting.Side.BOTH);
         settings.registerBoolean("Game", "ReplaceFallingBlocks", true, Setting.Side.BOTH);
 
 
