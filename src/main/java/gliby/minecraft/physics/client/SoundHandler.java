@@ -42,7 +42,6 @@ public class SoundHandler {
 
     public static SoundEvent getSoundByIdentifier(String soundName) {
         SoundEvent event = soundRegistry.get(soundName);
-        System.out.println("sound: " + soundName + ", event: " + event);
         return event;
     }
 

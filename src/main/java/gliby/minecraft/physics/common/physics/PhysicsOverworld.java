@@ -86,7 +86,8 @@ public class PhysicsOverworld {
             physicsWorld.getMechanics().put("PickUp", new PickUpMechanic(physicsWorld, 20));
             physicsWorld.getMechanics().put("GravityMagnet", new GravityModifierMechanic(physicsWorld, 20));
             physicsWorld.getMechanics().put("ToolMan", new ToolMechanics(physics.getGameManager().getToolGunRegistry(), physicsWorld, 20));
-            physicsWorld.getMechanics().put("EntityCollision", new EntityCollisionResponseMechanic(access, physicsWorld,20));
+            if (physics.getSettings().getBooleanSetting("PhysicsEntities.EntityCollisionResponse").getBooleanValue())
+                physicsWorld.getMechanics().put("EntityCollision", new EntityCollisionResponseMechanic(access, physicsWorld,20));
 
             physicsWorld.create();
             getPhysicsWorldMap().put(access, physicsWorld);

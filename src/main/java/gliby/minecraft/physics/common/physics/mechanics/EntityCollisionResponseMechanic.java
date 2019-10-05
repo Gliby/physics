@@ -121,6 +121,7 @@ public class EntityCollisionResponseMechanic extends PhysicsMechanic {
                     .getFloatSetting("PhysicsEntities.EntityColliderCleanupTime").getFloatValue()) {
                 physicsWorld.removeCollisionObject(ghostObjects.get(entityId));
                 ghostObjects.remove(entityId);
+//                System.out.println("removed collider");
                 iterator.remove();
             }
         }

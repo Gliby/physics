@@ -37,8 +37,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Map;
 // Gliby's Physics Central Roadmap
-// TODO: (0.7.0)  Add cosmetic physics.
-// TODO: (0.6.0) look into ObjectPooling. (JBullet)
+// TODO: (0.7.0) Add cosmetic physics.
+// TODO: (0.6.0) Add EntityPhysicsBase buffer culling, meaning if we are over our allowed Physics Entity limit, we force the the oldest entity to re-align.
 // TODO  (0.6.0) look into NativeBullet by the Terasology, might solve memory leaks in the native PhysicsWorld and improve simulation perf.
 // TODO  (0.6.0) FIXME: something is leaking memory every time we create/destroy a PhysicsWorld.
 // TODO (0.5.0)  Mod glibysphysics is missing the required element 'version' and a version.properties file could not be found. Falling back to metadata version 0.4.2
@@ -116,6 +116,8 @@ public class Physics {
 
         settings.registerInteger("PhysicsEngine", "TickRate", 20, Setting.Side.BOTH);
         settings.registerFloat("PhysicsEngine", "GravityForce", -9.8f, Setting.Side.BOTH);
+
+        settings.registerBoolean("PhysicsEntities", "EntityCollisionResponse", false, Setting.Side.BOTH);
 
         settings.registerFloat("PhysicsEntities", "PlayerSpawnedDeathTime", 30, Setting.Side.BOTH);
         settings.registerFloat("PhysicsEntities", "GameSpawnedDeathTime", 2.5f, Setting.Side.BOTH);
