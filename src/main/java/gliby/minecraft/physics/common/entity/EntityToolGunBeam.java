@@ -104,7 +104,7 @@ public class EntityToolGunBeam extends Entity implements IEntityAdditionalSpawnD
         this.hit = new Vector3f(additionalData.readFloat(), additionalData.readFloat(), additionalData.readFloat());
         this.owner = world.getEntityByID(additionalData.readInt());
         if (owner == Minecraft.getMinecraft().player) {
-            Vec3d firstPersonOffset = new Vec3d(owner.onGround ? -0.20D : -0.24D, -0.06D, 0.39D);
+            Vec3d firstPersonOffset = new Vec3d(-0.10D + (owner.onGround ? 0 : 0), -0.025D, 0.39D);
             firstPersonOffset = firstPersonOffset
                     .rotatePitch(-(owner.prevRotationPitch + (owner.rotationPitch - owner.prevRotationPitch))
                             * (float) Math.PI / 180.0F);

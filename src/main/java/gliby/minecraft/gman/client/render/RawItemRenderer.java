@@ -104,17 +104,16 @@ public abstract class RawItemRenderer implements IBakedModel {
 
     @Override
     public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
-        if (side != null || !Tessellator.getInstance().getBuffer().isDrawing) {
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferBuilder = tessellator.getBuffer();
+
+        if (side != null || !bufferBuilder.isDrawing) {
             return DUMMY_LIST;
         }
 
-        // Method that this get's called in, is using startDrawingQuads. We
-        // finish
-        // drawing it so we can move on to render our own thing.
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferBuilder = tessellator.getBuffer();
         // finish drawing, if we are.
-        boolean isDrawing = tessellator.getBuffer().isDrawing;
+        boolean isDrawing = bufferBuilder.isDrawing;
         if (isDrawing)
             tessellator.draw();
 

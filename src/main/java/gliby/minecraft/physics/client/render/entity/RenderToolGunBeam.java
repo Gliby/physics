@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 
@@ -29,17 +30,18 @@ public class RenderToolGunBeam extends Render {
         this.mc = Minecraft.getMinecraft();
     }
 
-    public void doRender(Entity uncast, double entityX, double entityY, double entityZ, float twen, float partialTick) {
+    public void doRender(Entity uncast, double entityX, double entityY, double entityZ, float yaw, float deltaTime) {
         EntityToolGunBeam entity = (EntityToolGunBeam) uncast;
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuffer();
-        Vector3f worldTranslation = VecUtility.getWorldTranslation(mc, partialTick);
+        Vector3f worldTranslation = VecUtility.getWorldTranslation(mc, deltaTime);
         GlStateManager.disableTexture2D();
         GlStateManager.disableLighting();
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, 1);
         GlStateManager.pushMatrix();
         GlStateManager.translate(-worldTranslation.x, -worldTranslation.y, -worldTranslation.z);
+//        renderOffsetAABB(new AxisAlignedBB(100, 100, 100, 100, 100, 100), entity.clientOrigin.x, entity.clientOrigin.y, entity.clientOrigin.z);
         float alpha = (entity.msUntilGone - MathHelper.clamp((System.currentTimeMillis() - entity.timeCreated), 0, entity.msUntilGone)) / entity.msUntilGone;
         bufferBuilder.begin(3, DefaultVertexFormats.POSITION_COLOR);
         if (entity.clientOrigin != null && renderManager.options.thirdPersonView == 0) {
