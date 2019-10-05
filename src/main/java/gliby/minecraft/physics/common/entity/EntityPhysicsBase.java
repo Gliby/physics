@@ -139,17 +139,27 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
         getMechanics().clear();
 
         if (!world.isRemote) {
-            if (doesPhysicsObjectExist()) {
-                Vector3f minBB = new Vector3f(), maxBB = new Vector3f();
-                getRigidBody().getAabb(minBB, maxBB);
-                getPhysicsWorld().awakenArea(minBB, maxBB);
-            }
+            wakeUp();
             dispose();
         }
 
         super.setDead();
     }
 
+    /**
+     * Wake up surrounding RigidBodies.
+     * @return
+     */
+    public EntityPhysicsBase wakeUp() {
+        if (!world.isRemote) {
+            if (doesPhysicsObjectExist()) {
+                Vector3f minBB = new Vector3f(), maxBB = new Vector3f();
+                getRigidBody().getAabb(minBB, maxBB);
+                getPhysicsWorld().awakenArea(minBB, maxBB);
+            }
+        }
+        return this;
+    }
 
     public void pick(Entity picker, Vector3f pickPoint) {
         this.setPickerEntity((EntityPlayer) picker);

@@ -79,9 +79,15 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
      */
     private boolean defaultCollisionShape;
     /**
-     * Collision with entites(including players).
+     * RigidBody collision status.
      */
     private boolean collisionEnabled = true;
+
+    /**
+     * Entity Collision.
+     */
+    private boolean entityCollisionEnabled = true;
+
     /**
      * Rigid body mass.
      */
@@ -146,8 +152,8 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         return collisionEnabled;
     }
 
-    public EntityPhysicsBlock setCollisionEnabled(boolean collisionEnabled) {
-        this.collisionEnabled = collisionEnabled;
+    public EntityPhysicsBlock setEntityCollisionEnabled(boolean entityCollisionEnabled) {
+        this.entityCollisionEnabled = entityCollisionEnabled;
         return this;
     }
 
@@ -185,7 +191,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
      */
     @Override
     public AxisAlignedBB getEntityBoundingBox() {
-        return collisionEnabled ? new AxisAlignedBB(0.20f, 0, 0.20f, 0.80f, 1.05f, 0.80f).offset(
+        return collisionEnabled || entityCollisionEnabled ? new AxisAlignedBB(0.20f, 0, 0.20f, 0.80f, 1.05f, 0.80f).offset(
                 Math.round(posX * 100.0f) / 100.0f, Math.round(posY * 100.0f) / 100.0f,
                 Math.round(posZ * 100.0f) / 100.0f) : VecUtility.ZERO_BB;
     }
@@ -363,7 +369,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
         if (tagCompound.hasKey("AngularVelocity")) {
             NBTTagList angularVelocity = tagCompound.getTagList("AngularVelocity", 5);
-            this.linearVelocity = new Vector3f(angularVelocity.getFloatAt(0), angularVelocity.getFloatAt(1),
+            this.angularVelocity = new Vector3f(angularVelocity.getFloatAt(0), angularVelocity.getFloatAt(1),
                     angularVelocity.getFloatAt(2));
         }
 

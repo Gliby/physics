@@ -6,20 +6,14 @@ import gliby.minecraft.physics.common.entity.EntityPhysicsBlock;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
-import net.minecraft.block.BlockAir;
-import net.minecraft.block.BlockFalling;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityFallingBlock;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.apache.commons.math3.analysis.function.Min;
 
 import javax.vecmath.Vector3f;
 import java.util.ArrayList;
@@ -63,7 +57,7 @@ public class GameEventHandler {
                                 entityFallingBlock.posX - PhysicsOverworld.OFFSET, entityFallingBlock.posY - PhysicsOverworld.OFFSET, entityFallingBlock.posZ - PhysicsOverworld.OFFSET);
                         // Disable collision, because playing survival with Physics Falling blocks is annoying.
                         // TODO (0.8.0) FEATURE Survival collision issues, could be fixed if Physics Block were diggable.
-                        event.getWorld().spawnEntity(analog.setCollisionEnabled(false).setGameSpawned(true));
+                        event.getWorld().spawnEntity(analog.setEntityCollisionEnabled(false).setGameSpawned(true));
                     }
                 });
             }
