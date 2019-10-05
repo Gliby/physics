@@ -267,7 +267,6 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
         String gson = inclusiveGSON.toJson(this.getRigidBody().getProperties());
         tagCompound.setString("Properties", gson);
-        System.out.println(gson);
 
         tagCompound.setString("Mechanics", GMan.getGSON().toJson(mechanicsByNames));
     }

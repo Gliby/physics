@@ -22,6 +22,7 @@ import gliby.minecraft.physics.common.physics.engine.*;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.MathHelper;
 
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Matrix4f;
@@ -83,8 +84,6 @@ public class JavaPhysicsWorld extends PhysicsWorld {
     @Override
     protected void update() {
         if (dynamicsWorld != null) {
-            final float delta = getDelta();
-            final int maxSubStep = Math.max(1, Math.round(delta / 10));
             dynamicsWorld.stepSimulation(1, getMaxSubstep());
             super.update();
         }
