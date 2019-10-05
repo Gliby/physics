@@ -26,8 +26,8 @@ public class RenderItemPhysicsGun extends RawItemRenderer {
             transforms = new ItemCameraTransforms(
             new ItemTransformVec3f(new Vector3f(180, 0, 0), new Vector3f(0, 0,0 ), new Vector3f(-1, 1, 1)),
             new ItemTransformVec3f(new Vector3f(180, 0, 0), new Vector3f(0, 0,0 ), new Vector3f(-1, 1, 1)),
-            new ItemTransformVec3f(new Vector3f(10, 1, -0.5f), new Vector3f(-0.25f, 0.25f, -1.0f / 16.0f),new Vector3f(-1, -1, -1)),
-            new ItemTransformVec3f(new Vector3f(10, 1, -0.5f), new Vector3f(-0.25f, 0.25f, -1.0f / 16.0f),new Vector3f(-1, -1, -1)),
+            new ItemTransformVec3f(new Vector3f(10, 0, 0), new Vector3f(-0.25f, 0.25f, -1.0f / 16.0f),new Vector3f(-1, -1, -1)),
+            new ItemTransformVec3f(new Vector3f(10, 0, 0), new Vector3f(-0.25f, 0.25f, -1.0f / 16.0f),new Vector3f(-1, -1, -1)),
             ItemTransformVec3f.DEFAULT,
             new ItemTransformVec3f(new Vector3f(30, 135, 0), new Vector3f(0.05f, 0.075f, 0), new Vector3f(-0.9f, -0.9f, -0.9f)),
             ItemTransformVec3f.DEFAULT,

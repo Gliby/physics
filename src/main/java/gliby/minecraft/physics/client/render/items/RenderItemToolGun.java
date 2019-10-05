@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.block.model.ItemTransformVec3f;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.realms.RealmsMth;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.util.vector.Vector3f;
 
 
@@ -43,6 +44,16 @@ public class RenderItemToolGun extends RawItemRenderer {
     public void render() {
         float scale = -(1.0f / 16.0f);
         String text = "Fine in 4K";
+
+        transforms = new ItemCameraTransforms(
+                new ItemTransformVec3f(new Vector3f(180, 0, 0), new Vector3f(0, 0,0 ), new Vector3f(-0.5f, 0.5f, 0.5f)),
+                new ItemTransformVec3f(new Vector3f(180, 0, 0), new Vector3f(0, 0.1F,-0.25f ), new Vector3f(-0.75f, 0.75f, 0.75f)),
+                new ItemTransformVec3f(new Vector3f(8, 1f, 0.0f), new Vector3f(0, 0.25f, -1),new Vector3f(-1, -1, -1)),
+                new ItemTransformVec3f(new Vector3f(8, 1f, 0.0f), new Vector3f(0, 0.25f, -1),new Vector3f(-1, -1, -1)),
+                ItemTransformVec3f.DEFAULT,
+                new ItemTransformVec3f(new Vector3f(30, 135, 0), new Vector3f(-0.135f, -0.080f, 0), new Vector3f(-0.9f, -0.9f, -0.9f)),
+                ItemTransformVec3f.DEFAULT,
+                ItemTransformVec3f.DEFAULT);
 
         if (owner != null) {
             if (transformType == TransformType.FIRST_PERSON_RIGHT_HAND || transformType == TransformType.FIRST_PERSON_LEFT_HAND) {
@@ -79,11 +90,13 @@ public class RenderItemToolGun extends RawItemRenderer {
 
         Minecraft mc = Minecraft.getMinecraft();
 
+
         GlStateManager.pushMatrix();
         mc.getTextureManager().bindTexture(screenTexture);
         GlStateManager.scale(0.25f, 0.25f, 1);
         Gui.drawModalRectWithCustomSizedTexture(0, 0, 0, 0, 128, 128, 128, 128);
         GlStateManager.popMatrix();
+
         if (transformType != TransformType.GUI) {
             // Gui.drawRect(0, 0, 32, 32, 0xFF00FF00);
             // gets rid of zbuffering with screen texture
@@ -92,7 +105,7 @@ public class RenderItemToolGun extends RawItemRenderer {
             int text_width = mc.fontRenderer.getStringWidth(text);
             int perfect_size = 32;
             float scaleFactor = ((float) perfect_size / text_width);
-            scale = RealmsMth.clamp(0.75f * scaleFactor, 0F, 1F);
+            scale = MathHelper.clamp(0.75f * scaleFactor, 0F, 1F);
             float x = 32;
             float y = 32;
             // TODO cosmetic: make text scale vertically

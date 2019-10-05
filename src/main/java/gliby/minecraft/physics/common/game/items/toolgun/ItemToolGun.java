@@ -86,10 +86,14 @@ public class ItemToolGun extends RawItem {
         }
     }
 
-    @Override
-    public EnumAction getItemUseAction(ItemStack stack) {
+    /**
+     * returns the action that specifies what animation to play when the items is being used
+     */
+    public EnumAction getItemUseAction(ItemStack stack)
+    {
         return EnumAction.BOW;
     }
+
 
     @Override
     public int getMaxItemUseDuration(ItemStack stack) {
