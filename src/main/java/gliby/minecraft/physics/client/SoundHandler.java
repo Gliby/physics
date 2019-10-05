@@ -3,7 +3,13 @@ package gliby.minecraft.physics.client;
 import gliby.minecraft.physics.Physics;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.audio.Sound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.minecraftforge.registries.IForgeRegistry;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,24 +19,29 @@ import java.util.Map;
  */
 public class SoundHandler {
 
-    private static SoundHandler instance = new SoundHandler();
-    private static Map<String, String> soundRegistry = new HashMap<String, String>();
+    private static Map<String, SoundEvent> soundRegistry = new HashMap<String, SoundEvent>();
 
     static {
-        soundRegistry.put("ToolGun.Scroll", "item.toolgun.scroll");
-        soundRegistry.put("ToolGun.Beam", "item.toolgun.beam");
+        soundRegistry.put("ToolGun.Scroll", new SoundEvent(new ResourceLocation(Physics.ID, "toolgun_scroll")));
+        soundRegistry.put("ToolGun.Beam", new SoundEvent(new ResourceLocation(Physics.ID, "toolgun_beam")));
     }
 
-    static SoundHandler getInstance() {
-        return instance;
+    @SubscribeEvent
+    public void registerSounds(RegistryEvent.Register<SoundEvent> event) {
+        final IForgeRegistry<SoundEvent> registry = event.getRegistry();
+        for (SoundEvent soundEvent : soundRegistry.values()) {
+            soundEvent.setRegistryName(soundEvent.getSoundName().getResourcePath());
+            registry.register(soundEvent);
+        }
+
     }
 
-    public static String getSoundByIdentifer(String soundName) {
-        return Physics.ID + ":" + soundRegistry.get(soundName);
+
+    public static SoundEvent getSoundByIdentifier(String soundName) {
+        return soundRegistry.get(soundName);
     }
 
-    public static void playLocalSound(Minecraft mc, String sound) {
-        // todo 1.12.2 port
-//        mc.getSoundHandler().playSound(PositionedSoundRecord.(new ResourceLocation(getSoundByIdentifer(sound)), 1.0F));
+    public static void playLocalSound(Minecraft mc, String soundName) {
+        mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(getSoundByIdentifier(soundName), 1.0f));
     }
 }

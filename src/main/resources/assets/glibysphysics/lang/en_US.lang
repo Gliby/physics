@@ -4,6 +4,9 @@ item.physicstransformer.name=Physics Transformer
 item.physicstoolgun.name=Tooling Master 3000
 item.physicsgun.name=Physics Manipulator
 
+subtitle.toolgun_beam=Tool Gun Beam
+subtitle.toolgun_scroll=Tool Gun Scroll
+
 gui.changelog.next=Next
 gui.changelog.previous=Previous
 gui.changelog.skip=Skip

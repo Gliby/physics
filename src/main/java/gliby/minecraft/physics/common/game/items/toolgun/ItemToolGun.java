@@ -76,7 +76,7 @@ public class ItemToolGun extends RawItem {
                     } else
                         currentMode = 0;
                     if (lastMode != currentMode) {
-                        SoundHandler.playLocalSound(mc, "ToolGun.Scroll");
+                        Physics.getInstance().getClientProxy().getSoundHandler().playLocalSound(mc, "ToolGun.Scroll");
                         Physics.getDispatcher().sendToServer(new PacketToolGunStoppedUsing(lastMode));
                         event.setCanceled(true);
                     }

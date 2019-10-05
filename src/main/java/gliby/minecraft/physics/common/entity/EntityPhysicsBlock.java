@@ -254,10 +254,12 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     @Override
     public void onServerUpdate() {
         if (rigidBody != null && rigidBody.isValid()) {
+            // tell the entity tracker to update us if we are dirty.
+            isAirBorne = isDirty();
             // Update position from given rigid body.
             final Vector3f newPosition = rigidBody.getPosition();
 
-            setPosition(newPosition.getX(), newPosition.getY(),
+            setPositionAndUpdate(newPosition.getX(), newPosition.getY(),
                     newPosition.getZ());
 
 

@@ -62,6 +62,7 @@ jar {
 }
 
 // Fix IntelliJ bug. https://stackoverflow.com/questions/27623326/minecraft-forge-not-loading-textures
+// breaks ./gradlew runClient
 sourceSets {
     main { output.resourcesDir = output.classesDir }
 }

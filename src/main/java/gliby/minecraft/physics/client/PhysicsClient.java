@@ -1,5 +1,6 @@
 package gliby.minecraft.physics.client;
 
+import com.badlogic.gdx.audio.Sound;
 import gliby.minecraft.gman.item.ItemHandler;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.VersionChanges;
@@ -8,6 +9,7 @@ import gliby.minecraft.physics.client.keybindings.KeyManager;
 import gliby.minecraft.physics.client.render.RenderHandler;
 import gliby.minecraft.physics.common.PhysicsServer;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -24,6 +26,7 @@ public class PhysicsClient extends PhysicsServer {
 
     private KeyManager keyManager;
     private RenderHandler render;
+    private SoundHandler soundHandler;
     private boolean init;
 
     @Override
@@ -35,6 +38,9 @@ public class PhysicsClient extends PhysicsServer {
         render = new RenderHandler(physics,
                 false);
         render.preInit(event);
+
+        MinecraftForge.EVENT_BUS.register(soundHandler = new SoundHandler());
+
     }
 
     public KeyManager getKeyMananger() {
@@ -90,6 +96,6 @@ public class PhysicsClient extends PhysicsServer {
      * @return soundHandler
      */
     public SoundHandler getSoundHandler() {
-        return SoundHandler.getInstance();
+        return soundHandler;
     }
 }

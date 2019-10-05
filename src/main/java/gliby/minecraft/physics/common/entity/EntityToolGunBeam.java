@@ -1,10 +1,13 @@
 package gliby.minecraft.physics.common.entity;
 
+import gliby.minecraft.physics.client.SoundHandler;
 import gliby.minecraft.physics.client.render.VecUtility;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -69,8 +72,9 @@ public class EntityToolGunBeam extends Entity implements IEntityAdditionalSpawnD
                     soundPosition.scale(MathHelper.clamp(distance, 0, 16));
                     soundPosition.add(clientOrigin != null ? clientOrigin : worldOrigin);
 // todo 1.12.2 port
-//                    SoundHandler.getSoundByIdentifer("ToolGun.Beam")
-//                    world.playSound(soundPosition.x, soundPosition.y, soundPosition.z, soundEvent, SoundCategory.PLAYERS, 0.2F, 1.0F, false);
+
+                    SoundEvent soundEvent = SoundHandler.getSoundByIdentifier("ToolGun.Beam");
+                    world.playSound(soundPosition.x, soundPosition.y, soundPosition.z, soundEvent, SoundCategory.PLAYERS, 0.2F, 1.0F, false);
                 }
             }
             float val = MathHelper.clamp((System.currentTimeMillis() - timeCreated), 0, msUntilGone)

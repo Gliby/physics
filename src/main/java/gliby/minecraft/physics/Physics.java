@@ -8,6 +8,7 @@ import gliby.minecraft.gman.settings.Setting;
 import gliby.minecraft.gman.settings.SettingsHandler;
 import gliby.minecraft.gman.settings.StringSetting;
 import gliby.minecraft.physics.client.PhysicsClient;
+import gliby.minecraft.physics.client.SoundHandler;
 import gliby.minecraft.physics.common.IPhysicsProxy;
 import gliby.minecraft.physics.common.PhysicsServer;
 import gliby.minecraft.physics.common.blocks.BlockManager;
@@ -197,6 +198,7 @@ public class Physics {
         settings.save();
         gameManager = new GameManager(this);
         MinecraftForge.EVENT_BUS.register(gameManager);
+
         gameManager.preInit();
 
         registerPacket(PacketPlayerJoin.class, PacketPlayerJoin.class, Side.CLIENT);

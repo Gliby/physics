@@ -28,7 +28,6 @@ import java.util.Set;
 
 public class GameManager {
 
-    private static Item itemRigidBodySpawner;
     public RawItem itemPhysicsGun, itemToolgun;
     private Physics physics;
     private ToolGunActionRegistry toolGunRegistry;
@@ -43,14 +42,14 @@ public class GameManager {
             // physics block
             EntityEntryBuilder.create()
                     .entity(EntityPhysicsBlock.class)
-                    .id(new ResourceLocation(Physics.ID, "physicsblock"), ++networkId)
+                    .id(new ResourceLocation(Physics.ID, "physicsblock"), networkId++)
                     .name("physicsblock")
-                    .tracker(64, 20, false)
+                    .tracker(64, 20, true)
                     .build(),
             // tool gun beam
             EntityEntryBuilder.create()
                     .entity(EntityToolGunBeam.class)
-                    .id(new ResourceLocation(Physics.ID, "toolgunbeam"), ++networkId)
+                    .id(new ResourceLocation(Physics.ID, "toolgunbeam"), networkId++)
                     .name("toolgunbeam")
                     .tracker(64, 1, false)
                     .build()
