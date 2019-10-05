@@ -29,7 +29,7 @@ public class SettingsHandler {
         this.directory = directory;
         this.file = settingsFile;
         properties = new INIProperties(settingsFile);
-        settings = new HashMap<>();
+        settings = new HashMap<String, Setting>();
     }
 
     public Map<String, Setting> getSettings() {

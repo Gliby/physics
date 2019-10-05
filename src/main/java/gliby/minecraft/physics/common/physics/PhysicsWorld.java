@@ -149,7 +149,7 @@ public abstract class PhysicsWorld {
 
     public int getMaxSubstep() {
         final float delta = getDelta();
-        final int maxSubStep = MathHelper.clamp(Math.round(delta / 10), 1 , 10);
+        final int maxSubStep = MathHelper.clamp(Math.round(delta / 10), 1 , 100);
         return maxSubStep;
     }
 
