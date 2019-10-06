@@ -142,14 +142,15 @@ public class GuiScreenBlockCreator extends GuiScreenCreator implements GuiYesNoC
                 while (itr.hasNext()) {
                     final Block block = itr.next();
                     ResourceLocation resourceLocation = ForgeRegistries.BLOCKS.getKey(block);
-                    final String modId = resourceLocation.getResourceDomain();
-                    final String blockID = modId + "." + resourceLocation.getResourceDomain();
+                    final String domain = resourceLocation.getResourceDomain();
+                    final String blockID = domain + "." + resourceLocation.getResourcePath();
 
                     Gson gson = new GsonBuilder().setPrettyPrinting().create();
                     try {
-                        IBlockGenerator generator = physics.getBlockManager().getBlockGenerators().get(resourceLocation.getResourceDomain());
+                        IBlockGenerator generator = physics.getBlockManager().getBlockGenerators().get(domain);
                         if (generator == null)
                             generator = physics.getBlockManager().getDefaultBlockGenerator();
+
                         Path nf = fs.getPath(blockID + ".json");
                         {
                             Writer writer = Files.newBufferedWriter(nf, StandardCharsets.UTF_8,

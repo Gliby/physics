@@ -41,9 +41,9 @@ public class PhysicsOverworld {
 
         // Registers available mechanics.
         // TODO (0.6.0) finish: global mechanics
-        getRigidBodyMechanicsMap().put("EnvironmentGravity", new EnvironmentGravityMechanic());
-        getRigidBodyMechanicsMap().put("EnvironmentResponse", new EnvironmentResponseMechanic());
-        getRigidBodyMechanicsMap().put("Bounce", new BounceMechanic());
+//        getRigidBodyMechanicsMap().put("EnvironmentGravity", new EnvironmentGravityMechanic());
+//        getRigidBodyMechanicsMap().put("EnvironmentResponse", new EnvironmentResponseMechanic());
+//        getRigidBodyMechanicsMap().put("Bounce", new BounceMechanic());
 
         // TODO (0.6.0) feature: get these rigidbody mechanics working properly
         getRigidBodyMechanicsMap().put("ActivateRedstone", new ActivateRedstoneMechanic());
