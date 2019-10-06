@@ -36,7 +36,7 @@ public class GameManager {
         this.physics = physics;
     }
 
-    public static int networkId = 0;
+    protected static int networkId = 0;
 
     public static final Set<EntityEntry> SET_ENTITIES = ImmutableSet.of(
             // physics block

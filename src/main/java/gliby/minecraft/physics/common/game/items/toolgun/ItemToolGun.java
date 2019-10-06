@@ -16,6 +16,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.MouseEvent;
@@ -38,6 +41,7 @@ public class ItemToolGun extends RawItem {
 
     public ItemToolGun(Physics physics) {
         this.physics = physics;
+
         setMaxStackSize(1);
         setCreativeTab(CreativeTabs.TOOLS);
         setUnlocalizedName("physicstoolgun");
@@ -59,6 +63,27 @@ public class ItemToolGun extends RawItem {
         return currentMode;
     }
 
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
+    {
+        ItemStack itemstack = playerIn.getHeldItem(handIn);
+
+        if (worldIn.isRemote) {
+            int max =  physics.getGameManager().getToolGunRegistry().getValueDefinitions().size();
+            currentMode = (currentMode + 1) % max;
+
+            if (lastMode != currentMode) {
+                Physics.getInstance().getClientProxy().getSoundHandler().playLocalSound(Minecraft.getMinecraft(), "ToolGun.Scroll");
+                Physics.getDispatcher().sendToServer(new PacketToolGunStoppedUsing(lastMode));
+            }
+
+            lastMode = currentMode;
+        }
+//        playerIn.setActiveHand(handIn);
+        return new ActionResult<ItemStack>(EnumActionResult.FAIL, itemstack);
+
+    }
+
+
     @SideOnly(Side.CLIENT)
     @SubscribeEvent
     public void onMouseEvent(MouseEvent event) {
@@ -70,17 +95,6 @@ public class ItemToolGun extends RawItem {
                     Physics.getDispatcher().sendToServer(new PacketToolGunUse(currentMode,
                             EntityUtility.toVector3f(EntityUtility.rayTrace(mc.player, 64).hitVec)));
                     event.setCanceled(true);
-                } else if (event.getButton() == 1) {
-                    if (currentMode < physics.getGameManager().getToolGunRegistry().getValueDefinitions().size() - 1) {
-                        currentMode++;
-                    } else
-                        currentMode = 0;
-                    if (lastMode != currentMode) {
-                        Physics.getInstance().getClientProxy().getSoundHandler().playLocalSound(mc, "ToolGun.Scroll");
-                        Physics.getDispatcher().sendToServer(new PacketToolGunStoppedUsing(lastMode));
-                        event.setCanceled(true);
-                    }
-                    lastMode = currentMode;
                 }
             }
         }
