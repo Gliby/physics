@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern":
+  [
+    "BBB",
+    "ACA",
+    "BBB"
+  ],
+  "key":
+  {
+    "A":
+    {
+      "item": "minecraft:diamond"
+    },
+    "B":
+    {
+      "item": "minecraft:redstone"
+    },
+    "C": {
+      "item": "glibysphysics:item.physicsgun"
+    }
+  },
+  "result":
+  {
+    "item": "glibysphysics:item.physicstoolgun",
+    "count": 1,
+    "data": 0
+  }
+}
