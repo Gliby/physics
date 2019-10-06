@@ -42,7 +42,6 @@ import java.util.Map;
 // TODO  (0.6.0) look into NativeBullet by the Terasology, might solve memory leaks in the native PhysicsWorld and improve simulation perf.
 // TODO  (0.6.0) FIXME: something is leaking memory every time we create/destroy a PhysicsWorld.
 // TODO (0.5.0)  Mod glibysphysics is missing the required element 'version' and a version.properties file could not be found. Falling back to metadata version 0.4.2
-// TODO (0.5.0) Generate and pack new blocks for 1.12.2
 // TODO (0.5.0) make Forge's updateJSON compatible with GMAN.
 // TODO (0.5.0) Replace Settings with Forge's configuration
 
