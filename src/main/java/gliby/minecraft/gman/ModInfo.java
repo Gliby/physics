@@ -14,6 +14,7 @@ public class ModInfo {
     @SerializedName("UpdateURL")
     public String updateURL;
     @SerializedName("Versions")
+
     public List<String> versions;
     protected ForgeVersion.Status status = ForgeVersion.Status.PENDING;
     private String latestVersion;
@@ -24,7 +25,7 @@ public class ModInfo {
 
     public ModInfo(String modId, String updateURL) {
         this.updateURL = updateURL;
-        this.donateURL = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PBXHJ67N62ZRW";
+        this.donateURL = "";
         this.modId = modId;
     }
 
