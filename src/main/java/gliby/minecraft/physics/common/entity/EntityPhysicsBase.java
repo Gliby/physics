@@ -401,4 +401,14 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
             this.pickLocalHit = readPick;
     }
 
+    public boolean canBeAttackedWithItem()
+    {
+        return false;
+    }
+
+    protected boolean canTriggerWalking()
+    {
+        return true;
+    }
+
 }

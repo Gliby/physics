@@ -428,7 +428,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
     @Override
     public boolean canBeCollidedWith() {
-        return false;
+        return !isDead;
     }
 
     @Override
@@ -444,7 +444,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
     @Override
     protected boolean canTriggerWalking() {
-        return false;
+        return true;
     }
 
     /**
