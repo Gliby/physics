@@ -1,6 +1,8 @@
 package gliby.minecraft.gman;
 
 import com.google.gson.annotations.SerializedName;
+import net.minecraftforge.common.ForgeVersion;
+import net.minecraftforge.fml.common.ModContainer;
 
 import java.util.List;
 
@@ -13,7 +15,7 @@ public class ModInfo {
     public String updateURL;
     @SerializedName("Versions")
     public List<String> versions;
-    private boolean updated = true;
+    protected ForgeVersion.Status status = ForgeVersion.Status.PENDING;
     private String latestVersion;
 
     public ModInfo() {
@@ -26,15 +28,27 @@ public class ModInfo {
         this.modId = modId;
     }
 
+    public ForgeVersion.Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(ForgeVersion.Status status) {
+        this.status = status;
+    }
+
     ModInfo determineUpdate(String currentModVersion, String currentMinecraftVersion) {
         for (final String s : versions) {
             if (s.startsWith(currentMinecraftVersion)) {
                 this.latestVersion = s.split(":")[1].trim();
-                updated = latestVersion.equals(currentModVersion);
+                status = latestVersion.equals(currentModVersion) ? ForgeVersion.Status.UP_TO_DATE : ForgeVersion.Status.OUTDATED;
                 break;
             }
         }
         return this;
+    }
+
+    public void applyToMod(ModContainer container) {
+
     }
 
     public final String getUpdateSite() {
@@ -42,7 +56,7 @@ public class ModInfo {
     }
 
     public final boolean isUpdated() {
-        return updated;
+        return status == ForgeVersion.Status.UP_TO_DATE;
     }
 
     @Override
@@ -52,7 +66,7 @@ public class ModInfo {
     }
 
     public final boolean updateNeeded() {
-        return !updated;
+        return status == ForgeVersion.Status.OUTDATED;
     }
 
     public String getLatestVersion() {

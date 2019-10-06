@@ -3,8 +3,12 @@ package gliby.minecraft.gman;
 import com.google.common.base.Predicate;
 import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
+import gliby.minecraft.physics.Physics;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.ForgeVersion;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.common.versioning.ComparableVersion;
 import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
@@ -13,6 +17,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -22,6 +29,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GMan {
+
+    public static final boolean GMAN_DEBUG = true;
 
     private final static String LOCATION = "https://raw.githubusercontent.com/Gliby/Mod-Information-Storage/master/";
     private final Predicate ACCEPT_ALL = new Predicate<String>() {
@@ -48,7 +57,7 @@ public class GMan {
     }
 
     public static boolean isDevelopment() {
-        boolean development = (Boolean) (Launch.blackboard.get("fml.deobfuscatedEnvironment"));
+        boolean development = (Boolean) (Launch.blackboard.get("fml.deobfuscatedEnvironment")) && !GMAN_DEBUG;
         return development;
     }
 
@@ -62,13 +71,16 @@ public class GMan {
         try {
             Reader reader = new InputStreamReader(new URL(builder.toString()).openStream());
             if (reader != null && !isDevelopment()) {
+                ModContainer modContainer = Loader.instance().activeModContainer();
                 final ModInfo externalInfo = gson.fromJson(reader, ModInfo.class);
                 modInfo.donateURL = externalInfo.donateURL;
                 modInfo.updateURL = externalInfo.updateURL;
                 modInfo.versions = externalInfo.versions;
                 modInfo.determineUpdate(modVersion, minecraftVersion);
+                modInfo.applyToMod(modContainer);
+                addCheckResult(modInfo, modContainer);
                 logger.info(modInfo.isUpdated() ? String.format("Mod is up-to-date. (%s)", modVersion)
-                        : "Mod is outdated, download latest at " + modInfo.updateURL);
+                        : String.format("Mod is outdated (%s), download latest at (%s)", modVersion, modInfo.updateURL));
             }
             reader.close();
         } catch (final MalformedURLException e) {
@@ -78,6 +90,36 @@ public class GMan {
                     + ") is down?");
         }
         return new GMan(logger, modInfo);
+    }
+
+    // net.minecraftforge.common.ForgeVersion results
+    protected static final int RESULTS_FIELD = 11;
+
+    /**
+     * :)
+     * https://xkcd.com/927/
+     */
+    public static void addCheckResult(ModInfo modInfo, ModContainer container)  {
+        try {
+            Field resultField =  ForgeVersion.class.getDeclaredFields()[RESULTS_FIELD];
+            resultField.setAccessible(true);
+            Map<ModContainer, ForgeVersion.CheckResult> results = (Map<ModContainer, ForgeVersion.CheckResult>) resultField.get(null);
+            if (results != null) {
+                Constructor<ForgeVersion.CheckResult> constructor = (Constructor<ForgeVersion.CheckResult>) ForgeVersion.CheckResult.class.getDeclaredConstructors()[0];
+                constructor.setAccessible(true);
+                ForgeVersion.Status status = modInfo.getStatus();
+                String url = modInfo.updateURL;
+                ForgeVersion.CheckResult result = constructor.newInstance(status, null, null, url);
+                results.put(container, result);
+                Physics.getLogger().info("Registered update information to Forge.");
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
     }
 
     public String[] getVersionsBetween(String from, String to, Predicate<String> predicate) {
