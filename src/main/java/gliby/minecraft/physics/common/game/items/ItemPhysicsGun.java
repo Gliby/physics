@@ -13,6 +13,7 @@ import gliby.minecraft.physics.common.physics.mechanics.physicsgun.PickUpMechani
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumAction;
@@ -51,7 +52,14 @@ public class ItemPhysicsGun extends RawItem {
         physics.registerPacket(PacketPhysicsGunPick.class, PacketPhysicsGunPick.class, Side.SERVER);
     }
 
+    @Override
     public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player) {
+        return true;
+    }
+
+    @Override
+    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity)
+    {
         return true;
     }
 
@@ -80,6 +88,7 @@ public class ItemPhysicsGun extends RawItem {
             }
         }
     }
+
 
     /**
      * returns the action that specifies what animation to play when the items is
