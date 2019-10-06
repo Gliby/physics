@@ -141,11 +141,6 @@ public class ItemHandler {
                                 mc.player.setActiveHand(EnumHand.MAIN_HAND);
                             }
 
-//                        if (event.phase.equals(TickEvent.Phase.END)) {
-//                            if (event.player.getItemInUseCount() <= 0 && !isFirstPerson) {
-//                                event.player.resetActiveHand();
-//                            }
-//                        }
                         }
                     }
                 }

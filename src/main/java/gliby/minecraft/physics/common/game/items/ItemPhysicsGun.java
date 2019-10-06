@@ -19,6 +19,9 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -46,7 +49,6 @@ public class ItemPhysicsGun extends RawItem {
         setUnlocalizedName("physicsgun");
         setCreativeTab(CreativeTabs.TOOLS);
         setMaxStackSize(1);
-        setMaxDamage(0);
         setFull3D();
         physics.registerPacket(PacketPhysicsGunWheel.class, PacketPhysicsGunWheel.class, Side.SERVER);
         physics.registerPacket(PacketPhysicsGunPick.class, PacketPhysicsGunPick.class, Side.SERVER);
@@ -89,6 +91,11 @@ public class ItemPhysicsGun extends RawItem {
         }
     }
 
+
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
+        ItemStack itemstack = playerIn.getHeldItem(handIn);
+        return new ActionResult<ItemStack>(EnumActionResult.FAIL, itemstack);
+    }
 
     /**
      * returns the action that specifies what animation to play when the items is

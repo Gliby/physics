@@ -11,6 +11,7 @@ import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -53,10 +54,16 @@ public class ItemToolGun extends RawItem {
         setFull3D();
         physics.registerPacket(PacketToolGunUse.class, PacketToolGunUse.class, Side.SERVER);
         physics.registerPacket(PacketToolGunStoppedUsing.class, PacketToolGunStoppedUsing.class, Side.SERVER);
-        
+
     }
 
     public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, EntityPlayer player) {
+        return true;
+    }
+
+    @Override
+    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity)
+    {
         return true;
     }
 
