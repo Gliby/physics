@@ -1,5 +1,7 @@
 package gliby.minecraft.physics.client.gui.creator;
 
+import gliby.minecraft.physics.client.gui.creator.block.GuiScreenBlockCreator;
+import gliby.minecraft.physics.client.gui.creator.block.GuiScreenBlockCreator2;
 import gliby.minecraft.physics.client.gui.creator.mob.GuiScreenMobCreator;
 import gliby.minecraft.physics.client.gui.creator.mob.MobBlackList;
 import net.minecraft.client.gui.GuiButton;
@@ -14,9 +16,9 @@ public class GuiScreenPhysicsCreator extends GuiScreen {
     private List<GuiScreenCreator> creatorMenus = new ArrayList<GuiScreenCreator>();
 
     public GuiScreenPhysicsCreator(GuiScreen modList) {
-//        creatorMenus.add(new GuiScreenBlockCreator(this));
-//        creatorMenus.add(new GuiScreenBlockCreator2(this));
-//        creatorMenus.add(new GuiScreenMobCreator(new MobBlackList(), this));
+        creatorMenus.add(new GuiScreenBlockCreator(this));
+        creatorMenus.add(new GuiScreenBlockCreator2(this));
+        creatorMenus.add(new GuiScreenMobCreator(new MobBlackList(), this));
     }
 
     public void initGui() {

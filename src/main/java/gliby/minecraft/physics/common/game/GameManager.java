@@ -76,26 +76,7 @@ public class GameManager {
 
     }
 
-    @SubscribeEvent
-    public void registerRecipe(RegistryEvent.Register<IRecipe> event) {
-        final IForgeRegistry<IRecipe> registry = event.getRegistry();
-
-
-    }
-
-
     public void preInit() {
-
-//        GameRegistry.addRecipe(new ItemStack(itemPhysicsGun), "AAA", "BCB", "AAA", 'A', Blocks.obsidian, 'B',
-//                Items.redstone, 'C', Items.diamond);
-//
-//        GameRegistry.addRecipe(new ItemStack(itemToolgun), "AAA", "CBC", "AAA", 'A', Items.redstone, 'B',
-//                itemPhysicsGun, 'C', Items.diamond);
-        /*
-         * GameRegistry.addRecipe(new ItemStack(Items.dye, 2, 15), "AB ", "AAC", "A  ",
-         * 'A', Items.cookie, 'B', Blocks.dirt, 'C', new ItemStack(Items.dye, 1, 1));
-         */
-
         itemToolgun = new ItemToolGun(physics);
         itemToolgun.setRegistryName(itemToolgun.getUnlocalizedName());
 
@@ -111,7 +92,6 @@ public class GameManager {
 //        toolGunRegistry.registerAction(new ToolGunRemoveAction(), Physics.ID);
         // toolGunRegistry.registerAction(new ToolGunMotorAction(),
         // Physics.MOD_ID);
-
     }
 
     public ToolGunActionRegistry getToolGunRegistry() {
