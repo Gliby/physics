@@ -10,11 +10,13 @@ buildscript {
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
         classpath 'com.wynprice.cursemaven:CurseMaven:1.2.3'
+        classpath "com.github.jengelman.gradle.plugins:shadow:1.2.3"
     }
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: "com.wynprice.cursemaven"
+apply plugin: 'com.github.johnrengelman.shadow'
 
 version = mod_version
 group = "gliby.minecraft.physics"
@@ -31,17 +33,34 @@ minecraft {
     runDir = "run"
     mappings = "snapshot_20171003"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
-    replace '@VERSION@', project.version
-    replace '@MC_VERSION@', version
+    replace "@VERSION@", project.version
+    replace "@MC_VERSION@", version
 }
 
 dependencies {
-    compile curse.resolve("dynamic-lights", "2563244")
+    compileOnly curse.resolve("dynamic-lights", "2563244")
     compile group: 'org.apache.commons', name: 'commons-math3', version: '3.0'
     compile files('lib/gdx-bullet.jar')
     compile files('lib/gdx-bullet-natives.jar')
     compile files('lib/gdx.jar')
 }
+
+shadowJar {
+    classifier = ''
+    relocate 'org.apache.commons.math3', "${project.group}.shadow.org.apache.commons.math3"
+}
+
+reobf {
+    shadowJar { mappingType = 'SEARGE' }
+}
+
+tasks.build.dependsOn reobfShadowJar
+
+artifacts {
+    archives shadowJar
+    archives sourceJar
+}
+
 
 processResources {
     // this will ensure that this task is redone when the versions change.
@@ -69,13 +88,15 @@ jar {
     }
 }
 
-// Fix IntelliJ bug. https://stackoverflow.com/questions/27623326/minecraft-forge-not-loading-textures
-// breaks ./gradlew runClient
-sourceSets {
-    main { output.resourcesDir = output.classesDir }
-}
 
-idea { module { inheritOutputDirs = true } }
+if (gradle.startParameter.getTaskNames().contains("setupDecompWorkspace")) {
+    
+    project.logger.lifecycle('setupDecompWorkspace detected, applying IDEA workaround.')
+    
+    sourceSets {
+        main { output.resourcesDir = output.classesDir }
+    }
+
+    idea { module { inheritOutputDirs = true } }
+}
 // todo https://forgegradle.readthedocs.io/en/latest/cookbook/
-// TODO: use for shading: https://mcforge.readthedocs.io/en/latest/gettingstarted/dependencymanagement/
-// TODO: add auto upload, https://github.com/mezz/JustEnoughItems/blob/1.12/build.gradle
