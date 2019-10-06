@@ -10,6 +10,7 @@ import gliby.minecraft.physics.common.physics.mechanics.EntityCollisionResponseM
 import gliby.minecraft.physics.common.physics.mechanics.ToolMechanics;
 import gliby.minecraft.physics.common.physics.mechanics.gravitymagnets.GravityModifierMechanic;
 import gliby.minecraft.physics.common.physics.mechanics.physicsgun.PickUpMechanic;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -151,7 +152,13 @@ public class PhysicsOverworld {
         return physicsWorlds;
     }
 
-    private PhysicsWorld createPhysicsWorld(final boolean useNative, final IPhysicsWorldConfiguration physicsConfig) {
+    private PhysicsWorld createPhysicsWorld(boolean useNative, final IPhysicsWorldConfiguration physicsConfig) {
+        // TODO (0.6.0) Add NativePhysics macOS compatibility.
+        if (useNative && Minecraft.IS_RUNNING_ON_MAC) {
+            Physics.getLogger().info("Forced non-native physics under OSX.");
+            useNative = false;
+        }
+
         final PhysicsWorld physicsWorld = useNative ? new NativePhysicsWorld(physics, this, physicsConfig) : new JavaPhysicsWorld(physics, this, physicsConfig);
         return physicsWorld;
     }
