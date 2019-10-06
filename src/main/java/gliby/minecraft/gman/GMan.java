@@ -71,13 +71,13 @@ public class GMan {
                         : "Mod is outdated, download latest at " + modInfo.updateURL);
             }
             reader.close();
-            return new GMan(logger, modInfo);
         } catch (final MalformedURLException e) {
             e.printStackTrace();
         } catch (final IOException e) {
             logger.warn("Failed to retrieve mod info, either mod doesn't exist or host(" + builder.toString()
                     + ") is down?");
         }
+        return new GMan(logger, modInfo);
     }
 
     public String[] getVersionsBetween(String from, String to, Predicate<String> predicate) {
