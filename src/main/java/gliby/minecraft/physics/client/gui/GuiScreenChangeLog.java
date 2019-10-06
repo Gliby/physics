@@ -75,6 +75,7 @@ public class GuiScreenChangeLog extends GuiScreen {
              * pageIndex), -1);
              */
 
+
             if (changes.changes.getVersionImage(mc.getTextureManager()) != null)
                 mc.renderEngine.bindTexture(changes.changes.getVersionImage(mc.getTextureManager()));
             else

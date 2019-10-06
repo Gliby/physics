@@ -1,17 +1,22 @@
 package gliby.minecraft.gman;
 
 import com.google.common.base.Predicate;
+import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import net.minecraft.launchwrapper.Launch;
+import net.minecraftforge.common.ForgeVersion;
 import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,8 +34,6 @@ public class GMan {
     public HashMap<String, Object> properties;
     private Logger logger;
     private ModInfo modInfo;
-    private String minecraftVersion;
-    private String modVersion;
 
     public static Gson getGSON() {
         return GSON;
@@ -38,11 +41,9 @@ public class GMan {
 
     protected static final Gson GSON = new Gson();
 
-    public GMan(Logger logger, ModInfo modInfo, String minecraftVersion, String modVersion) {
+    public GMan(Logger logger, ModInfo modInfo) {
         this.logger = logger;
         this.modInfo = modInfo;
-        this.minecraftVersion = minecraftVersion;
-        this.modVersion = modVersion;
         this.properties = new HashMap<String, Object>();
     }
 
@@ -58,25 +59,25 @@ public class GMan {
         builder.append(modInfo.modId);
         builder.append("/mod.json");
         final Gson gson = GMan.getGSON();
-        Reader reader = null;
         try {
-            reader = new InputStreamReader(new URL(builder.toString()).openStream());
+            Reader reader = new InputStreamReader(new URL(builder.toString()).openStream());
+            if (reader != null && !isDevelopment()) {
+                final ModInfo externalInfo = gson.fromJson(reader, ModInfo.class);
+                modInfo.donateURL = externalInfo.donateURL;
+                modInfo.updateURL = externalInfo.updateURL;
+                modInfo.versions = externalInfo.versions;
+                modInfo.determineUpdate(modVersion, minecraftVersion);
+                logger.info(modInfo.isUpdated() ? String.format("Mod is up-to-date. (%s)", modVersion)
+                        : "Mod is outdated, download latest at " + modInfo.updateURL);
+            }
+            reader.close();
+            return new GMan(logger, modInfo);
         } catch (final MalformedURLException e) {
             e.printStackTrace();
         } catch (final IOException e) {
             logger.warn("Failed to retrieve mod info, either mod doesn't exist or host(" + builder.toString()
                     + ") is down?");
         }
-        if (reader != null && !isDevelopment()) {
-            final ModInfo externalInfo = gson.fromJson(reader, ModInfo.class);
-            modInfo.donateURL = externalInfo.donateURL;
-            modInfo.updateURL = externalInfo.updateURL;
-            modInfo.versions = externalInfo.versions;
-            modInfo.determineUpdate(modVersion, minecraftVersion);
-            logger.info(modInfo.isUpdated() ? String.format("Mod is up-to-date. (%s)", modVersion)
-                    : "Mod is outdated, download latest at " + modInfo.updateURL);
-        }
-        return new GMan(logger, modInfo, minecraftVersion, modVersion);
     }
 
     public String[] getVersionsBetween(String from, String to, Predicate<String> predicate) {
@@ -106,27 +107,30 @@ public class GMan {
         return this;
     }
 
-    public Object getJSON(String filePath, Class clz) {
+    public <O> O getJSONObject(String filePath, Class<O> classOfO) {
         StringBuilder builder = new StringBuilder();
         builder.append(LOCATION);
         builder.append(modInfo.modId);
         builder.append("/");
         builder.append(filePath);
-        Reader reader = null;
+        final String url = builder.toString();
+
         try {
-            reader = new InputStreamReader(new URL(builder.toString()).openStream());
+            InputStream con = openUrlStream(new URL(url));
+            String data = new String(ByteStreams.toByteArray(con), "UTF-8");
+            con.close();
+            return GMan.getGSON().fromJson(data, classOfO);
         } catch (final MalformedURLException e) {
             e.printStackTrace();
         } catch (final IOException e) {
             logger.warn("Failed to retrieve URL, doesn't exist or host(" + builder.toString() + ") is down?");
             e.printStackTrace();
         }
-        if (reader != null)
-            return GMan.getGSON().fromJson(reader, clz);
+
         return null;
     }
 
-    public BufferedImage getImage(String filePath) {
+    public <T extends BufferedImage> T getImage(String filePath) {
         StringBuilder builder = new StringBuilder();
         builder.append(LOCATION);
         builder.append(modInfo.modId);
@@ -141,7 +145,7 @@ public class GMan {
                     "Failed to retrieve image from URL, doesn't exist or host(" + builder.toString() + ") is down?");
             e.printStackTrace();
         }
-        return image;
+        return (T) image;
     }
 
     public Map<String, Object> getJSONMap(String filePath) {
@@ -177,6 +181,42 @@ public class GMan {
 
         void request(GMan gman);
 
+    }
+
+    private static final int MAX_HTTP_REDIRECTS = Integer.getInteger("http.maxRedirects", 20);
+
+    /**
+     * Opens stream for given URL while following redirects
+     */
+    private InputStream openUrlStream(URL url) throws IOException
+    {
+        URL currentUrl = url;
+        for (int redirects = 0; redirects < MAX_HTTP_REDIRECTS; redirects++)
+        {
+            URLConnection c = currentUrl.openConnection();
+            if (c instanceof HttpURLConnection)
+            {
+                HttpURLConnection huc = (HttpURLConnection) c;
+                huc.setInstanceFollowRedirects(false);
+                int responseCode = huc.getResponseCode();
+                if (responseCode >= 300 && responseCode <= 399)
+                {
+                    try
+                    {
+                        String loc = huc.getHeaderField("Location");
+                        currentUrl = new URL(currentUrl, loc);
+                        continue;
+                    }
+                    finally
+                    {
+                        huc.disconnect();
+                    }
+                }
+            }
+
+            return c.getInputStream();
+        }
+        throw new IOException("Too many redirects while trying to fetch " + url);
     }
 
 }

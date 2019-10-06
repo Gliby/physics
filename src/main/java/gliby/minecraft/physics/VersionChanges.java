@@ -18,8 +18,10 @@ public class VersionChanges {
     private ArrayList<String> changes;
 
     public ResourceLocation getVersionImage(TextureManager manager) {
-        if (image != null && cachedResource == null)
+        if (image != null && cachedResource == null) {
             cachedResource = manager.getDynamicTextureLocation(version, new DynamicTexture(image));
+            image = null;
+        }
         return cachedResource;
     }
 

@@ -53,6 +53,7 @@ public class Physics {
     public static final String VERSION = "@VERSION@";
     public static final String NAME = "Gliby's Physics";
     public static final String ID = "glibysphysics";
+
     private static final SimpleNetworkWrapper DISPATCHER = NetworkRegistry.INSTANCE.newSimpleChannel(ID);
     private static final Logger LOGGER = LogManager.getLogger(NAME);
     /**
@@ -176,8 +177,7 @@ public class Physics {
                                         });
                                 ArrayList<VersionChanges> changes = new ArrayList<VersionChanges>();
                                 for (String s : versions) {
-                                    VersionChanges versionChanges = (VersionChanges) gman.getJSON("news/" + s + ".json",
-                                            VersionChanges.class);
+                                    VersionChanges versionChanges = gman.getJSONObject("news/" + s + ".json", VersionChanges.class);
 
                                     if (versionChanges != null)
                                         if (versionChanges.getChanges() != null)
@@ -216,6 +216,8 @@ public class Physics {
         proxy.preInit(this, event);
         getLogger().info("Pre-initialization completed on " + FMLCommonHandler.instance().getEffectiveSide());
     }
+
+
 
     public void registerPacket(Class handler, Class packet, Side side) {
         getDispatcher().registerMessage(packet, handler, packetIDIndex++, side);

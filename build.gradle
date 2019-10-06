@@ -89,10 +89,12 @@ jar {
 }
 
 
-if (gradle.startParameter.getTaskNames().contains("setupDecompWorkspace")) {
-    
-    project.logger.lifecycle('setupDecompWorkspace detected, applying IDEA workaround.')
-    
+List<String> tasks = gradle.startParameter.getTaskNames();
+
+if (tasks.contains("setupDecompWorkspace") || tasks.contains("genIntellijRuns")) {
+
+    project.logger.lifecycle('setupDecompWorkspace or genIntellijRuns detected, applying IDEA workaround.')
+
     sourceSets {
         main { output.resourcesDir = output.classesDir }
     }
