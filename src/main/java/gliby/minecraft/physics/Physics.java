@@ -46,9 +46,10 @@ import java.util.Map;
 // TODO (0.5.0) Replace Settings with Forge's configuration
 
 
-@Mod(modid = Physics.ID, name = Physics.NAME, guiFactory = "gliby.minecraft.physics.client.gui.options.GuiFactory")
+@Mod(modid = Physics.ID, name = Physics.NAME, acceptedMinecraftVersions = Physics.MC_VERSION, guiFactory = "gliby.minecraft.physics.client.gui.options.GuiFactory")
 public class Physics {
 
+    public static final String MC_VERSION = "@MC_VERSION@";
     public static final String VERSION = "@VERSION@";
     public static final String NAME = "Gliby's Physics";
     public static final String ID = "glibysphysics";
