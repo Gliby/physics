@@ -6,19 +6,17 @@ import gliby.minecraft.physics.client.render.entity.RenderPhysicsBlock;
 import gliby.minecraft.physics.client.render.entity.RenderToolGunBeam;
 import gliby.minecraft.physics.client.render.items.RenderItemPhysicsGun;
 import gliby.minecraft.physics.client.render.items.RenderItemToolGun;
+import gliby.minecraft.physics.client.render.lighting.AtomicStrykerLight;
 import gliby.minecraft.physics.client.render.lighting.IDynamicLightHandler;
 import gliby.minecraft.physics.client.render.lighting.NullLight;
-import gliby.minecraft.physics.client.render.player.RenderAdditionalPlayer;
 import gliby.minecraft.physics.common.entity.EntityPhysicsBlock;
 import gliby.minecraft.physics.common.entity.EntityToolGunBeam;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,11 +39,6 @@ public class RenderHandler {
 
     public RenderHandler(Physics physics, boolean dynamicLightsPresent) {
         this.physics = physics;
-        // TODO cosmetic: Add dynamic lighting back.
-        if (dynamicLightsPresent) {
-            // lightHandler = new AtomicStrykerLight();
-        } else
-            lightHandler = new NullLight();
     }
 
     /**
@@ -84,6 +77,16 @@ public class RenderHandler {
     }
 
     public void init(FMLInitializationEvent event) {
+        boolean dynamicLightsPresent = Loader.isModLoaded("dynamiclights");
+        if (dynamicLightsPresent) {
+            physics.getLogger().info("DynamicLights by AtomicStryker has been found, enabling dynamic light creation!");
+        }
+
+        if (dynamicLightsPresent) {
+            lightHandler = new AtomicStrykerLight();
+        } else
+            lightHandler = new NullLight();
+
         Minecraft mc = Minecraft.getMinecraft();
         RenderingRegistry.registerEntityRenderingHandler(EntityPhysicsBlock.class,
                 new RenderPhysicsBlock(this, mc.getRenderManager()));

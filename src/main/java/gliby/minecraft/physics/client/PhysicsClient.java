@@ -1,6 +1,5 @@
 package gliby.minecraft.physics.client;
 
-import com.badlogic.gdx.audio.Sound;
 import gliby.minecraft.gman.item.ItemHandler;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.VersionChanges;
@@ -10,7 +9,6 @@ import gliby.minecraft.physics.client.render.RenderHandler;
 import gliby.minecraft.physics.common.PhysicsServer;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -31,7 +29,7 @@ public class PhysicsClient extends PhysicsServer {
 
     @Override
     public void preInit(Physics physics, FMLPreInitializationEvent event) {
-        // TODO debug: re-add GuiDebug
+        // GuiDebug
         //MinecraftForge.EVENT_BUS.register(new GuiDebug());
         this.keyManager = new KeyManager();
         keyManager.init();
@@ -69,13 +67,7 @@ public class PhysicsClient extends PhysicsServer {
     public void init(Physics physics, FMLInitializationEvent event) {
         Physics.getLogger().info("Started!");
         render.init(event);
-        /*
-         * TODO cosmetic: Enable dynamic lights. boolean dynamicLightsPresent =
-         * Loader.isModLoaded("DynamicLights"); if (dynamicLightsPresent) {
-         * physics.getLogger().info(
-         * "DynamicLights by AtomicStryker has been found, enabling dynamic light creation!"
-         * ); }
-         */
+
         // TODO unfinished: EntityDeathHandler
         // MinecraftForge.EVENT_BUS.register(new
         // EntityDeathHandler(physicsWorld));

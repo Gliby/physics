@@ -16,6 +16,7 @@ import java.util.Map;
 /**
  * INI based, key->value mutable settings handler.
  */
+// TODO (0.6.0) Switch to Forge net.minecraftforge.common.config.Configuration;
 public class SettingsHandler {
 
     private static Gson gson;

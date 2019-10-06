@@ -2,12 +2,19 @@ buildscript {
     repositories {
         jcenter()
         maven { url = "http://files.minecraftforge.net/maven" }
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
+
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'com.wynprice.cursemaven:CurseMaven:1.2.3'
     }
 }
+
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: "com.wynprice.cursemaven"
 
 version = mod_version
 group = "gliby.minecraft.physics"
@@ -29,6 +36,7 @@ minecraft {
 }
 
 dependencies {
+    compile curse.resolve("dynamic-lights", "2563244")
     compile group: 'org.apache.commons', name: 'commons-math3', version: '3.0'
     compile files('lib/gdx-bullet.jar')
     compile files('lib/gdx-bullet-natives.jar')
