@@ -23,6 +23,7 @@ import org.lwjgl.util.vector.Vector3f;
 @SuppressWarnings("deprecation")
 public class RenderItemToolGun extends RawItemRenderer {
 
+    // TODO (0.6.0) Add Item Frame transform
     ItemCameraTransforms transforms = new ItemCameraTransforms(
             new ItemTransformVec3f(new Vector3f(180, 0, 0), new Vector3f(0, 0, 0), new Vector3f(-0.5f, 0.5f, 0.5f)),
             new ItemTransformVec3f(new Vector3f(180, 0, 0), new Vector3f(0, 0.1F, -0.25f), new Vector3f(-0.75f, 0.75f, 0.75f)),
