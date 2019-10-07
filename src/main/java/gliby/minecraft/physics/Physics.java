@@ -120,8 +120,8 @@ public class Physics {
         settings.registerBoolean("PhysicsEntities", "EntityCollisionResponse", false, Setting.Side.BOTH).
                 setComment("Control physics block related properties.");
 
-        settings.registerFloat("PhysicsEntities", "PlayerSpawnedDeathTime", 30, Setting.Side.BOTH);
-        settings.registerFloat("PhysicsEntities", "GameSpawnedDeathTime", 2.5f, Setting.Side.BOTH);
+        settings.registerFloat("PhysicsEntities", "PlayerSpawnedDeathTime", 30.0f, Setting.Side.BOTH);
+        settings.registerFloat("PhysicsEntities", "GameSpawnedDeathTime", 15.0f, Setting.Side.BOTH);
         settings.registerFloat("PhysicsEntities", "EntityColliderCleanupTime", 1.0f, Setting.Side.BOTH);
         settings.registerObject("PhysicsEntities", "EntityColliderBlacklist", new
                 String[]{EntityPhysicsBlock.class.getName(), EntityPhysicsBase.class.getName(), EntityToolGunBeam.class.getName(), EntityItem.class.getName()}, Setting.Side.BOTH);
