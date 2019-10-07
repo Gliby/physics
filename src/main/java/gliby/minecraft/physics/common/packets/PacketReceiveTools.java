@@ -2,6 +2,7 @@ package gliby.minecraft.physics.common.packets;
 
 import gliby.minecraft.physics.Physics;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Client handles this packet.
  */
 public class PacketReceiveTools extends MinecraftPacket implements IMessageHandler<PacketReceiveTools, IMessage> {
 
@@ -45,14 +46,9 @@ public class PacketReceiveTools extends MinecraftPacket implements IMessageHandl
 
     @Override
     public IMessage onMessage(final PacketReceiveTools message, MessageContext ctx) {
-        FMLCommonHandler.instance().getMinecraftServerInstance()
-                .addScheduledTask(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        Physics physics = Physics.getInstance();
-                        physics.getGameManager().getToolGunRegistry().setValueDefinitions(message.actions);
-                    }
+        Minecraft.getMinecraft().addScheduledTask((Runnable) () -> {
+                    Physics physics = Physics.getInstance();
+                    physics.getGameManager().getToolGunRegistry().setValueDefinitions(message.actions);
                 });
         return null;
     }
