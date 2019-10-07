@@ -37,7 +37,7 @@ public class RenderPhysicsBlock extends RenderPhysics {
         super(renderHandler, renderManager);
     }
 
-    protected  static Transform transform;
+    protected static Transform transform = new Transform();
 
     protected void draw(Entity castEntity, double entityX, double entityY, double entityZ, float deltaTime,
                         int color, boolean outline) {
