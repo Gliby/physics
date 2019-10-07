@@ -33,7 +33,7 @@ public class GravityModifierMechanic extends PhysicsMechanic {
             for (int j = 0; j < physicsWorld.getRigidBodies().size(); j++) {
                 IRigidBody body = physicsWorld.getRigidBodies().get(j);
                 Vector3f centerOfMassPosition = body.getCenterOfMassPosition();
-                Vector3f distance = VecUtility.VEC3F_POOL.get();
+                Vector3f distance = new Vector3f();
                 distance.sub(centerOfMassPosition, magnetPosition);
                 float dist = distance.length();
                 if (distance.length() <= magnet.getAttractionDistance()) {
@@ -54,7 +54,6 @@ public class GravityModifierMechanic extends PhysicsMechanic {
                     }
                     body.getProperties().put(EnumRigidBodyProperty.MAGNET.getName(), magnet);
                 }
-                VecUtility.VEC3F_POOL.release(distance);
             }
         }
     }

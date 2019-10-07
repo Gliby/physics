@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.bulletphysicsx.linearmath.Transform;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 
 import javax.vecmath.Matrix4f;
@@ -18,6 +19,7 @@ import java.nio.FloatBuffer;
  */
 public class VecUtility {
 
+    public static final AxisAlignedBB ZERO_BB = new AxisAlignedBB(Vec3d.ZERO, Vec3d.ZERO);
     private static float[] buffer = new float[16];
 
     /**
