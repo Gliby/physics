@@ -1,6 +1,5 @@
 package gliby.minecraft.gman;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -30,14 +29,7 @@ public class EntityUtility {
     }
 
     public static Entity spawnEntityScheduled(final World world, final Entity entity) {
-        world.getMinecraftServer().addScheduledTask(new Runnable() {
-
-            @Override
-            public void run() {
-                world.spawnEntity(entity);
-            }
-
-        });
+        world.getMinecraftServer().addScheduledTask(() -> world.spawnEntity(entity));
         return entity;
     }
 

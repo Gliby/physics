@@ -30,7 +30,7 @@ public class RenderHandler {
     private static IDynamicLightHandler lightHandler;
     private Physics physics;
 
-    {
+    static {
         physicsGunColors.put("a6a677aa-2589-4988-b686-59afd7c170f2", 0xFF87FF77);
         physicsGunColors.put("c4924b85-b249-4264-9d93-b54b1137d629", 0xFFF81A1A);
         physicsGunColors.put("1d7df249-ed29-49ca-a448-209264346386", 0xFFED7C12); // Reed
@@ -79,7 +79,7 @@ public class RenderHandler {
     public void init(FMLInitializationEvent event) {
         boolean dynamicLightsPresent = Loader.isModLoaded("dynamiclights");
         if (dynamicLightsPresent) {
-            physics.getLogger().info("DynamicLights by AtomicStryker has been found, enabling dynamic light creation!");
+            Physics.getLogger().info("DynamicLights by AtomicStryker has been found, enabling dynamic light creation!");
         }
 
         if (dynamicLightsPresent) {

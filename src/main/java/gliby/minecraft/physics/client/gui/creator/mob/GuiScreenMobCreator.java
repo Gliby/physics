@@ -39,7 +39,6 @@ public class GuiScreenMobCreator extends GuiScreenCreator {
     private EvictingQueue messagesList;
     private GuiButton generateButton;
     private Thread thread;
-    private Physics physics;
 
     private List<EntityRenderInformation> mobModels;
     private int luckyTick;
@@ -49,7 +48,7 @@ public class GuiScreenMobCreator extends GuiScreenCreator {
 
     public GuiScreenMobCreator(MobBlackList blackList, GuiScreen parent) {
         super(parent);
-        this.physics = Physics.getInstance();
+        Physics physics = Physics.getInstance();
         this.messagesList = EvictingQueue.create(3);
         this.mobModels = new ArrayList<EntityRenderInformation>();
         RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
@@ -104,7 +103,7 @@ public class GuiScreenMobCreator extends GuiScreenCreator {
                 int maxLength = 15;
                 drawString(fontRenderer,
                         mod.getName().substring(0,
-                                mod.getName().length() > maxLength ? maxLength : mod.getName().length()),
+                                Math.min(mod.getName().length(), maxLength)),
                         20, 10 + i * fontRenderer.FONT_HEIGHT, -1);
             }
         }

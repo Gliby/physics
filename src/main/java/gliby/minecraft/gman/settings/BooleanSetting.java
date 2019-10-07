@@ -5,10 +5,6 @@ import gliby.minecraft.gman.settings.INIProperties.INIPropertiesReadFailure;
 /**
  *
  */
-
-/**
- *
- */
 public class BooleanSetting extends Setting {
 
     private Object lastData;
@@ -17,8 +13,6 @@ public class BooleanSetting extends Setting {
     private boolean booleanValue;
 
     /**
-     * @param data
-     * @param setting
      */
     public BooleanSetting(String category, String name, boolean booleanValue, Side side) {
         super(category, name, booleanValue, side);
@@ -43,7 +37,7 @@ public class BooleanSetting extends Setting {
 
     public void setBooleanValue(boolean value) {
         this.booleanValue = value;
-        this.data = new Boolean(booleanValue);
+        this.data = Boolean.valueOf(value);
     }
 
     @Override

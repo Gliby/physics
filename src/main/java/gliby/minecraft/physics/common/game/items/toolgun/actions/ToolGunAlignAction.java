@@ -7,7 +7,6 @@ import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IRayResult;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.math.BlockPos;
 
 import javax.vecmath.Vector3f;
 

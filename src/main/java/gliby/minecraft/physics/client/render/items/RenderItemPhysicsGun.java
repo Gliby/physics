@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.block.model.ItemTransformVec3f;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.util.vector.Vector3f;
@@ -24,10 +23,10 @@ public class RenderItemPhysicsGun extends RawItemRenderer {
 
     private ItemCameraTransforms
             transforms = new ItemCameraTransforms(
-            new ItemTransformVec3f(new Vector3f(180, 0, 0), new Vector3f(0, 0,0 ), new Vector3f(-1, 1, 1)),
-            new ItemTransformVec3f(new Vector3f(180, 0, 0), new Vector3f(0, 0,0 ), new Vector3f(-1, 1, 1)),
-            new ItemTransformVec3f(new Vector3f(10, 0, 0), new Vector3f(-0.25f, 0.25f, -1.0f / 16.0f),new Vector3f(-1, -1, -1)),
-            new ItemTransformVec3f(new Vector3f(10, 0, 0), new Vector3f(-0.25f, 0.25f, -1.0f / 16.0f),new Vector3f(-1, -1, -1)),
+            new ItemTransformVec3f(new Vector3f(180, 0, 0), new Vector3f(0, 0, 0), new Vector3f(-1, 1, 1)),
+            new ItemTransformVec3f(new Vector3f(180, 0, 0), new Vector3f(0, 0, 0), new Vector3f(-1, 1, 1)),
+            new ItemTransformVec3f(new Vector3f(10, 0, 0), new Vector3f(-0.25f, 0.25f, -1.0f / 16.0f), new Vector3f(-1, -1, -1)),
+            new ItemTransformVec3f(new Vector3f(10, 0, 0), new Vector3f(-0.25f, 0.25f, -1.0f / 16.0f), new Vector3f(-1, -1, -1)),
             ItemTransformVec3f.DEFAULT,
             new ItemTransformVec3f(new Vector3f(30, 135, 0), new Vector3f(0.05f, 0.075f, 0), new Vector3f(-0.9f, -0.9f, -0.9f)),
             ItemTransformVec3f.DEFAULT,

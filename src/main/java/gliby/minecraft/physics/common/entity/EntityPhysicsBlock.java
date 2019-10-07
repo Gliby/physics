@@ -44,7 +44,7 @@ import java.lang.ref.WeakReference;
 
 public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAdditionalSpawnData {
 
-    protected static final DataParameter<Quat4f> PHYSICS_ROTATION = EntityDataManager.<Quat4f>createKey(EntityPhysicsBlock.class, GDataSerializers.QUAT4F);
+    protected static final DataParameter<Quat4f> PHYSICS_ROTATION = EntityDataManager.createKey(EntityPhysicsBlock.class, GDataSerializers.QUAT4F);
     /**
      * Client-side render position, basically a smoothed position.
      */
@@ -97,13 +97,6 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
      */
     private float friction;
     private Vector3f linearVelocity, angularVelocity;
-    @SideOnly(Side.CLIENT)
-    private BlockPos blockPosition;
-    /**
-     * How much lighting this block has.
-     */
-    private @SideOnly(Side.CLIENT)
-    int lightValue;
 
     public EntityPhysicsBlock(World world) {
         super(world);
@@ -246,7 +239,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         float lightX = (float) (renderAABB.minX + (width / 2));
         float lightY = (float) (renderAABB.minY + (height / 2));
         float lightZ = (float) (renderAABB.minZ + (length / 2));
-        blockPosition = new BlockPos(lightX, lightY, lightZ);
+        BlockPos blockPosition = new BlockPos(lightX, lightY, lightZ);
 
 
         if (this.world.isBlockLoaded(blockPosition))
@@ -354,8 +347,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 //        this.physicsPosition.set((float) posX, (float) posY, (float) posZ);
         if (tagCompound.hasKey("Rotation")) {
             NBTTagList list = tagCompound.getTagList("Rotation", 5);
-            this.physicsRotation.set(list.getFloatAt(0), list.getFloatAt(1), list.get(2) != null ? list.getFloatAt(2) : 0,
-                    list.get(3) != null ? list.getFloatAt(3) : 0);
+            this.physicsRotation.set(list.getFloatAt(0), list.getFloatAt(1), list.getFloatAt(2), list.getFloatAt(3));
         }
 
         if (tagCompound.hasKey("LinearVelocity")) {
@@ -419,7 +411,10 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         this.renderPosition = VecUtility.toVector3f(getPositionVector());
         this.renderRotation = new Quat4f(physicsRotation);
         // Create dynamic light source if we can!
-        lightValue = getBlockState().getLightValue(world, getPhysicsBlockPos());
+        /**
+         * How much lighting this block has.
+         */
+        int lightValue = getBlockState().getLightValue(world, getPhysicsBlockPos());
         if (lightValue > 0) {
             RenderHandler.getLightHandler().create(this, lightValue);
         }
@@ -474,8 +469,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
     // Returns the direction of the block based on the RigidBody.
     public Vector3f getDirection(Vector3f base) {
-        Vector3f up = base;
-        Vector3f direction = QuaternionUtil.quatRotate(physicsRotation, up, new Vector3f());
+        Vector3f direction = QuaternionUtil.quatRotate(physicsRotation, base, new Vector3f());
         direction.normalize();
         return direction;
     }
@@ -540,8 +534,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
      */
     private BlockPos getPhysicsBlockPos() {
         Vec3d position = getPositionVector().addVector(0.5f, 1, 0.5f);
-        BlockPos pos = new BlockPos(MathHelper.floor(position.x), MathHelper.floor(position.y), MathHelper.floor(position.z));
-        return pos;
+        return new BlockPos(MathHelper.floor(position.x), MathHelper.floor(position.y), MathHelper.floor(position.z));
     }
 
 

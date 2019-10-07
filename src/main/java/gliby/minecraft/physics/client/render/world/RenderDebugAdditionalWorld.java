@@ -18,12 +18,9 @@ public class RenderDebugAdditionalWorld {
     private static Transform physicsTransform = new Transform();
     private static FloatBuffer physicsFloatBufferMatrix4x4 = BufferUtils.createFloatBuffer(16);
     private static float[] physicsFloatMatrix4x4 = new float[16];
-    private Physics physics;
-    private Minecraft mc;
 
     public RenderDebugAdditionalWorld(Physics physics) {
-        this.mc = Minecraft.getMinecraft();
-        this.physics = physics;
+        Minecraft mc = Minecraft.getMinecraft();
     }
 
 //    public static void renderOffsetAABB(AxisAlignedBB bb) {

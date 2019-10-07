@@ -60,8 +60,7 @@ public class ItemPhysicsGun extends RawItem {
     }
 
     @Override
-    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity)
-    {
+    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
         return true;
     }
 

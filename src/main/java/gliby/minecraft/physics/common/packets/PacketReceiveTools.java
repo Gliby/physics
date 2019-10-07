@@ -48,12 +48,12 @@ public class PacketReceiveTools extends MinecraftPacket implements IMessageHandl
         FMLCommonHandler.instance().getMinecraftServerInstance()
                 .addScheduledTask(new Runnable() {
 
-            @Override
-            public void run() {
-                Physics physics = Physics.getInstance();
-                physics.getGameManager().getToolGunRegistry().setValueDefinitions(message.actions);
-            }
-        });
+                    @Override
+                    public void run() {
+                        Physics physics = Physics.getInstance();
+                        physics.getGameManager().getToolGunRegistry().setValueDefinitions(message.actions);
+                    }
+                });
         return null;
     }
 }

@@ -10,7 +10,6 @@ import gliby.minecraft.physics.common.physics.engine.IGhostObject;
 import net.minecraft.entity.Entity;
 
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 
 /**
  *

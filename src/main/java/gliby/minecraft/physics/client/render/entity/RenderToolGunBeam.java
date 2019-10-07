@@ -12,10 +12,10 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import javax.vecmath.Vector3f;
 
 /**
@@ -60,16 +60,9 @@ public class RenderToolGunBeam extends Render {
         GlStateManager.enableTexture2D();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * net.minecraft.client.renderer.entity.Render#getEntityTexture(net.minecraft
-     * .entity.Entity)
-     */
+    @Nullable
     @Override
-    protected final ResourceLocation getEntityTexture(Entity parEntity) {
-        return getEntityTexture(parEntity);
+    protected ResourceLocation getEntityTexture(Entity entity) {
+        return null;
     }
-
 }

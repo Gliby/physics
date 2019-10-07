@@ -12,17 +12,14 @@ import com.bulletphysicsx.dynamics.RigidBodyConstructionInfo;
 import com.bulletphysicsx.dynamics.constraintsolver.*;
 import com.bulletphysicsx.linearmath.DefaultMotionState;
 import com.bulletphysicsx.linearmath.Transform;
-import com.google.gson.Gson;
 import gliby.minecraft.gman.GMan;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.physics.IPhysicsWorldConfiguration;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.*;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.MathHelper;
 
 import javax.vecmath.Matrix3f;
 import javax.vecmath.Matrix4f;
@@ -33,8 +30,6 @@ import java.util.List;
 
 public class JavaPhysicsWorld extends PhysicsWorld {
 
-    private final PhysicsOverworld physicsOverworld;
-    private final Physics physics;
     private List<IRigidBody> rigidBodies;
     private List<IConstraint> constraints;
 
@@ -45,8 +40,6 @@ public class JavaPhysicsWorld extends PhysicsWorld {
     public JavaPhysicsWorld(final Physics physics, final PhysicsOverworld physicsOverworld,
                             final IPhysicsWorldConfiguration physicsConfig) {
         super(physicsConfig);
-        this.physics = physics;
-        this.physicsOverworld = physicsOverworld;
     }
 
     @Override

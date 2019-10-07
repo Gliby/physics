@@ -21,6 +21,7 @@ import java.util.List;
  */
 public class BlockInheritanceMechanic extends RigidBodyMechanic {
 
+    @SuppressWarnings("unchecked")
     @Override
     public void update(IRigidBody rigidBody, PhysicsWorld physicsWorld, Entity entity, Side side) {
         IBlockState blockState;
@@ -42,7 +43,6 @@ public class BlockInheritanceMechanic extends RigidBodyMechanic {
 //                    block.onEntityCollidedWithBlock(rigidBody.getOwner().getEntityWorld(), pos, collidedEntity);
                 }
             }
-        } else {
         }
     }
 

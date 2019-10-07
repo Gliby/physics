@@ -2,13 +2,11 @@ package gliby.minecraft.physics.common.physics.engine.nativebullet;
 
 import com.badlogic.gdx.physics.bullet.dynamics.btGeneric6DofConstraint;
 import com.bulletphysicsx.linearmath.Transform;
-import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IConstraintGeneric6Dof;
 
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 
 /**
  *

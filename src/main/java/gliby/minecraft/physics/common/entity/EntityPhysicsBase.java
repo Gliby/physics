@@ -28,7 +28,6 @@ import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.Sys;
 
 import javax.vecmath.Vector3f;
 import java.lang.ref.WeakReference;
@@ -45,8 +44,8 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
 
     public static final int TICKS_PER_SECOND = 20;
-    protected static final DataParameter<Integer> PICKER_ID = EntityDataManager.<Integer>createKey(EntityPhysicsBase.class, DataSerializers.VARINT);
-    protected static final DataParameter<Vector3f> PICK_OFFSET = EntityDataManager.<Vector3f>createKey(EntityPhysicsBase.class, GDataSerializers.VECTOR3F);
+    protected static final DataParameter<Integer> PICKER_ID = EntityDataManager.createKey(EntityPhysicsBase.class, DataSerializers.VARINT);
+    protected static final DataParameter<Vector3f> PICK_OFFSET = EntityDataManager.createKey(EntityPhysicsBase.class, GDataSerializers.VECTOR3F);
     protected List<RigidBodyMechanic> mechanics = new ArrayList<RigidBodyMechanic>();
 
     protected WeakReference<EntityPlayer> pickerEntity;
@@ -57,7 +56,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     protected boolean gameSpawned;
 
     protected Vector3f pickLocalHit;
-
+    Gson inclusiveGSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
     private int lastTickActive;
 
     /**
@@ -225,11 +224,6 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
      */
     public abstract IRigidBody getRigidBody();
 
-    Gson inclusiveGSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
-
-
-
-
     @Override
     public void readEntityFromNBT(NBTTagCompound tagCompound) {
         if (!world.isRemote) {
@@ -288,13 +282,13 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     public final void onUpdate() {
         super.onUpdate();
         if (this.world.isRemote) {
-            int pickerId = ((Integer) this.getDataManager().get(PICKER_ID)).intValue();
+            int pickerId = this.getDataManager().get(PICKER_ID).intValue();
             if (pickerId != -1) {
                 Entity entity = this.world.getEntityByID(pickerId);
                 if (entity instanceof EntityPlayer) {
                     setPickerEntity((EntityPlayer) entity);
                     if (this.getPickerEntity() != null) {
-                        this.pickLocalHit = (Vector3f) dataManager.get(PICK_OFFSET);
+                        this.pickLocalHit = dataManager.get(PICK_OFFSET);
                     } else {
                         this.pickLocalHit = null;
                     }
@@ -314,7 +308,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
                     Item item = picker.getHeldItem(EnumHand.MAIN_HAND) != null ? picker.getHeldItem(EnumHand.MAIN_HAND).getItem() : null;
                     // Check if held item isn't physics gun.
                     if (!(item instanceof ItemPhysicsGun)) {
-                        OwnedPickedObject object = null;
+                        OwnedPickedObject object;
                         // Continue if picked object exists.
                         if ((object = mechanic.getOwnedPickedObject(picker)) != null) {
                             // Alert's dataWatcher that item shouldn't be
@@ -336,7 +330,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
                 String deathKey = gameSpawned ? "PhysicsEntities.GameSpawnedDeathTime" : "PhysicsEntities.PlayerSpawnedDeathTime";
 
-                if (((ticksExisted - lastTickActive) / TICKS_PER_SECOND + 1) > Physics.getInstance().getSettings()
+                if (((float) (ticksExisted - lastTickActive) / (float) TICKS_PER_SECOND + 1) > Physics.getInstance().getSettings()
                         .getFloatSetting(deathKey).getFloatValue()) {
                     this.setDead();
                 }
@@ -375,10 +369,10 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
         buffer.writeInt(savedMechanics.size());
         for (int i = 0; i < savedMechanics.size(); i++) {
-            ByteBufUtils.writeUTF8String(buffer, (String) savedMechanics.get(i));
+            ByteBufUtils.writeUTF8String(buffer, savedMechanics.get(i));
         }
 
-        buffer.writeInt((Integer) (dataManager.get(PICKER_ID)).intValue());
+        buffer.writeInt((dataManager.get(PICKER_ID)).intValue());
 
         buffer.writeFloat(this.pickLocalHit.x);
         buffer.writeFloat(this.pickLocalHit.y);
@@ -401,13 +395,11 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
             this.pickLocalHit = readPick;
     }
 
-    public boolean canBeAttackedWithItem()
-    {
+    public boolean canBeAttackedWithItem() {
         return false;
     }
 
-    protected boolean canTriggerWalking()
-    {
+    protected boolean canTriggerWalking() {
         return true;
     }
 

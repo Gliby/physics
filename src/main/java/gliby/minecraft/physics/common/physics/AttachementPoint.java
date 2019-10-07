@@ -12,8 +12,6 @@ public class AttachementPoint {
 
     /**
      * @param point
-     * @param bodyA
-     * @param bodyB
      */
     public AttachementPoint(Vector3f point) {
         this.position = point;

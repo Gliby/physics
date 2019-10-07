@@ -16,23 +16,20 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import javax.vecmath.Vector3f;
 
 public abstract class RenderPhysics extends Render {
 
-    protected static Minecraft mc;
-    private final int DEFAULT_PHYSICS_COLOR = 0xFF87FFFF;
-    private RenderHandler renderHandler;
-
-    private int beamColor = -1;
-
     protected static final GBlockModelRenderer blockModelRenderer = new GBlockModelRenderer(Minecraft.getMinecraft().getBlockColors());
+    protected static Minecraft mc;
+    private RenderHandler renderHandler;
+    private int beamColor = -1;
 
     /**
      * @param renderManager
@@ -40,14 +37,15 @@ public abstract class RenderPhysics extends Render {
     protected RenderPhysics(RenderHandler renderHandler, RenderManager renderManager) {
         super(renderManager);
         this.renderHandler = renderHandler;
-        this.mc = Minecraft.getMinecraft();
+        mc = Minecraft.getMinecraft();
     }
 
     public abstract Vector3f getRenderHitPoint(EntityPhysicsBase entity, float partialTick);
 
+    @Nullable
     @Override
     protected final ResourceLocation getEntityTexture(Entity parEntity) {
-        return getEntityTexture(parEntity);
+        return null;
     }
 
     @Override
@@ -142,7 +140,7 @@ public abstract class RenderPhysics extends Render {
 
                 // draw outline
                 GlStateManager.glLineWidth(3);
-                GlStateManager.glPolygonMode(GL11.GL_FRONT,GL11.GL_LINE);
+                GlStateManager.glPolygonMode(GL11.GL_FRONT, GL11.GL_LINE);
                 GlStateManager.disableTexture2D();
                 GlStateManager.disableDepth();
                 GlStateManager.disableCull();
@@ -154,7 +152,7 @@ public abstract class RenderPhysics extends Render {
                 GlStateManager.enableCull();
                 GlStateManager.enableDepth();
                 GlStateManager.enableTexture2D();
-                GlStateManager.glPolygonMode(GL11.GL_FRONT,GL11.GL_FILL);
+                GlStateManager.glPolygonMode(GL11.GL_FRONT, GL11.GL_FILL);
                 GlStateManager.glLineWidth(3);
 
                 // Entity lighting
@@ -176,6 +174,7 @@ public abstract class RenderPhysics extends Render {
     public int getBeamColor(Entity pickerEntity) {
         if (beamColor == -1) {
             String UUID;
+            int DEFAULT_PHYSICS_COLOR = 0xFF87FFFF;
             if (renderHandler.getPhysicsGunColors().containsKey(UUID = pickerEntity.getUniqueID().toString())) {
                 beamColor = renderHandler.getPhysicsGunColors().get(UUID);
             } else

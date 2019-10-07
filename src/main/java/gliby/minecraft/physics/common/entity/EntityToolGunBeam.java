@@ -4,24 +4,17 @@ import gliby.minecraft.physics.client.SoundHandler;
 import gliby.minecraft.physics.client.render.VecUtility;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.audio.Sound;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IWorldEventListener;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.Sys;
 
-import javax.annotation.Nullable;
 import javax.vecmath.Vector3f;
 
 /**
@@ -127,8 +120,11 @@ public class EntityToolGunBeam extends Entity implements IEntityAdditionalSpawnD
             clientOrigin.add(
                     new Vector3f((float) owner.posX, (float) owner.posY + owner.getEyeHeight(), (float) owner.posZ));
         }
-        worldOrigin = VecUtility.toVector3f(
-                VecUtility.calculateRay(owner, 1.0f, 1.0f, new Vector3f(-0.30f, owner.getEyeHeight(), 0)));
-        timeCreated = System.currentTimeMillis();
+
+        if (owner != null) {
+            worldOrigin = VecUtility.toVector3f(
+                    VecUtility.calculateRay(owner, 1.0f, 1.0f, new Vector3f(-0.30f, owner.getEyeHeight(), 0)));
+            timeCreated = System.currentTimeMillis();
+        }
     }
 }

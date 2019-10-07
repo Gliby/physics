@@ -122,7 +122,7 @@ public class EntityDeathHandler {
             if (obj instanceof ModelRenderer) {
                 ModelRenderer modelRenderer = (ModelRenderer) obj;
                 for (int i1 = 0; i1 < modelRenderer.cubeList.size(); i1++) {
-                    ModelBox box = (ModelBox) modelRenderer.cubeList.get(i1);
+                    ModelBox box = modelRenderer.cubeList.get(i1);
                     proxyList.add(new ModelPart(new Vector3f(modelRenderer.rotationPointX, modelRenderer.rotationPointY,
                             modelRenderer.rotationPointZ), box));
                 }

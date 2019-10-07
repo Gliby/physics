@@ -5,7 +5,6 @@ import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCompoundShape;
 import com.bulletphysicsx.linearmath.Transform;
-import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
@@ -13,7 +12,6 @@ import gliby.minecraft.physics.common.physics.engine.ICollisionShapeChildren;
 
 import javax.vecmath.Vector3f;
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 

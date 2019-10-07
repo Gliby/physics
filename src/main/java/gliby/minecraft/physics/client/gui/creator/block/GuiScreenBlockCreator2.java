@@ -22,7 +22,6 @@ import org.apache.logging.log4j.Level;
 
 import java.awt.*;
 import java.io.IOException;
-import java.util.List;
 import java.util.*;
 
 /**
@@ -37,9 +36,7 @@ public class GuiScreenBlockCreator2 extends GuiScreenCreator {
     private ModContainer selectedMod;
     private int listWidth;
     private ArrayList<ModContainer> mods;
-    private ResourceLocation cachedLogo;
     private Dimension cachedLogoDimensions;
-    private int buttonMargin = 1;
     private int numButtons = SortType.values().length;
     private String lastFilterText = "";
     private GuiTextField modSearch;
@@ -80,7 +77,7 @@ public class GuiScreenBlockCreator2 extends GuiScreenCreator {
         Iterator<Block> itr = ForgeRegistries.BLOCKS.iterator();
         while (itr.hasNext()) {
             final Block block = itr.next();
-            ResourceLocation id =  ForgeRegistries.BLOCKS.getKey(block);
+            ResourceLocation id = ForgeRegistries.BLOCKS.getKey(block);
             ModContainer modContainer = FMLCommonHandler.instance().findContainerFor(block);
             modContainer = modContainer != null ? modContainer : firstModContainer;
             ArrayList<BlockIdentifier> blockList = blockRegistry.get(modContainer) != null
@@ -122,6 +119,7 @@ public class GuiScreenBlockCreator2 extends GuiScreenCreator {
 
         int width = (modList.getListWidth() / numButtons);
         int x = 10, y = 10;
+        int buttonMargin = 1;
         GuiButton normalSort = new GuiButton(SortType.NORMAL.buttonID, x, y, width - buttonMargin, 20,
                 I18n.format("fml.menu.mods.normal"));
         normalSort.enabled = false;
@@ -178,7 +176,7 @@ public class GuiScreenBlockCreator2 extends GuiScreenCreator {
 
         if (!sorted) {
             reloadMods();
-            Collections.sort(mods, sortType);
+            mods.sort(sortType);
             selected = modList.setSelectedIndex(mods.indexOf(selectedMod));
             sorted = true;
         }
@@ -206,7 +204,7 @@ public class GuiScreenBlockCreator2 extends GuiScreenCreator {
             SortType type = SortType.getTypeForButton(button);
 
             if (type != null) {
-                for (GuiButton b : (List<GuiButton>) buttonList) {
+                for (GuiButton b : buttonList) {
                     if (SortType.getTypeForButton(b) != null) {
                         b.enabled = true;
                     }
@@ -290,24 +288,21 @@ public class GuiScreenBlockCreator2 extends GuiScreenCreator {
                 editing = false;
                 drawString(fontRenderer, "No blocks found :(", 140, 33, -1);
             }
-        } else {
         }
     }
 
     Minecraft getMinecraftInstance() {
-        /** Reference to the Minecraft object. */
         return mc;
     }
 
     FontRenderer getFontRenderer() {
-        /** The FontRenderer used by GuiScreen */
         return fontRenderer;
     }
 
     public void selectModIndex(int index) {
         this.selected = index;
         this.selectedMod = (index >= 0 && index <= mods.size()) ? mods.get(selected) : null;
-        cachedLogo = null;
+        ResourceLocation cachedLogo = null;
     }
 
     public boolean modIndexSelected(int index) {

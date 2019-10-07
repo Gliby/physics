@@ -5,7 +5,6 @@ import gliby.minecraft.physics.common.physics.engine.IRayResult;
 
 import javax.vecmath.Vector3f;
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 
 /**
  *
@@ -18,7 +17,7 @@ class JavaClosestRayResultCallback implements IRayResult {
      *
      */
     JavaClosestRayResultCallback(CollisionWorld.ClosestRayResultCallback rayCallback) {
-        this.rayCallback = new SoftReference<CollisionWorld.ClosestRayResultCallback> (rayCallback);
+        this.rayCallback = new SoftReference<CollisionWorld.ClosestRayResultCallback>(rayCallback);
     }
 
     @Override

@@ -7,7 +7,6 @@ import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;
 import net.minecraft.block.Block;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
-import net.minecraftforge.registries.IForgeRegistry;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,13 +25,11 @@ public abstract class MetadataLoader {
     private HashMap<String, PhysicsBlockMetadata> actualMap;
     private HashMap<String, PhysicsBlockMetadata> tempData;
     private BlockManager blockManager;
-    private Physics physics;
     private BlockingQueue<Callable> blockLoadQueue = new LinkedBlockingQueue<Callable>();
     private int loaded;
 
     public MetadataLoader(Physics physics, BlockManager blockManager,
                           HashMap<String, PhysicsBlockMetadata> metadataMap) {
-        this.physics = physics;
         this.actualMap = metadataMap;
         this.tempData = new HashMap<String, PhysicsBlockMetadata>();
         this.blockManager = blockManager;

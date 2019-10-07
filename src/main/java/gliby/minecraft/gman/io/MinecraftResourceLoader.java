@@ -16,8 +16,7 @@ public class MinecraftResourceLoader {
         if (side.isClient()) {
             Minecraft mc = Minecraft.getMinecraft();
             try {
-                InputStream stream = mc.getResourceManager().getResource(location).getInputStream();
-                return stream;
+                return mc.getResourceManager().getResource(location).getInputStream();
             } catch (FileNotFoundException e) {
                 if (logger != null)
                     logger.warn("Couldn't find resource: " + location);
@@ -26,8 +25,7 @@ public class MinecraftResourceLoader {
             }
         } else {
             String fileLocation = "/assets/" + location.getResourceDomain() + "/" + location.getResourcePath();
-            InputStream stream = MinecraftServer.class.getResourceAsStream(fileLocation);
-            return stream;
+            return MinecraftServer.class.getResourceAsStream(fileLocation);
         }
         return null;
     }

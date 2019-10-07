@@ -8,7 +8,6 @@ import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.versioning.ComparableVersion;
 import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
@@ -24,15 +23,19 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class GMan {
 
-    public static final boolean GMAN_DEBUG = true;
-
+    public static final boolean GMAN_DEBUG = false;
+    protected static final Gson GSON = new Gson();
+    // net.minecraftforge.common.ForgeVersion results
+    protected static final int RESULTS_FIELD = 11;
     private final static String LOCATION = "https://raw.githubusercontent.com/Gliby/Mod-Information-Storage/master/";
+    private static final int MAX_HTTP_REDIRECTS = Integer.getInteger("http.maxRedirects", 20);
     private final Predicate ACCEPT_ALL = new Predicate<String>() {
 
         @Override
@@ -44,21 +47,19 @@ public class GMan {
     private Logger logger;
     private ModInfo modInfo;
 
-    public static Gson getGSON() {
-        return GSON;
-    }
-
-    protected static final Gson GSON = new Gson();
-
     public GMan(Logger logger, ModInfo modInfo) {
         this.logger = logger;
         this.modInfo = modInfo;
         this.properties = new HashMap<String, Object>();
     }
 
+    public static Gson getGSON() {
+        return GSON;
+    }
+
     public static boolean isDevelopment() {
-        boolean development = (Boolean) (Launch.blackboard.get("fml.deobfuscatedEnvironment")) && !GMAN_DEBUG;
-        return development;
+        boolean development = (Boolean) (Launch.blackboard.get("fml.deobfuscatedEnvironment"));
+        return !development || GMAN_DEBUG;
     }
 
     public static GMan create(final Logger logger, ModInfo modInfo, final String minecraftVersion,
@@ -70,7 +71,7 @@ public class GMan {
         final Gson gson = GMan.getGSON();
         try {
             Reader reader = new InputStreamReader(new URL(builder.toString()).openStream());
-            if (reader != null && !isDevelopment()) {
+            if (isDevelopment()) {
                 ModContainer modContainer = Loader.instance().activeModContainer();
                 final ModInfo externalInfo = gson.fromJson(reader, ModInfo.class);
                 modInfo.donateURL = externalInfo.donateURL;
@@ -92,16 +93,13 @@ public class GMan {
         return new GMan(logger, modInfo);
     }
 
-    // net.minecraftforge.common.ForgeVersion results
-    protected static final int RESULTS_FIELD = 11;
-
     /**
      * :)
      * https://xkcd.com/927/
      */
-    public static void addCheckResult(ModInfo modInfo, ModContainer container)  {
+    public static void addCheckResult(ModInfo modInfo, ModContainer container) {
         try {
-            Field resultField =  ForgeVersion.class.getDeclaredFields()[RESULTS_FIELD];
+            Field resultField = ForgeVersion.class.getDeclaredFields()[RESULTS_FIELD];
             resultField.setAccessible(true);
             Map<ModContainer, ForgeVersion.CheckResult> results = (Map<ModContainer, ForgeVersion.CheckResult>) resultField.get(null);
             if (results != null) {
@@ -159,7 +157,7 @@ public class GMan {
 
         try {
             InputStream con = openUrlStream(new URL(url));
-            String data = new String(ByteStreams.toByteArray(con), "UTF-8");
+            String data = new String(ByteStreams.toByteArray(con), StandardCharsets.UTF_8);
             con.close();
             return GMan.getGSON().fromJson(data, classOfO);
         } catch (final MalformedURLException e) {
@@ -219,38 +217,23 @@ public class GMan {
         return properties;
     }
 
-    public interface CustomRequest {
-
-        void request(GMan gman);
-
-    }
-
-    private static final int MAX_HTTP_REDIRECTS = Integer.getInteger("http.maxRedirects", 20);
-
     /**
      * Opens stream for given URL while following redirects
      */
-    private InputStream openUrlStream(URL url) throws IOException
-    {
+    private InputStream openUrlStream(URL url) throws IOException {
         URL currentUrl = url;
-        for (int redirects = 0; redirects < MAX_HTTP_REDIRECTS; redirects++)
-        {
+        for (int redirects = 0; redirects < MAX_HTTP_REDIRECTS; redirects++) {
             URLConnection c = currentUrl.openConnection();
-            if (c instanceof HttpURLConnection)
-            {
+            if (c instanceof HttpURLConnection) {
                 HttpURLConnection huc = (HttpURLConnection) c;
                 huc.setInstanceFollowRedirects(false);
                 int responseCode = huc.getResponseCode();
-                if (responseCode >= 300 && responseCode <= 399)
-                {
-                    try
-                    {
+                if (responseCode >= 300 && responseCode <= 399) {
+                    try {
                         String loc = huc.getHeaderField("Location");
                         currentUrl = new URL(currentUrl, loc);
                         continue;
-                    }
-                    finally
-                    {
+                    } finally {
                         huc.disconnect();
                     }
                 }
@@ -259,6 +242,12 @@ public class GMan {
             return c.getInputStream();
         }
         throw new IOException("Too many redirects while trying to fetch " + url);
+    }
+
+    public interface CustomRequest {
+
+        void request(GMan gman);
+
     }
 
 }

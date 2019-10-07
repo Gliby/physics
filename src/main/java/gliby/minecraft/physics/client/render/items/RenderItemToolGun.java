@@ -30,7 +30,7 @@ public class RenderItemToolGun extends RawItemRenderer {
             new ItemTransformVec3f(new Vector3f(8, 1f, 0.0f), new Vector3f(0, 0.25f, -1), new Vector3f(-1, -1, -1)),
             ItemTransformVec3f.DEFAULT,
             new ItemTransformVec3f(new Vector3f(30, 135, 0), new Vector3f(-0.135f, -0.080f, 0), new Vector3f(-0.9f, -0.9f, -0.9f)),
-            new ItemTransformVec3f(new Vector3f(0, 0, 0), new Vector3f(0,0,0), new Vector3f(0.25f,0.25f,0.25f)),
+            new ItemTransformVec3f(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(0.25f, 0.25f, 0.25f)),
             ItemTransformVec3f.DEFAULT);
 
     private ModelRenderer bipedRightArm;
@@ -104,7 +104,7 @@ public class RenderItemToolGun extends RawItemRenderer {
             float x = 32;
             float y = 32;
             // TODO cosmetic: make text scale vertically
-            GlStateManager.translate(21 - (text_width / 2) * scaleFactor, 8, 0);
+            GlStateManager.translate(21 - (text_width / 2.0F) * scaleFactor, 8, 0);
             GlStateManager.scale(scale, scale, 0);
             mc.fontRenderer.drawString(text, 0, 0, -1);
 

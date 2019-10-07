@@ -3,14 +3,12 @@ package gliby.minecraft.physics.common.physics.engine.javabullet;
 import com.bulletphysicsx.collision.dispatch.PairCachingGhostObject;
 import com.bulletphysicsx.collision.shapes.CollisionShape;
 import com.bulletphysicsx.linearmath.Transform;
-import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import gliby.minecraft.physics.common.physics.engine.IGhostObject;
 import net.minecraft.entity.Entity;
 
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 
 /**
  *

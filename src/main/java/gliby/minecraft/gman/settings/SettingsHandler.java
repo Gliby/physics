@@ -3,7 +3,6 @@ package gliby.minecraft.gman.settings;
 import com.google.gson.Gson;
 import gliby.minecraft.gman.settings.INIProperties.INIPropertiesReadFailure;
 import gliby.minecraft.gman.settings.Setting.Side;
-import org.codehaus.plexus.util.FastMap;
 
 import java.io.File;
 import java.util.HashMap;

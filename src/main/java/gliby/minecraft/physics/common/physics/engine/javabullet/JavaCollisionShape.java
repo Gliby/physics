@@ -6,14 +6,12 @@ import com.bulletphysicsx.collision.shapes.CollisionShape;
 import com.bulletphysicsx.collision.shapes.CompoundShape;
 import com.bulletphysicsx.collision.shapes.CompoundShapeChild;
 import com.bulletphysicsx.linearmath.Transform;
-import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShapeChildren;
 
 import javax.vecmath.Vector3f;
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 

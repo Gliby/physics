@@ -1,12 +1,7 @@
-/**
- * Copyright (c) 2015, Mine Fortress.
- */
 package gliby.minecraft.gman;
 
 import gliby.minecraft.gman.client.render.RawItemRenderer;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
@@ -21,9 +16,8 @@ public abstract class RawItem extends Item {
     private RawItemRenderer renderer;
 
     @Override
-    public void onUsingTick(ItemStack stack, EntityLivingBase player, int count)
-    {
-        this.renderer.setOwner((EntityPlayer) player);
+    public void onUsingTick(ItemStack stack, EntityLivingBase player, int count) {
+        this.renderer.setOwner(player);
         super.onUsingTick(stack, player, count);
     }
 

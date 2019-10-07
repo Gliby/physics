@@ -4,7 +4,6 @@ import com.bulletphysicsx.dynamics.constraintsolver.SliderConstraint;
 import gliby.minecraft.physics.common.physics.engine.IConstraintSlider;
 
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 
 public class JavaConstraintSlider implements IConstraintSlider {
 

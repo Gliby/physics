@@ -3,7 +3,6 @@ package gliby.minecraft.physics.client.keybindings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Type;
@@ -41,7 +40,7 @@ public class KeyManager {
 
     public void init() {
         for (EnumBinding bind : EnumBinding.values()) {
-            Object object = null;
+            KeyEvent object = null;
             try {
                 object = bind.clazz.getConstructor().newInstance();
             } catch (InstantiationException e) {
@@ -57,7 +56,7 @@ public class KeyManager {
             } catch (SecurityException e) {
                 e.printStackTrace();
             }
-            keyEvents.add((KeyEvent) object);
+            keyEvents.add(object);
         }
         registerKeyBindings();
         MinecraftForge.EVENT_BUS.register(this);

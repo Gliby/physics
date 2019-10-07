@@ -1,6 +1,5 @@
 package gliby.minecraft.physics.common.blocks;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import gliby.minecraft.gman.GMan;
 import gliby.minecraft.gman.io.MinecraftResourceLoader;
@@ -25,16 +24,14 @@ import java.util.zip.ZipFile;
  */
 public class BlockManager {
 
-    private Physics physics;
     private HashMap<String, PhysicsBlockMetadata> physicsBlockMetadata;
     private Map<String, IBlockGenerator> blockGenerators;
     private IBlockGenerator defaultGenerator;
 
     public BlockManager(Physics physics) {
-        this.physics = physics;
         blockGenerators = new HashMap<String, IBlockGenerator>();
         defaultGenerator = new DefaultBlockGenerator();
-        File tempFile = null;
+        File tempFile;
         ZipFile tempZip = null;
         if ((tempFile = new File(physics.getSettings().getDirectory(), "/custom/blocks.zip")).exists()) {
             try {
@@ -48,6 +45,7 @@ public class BlockManager {
         final File otherFile = tempFile;
         MetadataLoader loader = new MetadataLoader(physics, this,
                 physicsBlockMetadata = new HashMap<String, PhysicsBlockMetadata>()) {
+            @SuppressWarnings("unchecked")
             @Override
             public Map<String, Object> loadMetadata(String name) throws JsonSyntaxException, IOException {
                 if (otherFile.exists()) {
@@ -65,8 +63,7 @@ public class BlockManager {
                         MinecraftResourceLoader.getResource(Physics.getLogger(), FMLCommonHandler.instance().getSide(),
                                 new ResourceLocation(Physics.ID, "blocks/" + name + ".json")));
                 if (text != null) {
-                    Map<String, Object> json = GMan.getGSON().fromJson(text, Map.class);
-                    return json;
+                    return GMan.getGSON().fromJson(text, Map.class);
                 }
                 return null;
             }

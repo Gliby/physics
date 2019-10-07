@@ -26,9 +26,17 @@ public interface IRigidBody extends ICollisionObject {
 
     Vector3f getAngularVelocity();
 
+    /**
+     * @param angularVelocity
+     */
+    void setAngularVelocity(Vector3f angularVelocity);
 
     Vector3f getLinearVelocity();
 
+    /**
+     * @param linearVelocity
+     */
+    void setLinearVelocity(Vector3f linearVelocity);
 
     Vector3f getCenterOfMassPosition();
 
@@ -48,16 +56,6 @@ public interface IRigidBody extends ICollisionObject {
      * @param friction
      */
     void setFriction(float friction);
-
-    /**
-     * @param linearVelocity
-     */
-    void setLinearVelocity(Vector3f linearVelocity);
-
-    /**
-     * @param angularVelocity
-     */
-    void setAngularVelocity(Vector3f angularVelocity);
 
     /**
      * @param direction
@@ -86,14 +84,9 @@ public interface IRigidBody extends ICollisionObject {
     void getAabb(Vector3f vector3f, Vector3f vector3f2);
 
     /**
-     * @param transform
      * @return
      */
     Transform getCenterOfMassTransform();
-
-    /**
-     * @return
-     */
 
     /**
      * @return

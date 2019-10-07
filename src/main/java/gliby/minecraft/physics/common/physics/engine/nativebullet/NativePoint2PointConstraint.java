@@ -1,14 +1,12 @@
 package gliby.minecraft.physics.common.physics.engine.nativebullet;
 
 import com.badlogic.gdx.physics.bullet.dynamics.btPoint2PointConstraint;
-import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IConstraintPoint2Point;
 
 import javax.vecmath.Vector3f;
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 
 /**
  *

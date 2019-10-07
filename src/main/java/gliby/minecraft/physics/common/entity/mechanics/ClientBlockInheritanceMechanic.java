@@ -15,6 +15,7 @@ import java.util.List;
 
 public class ClientBlockInheritanceMechanic extends RigidBodyMechanic {
 
+    @SuppressWarnings("unchecked")
     @Override
     public void update(IRigidBody rigidBody, PhysicsWorld physicsWorld, Entity entity, Side side) {
         if (side.isClient()) {

@@ -202,16 +202,16 @@ public abstract class GuiCustomScrollingList {
             }
         } else {
             while (Mouse.next() && canMove) {
-                int var16 = Mouse.getEventDWheel();
+                int mouseDelta = Mouse.getEventDWheel();
 
-                if (var16 != 0) {
-                    if (var16 > 0) {
-                        var16 = -1;
-                    } else if (var16 < 0) {
-                        var16 = 1;
+                if (mouseDelta != 0) {
+                    if (mouseDelta > 0) {
+                        mouseDelta = -1;
+                    } else if (mouseDelta < 0) {
+                        mouseDelta = 1;
                     }
 
-                    this.scrollDistance += (float) (var16 * this.slotHeight / 2);
+                    this.scrollDistance += (float) (mouseDelta * this.slotHeight / 2);
                 }
             }
 
@@ -225,8 +225,8 @@ public abstract class GuiCustomScrollingList {
         double scaleW = client.displayWidth / res.getScaledWidth_double();
         double scaleH = client.displayHeight / res.getScaledHeight_double();
         GL11.glEnable(GL11.GL_SCISSOR_TEST);
-        GL11.glScissor((int)(left      * scaleW), (int)(client.displayHeight - (bottom * scaleH)),
-                (int)(listWidth * scaleW), (int)(viewHeight * scaleH));
+        GL11.glScissor((int) (left * scaleW), (int) (client.displayHeight - (bottom * scaleH)),
+                (int) (listWidth * scaleW), (int) (viewHeight * scaleH));
 
         BufferBuilder buffer = tess.getBuffer();
         if (this.client.world != null) {
@@ -261,17 +261,16 @@ public abstract class GuiCustomScrollingList {
             if (slotTop <= this.bottom && slotTop + slotBuffer >= this.top) {
                 if (this.highlightSelected && this.isSelected(slotId)) {
                     int min = this.left;
-                    int max = entryRight;
                     GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                     GlStateManager.disableTexture2D();
                     buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
                     buffer.pos(min, slotTop + slotBuffer + 2, 0).tex(0, 1).color(0x80, 0x80, 0x80, 0xFF).endVertex();
-                    buffer.pos(max, slotTop + slotBuffer + 2, 0).tex(1, 1).color(0x80, 0x80, 0x80, 0xFF).endVertex();
-                    buffer.pos(max, slotTop - 2, 0).tex(1, 0).color(0x80, 0x80, 0x80, 0xFF).endVertex();
+                    buffer.pos(entryRight, slotTop + slotBuffer + 2, 0).tex(1, 1).color(0x80, 0x80, 0x80, 0xFF).endVertex();
+                    buffer.pos(entryRight, slotTop - 2, 0).tex(1, 0).color(0x80, 0x80, 0x80, 0xFF).endVertex();
                     buffer.pos(min, slotTop - 2, 0).tex(0, 0).color(0x80, 0x80, 0x80, 0xFF).endVertex();
                     buffer.pos(min + 1, slotTop + slotBuffer + 1, 0).tex(0, 1).color(0x00, 0x00, 0x00, 0xFF).endVertex();
-                    buffer.pos(max - 1, slotTop + slotBuffer + 1, 0).tex(1, 1).color(0x00, 0x00, 0x00, 0xFF).endVertex();
-                    buffer.pos(max - 1, slotTop - 1, 0).tex(1, 0).color(0x00, 0x00, 0x00, 0xFF).endVertex();
+                    buffer.pos(entryRight - 1, slotTop + slotBuffer + 1, 0).tex(1, 1).color(0x00, 0x00, 0x00, 0xFF).endVertex();
+                    buffer.pos(entryRight - 1, slotTop - 1, 0).tex(1, 0).color(0x00, 0x00, 0x00, 0xFF).endVertex();
                     buffer.pos(min + 1, slotTop - 1, 0).tex(0, 0).color(0x00, 0x00, 0x00, 0xFF).endVertex();
                     tess.draw();
                     GlStateManager.enableTexture2D();

@@ -2,12 +2,10 @@ package gliby.minecraft.physics.common.physics.engine.javabullet;
 
 import com.bulletphysicsx.dynamics.constraintsolver.Generic6DofConstraint;
 import com.bulletphysicsx.linearmath.Transform;
-import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IConstraintGeneric6Dof;
 
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 
 /**
  *

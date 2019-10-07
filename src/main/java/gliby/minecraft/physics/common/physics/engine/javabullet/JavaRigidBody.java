@@ -10,7 +10,6 @@ import net.minecraft.entity.Entity;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,8 +53,18 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
     }
 
     @Override
+    public void setAngularVelocity(final Vector3f angularVelocity) {
+        rigidBody.get().setAngularVelocity(angularVelocity);
+    }
+
+    @Override
     public Vector3f getLinearVelocity() {
         return rigidBody.get().getLinearVelocity(new Vector3f());
+    }
+
+    @Override
+    public void setLinearVelocity(final Vector3f linearVelocity) {
+        rigidBody.get().setLinearVelocity(linearVelocity);
     }
 
     @Override
@@ -81,16 +90,6 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
     @Override
     public void setFriction(final float friction) {
         rigidBody.get().setFriction(friction);
-    }
-
-    @Override
-    public void setLinearVelocity(final Vector3f linearVelocity) {
-        rigidBody.get().setLinearVelocity(linearVelocity);
-    }
-
-    @Override
-    public void setAngularVelocity(final Vector3f angularVelocity) {
-        rigidBody.get().setAngularVelocity(angularVelocity);
     }
 
     @Override

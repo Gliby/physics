@@ -92,7 +92,7 @@ public class GuiScreenBlockCreator extends GuiScreenCreator implements GuiYesNoC
             ModContainer mod = Loader.instance().getActiveModList().get(i);
             if (i < modHeight / fontRenderer.FONT_HEIGHT) {
                 drawString(fontRenderer,
-                        mod.getName().substring(0, mod.getName().length() > 15 ? 15 : mod.getName().length()), 20,
+                        mod.getName().substring(0, Math.min(mod.getName().length(), 15)), 20,
                         10 + i * fontRenderer.FONT_HEIGHT,
                         physics.getBlockManager().getBlockGenerators().containsKey(mod.getModId()) ? 0x207060 : -1);
             }
@@ -107,7 +107,7 @@ public class GuiScreenBlockCreator extends GuiScreenCreator implements GuiYesNoC
                     0xFFFFFFFF);
         drawCenteredString(fontRenderer, (int) (100 * scalar) + "%", 112 + (loadingWidth / 2), loadingY + 6, -1);
 
-        if (lucky || true) {
+        if (lucky) {
             String whatchagonnado = "¯\\_(ツ)_/¯";
             luckyTick += 42 * partialTicks;
             if (luckyTick > width * 4)

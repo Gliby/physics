@@ -79,7 +79,7 @@ public abstract class PhysicsWorld {
         }
         AxisAlignedBB bb = blockState.getBlock().getBoundingBox(blockState, worldObj, blockPos);
 
-        final Vector3f blockPosition = new Vector3f((float)bb.maxX, (float)bb.maxY, (float)bb.maxZ);
+        final Vector3f blockPosition = new Vector3f((float) bb.maxX, (float) bb.maxY, (float) bb.maxZ);
         blockPosition.scale(0.5f);
         return createBoxShape(blockPosition);
     }
@@ -94,7 +94,7 @@ public abstract class PhysicsWorld {
         }
 
         if (defaultShape != null)
-         defaultShape.dispose();
+            defaultShape.dispose();
 
         physicsMechanics.clear();
         physicsMechanics = null;
@@ -149,8 +149,7 @@ public abstract class PhysicsWorld {
 
     public int getMaxSubstep() {
         final float delta = getDelta();
-        final int maxSubStep = MathHelper.clamp(Math.round(delta / 10), 1 , 100);
-        return maxSubStep;
+        return MathHelper.clamp(Math.round(delta / 10), 1, 100);
     }
 
 

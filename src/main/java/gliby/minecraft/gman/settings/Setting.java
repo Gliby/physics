@@ -13,6 +13,8 @@ public abstract class Setting {
     public final String name, section;
     public final Side side;
     public Object data;
+    protected String comment;
+    protected boolean wroteComment;
     private boolean hidden;
     private ArrayList<Listener> writeListeners;
     private ArrayList<Listener> readListeners;
@@ -30,8 +32,6 @@ public abstract class Setting {
         this.writeListeners = new ArrayList<Setting.Listener>();
     }
 
-    protected String comment;
-
     public Setting setComment(String comment) {
         this.comment = comment;
         return this;
@@ -46,8 +46,6 @@ public abstract class Setting {
     public abstract void read(final INIProperties ini) throws INIPropertiesReadFailure;
 
     public abstract void write(final INIProperties ini);
-
-    protected boolean wroteComment;
 
     protected void writeComment(final INIProperties ini) {
         if (comment != null && !comment.isEmpty() && !wroteComment) {

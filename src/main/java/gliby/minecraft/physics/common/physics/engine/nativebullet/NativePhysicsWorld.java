@@ -16,7 +16,6 @@ import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 import javax.vecmath.Vector3f;
@@ -38,9 +37,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
     private btDiscreteDynamicsWorld dynamicsWorld;
     private List<IRigidBody> rigidBodies;
 
-    private PhysicsOverworld physicsOverworld;
-    private Physics physics;
-
     private btDbvtBroadphase broadphase;
     private btCollisionConfiguration collisionConfiguration;
     private btCollisionDispatcher collisionDispatcher;
@@ -54,8 +50,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
     public NativePhysicsWorld(Physics physics, PhysicsOverworld physicsOverworld,
                               IPhysicsWorldConfiguration physicsConfig) {
         super(physicsConfig);
-        this.physics = physics;
-        this.physicsOverworld = physicsOverworld;
     }
 
 
@@ -103,8 +97,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
         btRigidBody body = new btRigidBody(constructionInfo);
 
-        NativeRigidBody rigidBody = new NativeRigidBody(this, body, owner);
-        return rigidBody;
+        return new NativeRigidBody(this, body, owner);
     }
 
     @Override
@@ -116,23 +109,20 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
         btRigidBody body = new btRigidBody(constructionInfo);
 
-        NativeRigidBody rigidBody = new NativeRigidBody(this, body, owner);
-        return rigidBody;
+        return new NativeRigidBody(this, body, owner);
     }
 
     @Override
     public ICollisionShape createBoxShape(Vector3f extents) {
         btBoxShape nativeBox = new btBoxShape(VecUtility.toVector3(extents));
-        NativeCollisionShape shape = new NativeCollisionShape(this, nativeBox);
-        return shape;
+        return new NativeCollisionShape(this, nativeBox);
     }
 
     @Override
     public IRayResult createClosestRayResultCallback(Vector3f rayFromWorld, Vector3f rayToWorld) {
         ClosestRayResultCallback nativeCallback;
-        NativeClosestRayResultCallback callback = new NativeClosestRayResultCallback(
+        return new NativeClosestRayResultCallback(
                 nativeCallback = new ClosestRayResultCallback(VecUtility.toVector3(rayFromWorld), VecUtility.toVector3(rayToWorld)));
-        return callback;
     }
 
     @Override
@@ -240,9 +230,8 @@ public class NativePhysicsWorld extends PhysicsWorld {
     @Override
     public IGhostObject createPairCachingGhostObject() {
         btPairCachingGhostObject nativePair;
-        NativePairCachingGhostObject pairCache = new NativePairCachingGhostObject(this,
+        return new NativePairCachingGhostObject(this,
                 nativePair = new btPairCachingGhostObject());
-        return pairCache;
     }
 
     @Override
@@ -259,10 +248,9 @@ public class NativePhysicsWorld extends PhysicsWorld {
     @Override
     public IConstraintPoint2Point createPoint2PointConstraint(IRigidBody rigidBody, Vector3f relativePivot) {
         btPoint2PointConstraint nativeConstraint;
-        NativePoint2PointConstraint p2p = new NativePoint2PointConstraint(this,
+        return new NativePoint2PointConstraint(this,
                 nativeConstraint = new btPoint2PointConstraint((btRigidBody) rigidBody.getBody(),
                         VecUtility.toVector3(relativePivot)));
-        return p2p;
     }
 
     @Override
@@ -293,8 +281,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
                 VecUtility.toMatrix4(frameInA), VecUtility.toMatrix4(frameInB),
                 useLinearReferenceFrameA);
 
-        NativeConstraintGeneric6Dof constraint = new NativeConstraintGeneric6Dof(this, nativeConstraint);
-        return constraint;
+        return new NativeConstraintGeneric6Dof(this, nativeConstraint);
     }
 
     @Override
@@ -325,8 +312,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
     @Override
     public ICollisionShape createSphereShape(float radius) {
         btSphereShape nativeSphere;
-        NativeCollisionShape shape = new NativeCollisionShape(this, nativeSphere = new btSphereShape(radius));
-        return shape;
+        return new NativeCollisionShape(this, nativeSphere = new btSphereShape(radius));
     }
 
     @Override
@@ -358,8 +344,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
                     (float) relativeBB.minZ + (float) relativeBB.maxZ - 0.5f);
             compoundShape.addChildShape(VecUtility.toMatrix4(transform), new btBoxShape(VecUtility.toVector3(extents)));
         }
-        NativeCollisionShape collisionShape = new NativeCollisionShape(this, compoundShape);
-        return collisionShape;
+        return new NativeCollisionShape(this, compoundShape);
 
     }
 

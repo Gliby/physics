@@ -1,22 +1,11 @@
 package gliby.minecraft.physics.common.entity.models;
 
-import com.google.gson.Gson;
-import gliby.minecraft.gman.io.MinecraftResourceLoader;
 import gliby.minecraft.physics.Physics;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 

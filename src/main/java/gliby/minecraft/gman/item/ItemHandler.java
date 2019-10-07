@@ -6,7 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -22,7 +21,6 @@ public class ItemHandler {
 
     private static ItemHandler instance;
     private ForcedAnimationHandler forcedAnimationHandler;
-    private ItemBreakHandler itemBreakHandler;
     private List<AlwaysUsedItem> forcedAnimationItem;
 
     private ItemHandler() {
@@ -40,6 +38,7 @@ public class ItemHandler {
         if (forcedAnimationHandler == null) {
             forcedAnimationItem = new ArrayList<AlwaysUsedItem>();
             MinecraftForge.EVENT_BUS.register(forcedAnimationHandler = new ForcedAnimationHandler());
+            ItemBreakHandler itemBreakHandler;
             MinecraftForge.EVENT_BUS.register(itemBreakHandler = new ItemBreakHandler());
         }
 

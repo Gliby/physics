@@ -70,7 +70,7 @@ public class RenderPhysicsRagdoll extends RenderPhysics {
             if (obj instanceof ModelRenderer) {
                 ModelRenderer modelRenderer = (ModelRenderer) obj;
                 for (int i1 = 0; i1 < modelRenderer.cubeList.size(); i1++) {
-                    ModelBox box = (ModelBox) modelRenderer.cubeList.get(i1);
+                    ModelBox box = modelRenderer.cubeList.get(i1);
                     Vector3f rotationPoint = new Vector3f(modelRenderer.rotationPointX, modelRenderer.rotationPointY,
                             modelRenderer.rotationPointZ);
                     proxyList.add(new ModelPart(rotationPoint, box));
@@ -85,10 +85,10 @@ public class RenderPhysicsRagdoll extends RenderPhysics {
                 ModelPart model = proxyList.get(j);
                 float size = 0.07f;
                 AxisAlignedBB pointBB = new AxisAlignedBB(point.getPosition().x, point.getPosition().y, point.getPosition().z,
-                                point.getPosition().x, point.getPosition().y, point.getPosition().z)
+                        point.getPosition().x, point.getPosition().y, point.getPosition().z)
                         .expand(size, size, size);
                 AxisAlignedBB modelBB = new AxisAlignedBB(model.getModelBox().posX1, model.getModelBox().posY1, model.getModelBox().posZ1,
-                                model.getModelBox().posX2, model.getModelBox().posY2, model.getModelBox().posZ2)
+                        model.getModelBox().posX2, model.getModelBox().posY2, model.getModelBox().posZ2)
                         .offset(model.getPosition().x, model.getPosition().y, model.getPosition().z);
 
                 if (pointBB.intersects(modelBB)) {

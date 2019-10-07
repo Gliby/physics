@@ -3,7 +3,8 @@ package gliby.minecraft.physics.common.physics;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import gliby.minecraft.physics.Physics;
-import gliby.minecraft.physics.common.entity.mechanics.*;
+import gliby.minecraft.physics.common.entity.mechanics.ActivateRedstoneMechanic;
+import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
 import gliby.minecraft.physics.common.physics.engine.javabullet.JavaPhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.nativebullet.NativePhysicsWorld;
 import gliby.minecraft.physics.common.physics.mechanics.EntityCollisionResponseMechanic;
@@ -88,7 +89,7 @@ public class PhysicsOverworld {
             physicsWorld.getMechanics().put("GravityMagnet", new GravityModifierMechanic(physicsWorld, 20));
             physicsWorld.getMechanics().put("ToolMan", new ToolMechanics(physics.getGameManager().getToolGunRegistry(), physicsWorld, 20));
             if (physics.getSettings().getBooleanSetting("PhysicsEntities.EntityCollisionResponse").getBooleanValue())
-                physicsWorld.getMechanics().put("EntityCollision", new EntityCollisionResponseMechanic(access, physicsWorld,20));
+                physicsWorld.getMechanics().put("EntityCollision", new EntityCollisionResponseMechanic(access, physicsWorld, 20));
 
             physicsWorld.create();
             getPhysicsWorldMap().put(access, physicsWorld);
@@ -159,7 +160,6 @@ public class PhysicsOverworld {
             useNative = false;
         }
 
-        final PhysicsWorld physicsWorld = useNative ? new NativePhysicsWorld(physics, this, physicsConfig) : new JavaPhysicsWorld(physics, this, physicsConfig);
-        return physicsWorld;
+        return useNative ? new NativePhysicsWorld(physics, this, physicsConfig) : new JavaPhysicsWorld(physics, this, physicsConfig);
     }
 }

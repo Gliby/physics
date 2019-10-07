@@ -1,14 +1,9 @@
 package gliby.minecraft.gman.client.render;
 
 import gliby.minecraft.gman.RawItem;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.ModelBakery;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -45,8 +40,7 @@ public class ItemRendererManager {
     }
 
     @SubscribeEvent
-    public void onModelRegistry(ModelRegistryEvent event)
-    {
+    public void onModelRegistry(ModelRegistryEvent event) {
         for (int i = 0; i < itemRenderer.size(); i++) {
             RawItemRenderer itemRender = itemRenderer.get(i);
             ModelLoader.setCustomModelResourceLocation(itemRender.getItemInstance(), 0, itemRender.modelResourceLocation);

@@ -3,7 +3,6 @@ package gliby.minecraft.physics.common.game.items.toolgun;
 import gliby.minecraft.gman.EntityUtility;
 import gliby.minecraft.gman.RawItem;
 import gliby.minecraft.physics.Physics;
-import gliby.minecraft.physics.client.SoundHandler;
 import gliby.minecraft.physics.common.entity.EntityToolGunBeam;
 import gliby.minecraft.physics.common.game.items.toolgun.actions.IToolGunAction;
 import gliby.minecraft.physics.common.packets.MinecraftPacket;
@@ -12,18 +11,13 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
-import net.minecraft.item.IItemPropertyGetter;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.MouseEvent;
@@ -34,7 +28,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
 import javax.vecmath.Vector3f;
 
 /**
@@ -62,8 +55,7 @@ public class ItemToolGun extends RawItem {
     }
 
     @Override
-    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity)
-    {
+    public boolean onLeftClickEntity(ItemStack stack, EntityPlayer player, Entity entity) {
         return true;
     }
 
@@ -76,12 +68,11 @@ public class ItemToolGun extends RawItem {
         return currentMode;
     }
 
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
-    {
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn) {
         ItemStack itemstack = playerIn.getHeldItem(handIn);
 
         if (worldIn.isRemote) {
-            int max =  physics.getGameManager().getToolGunRegistry().getValueDefinitions().size();
+            int max = physics.getGameManager().getToolGunRegistry().getValueDefinitions().size();
             currentMode = (currentMode + 1) % max;
 
             if (lastMode != currentMode) {
@@ -116,8 +107,7 @@ public class ItemToolGun extends RawItem {
     /**
      * returns the action that specifies what animation to play when the items is being used
      */
-    public EnumAction getItemUseAction(ItemStack stack)
-    {
+    public EnumAction getItemUseAction(ItemStack stack) {
         return EnumAction.BOW;
     }
 

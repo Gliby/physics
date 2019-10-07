@@ -13,7 +13,6 @@ import net.minecraft.entity.Entity;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +27,7 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 
     public NativeRigidBody(PhysicsWorld physicsWorld, btRigidBody rigidBody, Entity entity) {
         super(physicsWorld, entity, rigidBody);
-        this.physicsWorld = new SoftReference<NativePhysicsWorld>((NativePhysicsWorld)physicsWorld);
+        this.physicsWorld = new SoftReference<NativePhysicsWorld>((NativePhysicsWorld) physicsWorld);
         this.rigidBody = new SoftReference<btRigidBody>(rigidBody);
         this.collisionShape = new NativeCollisionShape(physicsWorld, rigidBody.getCollisionShape());
         this.properties = new HashMap<String, Object>();
@@ -56,8 +55,20 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
     }
 
     @Override
+    public void setAngularVelocity(Vector3f angularVelocity) {
+        rigidBody.get().setAngularVelocity(VecUtility.toVector3(angularVelocity));
+
+    }
+
+    @Override
     public Vector3f getLinearVelocity() {
         return VecUtility.toVector3f(rigidBody.get().getLinearVelocity());
+
+    }
+
+    @Override
+    public void setLinearVelocity(final Vector3f linearVelocity) {
+        rigidBody.get().setLinearVelocity(VecUtility.toVector3(linearVelocity));
 
     }
 
@@ -87,18 +98,6 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
     @Override
     public void setFriction(final float friction) {
         rigidBody.get().setFriction(friction);
-
-    }
-
-    @Override
-    public void setLinearVelocity(final Vector3f linearVelocity) {
-        rigidBody.get().setLinearVelocity(VecUtility.toVector3(linearVelocity));
-
-    }
-
-    @Override
-    public void setAngularVelocity(Vector3f angularVelocity) {
-        rigidBody.get().setAngularVelocity(VecUtility.toVector3(angularVelocity));
 
     }
 
@@ -168,7 +167,7 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 
     @Override
     public Vector3f getPosition() {
-        return VecUtility.toVector3f( rigidBody.get().getWorldTransform().getTranslation(new Vector3()) );
+        return VecUtility.toVector3f(rigidBody.get().getWorldTransform().getTranslation(new Vector3()));
     }
 
     @Override

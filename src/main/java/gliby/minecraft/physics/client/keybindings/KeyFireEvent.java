@@ -29,18 +29,18 @@ public class KeyFireEvent extends KeyEvent {
      */
     @Override
     public void keyUp(KeyBinding kb, boolean tickEnd) {
-        Minecraft mc = Minecraft.getMinecraft();
-        World world = null;
-        if ((world = mc.world) != null) {
-            if (mc.currentScreen == null) {
-                // Minecraft.getMinecraft().displayGuiScreen(new
-                // GuiScreenPhysicsCreator(null));
-                //debugSpawn(world);
-
-            }
-            // Physics.getInstance().getClientProxy().getPhysicsOverWorld().debugSpawn(world);
-            // debugSpawn(Minecraft.getMinecraft().theWorld);
-        }
+//        Minecraft mc = Minecraft.getMinecraft();
+//        World world = null;
+//        if ((world = mc.world) != null) {
+//            if (mc.currentScreen == null) {
+//                // Minecraft.getMinecraft().displayGuiScreen(new
+//                // GuiScreenPhysicsCreator(null));
+//                //debugSpawn(world);
+//
+//            }
+//            // Physics.getInstance().getClientProxy().getPhysicsOverWorld().debugSpawn(world);
+//            // debugSpawn(Minecraft.getMinecraft().theWorld);
+//        }
     }
 
     public void debugSpawn(World world) {

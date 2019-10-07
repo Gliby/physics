@@ -19,7 +19,7 @@ public class FloatSetting extends Setting {
 
     @Override
     public void read(INIProperties ini) throws INIPropertiesReadFailure {
-        data = new Float(ini.readFloat(section, name, (Float) data));
+        data = ini.readFloat(section, name, (Float) data);
     }
 
     @Override

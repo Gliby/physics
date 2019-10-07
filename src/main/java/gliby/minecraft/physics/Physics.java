@@ -21,7 +21,6 @@ import gliby.minecraft.physics.common.physics.PhysicsOverworld;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -43,8 +42,7 @@ import java.util.Map;
 // TODO  (0.6.0) look into NativeBullet by the Terasology, might solve memory leaks in the native PhysicsWorld and improve simulation perf.
 // TODO  (0.6.0) FIXME: something is leaking memory every time we create/destroy a PhysicsWorld.
 // TODO (0.5.0)  Mod glibysphysics is missing the required element 'version' and a version.properties file could not be found. Falling back to metadata version 0.4.2
-// TODO (0.5.0) make Forge's updateJSON compatible with GMAN.
-// TODO (0.5.0) Replace Settings with Forge's configuration
+// TODO (0.6.0) Replace Settings with Forge's configuration
 
 
 @Mod(modid = Physics.ID, name = Physics.NAME, acceptedMinecraftVersions = Physics.MC_VERSION, guiFactory = "gliby.minecraft.physics.client.gui.options.GuiFactory")
@@ -67,6 +65,7 @@ public class Physics {
     private static PhysicsServer proxy;
 
     private static int packetIDIndex;
+    ItemRendererManager itemRendererManager;
     /**
      * Manages anything game related, e.g items.
      */
@@ -100,8 +99,6 @@ public class Physics {
         return itemRendererManager;
     }
 
-    ItemRendererManager itemRendererManager;
-
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         itemRendererManager = new ItemRendererManager();
@@ -128,7 +125,7 @@ public class Physics {
         settings.registerFloat("PhysicsEntities", "GameSpawnedDeathTime", 2.5f, Setting.Side.BOTH);
         settings.registerFloat("PhysicsEntities", "EntityColliderCleanupTime", 1.0f, Setting.Side.BOTH);
         settings.registerObject("PhysicsEntities", "EntityColliderBlacklist", new
-                String[] { EntityPhysicsBlock.class.getName(), EntityPhysicsBase.class.getName(), EntityToolGunBeam.class.getName(), EntityItem.class.getName() }, Setting.Side.BOTH);
+                String[]{EntityPhysicsBlock.class.getName(), EntityPhysicsBase.class.getName(), EntityToolGunBeam.class.getName(), EntityItem.class.getName()}, Setting.Side.BOTH);
 
 
         settings.registerFloat("Game", "ProjectileImpulseForce", 30, Setting.Side.BOTH);
@@ -153,7 +150,7 @@ public class Physics {
         gman = GMan.create(getLogger(), new ModInfo(ID, event.getModMetadata().updateUrl), MinecraftForge.MC_VERSION,
                 VERSION);
 
-        if (!GMan.isDevelopment()) {
+        if (GMan.isDevelopment()) {
             StringSetting lastVersionSetting = settings.getStringSetting("Miscellaneous.LastVersion");
             final String lastVersion = settings.getStringSetting("Miscellaneous.LastVersion").getString();
             final boolean modUpdated = !lastVersion.equals(VERSION);
@@ -217,7 +214,6 @@ public class Physics {
         proxy.preInit(this, event);
         getLogger().info("Pre-initialization completed on " + FMLCommonHandler.instance().getEffectiveSide());
     }
-
 
 
     public void registerPacket(Class handler, Class packet, Side side) {

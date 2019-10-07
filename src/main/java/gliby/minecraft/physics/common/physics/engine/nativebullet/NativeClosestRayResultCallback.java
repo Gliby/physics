@@ -7,7 +7,6 @@ import gliby.minecraft.physics.common.physics.engine.IRayResult;
 
 import javax.vecmath.Vector3f;
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 
 /**
  *

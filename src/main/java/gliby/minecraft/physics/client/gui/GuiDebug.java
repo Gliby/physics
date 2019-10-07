@@ -14,14 +14,14 @@ public class GuiDebug {
     @SubscribeEvent
     public void render(RenderGameOverlayEvent.Text text) {
         PhysicsClient mf = Physics.getInstance().getClientProxy();
-        if (text.getType() == ElementType.TEXT) {
-            // Moved to server, client doesn't have access to these values
-            // anymore :(
-            // text.right.add("Physics Updates Per Seconds: " +
-            // mf.getPhysicsWorld().getStepSimulator().getStepsPerSecond());
-            // text.right.add("RigidBody Count: " +
-            // mf.getPhysicsWorld().getStepSimulator()tTYgetRigidBodies().size());
-        }
+//        if (text.getType() == ElementType.TEXT) {
+//            // Moved to server, client doesn't have access to these values
+//            // anymore :(
+//            // text.right.add("Physics Updates Per Seconds: " +
+//            // mf.getPhysicsWorld().getStepSimulator().getStepsPerSecond());
+//            // text.right.add("RigidBody Count: " +
+//            // mf.getPhysicsWorld().getStepSimulator()tTYgetRigidBodies().size());
+//        }
     }
 
 }

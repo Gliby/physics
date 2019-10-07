@@ -1,6 +1,5 @@
 package gliby.minecraft.physics.client.gui.options;
 
-import com.google.common.collect.ImmutableSet;
 import gliby.minecraft.physics.client.gui.creator.GuiScreenPhysicsCreator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;

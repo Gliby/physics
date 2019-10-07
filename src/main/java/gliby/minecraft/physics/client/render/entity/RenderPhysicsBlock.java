@@ -1,7 +1,6 @@
 package gliby.minecraft.physics.client.render.entity;
 
 import com.bulletphysicsx.linearmath.Transform;
-import com.bulletphysicsx.util.ObjectPool;
 import gliby.minecraft.physics.client.render.RenderHandler;
 import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.entity.EntityPhysicsBase;
@@ -47,7 +46,6 @@ public class RenderPhysicsBlock extends RenderPhysics {
             Vector3f worldTranslation = VecUtility.getWorldTranslation(mc, deltaTime);
             BlockRendererDispatcher blockrendererdispatcher = mc.getBlockRendererDispatcher();
             IBakedModel ibakedmodel = blockrendererdispatcher.getModelForState(state);
-
 
 
             // start drawing

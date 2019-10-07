@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -66,10 +65,11 @@ public abstract class RawItemRenderer implements IBakedModel {
     protected Item itemInstance;
     private Pair<IBakedModel, Matrix4f> pair;
     private RawItemOverrideList itemOverride;
+
     public RawItemRenderer(ModelResourceLocation resourceLocation) {
         this.modelResourceLocation = resourceLocation;
 
-        this.pair = Pair.of((IBakedModel) this, null);
+        this.pair = Pair.of(this, null);
         this.playerBiped = new ModelBiped();
         this.playerBiped.textureWidth = 64;
         this.playerBiped.textureHeight = 64;
@@ -88,13 +88,6 @@ public abstract class RawItemRenderer implements IBakedModel {
             ItemTransformVec3f[] fixed = {transforms.thirdperson_right, transforms.thirdperson_left, transforms.firstperson_left,
                     transforms.firstperson_right, transforms.gui, transforms.head, transforms.fixed, transforms.ground};
 
-
-            for (ItemTransformVec3f transform : fixed) {
-//                transform.rotation.set((float) Math.toRadians(transform.rotation.x),
-//                        (float) Math.toRadians(transform.rotation.y),
-//                        (float) Math.toRadians(transform.rotation.z));
-//                transform.translation.scale(2);
-            }
         }
 
         return this;

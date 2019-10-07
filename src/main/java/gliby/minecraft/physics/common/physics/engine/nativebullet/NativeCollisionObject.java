@@ -9,9 +9,7 @@ import gliby.minecraft.physics.common.physics.engine.ICollisionObject;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import net.minecraft.entity.Entity;
 
-import java.lang.annotation.Native;
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 
 /**
  *
@@ -23,7 +21,7 @@ class NativeCollisionObject implements ICollisionObject {
     private SoftReference<btCollisionObject> collisionObject;
 
     NativeCollisionObject(PhysicsWorld physicsWorld, btCollisionObject object) {
-        this.physicsWorld = new SoftReference<NativePhysicsWorld> ((NativePhysicsWorld) physicsWorld);
+        this.physicsWorld = new SoftReference<NativePhysicsWorld>((NativePhysicsWorld) physicsWorld);
         this.collisionObject = new SoftReference<btCollisionObject>(object);
     }
 
