@@ -153,7 +153,6 @@ public class Physics {
             StringSetting lastVersionSetting = settings.getStringSetting("Miscellaneous.LastVersion");
             final String lastVersion = settings.getStringSetting("Miscellaneous.LastVersion").getString();
             final boolean modUpdated = !lastVersion.equals(VERSION);
-            System.out.println("mod updated: " + modUpdated + ", last version: " + VERSION);
             if (modUpdated) {
                 getLogger().info("Version change detected, gathering change logs!");
                 gman.request(new GMan.CustomRequest() {
@@ -190,9 +189,6 @@ public class Physics {
                         }, "GMAN Update/News").start();
                     }
                 });
-            } else {
-                getLogger().info("No version changes found!");
-
             }
             lastVersionSetting.setString(VERSION);
         } else {
