@@ -2,21 +2,21 @@ buildscript {
     repositories {
         jcenter()
         maven { url = "http://files.minecraftforge.net/maven" }
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
+        maven { url "https://plugins.gradle.org/m2/" }
     }
 
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
         classpath 'com.wynprice.cursemaven:CurseMaven:1.2.3'
         classpath "com.github.jengelman.gradle.plugins:shadow:1.2.3"
+        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.4.0"
     }
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: "com.wynprice.cursemaven"
 apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: "com.matthewprenger.cursegradle"
 
 version = mod_version
 group = "gliby.minecraft.physics"
@@ -27,12 +27,11 @@ compileJava {
     sourceCompatibility = targetCompatibility = '1.8'
 }
 
-// todo look into versioning
 minecraft {
     version = "1.12.2-14.23.5.2768"
     runDir = "run"
     mappings = "snapshot_20171003"
-    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    makeObfSourceJar = false
     replace "@VERSION@", project.version
     replace "@MC_VERSION@", version
 }
@@ -45,6 +44,31 @@ dependencies {
     compile files('lib/gdx.jar')
 }
 
+processResources {
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        // replace version and mcversion
+        expand 'version': project.version, 'mcversion': project.minecraft.version
+    }
+    // copy everything else except the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+jar {
+    manifest {
+        attributes 'FMLAT': 'GlibysPhysics_at.cfg'
+    }
+}
+
+// Shading
 shadowJar {
     classifier = ''
     relocate 'org.apache.commons.math3', "${project.group}.shadow.org.apache.commons.math3"
@@ -61,44 +85,52 @@ artifacts {
     archives sourceJar
 }
 
-
-processResources {
-    // this will ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-                
-        // replace version and mcversion
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+curseforge {
+    if (project.hasProperty('curseforge_key')) {
+        apiKey = project.curseforge_key
     }
-        
-    // copy everything else except the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
+
+    //noinspection GroovyAssignabilityCheck
+    project {
+        id = project.projectId
+        releaseType = project.curse_type
+        changelog = "Changes."
+        if (project.hasProperty("curseforge_key")) {
+            changelog = getChanges()
+            changelogType = "markdown"
+        }
+
+        mainArtifact(jar) {
+            displayName = String.format("%s %s", getModName(), project.minecraft.version)
+            logger.lifecycle("Prepared CurseForge artifact: " + displayName)
+
+            relations {
+                optionalDependency 'dynamic-lights'
+            }
+        }
     }
 }
 
-
-jar {
-    manifest {
-        attributes 'FMLAT' : 'GlibysPhysics_at.cfg'
+def getChanges() {
+    String patchNotesDir = '.patchnotes'
+    File changesFile = new File(patchNotesDir + File.separator + mod_version + ".MD")
+    if (changesFile.exists()) {
+        String text = changesFile.getText("UTF-8")
+        logger.lifecycle(String.format("Processed changes from %s", patchNotesDir))
+        logger.lifecycle(text)
+        return text
     }
+    return ""
 }
 
-
-List<String> tasks = gradle.startParameter.getTaskNames();
-// IMPORTANT: If you set up with setupDecompWorkspace, you will not be able to use ./gradlew build or runClient.
-// .gradle dir will need to be deleted to build.
-if (tasks.contains("setupDecompWorkspace") || tasks.contains("genIntellijRuns")) {
-
-    project.logger.lifecycle('setupDecompWorkspace or genIntellijRuns detected, applying IDEA workaround.')
-
-    sourceSets {
-        main { output.resourcesDir = output.classesDir }
+def getModName() {
+    // Get mod name
+    def modInfoLocation = sourceSets.main.resources.srcDirs.iterator().next().toString() + File.separator + "mcmod.info"
+    println modInfoLocation
+    def modInfo = new File(modInfoLocation)
+    if (modInfo.exists()) {
+        def parsedJson = new groovy.json.JsonSlurper().parseText(modInfo.getText("UTF-8"))
+        return parsedJson.name[0]
     }
-
-    idea { module { inheritOutputDirs = true } }
+    return ""
 }
