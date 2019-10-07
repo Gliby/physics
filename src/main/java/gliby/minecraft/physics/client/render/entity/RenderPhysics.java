@@ -143,13 +143,13 @@ public abstract class RenderPhysics extends Render {
                 GlStateManager.glPolygonMode(GL11.GL_FRONT, GL11.GL_LINE);
                 GlStateManager.disableTexture2D();
                 GlStateManager.disableDepth();
-                GlStateManager.disableCull();
-                GlStateManager.enableRescaleNormal();
+//                GlStateManager.disableCull();
+//                GlStateManager.enableRescaleNormal();
 
                 draw(uncast, entityX, entityY, entityZ, deltaTime, beamColor, true);
 
-                GlStateManager.disableRescaleNormal();
-                GlStateManager.enableCull();
+//                GlStateManager.disableRescaleNormal();
+//                GlStateManager.enableCull();
                 GlStateManager.enableDepth();
                 GlStateManager.enableTexture2D();
                 GlStateManager.glPolygonMode(GL11.GL_FRONT, GL11.GL_FILL);
@@ -174,11 +174,11 @@ public abstract class RenderPhysics extends Render {
     public int getBeamColor(Entity pickerEntity) {
         if (beamColor == -1) {
             String UUID;
+
             int DEFAULT_PHYSICS_COLOR = 0xFF87FFFF;
             if (renderHandler.getPhysicsGunColors().containsKey(UUID = pickerEntity.getUniqueID().toString())) {
                 beamColor = renderHandler.getPhysicsGunColors().get(UUID);
-            } else
-                beamColor = DEFAULT_PHYSICS_COLOR;
+            }
         }
         return beamColor;
     }
