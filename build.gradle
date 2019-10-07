@@ -90,7 +90,8 @@ jar {
 
 
 List<String> tasks = gradle.startParameter.getTaskNames();
-
+// IMPORTANT: If you set up with setupDecompWorkspace, you will not be able to use ./gradlew build or runClient.
+// .gradle dir will need to be deleted to build.
 if (tasks.contains("setupDecompWorkspace") || tasks.contains("genIntellijRuns")) {
 
     project.logger.lifecycle('setupDecompWorkspace or genIntellijRuns detected, applying IDEA workaround.')
