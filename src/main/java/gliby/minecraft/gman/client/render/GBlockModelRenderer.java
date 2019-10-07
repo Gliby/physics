@@ -14,6 +14,7 @@ import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.IBlockAccess;
@@ -234,11 +235,12 @@ public class GBlockModelRenderer {
     }
 
     public void renderModelNoLightmap(World world, IBlockState state, BlockPos pos, IBakedModel bakedModel, boolean applyTint, Vec3d customColor) {
+        long rand = MathHelper.getPositionRandom(pos);
         for (EnumFacing enumfacing : EnumFacing.values()) {
-            this.renderModelBrightnessColorQuads(world, state, pos, bakedModel.getQuads(state, enumfacing, 0L), applyTint, customColor);
+            this.renderModelBrightnessColorQuads(world, state, pos, bakedModel.getQuads(state, enumfacing, rand), applyTint, customColor);
         }
 
-        this.renderModelBrightnessColorQuads(world, state, pos, bakedModel.getQuads(state, null, 0L), applyTint, customColor);
+        this.renderModelBrightnessColorQuads(world, state, pos, bakedModel.getQuads(state, null, rand), applyTint, customColor);
     }
 
 
@@ -274,11 +276,12 @@ public class GBlockModelRenderer {
                     bufferbuilder.putColorMultiplier(red, blue, green, 2);
                     bufferbuilder.putColorMultiplier(red, blue, green, 1);
                 } else if (bakedquad.shouldApplyDiffuseLighting()) {
-                    float diffuse = net.minecraftforge.client.model.pipeline.LightUtil.diffuseLight(bakedquad.getFace());
-                    bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 4);
-                    bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 3);
-                    bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 2);
-                    bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 1);
+                    // TODO BUG: investigate if this makes blocks invisible
+//                    float diffuse = net.minecraftforge.client.model.pipeline.LightUtil.diffuseLight(bakedquad.getFace());
+//                    bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 4);
+//                    bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 3);
+//                    bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 2);
+//                    bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 1);
                 }
             } else if (customColor != null)
                 bufferbuilder.putColorRGB_F4((float) customColor.x, (float) customColor.y, (float) customColor.z);

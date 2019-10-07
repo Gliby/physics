@@ -48,12 +48,12 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     /**
      * Client-side render position, basically a smoothed position.
      */
-    protected Vector3f renderPosition = new Vector3f();
+    protected Vector3f renderPosition = new Vector3f(0,0,0);
 
     /**
      * Client-side render rotation, basically a smoothed rotation.
      */
-    protected Quat4f renderRotation = new Quat4f();
+    protected Quat4f renderRotation = new Quat4f(0, 0, 0, 1);
 
     /**
      * BlockState of the original non-physics Block.
@@ -102,7 +102,6 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         setSize(0.85f, 1.05f);
         if (world.isRemote) {
             this.renderPosition = new Vector3f((float) posX, (float) posY, (float) posZ);
-            this.renderRotation = new Quat4f(physicsRotation);
         }
     }
 
@@ -239,12 +238,9 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         float lightZ = (float) (renderAABB.minZ + (length / 2));
         BlockPos blockPosition = new BlockPos(lightX, lightY, lightZ);
 
-
         if (this.world.isBlockLoaded(blockPosition))
             return this.world.getCombinedLight(blockPosition, 0);
-        else
-            return 0;
-
+        else return 0;
     }
 
     @Override
