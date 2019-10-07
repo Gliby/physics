@@ -4,10 +4,8 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.bulletphysicsx.linearmath.Transform;
-import com.bulletphysicsx.util.ObjectPool;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 
 import javax.vecmath.Matrix4f;
@@ -20,13 +18,6 @@ import java.nio.FloatBuffer;
  */
 public class VecUtility {
 
-    public static final AxisAlignedBB ZERO_BB = new AxisAlignedBB(Vec3d.ZERO, Vec3d.ZERO);
-    public static ObjectPool<Matrix4f> MAT4F_POOL = ObjectPool.get(Matrix4f.class);
-    public static ObjectPool<Transform> TRANS_POOL = ObjectPool.get(Transform.class);
-    public static ObjectPool<Vector3f> VEC3F_POOL = ObjectPool.get(Vector3f.class);
-    public static ObjectPool<Vector3> VEC3_POOL = ObjectPool.get(Vector3.class);
-    public static ObjectPool<Quaternion> QUAT_POOL = ObjectPool.get(Quaternion.class);
-    public static ObjectPool<Quat4f> QUAT4F_POOL = ObjectPool.get(Quat4f.class);
     private static float[] buffer = new float[16];
 
     /**
@@ -92,15 +83,13 @@ public class VecUtility {
 
 
     public static Matrix4f toMatrix4f(Matrix4 matrix4) {
-        Quaternion rotation = QUAT_POOL.get();
+        Quaternion rotation = new Quaternion();
         matrix4.getRotation(rotation);
 
-        Vector3 position = VEC3_POOL.get();
+        Vector3 position = new Vector3();
         matrix4.getTranslation(position);
         Matrix4f mat4 = new Matrix4f(toQuat4f(rotation), toVector3f(position), 1);
 
-        QUAT_POOL.release(rotation);
-        VEC3_POOL.release(position);
         return mat4;
     }
 
@@ -108,19 +97,17 @@ public class VecUtility {
         Matrix4 mat4 = new Matrix4();
         mat4.idt();
 
-        Quat4f rotation = QUAT4F_POOL.get();
+        Quat4f rotation = new Quat4f();
         mat4.set(toVector3(transform.origin), toQuaternion(transform.getRotation(rotation)));
-        QUAT4F_POOL.release(rotation);
         return mat4;
     }
 
     public static Matrix4f inverse(Matrix4f centerOfMassTransform) {
-        Transform trans = TRANS_POOL.get();
+        Transform trans = new Transform();
         trans.set(centerOfMassTransform);
         trans.inverse();
         centerOfMassTransform.setIdentity();
         Matrix4f result = trans.getMatrix(centerOfMassTransform);
-        TRANS_POOL.release(trans);
         return result;
     }
 

@@ -37,6 +37,8 @@ public class RenderPhysicsBlock extends RenderPhysics {
         super(renderHandler, renderManager);
     }
 
+    protected  static Transform transform;
+
     protected void draw(Entity castEntity, double entityX, double entityY, double entityZ, float deltaTime,
                         int color, boolean outline) {
 
@@ -72,14 +74,13 @@ public class RenderPhysicsBlock extends RenderPhysics {
 //
 //            GlStateManager.popMatrix();
 
-            Transform transform = VecUtility.TRANS_POOL.get();
+
             // setup transform;
             transform.setIdentity();
             transform.setRotation(entity.getRenderRotation());
             transform.origin.set(entity.getRenderPosition());
             VecUtility.setBufferFromTransform(renderMatrix, transform);
 
-            VecUtility.TRANS_POOL.release(transform);
             // Apply transformation.
             glMultMatrix(renderMatrix);
 
