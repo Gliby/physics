@@ -143,13 +143,13 @@ public abstract class RenderPhysics extends Render {
                 GlStateManager.glPolygonMode(GL11.GL_FRONT, GL11.GL_LINE);
                 GlStateManager.disableTexture2D();
                 GlStateManager.disableDepth();
-                GlStateManager.disableCull();
+//                GlStateManager.disableCull();
                 GlStateManager.enableRescaleNormal();
 
                 draw(uncast, entityX, entityY, entityZ, deltaTime, beamColor, true);
 
                 GlStateManager.disableRescaleNormal();
-                GlStateManager.enableCull();
+//                GlStateManager.enableCull();
                 GlStateManager.enableDepth();
                 GlStateManager.enableTexture2D();
                 GlStateManager.glPolygonMode(GL11.GL_FRONT, GL11.GL_FILL);

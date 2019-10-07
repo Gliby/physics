@@ -93,6 +93,11 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
         return pickLocalHit;
     }
 
+    public Vector3f getRenderHitPoint() {
+        updateLocalPick();
+        return pickLocalHit;
+    }
+
     public List<RigidBodyMechanic> getMechanics() {
         return mechanics;
     }
@@ -278,6 +283,14 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
     }
 
+    public void updateLocalPick() {
+        if (this.getPickerEntity() != null) {
+            this.pickLocalHit = dataManager.get(PICK_OFFSET);
+        } else {
+            this.pickLocalHit = null;
+        }
+    }
+
     @Override
     public final void onUpdate() {
         super.onUpdate();
@@ -287,11 +300,6 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
                 Entity entity = this.world.getEntityByID(pickerId);
                 if (entity instanceof EntityPlayer) {
                     setPickerEntity((EntityPlayer) entity);
-                    if (this.getPickerEntity() != null) {
-                        this.pickLocalHit = dataManager.get(PICK_OFFSET);
-                    } else {
-                        this.pickLocalHit = null;
-                    }
                 }
             } else {
                 setPickerEntity(null);
