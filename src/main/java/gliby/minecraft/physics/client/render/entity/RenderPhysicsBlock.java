@@ -106,7 +106,7 @@ public class RenderPhysicsBlock extends RenderPhysics {
         EntityPhysicsBlock entityBlock = (EntityPhysicsBlock) entity;
         Vector3f worldTranslation = VecUtility.getWorldTranslation(Minecraft.getMinecraft(), partialTick);
         Vector3f hitPoint = new Vector3f(entityBlock.getRenderPosition());
-        hitPoint.add(entity.getRenderHitPoint());
+        hitPoint.add(entity.getPickLocalHit());
         hitPoint.add(new Vector3f(0.5f, 0.5f, 0.5f));
         hitPoint.sub(worldTranslation);
         return hitPoint;
