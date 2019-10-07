@@ -125,21 +125,23 @@ public class ItemHandler {
                     Item item = itemStack.getItem();
                     AlwaysUsedItem itemInfo = getAlwaysUsedItem(item);
                     if (itemInfo != null) {
-                        if (!itemInfo.isSwingable() && isClient) {
-                            mc.playerController.resetBlockRemoving();
-                            if (mc.player.ticksSinceLastSwing < 2) {
-                                mc.entityRenderer.itemRenderer.equippedProgressMainHand = 1F;
-                            }
-                            mc.player.ticksSinceLastSwing = 10000;
-                            mc.player.isSwingInProgress = false;
-                            mc.player.swingProgressInt = 0;
-                            mc.player.swingProgress = 0;
-
-                            if (!isFirstPerson && event.phase == TickEvent.Phase.END) {
-                                mc.player.resetActiveHand();
-                                mc.player.setActiveHand(EnumHand.MAIN_HAND);
+                        if (!itemInfo.isSwingable()) {
+                            if (isClient) {
+                                mc.playerController.resetBlockRemoving();
+                                if (mc.player.ticksSinceLastSwing < 2) {
+                                    mc.entityRenderer.itemRenderer.equippedProgressMainHand = 1F;
+                                }
                             }
 
+                            event.player.ticksSinceLastSwing = 10000;
+                            event.player.isSwingInProgress = false;
+                            event.player.swingProgressInt = 0;
+                            event.player.swingProgress = 0;
+
+                            if (event.phase == TickEvent.Phase.END && !isFirstPerson) {
+                                event.player.resetActiveHand();
+                                event.player.setActiveHand(EnumHand.MAIN_HAND);
+                            }
                         }
                     }
                 }

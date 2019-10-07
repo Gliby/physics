@@ -206,6 +206,7 @@ public class Physics {
 
         MinecraftForge.EVENT_BUS.register(physicsOverworld);
         MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.register(proxy);
         proxy.preInit(this, event);
         getLogger().info("Pre-initialization completed on " + FMLCommonHandler.instance().getEffectiveSide());
     }

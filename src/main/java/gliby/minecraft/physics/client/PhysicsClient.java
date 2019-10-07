@@ -78,6 +78,7 @@ public class PhysicsClient extends PhysicsServer {
         itemHandler.addAlwaysUsedItem(physics.getGameManager().itemPhysicsGun, false, false);
         itemHandler.addAlwaysUsedItem(physics.getGameManager().itemToolgun, false, false);
         MinecraftForge.EVENT_BUS.register(this);
+
     }
 
     @Override

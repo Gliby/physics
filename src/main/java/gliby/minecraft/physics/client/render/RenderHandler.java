@@ -9,6 +9,7 @@ import gliby.minecraft.physics.client.render.items.RenderItemToolGun;
 import gliby.minecraft.physics.client.render.lighting.AtomicStrykerLight;
 import gliby.minecraft.physics.client.render.lighting.IDynamicLightHandler;
 import gliby.minecraft.physics.client.render.lighting.NullLight;
+import gliby.minecraft.physics.client.render.lighting.SELLight;
 import gliby.minecraft.physics.common.entity.EntityPhysicsBlock;
 import gliby.minecraft.physics.common.entity.EntityToolGunBeam;
 import net.minecraft.client.Minecraft;
@@ -83,15 +84,15 @@ public class RenderHandler {
     }
 
     public void init(FMLInitializationEvent event) {
-        boolean dynamicLightsPresent = Loader.isModLoaded("dynamiclights");
-        if (dynamicLightsPresent) {
-            Physics.getLogger().info("DynamicLights by AtomicStryker has been found, enabling dynamic light creation!");
-        }
-
-        if (dynamicLightsPresent) {
+        if (Loader.isModLoaded("dynamiclights")) {
             lightHandler = new AtomicStrykerLight();
-        } else
+            Physics.getLogger().info("DynamicLights by AtomicStryker has been found, enabling dynamic light creation!");
+        } else if (Loader.isModLoaded("sel")) {
+            lightHandler = new SELLight();
+            Physics.getLogger().info("SEL by lakmoore has been found, enabling smooth dynamic light creation!");
+        } else {
             lightHandler = new NullLight();
+        }
 
         Minecraft mc = Minecraft.getMinecraft();
         RenderingRegistry.registerEntityRenderingHandler(EntityPhysicsBlock.class,
