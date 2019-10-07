@@ -21,6 +21,7 @@ class NativeVoxelProvider extends btVoxelContentProvider {
         this.info = info;
     }
 
+    // TODO (0.6.0) add is block loaded check to avoid loading distant chunks.
     @Override
     public btVoxelInfo getVoxel(int x, int y, int z) {
         final BlockPos blockPosition = new BlockPos(x, y, z);

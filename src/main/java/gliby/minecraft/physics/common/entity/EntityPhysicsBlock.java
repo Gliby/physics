@@ -272,6 +272,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
             // and rotation has changed.
             if (isDirty()) {
                 this.dataManager.set(PHYSICS_ROTATION, physicsRotation);
+                this.dataManager.setDirty(PHYSICS_ROTATION);
             }
         }
 
