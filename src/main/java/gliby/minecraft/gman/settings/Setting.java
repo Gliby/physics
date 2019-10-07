@@ -32,8 +32,9 @@ public abstract class Setting {
         this.writeListeners = new ArrayList<Setting.Listener>();
     }
 
+    // TODO (0.6.0) Fix comments
     public Setting setComment(String comment) {
-        this.comment = comment;
+//        this.comment = comment;
         return this;
     }
 

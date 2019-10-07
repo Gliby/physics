@@ -31,6 +31,7 @@ import java.util.Map;
 public class GMan {
 
     public static final boolean GMAN_DEBUG = false;
+
     protected static final Gson GSON = new Gson();
     // net.minecraftforge.common.ForgeVersion results
     protected static final int RESULTS_FIELD = 11;
@@ -195,17 +196,15 @@ public class GMan {
         builder.append("/");
         builder.append(filePath);
 
-        Reader reader = null;
         try {
-            reader = new InputStreamReader(new URL(builder.toString()).openStream());
+            Reader reader = new InputStreamReader(new URL(builder.toString()).openStream());
+            return GMan.getGSON().fromJson(reader, Map.class);
         } catch (final MalformedURLException e) {
             e.printStackTrace();
         } catch (final IOException e) {
             logger.warn("Failed to retrieve URL, doesn't exist or host(" + builder.toString() + ") is down?");
             e.printStackTrace();
         }
-        if (reader != null)
-            return GMan.getGSON().fromJson(reader, Map.class);
         return null;
     }
 
