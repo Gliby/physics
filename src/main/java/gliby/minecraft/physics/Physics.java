@@ -19,6 +19,7 @@ import gliby.minecraft.physics.common.game.GameManager;
 import gliby.minecraft.physics.common.packets.PacketReceiveTools;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -108,7 +109,10 @@ public class Physics {
 
         settings = new SettingsHandler(dir, new File(dir, "Settings.ini"));
 
-        settings.registerBoolean("PhysicsEngine", "UseJavaPhysics", true, Setting.Side.BOTH);
+        // Use Java Physics by default if we are a client.
+        boolean useJavaPhysicsByDefault = FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
+
+        settings.registerBoolean("PhysicsEngine", "UseJavaPhysics", useJavaPhysicsByDefault, Setting.Side.BOTH);
 
         settings.registerInteger("PhysicsEngine", "TickRate", 20, Setting.Side.BOTH);
         settings.registerFloat("PhysicsEngine", "GravityForce", -9.8f, Setting.Side.BOTH);
