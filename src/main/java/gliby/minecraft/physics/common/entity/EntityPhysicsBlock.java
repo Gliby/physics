@@ -17,6 +17,7 @@ import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockStone;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -62,7 +63,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     /**
      * Common variable, physics object's absolute rotation.
      */
-    private Quat4f physicsRotation = new Quat4f();
+    private Quat4f physicsRotation = new Quat4f(0, 0, 0, 1);
     /**
      * Reference to block's built rigid body.
      */
@@ -159,7 +160,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
     @Override
     public void onCommonInit() {
-        this.dataManager.register(PHYSICS_ROTATION, physicsRotation = new Quat4f());
+        this.dataManager.register(PHYSICS_ROTATION, physicsRotation = new Quat4f(0, 0,0, 1));
     }
 
     @Override

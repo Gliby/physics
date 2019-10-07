@@ -276,12 +276,11 @@ public class GBlockModelRenderer {
                     bufferbuilder.putColorMultiplier(red, blue, green, 2);
                     bufferbuilder.putColorMultiplier(red, blue, green, 1);
                 } else if (bakedquad.shouldApplyDiffuseLighting()) {
-                    // TODO BUG: investigate if this makes blocks invisible
-//                    float diffuse = net.minecraftforge.client.model.pipeline.LightUtil.diffuseLight(bakedquad.getFace());
-//                    bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 4);
-//                    bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 3);
-//                    bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 2);
-//                    bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 1);
+                    float diffuse = net.minecraftforge.client.model.pipeline.LightUtil.diffuseLight(bakedquad.getFace());
+                    bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 4);
+                    bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 3);
+                    bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 2);
+                    bufferbuilder.putColorMultiplier(diffuse, diffuse, diffuse, 1);
                 }
             } else if (customColor != null)
                 bufferbuilder.putColorRGB_F4((float) customColor.x, (float) customColor.y, (float) customColor.z);

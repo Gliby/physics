@@ -56,7 +56,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     protected boolean gameSpawned;
 
     protected Vector3f pickLocalHit;
-    Gson inclusiveGSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+    protected static final Gson inclusiveGSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
     private int lastTickActive;
 
     /**
