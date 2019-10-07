@@ -101,7 +101,7 @@ curseforge {
         }
 
         mainArtifact(jar) {
-            displayName = String.format("%s %s", getModName(), project.minecraft.version)
+            displayName = String.format("%s %s", getModName(), mod_version)
             logger.lifecycle("Prepared CurseForge artifact: " + displayName)
 
             relations {
