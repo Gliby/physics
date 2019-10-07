@@ -395,6 +395,18 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
             this.pickLocalHit = readPick;
     }
 
+    /**
+     * Sets entity velocity. (motionX, motionY, motionZ)
+     * @param x
+     * @param y
+     * @param z
+     */
+    public void setEntityVelocity(float x, float y, float z) {
+        this.motionX = x;
+        this.motionY = y;
+        this.motionZ = z;
+    }
+
     public boolean canBeAttackedWithItem() {
         return false;
     }

@@ -1,6 +1,5 @@
 package gliby.minecraft.physics.client.keybindings;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.world.World;
 

@@ -3,7 +3,6 @@ package gliby.minecraft.physics.common.packets;
 import gliby.minecraft.physics.Physics;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;

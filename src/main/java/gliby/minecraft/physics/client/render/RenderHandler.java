@@ -13,10 +13,13 @@ import gliby.minecraft.physics.common.entity.EntityPhysicsBlock;
 import gliby.minecraft.physics.common.entity.EntityToolGunBeam;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -64,7 +67,10 @@ public class RenderHandler {
 //        MinecraftForge.EVENT_BUS.register(new RenderAdditionalPlayer());
         Minecraft mc = Minecraft.getMinecraft();
 
-        ItemRendererManager itemRenderManager = physics.getItemRendererManager();
+        itemRendererManager = new ItemRendererManager();
+        MinecraftForge.EVENT_BUS.register(itemRendererManager);
+
+        ItemRendererManager itemRenderManager = getItemRendererManager();
         // Create fake-model resource, doesn't need any file to function.
         // Create actual RawItemRenderer instance, simply a class that
         // "extends RawItemRenderer".
@@ -96,5 +102,14 @@ public class RenderHandler {
 //                new RenderPhysicsModelPart(this, mc.getRenderManager()));
         RenderingRegistry.registerEntityRenderingHandler(EntityToolGunBeam.class, new RenderToolGunBeam(this, mc.getRenderManager()));
     }
+
+    @SideOnly(Side.CLIENT)
+    ItemRendererManager itemRendererManager;
+
+    @SideOnly(Side.CLIENT)
+    public ItemRendererManager getItemRendererManager() {
+        return itemRendererManager;
+    }
+
 
 }

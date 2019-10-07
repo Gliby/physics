@@ -44,17 +44,15 @@ import java.lang.ref.WeakReference;
 
 public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAdditionalSpawnData {
 
-    protected static final DataParameter<Quat4f> PHYSICS_ROTATION = EntityDataManager.createKey(EntityPhysicsBlock.class, GDataSerializers.QUAT4F);
+    protected static final DataParameter<Quat4f> PHYSICS_ROTATION = EntityDataManager.<Quat4f>createKey(EntityPhysicsBlock.class, GDataSerializers.QUAT4F);
     /**
      * Client-side render position, basically a smoothed position.
      */
-    @SideOnly(Side.CLIENT)
     protected Vector3f renderPosition = new Vector3f();
 
     /**
      * Client-side render rotation, basically a smoothed rotation.
      */
-    @SideOnly(Side.CLIENT)
     protected Quat4f renderRotation = new Quat4f();
 
     /**
@@ -102,6 +100,10 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         super(world);
         noClip = true;
         setSize(0.85f, 1.05f);
+        if (world.isRemote) {
+            this.renderPosition = new Vector3f((float) posX, (float) posY, (float) posZ);
+            this.renderRotation = new Quat4f(physicsRotation);
+        }
     }
 
     public EntityPhysicsBlock(World world, PhysicsWorld physicsWorld, IBlockState blockState, double x, double y,
@@ -112,10 +114,6 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         QuaternionUtil.setEuler(physicsRotation, 0, 0, 0);
         this.physicsRotation.set(physicsRotation);
 
-        if (world.isRemote) {
-            this.renderPosition = new Vector3f((float) x, (float) y, (float) z);
-            this.renderRotation = new Quat4f(physicsRotation);
-        }
         Physics physics = Physics.getInstance();
 
         PhysicsBlockMetadata metadata = physics.getBlockManager().getPhysicsBlockMetadata()
@@ -262,7 +260,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
 
             Vector3f velocity = new Vector3f();
-            setVelocity(velocity.getX(), velocity.getY(), velocity.getZ());
+            setEntityVelocity(velocity.getX(), velocity.getY(), velocity.getZ());
 
             // Update rotation from given rigid body.
             final Quat4f newQuat = rigidBody.getRotation();
@@ -272,8 +270,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
             // boxes.
             // Check if rigidBody is active, and if the last written postion
             // and rotation has changed.
-            if (isDirty() && physicsRotation != null) {
-//                this.dataManager.set(PHYSICS_POSITION, physicsPosition);
+            if (isDirty()) {
                 this.dataManager.set(PHYSICS_ROTATION, physicsRotation);
             }
         }
@@ -288,7 +285,6 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
         // Read data parameter objects, then set.
         physicsRotation = this.dataManager.get(PHYSICS_ROTATION);
-
     }
 
     @Override
@@ -393,23 +389,24 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     @Override
     public void writeSpawnData(ByteBuf buffer) {
         super.writeSpawnData(buffer);
-
-        BlockStateToMetadata.serializeBlockState(blockState, buffer);
         buffer.writeBoolean(collisionEnabled);
         buffer.writeFloat(physicsRotation.x);
         buffer.writeFloat(physicsRotation.y);
         buffer.writeFloat(physicsRotation.z);
         buffer.writeFloat(physicsRotation.w);
+        BlockStateToMetadata.serializeBlockState(blockState, buffer);
     }
 
     @Override
     public void readSpawnData(ByteBuf buffer) {
         super.readSpawnData(buffer);
-        this.blockState = BlockStateToMetadata.deserializeBlockState(buffer);
         this.collisionEnabled = buffer.readBoolean();
         this.physicsRotation = new Quat4f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
+        this.blockState = BlockStateToMetadata.deserializeBlockState(buffer);
+
         this.renderPosition = VecUtility.toVector3f(getPositionVector());
         this.renderRotation = new Quat4f(physicsRotation);
+
         // Create dynamic light source if we can!
         /**
          * How much lighting this block has.
@@ -536,7 +533,6 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         Vec3d position = getPositionVector().addVector(0.5f, 1, 0.5f);
         return new BlockPos(MathHelper.floor(position.x), MathHelper.floor(position.y), MathHelper.floor(position.z));
     }
-
 
     @Override
     public void interpolate() {

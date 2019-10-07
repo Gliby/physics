@@ -11,7 +11,7 @@ import gliby.minecraft.physics.common.physics.mechanics.EntityCollisionResponseM
 import gliby.minecraft.physics.common.physics.mechanics.ToolMechanics;
 import gliby.minecraft.physics.common.physics.mechanics.gravitymagnets.GravityModifierMechanic;
 import gliby.minecraft.physics.common.physics.mechanics.physicsgun.PickUpMechanic;
-import net.minecraft.client.Minecraft;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -22,6 +22,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import javax.vecmath.Vector3f;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 // TODO (0.8.0) bind step speed to match game speed.
@@ -155,7 +156,8 @@ public class PhysicsOverworld {
 
     private PhysicsWorld createPhysicsWorld(boolean useNative, final IPhysicsWorldConfiguration physicsConfig) {
         // TODO (0.6.0) Add NativePhysics macOS compatibility.
-        if (useNative && Minecraft.IS_RUNNING_ON_MAC) {
+        final boolean isMac = System.getProperty("os.name").toLowerCase(Locale.ROOT).contains("mac");
+        if (useNative && isMac) {
             Physics.getLogger().info("Forced non-native physics under OSX.");
             useNative = false;
         }

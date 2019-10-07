@@ -20,7 +20,6 @@ import java.util.List;
 public class ItemRendererManager {
 
 
-    private static ItemRendererManager instance;
     private List<RawItemRenderer> itemRenderer = new ArrayList<RawItemRenderer>();
 
     public void registerItemRenderer(RawItem item, RawItemRenderer itemRender) {

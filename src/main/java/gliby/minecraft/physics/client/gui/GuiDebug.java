@@ -3,7 +3,6 @@ package gliby.minecraft.physics.client.gui;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.client.PhysicsClient;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 /**

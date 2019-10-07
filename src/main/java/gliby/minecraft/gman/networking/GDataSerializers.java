@@ -54,7 +54,7 @@ public class GDataSerializers {
         }
     };
 
-    static {
+    public static void register() {
         DataSerializers.registerSerializer(VECTOR3F);
         DataSerializers.registerSerializer(QUAT4F);
     }

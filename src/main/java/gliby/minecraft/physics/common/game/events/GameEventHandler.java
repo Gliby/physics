@@ -44,7 +44,7 @@ public class GameEventHandler {
             if (replaceFallingBlocks) {
                 int fallingBlockDistance = physics.getSettings().getIntegerSetting("Game.FallingBlockSpawnDistance").getIntValue();
                 final EntityFallingBlock entityFallingBlock = (EntityFallingBlock) event.getEntity();
-                final BlockPos blockPos = (entityFallingBlock.getOrigin());
+                final BlockPos blockPos = entityFallingBlock.getPosition();
 
                 // 1. we check if we have a player near us.
                 EntityPlayer closestsPlayer = world.getClosestPlayer(blockPos.getX(), blockPos.getY(), blockPos.getZ(), fallingBlockDistance, false);
@@ -69,8 +69,7 @@ public class GameEventHandler {
                         PhysicsWorld physicsWorld = physics.getPhysicsOverworld().getPhysicsByWorld(world);
 
                         // Remove block.
-                        BlockPos pos = entityFallingBlock.getOrigin();
-                        world.setBlockToAir(pos);
+                        world.setBlockToAir(blockPos);
 
                         // Spawn phyics block.
                         IBlockState blockState = entityFallingBlock.getBlock();

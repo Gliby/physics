@@ -19,7 +19,7 @@ import java.nio.FloatBuffer;
  */
 public class VecUtility {
 
-    public static final AxisAlignedBB ZERO_BB = new AxisAlignedBB(Vec3d.ZERO, Vec3d.ZERO);
+    public static final AxisAlignedBB ZERO_BB = new AxisAlignedBB(0, 0, 0, 0, 0, 0);
     private static float[] buffer = new float[16];
 
     /**

@@ -3,7 +3,7 @@ package gliby.minecraft.physics;
 import com.google.common.base.Predicate;
 import gliby.minecraft.gman.GMan;
 import gliby.minecraft.gman.ModInfo;
-import gliby.minecraft.gman.client.render.ItemRendererManager;
+import gliby.minecraft.gman.networking.GDataSerializers;
 import gliby.minecraft.gman.settings.Setting;
 import gliby.minecraft.gman.settings.SettingsHandler;
 import gliby.minecraft.gman.settings.StringSetting;
@@ -64,7 +64,6 @@ public class Physics {
     private static PhysicsServer proxy;
 
     private static int packetIDIndex;
-    ItemRendererManager itemRendererManager;
     /**
      * Manages anything game related, e.g items.
      */
@@ -74,6 +73,10 @@ public class Physics {
     private SettingsHandler settings;
     private BlockManager blockManager;
     private MobModelManager mobModelManager;
+
+    static {
+        GDataSerializers.register();
+    }
 
     /**
      * @return the dispatcher
@@ -94,15 +97,8 @@ public class Physics {
         return gman;
     }
 
-    public ItemRendererManager getItemRendererManager() {
-        return itemRendererManager;
-    }
-
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        itemRendererManager = new ItemRendererManager();
-        MinecraftForge.EVENT_BUS.register(itemRendererManager);
-
 
         MinecraftForge.EVENT_BUS.register(this);
         instance = this;

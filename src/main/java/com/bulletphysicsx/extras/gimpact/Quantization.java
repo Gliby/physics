@@ -27,9 +27,9 @@
 
 package com.bulletphysicsx.extras.gimpact;
 
-import javax.vecmath.Vector3f;
-
 import com.bulletphysicsx.linearmath.VectorUtil;
+
+import javax.vecmath.Vector3f;
 
 /**
  * @author jezek2

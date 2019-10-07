@@ -1,6 +1,5 @@
 package gliby.minecraft.physics.common.physics.mechanics.gravitymagnets;
 
-import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.entity.EnumRigidBodyProperty;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;

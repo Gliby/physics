@@ -63,3 +63,5 @@ build
 # other
 eclipse
 run
+
+upload.sh

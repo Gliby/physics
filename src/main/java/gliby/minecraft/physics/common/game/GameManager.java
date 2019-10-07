@@ -28,7 +28,7 @@ public class GameManager {
                     .entity(EntityPhysicsBlock.class)
                     .id(new ResourceLocation(Physics.ID, "physicsblock"), networkId++)
                     .name("physicsblock")
-                    .tracker(64, 20, true)
+                    .tracker(64, 20, false)
                     .build(),
             // tool gun beam
             EntityEntryBuilder.create()
