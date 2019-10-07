@@ -2,11 +2,11 @@
 {
   "modid": "glibysphysics",
   "name": "Gliby's Physics",
-  "description": "Early access physics mod.",
+  "description": "Rigidbody physics mod.",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "authorList": ["Gliby"],
-  "credits": "@Immortius, LibGDX, Bullet, JBullet, TeraBullet, Modeler",
+  "credits": "@Immortius, LibGDX, Bullet, JBullet, TeraBullet, Zaggy1024, Modeler",
   "logoFile": "logo.png",
   "screenshots": []
 }
