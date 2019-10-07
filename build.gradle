@@ -101,4 +101,3 @@ if (tasks.contains("setupDecompWorkspace") || tasks.contains("genIntellijRuns"))
 
     idea { module { inheritOutputDirs = true } }
 }
-// todo https://forgegradle.readthedocs.io/en/latest/cookbook/
