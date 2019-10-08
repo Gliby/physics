@@ -3,6 +3,7 @@ package gliby.minecraft.physics.common.physics.engine.javabullet;
 import com.bulletphysicsx.collision.shapes.voxel.VoxelInfo;
 import com.bulletphysicsx.collision.shapes.voxel.VoxelPhysicsWorld;
 import com.bulletphysicsx.linearmath.VectorUtil;
+import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -29,6 +30,10 @@ public class JavaVoxelProvider implements VoxelPhysicsWorld {
 //        if (world.isBlockLoaded(blockPos)) {
         // final PhysicsBlockMetadata metadata =
         // physicsOverworld.getPhysicsBlockMetadata().get(state.getBlock().getUnlocalizedName());
+        final ICollisionShape collisionShape = physicsWorld.getBlockCache()
+                .getShape(world, blockPosition, blockState);
+        blockPosition.release();
+
         VoxelInfo info = new VoxelInfo() {
 
             @Override
@@ -58,8 +63,7 @@ public class JavaVoxelProvider implements VoxelPhysicsWorld {
 
             @Override
             public Object getCollisionShape() {
-                return physicsWorld.getBlockCache()
-                        .getShape(world, blockPosition, blockState).getCollisionShape();
+                return collisionShape.getCollisionShape();
             }
 
             @Override
@@ -68,7 +72,6 @@ public class JavaVoxelProvider implements VoxelPhysicsWorld {
             }
 
         };
-        blockPosition.release();
         return info;
     }
 
