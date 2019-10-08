@@ -12,7 +12,6 @@ import gliby.minecraft.physics.client.render.RenderHandler;
 import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.blocks.PhysicsBlockMetadata;
 import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
-import gliby.minecraft.physics.common.physics.PhysicsOverworld;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
@@ -131,8 +130,9 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
         if (this.defaultCollisionShape)
             this.collisionShape = physicsWorld.getDefaultShape();
-        else
+        else {
             this.collisionShape = physicsWorld.getBlockCache().getShape(world, new BlockPos(x, y, z), getBlockState());
+        }
 
         setLocationAndAngles(x, y, z, 0, 0);
         this.motionX = 0.0D;
@@ -240,6 +240,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
             if (isDirty()) {
                 this.dataManager.set(PHYSICS_ROTATION, physicsRotation);
                 this.dataManager.setDirty(PHYSICS_ROTATION);
+
             }
         }
 
@@ -467,11 +468,14 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         float lightX = (float) (renderAABB.minX + (width / 2));
         float lightY = (float) (renderAABB.minY + (height / 2));
         float lightZ = (float) (renderAABB.minZ + (length / 2));
-        BlockPos blockPosition = new BlockPos(lightX, lightY, lightZ);
+        BlockPos.PooledMutableBlockPos blockPosition = BlockPos.PooledMutableBlockPos.retain(lightX, lightY, lightZ);
 
+        int brightness = 0;
         if (this.world.isBlockLoaded(blockPosition))
-            return this.world.getCombinedLight(blockPosition, 0);
-        else return 0;
+            brightness = this.world.getCombinedLight(blockPosition, 0);
+
+        blockPosition.release();
+        return brightness;
     }
 
 
@@ -571,7 +575,9 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         this.entityCollisionEnabled = tagCompound.hasKey("EntityCollisionEnabled") ? tagCompound.getBoolean("EntityCollisionEnabled") : entityCollisionEnabled;
 
         if (tagCompound.hasKey("CollisionShape")) {
-            this.collisionShape = getPhysicsWorld().getBlockCache().getShape(world, new BlockPos((int) posX, (int) posY, (int) posZ), blockState);
+            BlockPos.PooledMutableBlockPos blockPos = BlockPos.PooledMutableBlockPos.retain((int) posX, (int) posY, (int) posZ);
+            this.collisionShape = getPhysicsWorld().getBlockCache().getShape(world, blockPos, blockState);
+            blockPos.release();
         } else
             this.collisionShape = getPhysicsWorld().getDefaultShape();
 
@@ -601,4 +607,5 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         }
         super.readEntityFromNBT(tagCompound);
     }
+
 }

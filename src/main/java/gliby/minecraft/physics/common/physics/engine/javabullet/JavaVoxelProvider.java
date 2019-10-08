@@ -23,14 +23,13 @@ public class JavaVoxelProvider implements VoxelPhysicsWorld {
     // TODO (0.6.0) use block metadata if key exists.
     @Override
     public VoxelInfo getCollisionShapeAt(final int x, final int y, final int z) {
-        final BlockPos blockPos = new BlockPos(x, y, z);
-
-        final IBlockState blockState = world.getBlockState(blockPos);
+        final BlockPos.PooledMutableBlockPos blockPosition = BlockPos.PooledMutableBlockPos.retain(x, y, z);
+        final IBlockState blockState = world.getBlockState(blockPosition);
         // first we check if the block is loaded.
 //        if (world.isBlockLoaded(blockPos)) {
         // final PhysicsBlockMetadata metadata =
         // physicsOverworld.getPhysicsBlockMetadata().get(state.getBlock().getUnlocalizedName());
-        return new VoxelInfo() {
+        VoxelInfo info = new VoxelInfo() {
 
             @Override
             public boolean isColliding() {
@@ -60,7 +59,7 @@ public class JavaVoxelProvider implements VoxelPhysicsWorld {
             @Override
             public Object getCollisionShape() {
                 return physicsWorld.getBlockCache()
-                        .getShape(world, blockPos, blockState).getCollisionShape();
+                        .getShape(world, blockPosition, blockState).getCollisionShape();
             }
 
             @Override
@@ -69,8 +68,8 @@ public class JavaVoxelProvider implements VoxelPhysicsWorld {
             }
 
         };
-//        }
-//        return null;
+        blockPosition.release();
+        return info;
     }
 
 }

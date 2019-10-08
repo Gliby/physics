@@ -37,9 +37,10 @@ public class BlockInheritanceMechanic extends RigidBodyMechanic {
                     Entity collidedEntity = entitesWithin.get(i);
                     Block block = blockState.getBlock();
                     // collidedEntity.attackEntityFrom(DamageSource.cactus, 1F);
-                    BlockPos pos = new BlockPos(rigidBody.getOwner());
+                    BlockPos.PooledMutableBlockPos pos = BlockPos.PooledMutableBlockPos.retain(rigidBody.getOwner().posX, rigidBody.getOwner().posY, rigidBody.getOwner().posZ);
                     block.onEntityCollidedWithBlock(rigidBody.getOwner().getEntityWorld(), pos, blockState,
                             collidedEntity);
+                    pos.release();
 //                    block.onEntityCollidedWithBlock(rigidBody.getOwner().getEntityWorld(), pos, collidedEntity);
                 }
             }

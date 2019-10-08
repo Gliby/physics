@@ -30,8 +30,9 @@ public class ClientBlockInheritanceMechanic extends RigidBodyMechanic {
                     Block block = blockState.getBlock();
                     // collidedEntity.attackEntityFrom(DamageSource.cactus,
                     // 1F);
-                    BlockPos pos = new BlockPos(entity);
+                    BlockPos.PooledMutableBlockPos pos = BlockPos.PooledMutableBlockPos.retain(entity.posX, entity.posY, entity.posZ);
                     block.onEntityCollidedWithBlock(entity.getEntityWorld(), pos, blockState, collidedEntity);
+                    pos.release();
 //                    block.onEntityCollidedWithBlock(entity.getEntityWorld(), pos, collidedEntity);
                 }
             }
