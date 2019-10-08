@@ -414,11 +414,17 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 //            fakePlayer.setPositionAndRotation(fakePlayer.posX, fakePlayer.posX, fakePlayer. posZ, eulerQuat.getYaw(), eulerQuat.getPitch());
 
             // create new state.
-            IBlockState state = getBlockState().getBlock().getStateForPlacement(world, pos, enumFacing, pos.getX(), pos.getY(), pos.getZ(),
-                    getBlockState().getBlock().getMetaFromState(getBlockState()), fakePlayer);
+            try {
+                // try catch because: IllegalArgumentException: Cannot set property PropertyEnum{name=half, clazz=class net.minecraft.block.BlockSlab$EnumBlockHalf, values=[top, bottom]} as it does not exist in BlockStateContainer{block=minecraft:double_stone_slab, properties=[seamless, variant]}
+                IBlockState state = getBlockState().getBlock().getStateForPlacement(world, pos, enumFacing, pos.getX(), pos.getY(), pos.getZ(),
+                        getBlockState().getBlock().getMetaFromState(getBlockState()), fakePlayer);
+                // place block.
+                world.setBlockState(pos, state);
+            } catch (IllegalArgumentException e) {
+                Physics.getLogger().error("Tried aligning invalid BlockState: ");
+                e.printStackTrace();
+            }
 
-            // place block.
-            world.setBlockState(pos, state);
         } else
             world.setBlockState(new BlockPos(posX, posY + 0.5F, posZ), getBlockState());
     }
