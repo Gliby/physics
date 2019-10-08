@@ -137,7 +137,7 @@ def getModName() {
 
 
 // Gets IDEA 14 to import resources, but pretty much breaks everything else.
-def IDEAtradeoff = true;
+def IDEAtradeoff = false;
 if (IDEAtradeoff) {
     logger.info("IDEA trade-off active. Building is broken. Disable in build.gradle")
     sourceSets {
