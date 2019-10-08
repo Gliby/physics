@@ -24,7 +24,7 @@ import java.util.zip.ZipFile;
  */
 public class BlockManager {
 
-    private HashMap<String, PhysicsBlockMetadata> physicsBlockMetadata;
+    private HashMap<ResourceLocation, PhysicsBlockMetadata> physicsBlockMetadata;
     private Map<String, IBlockGenerator> blockGenerators;
     private IBlockGenerator defaultGenerator;
 
@@ -44,10 +44,11 @@ public class BlockManager {
         final ZipFile otherZip = tempZip;
         final File otherFile = tempFile;
         MetadataLoader loader = new MetadataLoader(physics, this,
-                physicsBlockMetadata = new HashMap<String, PhysicsBlockMetadata>()) {
+                physicsBlockMetadata = new HashMap<ResourceLocation, PhysicsBlockMetadata>()) {
             @SuppressWarnings("unchecked")
             @Override
-            public Map<String, Object> loadMetadata(String name) throws JsonSyntaxException, IOException {
+            public Map<String, Object> loadMetadata(ResourceLocation location) throws JsonSyntaxException, IOException {
+                String name = getBlockString(location);
                 if (otherFile.exists()) {
                     ZipEntry entry = otherZip.getEntry(name + ".json");
                     if (entry != null) {
@@ -59,9 +60,10 @@ public class BlockManager {
                         }
                     }
                 }
+
                 String text = IOUtils.toString(
                         MinecraftResourceLoader.getResource(Physics.getLogger(), FMLCommonHandler.instance().getSide(),
-                                new ResourceLocation(Physics.ID, "blocks/" + name + ".json")));
+                                new ResourceLocation(Physics.ID, "blocks/" +  name + ".json")));
                 if (text != null) {
                     return GMan.getGSON().fromJson(text, Map.class);
                 }
@@ -73,14 +75,18 @@ public class BlockManager {
     /**
      * @return the physicsBlockMetadata
      */
-    public Map<String, PhysicsBlockMetadata> getPhysicsBlockMetadata() {
+    public Map<ResourceLocation, PhysicsBlockMetadata> getPhysicsBlockMetadata() {
         return physicsBlockMetadata;
     }
 
-    public String getBlockIdentity(Block block) {
-        ResourceLocation location = ForgeRegistries.BLOCKS.getKey(block);
-        return location.getResourceDomain() + '.' + location.getResourcePath();
+    public ResourceLocation getBlockIdentity(Block block) {
+        final ResourceLocation location = ForgeRegistries.BLOCKS.getKey(block);
+        return location;
 
+    }
+
+    public String getBlockString(ResourceLocation resourceLocation) {
+        return resourceLocation.getResourceDomain() + '.' + resourceLocation.getResourcePath();
     }
 
     /**

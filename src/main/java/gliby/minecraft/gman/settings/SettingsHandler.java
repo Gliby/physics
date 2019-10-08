@@ -52,7 +52,7 @@ public class SettingsHandler {
     public Setting registerInteger(String category, String name, int defaultValue, Setting.Side side) {
         Setting setting;
         settings.put(category + "." + name,
-                setting = new IntegerSetting(category, name, new Integer(defaultValue), side));
+                setting = new IntegerSetting(category, name, Integer.valueOf(defaultValue), side));
         return setting;
     }
 
@@ -71,7 +71,7 @@ public class SettingsHandler {
 
     public Setting registerFloat(String category, String name, float defaultValue, Setting.Side side) {
         Setting setting;
-        settings.put(category + "." + name, setting = new FloatSetting(category, name, new Float(defaultValue), side));
+        settings.put(category + "." + name, setting = new FloatSetting(category, name, Float.valueOf(defaultValue), side));
         return setting;
     }
 

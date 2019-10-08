@@ -19,8 +19,7 @@ public class IntegerSetting extends Setting {
 
     @Override
     public void read(INIProperties ini) throws INIPropertiesReadFailure {
-        data = new Integer(
-                ini.readInteger(section, name, ((Integer) data).intValue()));
+        data = ini.readInteger(section, name, ((Integer) data));
     }
 
     @Override
@@ -34,7 +33,7 @@ public class IntegerSetting extends Setting {
     }
 
     public void setIntValue(int value) {
-        this.data = new Integer(value);
+        this.data = value;
     }
 
     @Override

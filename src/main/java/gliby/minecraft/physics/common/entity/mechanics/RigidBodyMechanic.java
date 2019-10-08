@@ -56,7 +56,7 @@ public abstract class RigidBodyMechanic {
 						pos.setPos(k1, l1, i2);
 						IBlockState state = world.getBlockState(pos);
 						if (!state.getBlock().isAir(state, world, pos))
-							bb.add(new BlockStateAndLocation(state, pos));
+							bb.add(new BlockStateAndLocation(state, new BlockPos(pos)));
 					}
 				}
 			}
@@ -83,8 +83,8 @@ public abstract class RigidBodyMechanic {
     }
 
     protected class BlockStateAndLocation {
-        private IBlockState blockState;
-        private BlockPos blockPosition;
+        private final IBlockState blockState;
+        private final BlockPos blockPosition;
 
         /**
          * @param blockState

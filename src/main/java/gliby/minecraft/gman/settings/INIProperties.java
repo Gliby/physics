@@ -185,7 +185,7 @@ public class INIProperties extends ArrayList {
      * default value
      */
     Float readFloat(String Section, String key, Float defaultValue) throws INIPropertiesReadFailure {
-        Float value = new Float(0f);
+        Float value = Float.valueOf(0f);
         value = defaultValue;
         if (valuePosition(Section, key) > 0) {
             final int strLen = key.length() + 1;

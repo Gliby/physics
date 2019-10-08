@@ -3,6 +3,8 @@ package gliby.minecraft.physics.common.physics.engine.javabullet;
 import com.bulletphysicsx.collision.shapes.voxel.VoxelInfo;
 import com.bulletphysicsx.collision.shapes.voxel.VoxelPhysicsWorld;
 import com.bulletphysicsx.linearmath.VectorUtil;
+import gliby.minecraft.physics.Physics;
+import gliby.minecraft.physics.common.blocks.PhysicsBlockMetadata;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.math.BlockPos;
@@ -25,20 +27,32 @@ public class JavaVoxelProvider implements VoxelPhysicsWorld {
     @Override
     public VoxelInfo getCollisionShapeAt(final int x, final int y, final int z) {
         final BlockPos.PooledMutableBlockPos blockPosition = BlockPos.PooledMutableBlockPos.retain(x, y, z);
-        final IBlockState blockState = world.getBlockState(blockPosition);
+        final IBlockState state = world.getBlockState(blockPosition);
         // first we check if the block is loaded.
 //        if (world.isBlockLoaded(blockPos)) {
         // final PhysicsBlockMetadata metadata =
         // physicsOverworld.getPhysicsBlockMetadata().get(state.getBlock().getUnlocalizedName());
         final ICollisionShape collisionShape = physicsWorld.getBlockCache()
-                .getShape(world, blockPosition, blockState);
+                .getShape(world, blockPosition, state);
         blockPosition.release();
+
+        Physics physics = Physics.getInstance();
+        final PhysicsBlockMetadata metadata = physics.getBlockManager().getPhysicsBlockMetadata().get(physics.getBlockManager().getBlockIdentity(state.getBlock()));
+
+        float friction = (1 - state.getBlock().slipperiness) * 5;
+
+        if (metadata != null) {
+            friction = metadata.friction;
+        }
+
+
+        float finalFriction = friction;
 
         VoxelInfo info = new VoxelInfo() {
 
             @Override
             public boolean isColliding() {
-                return blockState.getBlock().getMaterial(blockState).isLiquid();
+                return state.getBlock().getMaterial(state).isLiquid();
             }
 
             @Override
@@ -48,12 +62,12 @@ public class JavaVoxelProvider implements VoxelPhysicsWorld {
             }
 
             public float getFriction() {
-                return (1 - blockState.getBlock().slipperiness);
+                return finalFriction;
             }
 
             @Override
             public boolean isBlocking() {
-                return blockState.getBlock().getMaterial(blockState).isSolid();
+                return state.getBlock().getMaterial(state).isSolid();
             }
 
             @Override

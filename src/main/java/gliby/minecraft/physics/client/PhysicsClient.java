@@ -6,6 +6,7 @@ import gliby.minecraft.physics.VersionChanges;
 import gliby.minecraft.physics.client.gui.GuiScreenChangeLog;
 import gliby.minecraft.physics.client.keybindings.KeyManager;
 import gliby.minecraft.physics.client.render.RenderHandler;
+import gliby.minecraft.physics.client.render.world.RenderDebugAdditionalWorld;
 import gliby.minecraft.physics.common.PhysicsServer;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
@@ -23,8 +24,10 @@ import java.util.ArrayList;
 public class PhysicsClient extends PhysicsServer {
 
     private KeyManager keyManager;
-    private RenderHandler render;
+    private RenderHandler renderHandler;
     private SoundHandler soundHandler;
+
+
     private boolean init;
 
     @Override
@@ -34,11 +37,12 @@ public class PhysicsClient extends PhysicsServer {
 
         this.keyManager = new KeyManager();
         keyManager.init();
-        render = new RenderHandler(physics,
-                false);
-        render.preInit(event);
+        renderHandler = new RenderHandler(physics);
+        renderHandler.preInit(event);
 
         MinecraftForge.EVENT_BUS.register(soundHandler = new SoundHandler());
+//        MinecraftForge.EVENT_BUS.register(new RenderDebugAdditionalWorld(renderHandler));
+
 
     }
 
@@ -67,7 +71,7 @@ public class PhysicsClient extends PhysicsServer {
     @Override
     public void init(Physics physics, FMLInitializationEvent event) {
         Physics.getLogger().info("Started!");
-        render.init(event);
+        renderHandler.init(event);
 
         // TODO unfinished: EntityDeathHandler
         // MinecraftForge.EVENT_BUS.register(new
@@ -91,5 +95,9 @@ public class PhysicsClient extends PhysicsServer {
      */
     public SoundHandler getSoundHandler() {
         return soundHandler;
+    }
+
+    public RenderHandler getRenderHandler() {
+        return renderHandler;
     }
 }

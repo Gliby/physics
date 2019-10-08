@@ -1,5 +1,6 @@
 package gliby.minecraft.physics.common.entity.mechanics;
 
+import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import net.minecraft.block.BlockDynamicLiquid;
@@ -21,6 +22,7 @@ import java.util.List;
 /**
  * Block Mechanic responsible for water flow, lava death, etc.
  */
+// TODO (0.7.0) Add buoyancy https://pybullet.org/Bullet/phpBB3/viewtopic.php?t=11905 (might have to convert global mechanics into Bullet Action Interface, to apply under substep)
 public class EnvironmentResponseMechanic extends RigidBodyMechanic {
 
 
@@ -30,27 +32,23 @@ public class EnvironmentResponseMechanic extends RigidBodyMechanic {
             rigidBody.getOwner().setDead();
         }
 
+
         if (entity.isInWater()) {
-            Vector3f centerOfMass = rigidBody.getCenterOfMassPosition();
-            float size = 0.5f;
-            Vector3f bbPos = new Vector3f((centerOfMass.x + (size / 2)), (centerOfMass.y + (size / 2)),
-                    (centerOfMass.z + (size / 2)));
-            AxisAlignedBB blockBB = new AxisAlignedBB(bbPos.x, bbPos.y, bbPos.z, bbPos.x + size, bbPos.y + size,
-                    bbPos.z + size);
-            List<BlockStateAndLocation> blocks = getLiquidsInBB(rigidBody.getOwner().world, blockBB);
+
+            List<BlockStateAndLocation> blocks = getLiquidsInBB(entity.world, entity.getCollisionBoundingBox());
             for (int i = 0; i < blocks.size(); i++) {
                 BlockStateAndLocation block = blocks.get(i);
                 Material liquidMaterial = block.getBlockState().getBlock().getMaterial(block.getBlockState());
                 BlockDynamicLiquid liquidBlock = BlockLiquid.getFlowingBlock(liquidMaterial);
-                // TODO (0.7.0) Fix flow direction
-//                Vec3d vec3 = getFlowVector(rigidBody.getOwner().world, block.getBlockPosition(),
-//                        block.getBlockState().getBlock(), liquidMaterial);
-                Vec3d flow = Vec3d.ZERO;
+                Vec3d flow = liquidBlock.getFlow(entity.world, block.getBlockPosition(), block.getBlockState());
                 Vector3f impulse = new Vector3f((float) flow.x, (float) flow.y, (float) flow.z);
+                float waterForceMultiplier = Physics.getInstance().getSettings().getFloatSetting("Game.WaterForceMultiplier").getFloatValue();
+                if (impulse.lengthSquared() > 0) {
+                    impulse.scale(waterForceMultiplier);
+                    rigidBody.applyCentralImpulse(impulse);
+                    rigidBody.activate();
+                }
 
-                impulse.scale(1.25f);
-                rigidBody.applyCentralImpulse(impulse);
-                rigidBody.activate();
             }
         }
     }
@@ -73,7 +71,7 @@ public class EnvironmentResponseMechanic extends RigidBodyMechanic {
 						blockPosition.setPos(x, y, z);
 						IBlockState blockState = world.getBlockState(blockPosition);
 						if (blockState.getBlock().getMaterial(blockState).isLiquid())
-							blockImportations.add(new BlockStateAndLocation(blockState, blockPosition));
+							blockImportations.add(new BlockStateAndLocation(blockState, new BlockPos(blockPosition)));
 					}
 				}
 			}

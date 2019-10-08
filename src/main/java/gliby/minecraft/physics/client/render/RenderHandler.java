@@ -32,7 +32,6 @@ public class RenderHandler {
 
     private static Map<String, Integer> physicsGunColors = new HashMap<String, Integer>();
     private static IDynamicLightHandler lightHandler;
-    private Physics physics;
 
     static {
         physicsGunColors.put("a6a677aa-2589-4988-b686-59afd7c170f2", 0xFF87FF77);
@@ -41,7 +40,13 @@ public class RenderHandler {
         physicsGunColors.put("04372b9e-4e31-4a69-9660-4ac1cc2dbdb4", 0xFFD22828); // ZeAmateis
     }
 
-    public RenderHandler(Physics physics, boolean dynamicLightsPresent) {
+//    @SideOnly(Side.CLIENT)
+//    protected List<DebugShape> debugShapes = Collections.synchronizedList(new ArrayList<DebugShape>());
+    @SideOnly(Side.CLIENT)
+    ItemRendererManager itemRendererManager;
+    private Physics physics;
+
+    public RenderHandler(Physics physics) {
         this.physics = physics;
     }
 
@@ -104,13 +109,78 @@ public class RenderHandler {
         RenderingRegistry.registerEntityRenderingHandler(EntityToolGunBeam.class, new RenderToolGunBeam(this, mc.getRenderManager()));
     }
 
-    @SideOnly(Side.CLIENT)
-    ItemRendererManager itemRendererManager;
+    public int getTicksPerSecond() {
+        Minecraft mc = Minecraft.getMinecraft();
+        return (int) (mc.timer.tickLength * 1000.0f);
+    }
 
     @SideOnly(Side.CLIENT)
     public ItemRendererManager getItemRendererManager() {
         return itemRendererManager;
     }
 
-
+//    @SideOnly(Side.CLIENT)
+//    public List<DebugShape> getDebugShapes() {
+//        return debugShapes;
+//    }
+//
+//    @SideOnly(Side.CLIENT)
+//    public static abstract class DebugShape {
+//
+//        protected final long tickAdded;
+//        protected final float duration;
+//
+//        public DebugShape(long tickAdded, float durationInSeconds) {
+//            this.tickAdded = tickAdded;
+//            this.duration = durationInSeconds;
+//        }
+//
+//        public long getTickAdded() {
+//            return tickAdded;
+//        }
+//
+//        public float getDuration() {
+//            return duration;
+//        }
+//
+//        public abstract void render(float deltaTime);
+//
+//        public abstract Vector3f getStart();
+//    }
+//
+//    @SideOnly(Side.CLIENT)
+//    public static class DebugLine extends DebugShape {
+//
+//        protected final Vector3f start, end, color;
+//
+//        public DebugLine(World world, Vector3f start, Vector3f end, float duration) {
+//            super(world.getTotalWorldTime(), duration);
+//            this.start = start;
+//            this.end = end;
+//
+//            Random rand = new Random();
+//            this.color = new Vector3f(rand.nextFloat(), rand.nextFloat(), rand.nextFloat());
+//        }
+//
+//        @Override
+//        public void render(float deltaTime) {
+//            Tessellator tessellator = Tessellator.getInstance();
+//            BufferBuilder builder = tessellator.getBuffer();
+//            builder.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+//            builder.pos(start.x, start.y, start.z).color(color.x, color.y, color.z, 1.0f).endVertex();
+//            builder.pos(start.x, start.y, start.z).color(color.x, color.y, color.z, 1.0f).endVertex();
+//            tessellator.draw();
+//
+//            GL11.glPointSize(3.0f);
+//            builder.begin(GL11.GL_POINTS, DefaultVertexFormats.POSITION_COLOR);
+//            builder.pos(end.x, end.y, end.z).color(1.0f, 0.1f, 0.1f, 1.0f);
+//            tessellator.draw();
+//            GL11.glPointSize(1.0f);
+//        }
+//
+//        @Override
+//        public Vector3f getStart() {
+//            return start;
+//        }
+//    }
 }

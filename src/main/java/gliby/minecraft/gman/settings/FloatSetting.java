@@ -33,7 +33,7 @@ public class FloatSetting extends Setting {
     }
 
     public void setFloatValue(float value) {
-        this.data = new Float(value);
+        this.data = Float.valueOf(value);
     }
 
     @Override

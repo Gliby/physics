@@ -4,6 +4,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.entity.mechanics.ActivateRedstoneMechanic;
+import gliby.minecraft.physics.common.entity.mechanics.EnvironmentResponseMechanic;
 import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
 import gliby.minecraft.physics.common.physics.engine.javabullet.JavaPhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.nativebullet.NativePhysicsWorld;
@@ -45,7 +46,7 @@ public class PhysicsOverworld {
         // Registers available mechanics.
         // TODO (0.6.0) finish: global mechanics
 //        getRigidBodyMechanicsMap().put("EnvironmentGravity", new EnvironmentGravityMechanic());
-//        getRigidBodyMechanicsMap().put("EnvironmentResponse", new EnvironmentResponseMechanic());
+        getRigidBodyMechanicsMap().put("EnvironmentResponse", new EnvironmentResponseMechanic());
 //        getRigidBodyMechanicsMap().put("Bounce", new BounceMechanic());
 
         // TODO (0.6.0) feature: get these rigidbody mechanics working properly

@@ -6,7 +6,10 @@ import gliby.minecraft.physics.common.blocks.PhysicsBlockMetadata;
 import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;
 import net.minecraft.block.Block;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistry;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,16 +25,16 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public abstract class MetadataLoader {
 
-    private HashMap<String, PhysicsBlockMetadata> actualMap;
-    private HashMap<String, PhysicsBlockMetadata> tempData;
+    private HashMap<ResourceLocation, PhysicsBlockMetadata> actualMap;
+    private HashMap<ResourceLocation, PhysicsBlockMetadata> tempData;
     private BlockManager blockManager;
     private BlockingQueue<Callable> blockLoadQueue = new LinkedBlockingQueue<Callable>();
     private int loaded;
 
     public MetadataLoader(Physics physics, BlockManager blockManager,
-                          HashMap<String, PhysicsBlockMetadata> metadataMap) {
+                          HashMap<ResourceLocation, PhysicsBlockMetadata> metadataMap) {
         this.actualMap = metadataMap;
-        this.tempData = new HashMap<String, PhysicsBlockMetadata>();
+        this.tempData = new HashMap<ResourceLocation, PhysicsBlockMetadata>();
         this.blockManager = blockManager;
         start();
     }
@@ -62,18 +65,19 @@ public abstract class MetadataLoader {
     }
 
     public void start() {
+        IForgeRegistry<Block> registry = ForgeRegistries.BLOCKS;
         Iterator<Block> itr = ForgeRegistries.BLOCKS.iterator();
         while (itr.hasNext()) {
             final Block block = itr.next();
-            final String blockID = blockManager.getBlockIdentity(block);
-            if (!tempData.containsKey(blockID)) {
+            final ResourceLocation resourceLocation = registry.getKey(block);
+            if (!tempData.containsKey(resourceLocation)) {
                 blockLoadQueue.offer(new Callable() {
                     @Override
                     public Object call() throws JsonSyntaxException, IOException {
                         Map<String, Object> json = null;
-                        if ((json = loadMetadata(blockID)) != null) {
-                            PhysicsBlockMetadata metadata = formatMetadata(blockID, json);
-                            tempData.put(blockID, metadata);
+                        if ((json = loadMetadata(resourceLocation)) != null) {
+                            PhysicsBlockMetadata metadata = formatMetadata(resourceLocation, json);
+                            tempData.put(resourceLocation, metadata);
                         }
                         /*
                          * Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -117,21 +121,21 @@ public abstract class MetadataLoader {
 
     }
 
-    private PhysicsBlockMetadata formatMetadata(String name, Map<String, Object> json) {
+    private PhysicsBlockMetadata formatMetadata(ResourceLocation resourceLocation, Map<String, Object> json) {
         PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
-        PhysicsBlockMetadata metadata = tempData.get(name);
+        PhysicsBlockMetadata metadata = tempData.get(resourceLocation);
         if (metadata == null) {
             metadata = new PhysicsBlockMetadata();
             if (json.containsKey("friction"))
-                metadata.friction = new Float((Double) json.get("friction")).floatValue();
+                metadata.friction = ((Number) json.get("friction")).floatValue();
             if (json.containsKey("mass"))
-                metadata.mass = new Float((Double) json.get("mass")).floatValue();
+                metadata.mass = ((Number) json.get("mass")).floatValue();
             if (json.containsKey("shouldSpawnInExplosion"))
                 metadata.spawnInExplosions = (Boolean) json.get("shouldSpawnInExplosion");
             if (json.containsKey("overrideCollisionShape"))
                 metadata.defaultCollisionShape = (Boolean) json.get("overrideCollisionShape");
             if (json.containsKey("restitution"))
-                metadata.restitution = new Float((Double) json.get("restitution")).floatValue();
+                metadata.restitution = ((Number) json.get("restitution")).floatValue();
             if (json.containsKey("collisionEnabled")) {
                 metadata.collisionEnabled = (Boolean) json.get("collisionEnabled");
             }
@@ -148,5 +152,5 @@ public abstract class MetadataLoader {
         return metadata;
     }
 
-    public abstract Map<String, Object> loadMetadata(String name) throws JsonSyntaxException, IOException;
+    public abstract Map<String, Object> loadMetadata(ResourceLocation location) throws JsonSyntaxException, IOException;
 }

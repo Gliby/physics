@@ -142,12 +142,13 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         this.prevPosY = y;
         this.prevPosZ = z;
 
-
-        createPhysicsObject(physicsWorld);
         if (metadata != null) {
             if (metadata.mechanics != null)
                 this.mechanics.addAll(metadata.mechanics);
         }
+
+        createPhysicsObject(physicsWorld);
+
     }
 
     /**

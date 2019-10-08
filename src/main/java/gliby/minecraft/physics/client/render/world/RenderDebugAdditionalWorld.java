@@ -1,26 +1,34 @@
 package gliby.minecraft.physics.client.render.world;
 
-import com.bulletphysicsx.linearmath.Transform;
-import gliby.minecraft.physics.Physics;
+import gliby.minecraft.physics.client.render.RenderHandler;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.lwjgl.BufferUtils;
 
-import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  *
  */
 public class RenderDebugAdditionalWorld {
+//
+//    private static Transform physicsTransform = new Transform();
+//    private static FloatBuffer physicsFloatBufferMatrix4x4 = BufferUtils.createFloatBuffer(16);
+//    private static float[] physicsFloatMatrix4x4 = new float[16];
 
-    private static Transform physicsTransform = new Transform();
-    private static FloatBuffer physicsFloatBufferMatrix4x4 = BufferUtils.createFloatBuffer(16);
-    private static float[] physicsFloatMatrix4x4 = new float[16];
+    protected final RenderHandler renderHandler;
 
-    public RenderDebugAdditionalWorld(Physics physics) {
-        Minecraft mc = Minecraft.getMinecraft();
+    public RenderDebugAdditionalWorld(RenderHandler renderHandler) {
+        this.renderHandler = renderHandler;
     }
 
 //    public static void renderOffsetAABB(AxisAlignedBB bb) {
@@ -64,13 +72,43 @@ public class RenderDebugAdditionalWorld {
 //        GlStateManager.enableTexture2D();
 //    }
 
-    @SubscribeEvent
-    public void postRender(RenderWorldLastEvent event) {
-        // if (MineFortress.DEBUG_PHYSICS_RENDER)
-//		if (Physics.getInstance().getPhysicsOverworld() != null)
-//			renderDebugPhysics(physics.getPhysicsOverworld(), event);
-        // event);
-    }
+//    @SubscribeEvent
+//    public void postRender(RenderWorldLastEvent event) {
+//        Minecraft mc = Minecraft.getMinecraft();
+//        if (mc.getRenderManager().isDebugBoundingBox() && mc.world != null) {
+//            drawDebug(mc, mc.world, event.getPartialTicks());
+//        }
+//        // if (MineFortress.DEBUG_PHYSICS_RENDER)
+////		if (Physics.getInstance().getPhysicsOverworld() != null)
+////			renderDebugPhysics(physics.getPhysicsOverworld(), event);
+//        // event);
+//    }
+//
+//
+//    public void drawDebug(Minecraft mc, World world, float deltaTime) {
+//        synchronized (renderHandler.getDebugShapes()) {
+//
+//            Iterator<RenderHandler.DebugShape> it = renderHandler.getDebugShapes().iterator();
+//            while (it.hasNext()) {
+//                RenderHandler.DebugShape shape = it.next();
+//                GlStateManager.pushMatrix();
+//                Render.renderOffsetAABB(new AxisAlignedBB(0,0,0,100,100,100).offset(shape.getStart().x, shape.getStart().y, shape.getStart().z), 0,0,0);
+//                shape.render(deltaTime);
+//
+//                GlStateManager.popMatrix();
+//
+//
+//                long duration = world.getTotalWorldTime() - shape.getTickAdded();
+//                if (duration > shape.getDuration() * renderHandler.getTicksPerSecond()) {
+//                    it.remove();
+//                }
+//            }
+//
+////        renderHandler.getDebugShapes().removeAll(dirty);
+//        }
+//    }
+
+
 
     /**
      * Draws debug physics world with inefficient rendering.

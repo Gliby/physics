@@ -1,5 +1,6 @@
 package gliby.minecraft.physics;
 
+import com.badlogic.gdx.Game;
 import com.google.common.base.Predicate;
 import gliby.minecraft.gman.GMan;
 import gliby.minecraft.gman.ModInfo;
@@ -126,7 +127,7 @@ public class Physics {
         settings.registerObject("PhysicsEntities", "EntityColliderBlacklist", new
                 String[]{EntityPhysicsBlock.class.getName(), EntityPhysicsBase.class.getName(), EntityToolGunBeam.class.getName(), EntityItem.class.getName()}, Setting.Side.BOTH);
 
-
+        settings.registerFloat("Game", "WaterForceMultiplier", 100.0f, Setting.Side.BOTH);
         settings.registerFloat("Game", "ProjectileImpulseForce", 30, Setting.Side.BOTH);
         settings.registerFloat("Game", "ExplosionImpulseRadius", 16, Setting.Side.BOTH);
         settings.registerFloat("Game", "ExplosionImpulseForce", 1000, Setting.Side.BOTH);

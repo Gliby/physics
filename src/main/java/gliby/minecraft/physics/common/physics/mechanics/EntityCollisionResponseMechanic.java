@@ -8,6 +8,7 @@ import gliby.minecraft.physics.common.entity.IEntityPhysics;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IGhostObject;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
+import javafx.scene.chart.Axis;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.server.MinecraftServer;
@@ -77,7 +78,7 @@ public class EntityCollisionResponseMechanic extends PhysicsMechanic {
                     direction.setZ((float) (entity.motionZ));
                     boolean moving = direction.length() > 0;
                     if (moving) {
-                        direction.scale(Physics.getInstance().getSettings().getFloatSetting("ProjectileImpulseForce")
+                        direction.scale(Physics.getInstance().getSettings().getFloatSetting("Game.ProjectileImpulseForce")
                                 .getFloatValue());
                         rigidBody.applyCentralImpulse(direction);
                         rigidBody.activate();
@@ -95,14 +96,15 @@ public class EntityCollisionResponseMechanic extends PhysicsMechanic {
                     ghostObject = physicsWorld.createPairCachingGhostObject();
                     ghostObject.setInterpolationWorldTransform(entityTransform);
                     ghostObject.setWorldTransform(entityTransform);
-                    // Create ghost object
-                    Vector3f bb = new Vector3f(
-                            (float) entity.getEntityBoundingBox().maxX - (float) entity.getEntityBoundingBox().minX,
-                            (float) entity.getEntityBoundingBox().maxY - (float) entity.getEntityBoundingBox().minY,
-                            (float) entity.getEntityBoundingBox().maxZ - (float) entity.getEntityBoundingBox().minZ);
-                    bb.scale(0.5f);
+                    AxisAlignedBB enlargedBB = entity.getEntityBoundingBox().grow(0.1f, -0.1f, 0.1f);
+                    Vector3f bounds = new Vector3f(
+                            (float) enlargedBB.maxX - (float) enlargedBB.minX,
+                            (float) enlargedBB.maxY - (float) enlargedBB.minY,
+                            (float) enlargedBB.maxZ - (float) enlargedBB.minZ);
+                    bounds.scale(0.5f);
 
-                    ghostObject.setCollisionShape(physicsWorld.createBoxShape(bb));
+                    // Create ghost object
+                    ghostObject.setCollisionShape(physicsWorld.createBoxShape(bounds));
                     ghostObject.setCollisionFlags(CollisionFlags.CHARACTER_OBJECT);
                     physicsWorld.addCollisionObject(ghostObject, CollisionFilterGroups.CHARACTER_FILTER,
                             (short) (CollisionFilterGroups.STATIC_FILTER | CollisionFilterGroups.DEFAULT_FILTER));
