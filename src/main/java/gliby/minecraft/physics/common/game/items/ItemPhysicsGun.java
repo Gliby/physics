@@ -34,6 +34,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.vecmath.Vector3f;
 
+// TODO (0.6.0) fix picking, doesn't work reliably.
 public class ItemPhysicsGun extends RawItem {
 
     @SideOnly(Side.CLIENT)

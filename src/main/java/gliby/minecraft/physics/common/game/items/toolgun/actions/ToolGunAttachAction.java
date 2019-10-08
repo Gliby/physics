@@ -15,6 +15,7 @@ import java.util.Map;
 /**
  *
  */
+// TODO (0.6.0) fix being able to attach to world on native physics.
 public class ToolGunAttachAction implements IToolGunAction {
 
     private Map<Integer, ToolGunHit> hits = new HashMap<Integer, ToolGunHit>();
