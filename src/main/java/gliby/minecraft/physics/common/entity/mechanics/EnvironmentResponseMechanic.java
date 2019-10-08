@@ -65,19 +65,21 @@ public class EnvironmentResponseMechanic extends RigidBodyMechanic {
         int minY = MathHelper.floor(bb.minY);
         int minZ = MathHelper.floor(bb.minZ);
 
-        for (int x = minX; x <= maxX; ++x) {
-            for (int y = minY; y <= maxY; ++y) {
-                for (int z = minZ; z <= maxZ; ++z) {
-                    BlockPos.PooledMutableBlockPos blockPosition = BlockPos.PooledMutableBlockPos.retain(x, y, z);
-                    IBlockState blockState = world.getBlockState(blockPosition);
-
-                    if (blockState.getBlock().getMaterial(blockState).isLiquid()) {
-                        blockImportations.add(new BlockStateAndLocation(blockState, blockPosition));
-                    }
-                    blockPosition.release();
-                }
-            }
-        }
+        BlockPos.PooledMutableBlockPos blockPosition = BlockPos.PooledMutableBlockPos.retain();
+		try {
+			for (int x = minX; x <= maxX; ++x) {
+				for (int y = minY; y <= maxY; ++y) {
+					for (int z = minZ; z <= maxZ; ++z) {
+						blockPosition.setPos(x, y, z);
+						IBlockState blockState = world.getBlockState(blockPosition);
+						if (blockState.getBlock().getMaterial(blockState).isLiquid())
+							blockImportations.add(new BlockStateAndLocation(blockState, blockPosition));
+					}
+				}
+			}
+		} finally {
+			blockPosition.release();
+		}
         return blockImportations;
     }
 }
