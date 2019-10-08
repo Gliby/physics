@@ -48,17 +48,21 @@ public abstract class RigidBodyMechanic {
         int i1 = MathHelper.floor(BB.minZ);
         int j1 = MathHelper.floor(BB.maxZ);
 
-        for (int k1 = i; k1 <= j; ++k1) {
-            for (int l1 = k; l1 <= l; ++l1) {
-                for (int i2 = i1; i2 <= j1; ++i2) {
-                    BlockPos.PooledMutableBlockPos pos = BlockPos.PooledMutableBlockPos.retain(k1, l1, i2);
-                    IBlockState state = world.getBlockState(pos);
-                    if (!state.getBlock().isAir(state, world, pos))
-                        bb.add(new BlockStateAndLocation(state, pos));
-                    pos.release();
-                }
-            }
-        }
+        BlockPos.PooledMutableBlockPos pos = BlockPos.PooledMutableBlockPos.retain();
+		try {
+			for (int k1 = i; k1 <= j; ++k1) {
+				for (int l1 = k; l1 <= l; ++l1) {
+					for (int i2 = i1; i2 <= j1; ++i2) {
+						pos.setPos(k1, l1, i2);
+						IBlockState state = world.getBlockState(pos);
+						if (!state.getBlock().isAir(state, world, pos))
+							bb.add(new BlockStateAndLocation(state, pos));
+					}
+				}
+			}
+		} finally {
+			pos.release();
+		}
         return bb;
     }
 
