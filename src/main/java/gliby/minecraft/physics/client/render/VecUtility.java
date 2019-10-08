@@ -29,7 +29,7 @@ public class VecUtility {
      * @param delta
      * @returns javax.vecmath.Vector3f
      */
-    public static Vector3f getWorldTranslation(Minecraft mc, float delta) {
+    public static Vector3f getCameraTranslation(Minecraft mc, float delta) {
         return new Vector3f((float) mc.player.prevPosX + (float) (mc.player.posX - mc.player.prevPosX) * delta, (float) mc.player.prevPosY + (float) (mc.player.posY - (float) mc.player.prevPosY) * delta, (float) mc.player.prevPosZ + (float) (mc.player.posZ - (float) mc.player.prevPosZ) * delta);
     }
 

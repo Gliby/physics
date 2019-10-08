@@ -19,7 +19,6 @@ import gliby.minecraft.physics.common.game.GameManager;
 import gliby.minecraft.physics.common.packets.PacketReceiveTools;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -43,7 +42,8 @@ import java.util.Map;
 // TODO  (0.6.0) look into NativeBullet by the Terasology, might solve memory leaks in the native PhysicsWorld and improve simulation perf.
 // TODO  (0.6.0) FIXME: something is leaking memory every time we create/destroy a PhysicsWorld.
 // TODO (0.6.0) Replace Settings with Forge's configuration
-
+// TODO (0.6.0) Start using BlockPos.PooledMutableBlockPos
+// TODO (0.6.0) Start using world.isAreaLoaded()
 
 @Mod(modid = Physics.ID, name = Physics.NAME, acceptedMinecraftVersions = Physics.MC_VERSION, guiFactory = "gliby.minecraft.physics.client.gui.options.GuiFactory")
 public class Physics {
@@ -149,7 +149,7 @@ public class Physics {
         gman = GMan.create(getLogger(), new ModInfo(ID, event.getModMetadata().updateUrl), MinecraftForge.MC_VERSION,
                 VERSION);
 
-        if (GMan.isDevelopment()) {
+        if (GMan.isNotDevelopment()) {
             StringSetting lastVersionSetting = settings.getStringSetting("Miscellaneous.LastVersion");
             final String lastVersion = settings.getStringSetting("Miscellaneous.LastVersion").getString();
             final boolean modUpdated = !lastVersion.equals(VERSION);

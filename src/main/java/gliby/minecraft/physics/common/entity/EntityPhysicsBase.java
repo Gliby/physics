@@ -1,5 +1,6 @@
 package gliby.minecraft.physics.common.entity;
 
+import com.google.common.base.Predicate;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import gliby.minecraft.gman.GMan;
@@ -29,6 +30,8 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.vecmath.Vector3f;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -43,18 +46,40 @@ import java.util.List;
 public abstract class EntityPhysicsBase extends Entity implements IEntityAdditionalSpawnData, IEntityPhysics {
 
 
+    // TODO (0.6.0) find a way to determine actual ticks per second, use that.
     public static final int TICKS_PER_SECOND = 20;
+    /**
+     * The current entity id that is picking this physics entity. Picking meaning manipulating with Physics Manipulator.
+     */
     protected static final DataParameter<Integer> PICKER_ID = EntityDataManager.createKey(EntityPhysicsBase.class, DataSerializers.VARINT);
+    /**
+     * The networked relative (to the RigidBody) offset position for the pick.
+     */
     protected static final DataParameter<Vector3f> PICK_OFFSET = EntityDataManager.createKey(EntityPhysicsBase.class, GDataSerializers.VECTOR3F);
+
+    /**
+     * Per-entity RigidBody mechanics.
+     */
     protected List<RigidBodyMechanic> mechanics = new ArrayList<RigidBodyMechanic>();
 
+    /**
+     * Weak ref to current picker entity.
+     */
     protected WeakReference<EntityPlayer> pickerEntity;
+
+    /**
+     * Weak ref to current physics world.
+     */
+
     protected WeakReference<PhysicsWorld> physicsWorld;
     /**
      * Spawned by player or game event?
      */
     protected boolean gameSpawned;
 
+    /**
+     * The actual relative (to the RigidBody) offset position for the pick.
+     */
     protected Vector3f pickLocalHit;
     protected static final Gson inclusiveGSON = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
     private int lastTickActive;
@@ -80,45 +105,76 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
         this.physicsWorld = new WeakReference<PhysicsWorld>(physicsWorld);
     }
 
+    /**
+     * Was spawned in by game events?
+     * @return
+     */
     public boolean isGameSpawned() {
         return gameSpawned;
     }
 
+    /**
+     * Set game spawned flag.
+     * @param gameSpawned
+     * @return
+     */
     public EntityPhysicsBase setGameSpawned(boolean gameSpawned) {
         this.gameSpawned = gameSpawned;
         return this;
     }
 
+    /**
+     * Get relative pick offset.
+     * @return
+     */
     public Vector3f getPickLocalHit() {
         return pickLocalHit;
     }
 
+    /**
+     * Get's current RigidBody mechanics.
+     * @return
+     */
     public List<RigidBodyMechanic> getMechanics() {
         return mechanics;
     }
 
+    /**
+     * Sets RigidBody's mechanics.
+     * @param mechanics
+     */
     public void setMechanics(List<RigidBodyMechanic> mechanics) {
         this.mechanics = mechanics;
     }
 
+    /**
+     * Get's current picker entity.
+     * @return
+     */
+    @Nullable
     public EntityPlayer getPickerEntity() {
         if (pickerEntity != null)
             return pickerEntity.get();
         return null;
     }
 
-    public void setPickerEntity(EntityPlayer pickerEntity) {
+    /**
+     * Set's the current picker entity.
+     * @param pickerEntity
+     */
+    public void setPickerEntity(@Nullable EntityPlayer pickerEntity) {
         this.pickerEntity = new WeakReference<EntityPlayer>(pickerEntity);
     }
 
     /**
-     * If true, entity network will be updated.
-     *
+     * Returns whether the RigidBody is currently active, e.g moving/rotation.
+     * Used to determine if we should update the network state.
      * @return
      */
     public abstract boolean isDirty();
 
-    public void spawnRemoveParticle() {
+
+    public void spawnSmallExplosionParticles() {
         if (this.world.isRemote) {
             for (int i = 0; i < 5; ++i) {
                 double d0 = this.rand.nextGaussian() * 0.02D;
@@ -137,7 +193,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
     @Override
     public void setDead() {
-        spawnRemoveParticle();
+        spawnSmallExplosionParticles();
         for (int i = 0; i < getMechanics().size(); i++) {
             getMechanics().get(i).dispose();
         }
@@ -158,7 +214,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
      */
     public EntityPhysicsBase wakeUp() {
         if (!world.isRemote) {
-            if (doesPhysicsObjectExist()) {
+            if (isPhysicsValid()) {
                 Vector3f minBB = new Vector3f(), maxBB = new Vector3f();
                 getRigidBody().getAabb(minBB, maxBB);
                 getPhysicsWorld().awakenArea(minBB, maxBB);
@@ -167,23 +223,26 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
         return this;
     }
 
-    public void pick(Entity picker, Vector3f pickPoint) {
+    public EntityPhysicsBase pick(@Nonnull Entity picker, @Nullable Vector3f pickPoint) {
         this.setPickerEntity((EntityPlayer) picker);
         this.pickLocalHit = pickPoint;
+
         this.dataManager.set(PICKER_ID, Integer.valueOf(picker.getEntityId()));
         if (pickLocalHit != null)
-            this.dataManager.set(PICK_OFFSET, pickLocalHit);
+            this.dataManager.set(PICK_OFFSET, pickPoint);
+        return this;
     }
 
-    public void unpick() {
+    public EntityPhysicsBase unpick() {
         this.pickerEntity = null;
         this.dataManager.set(PICKER_ID, Integer.valueOf(-1));
         if (pickLocalHit != null)
             this.dataManager.set(PICK_OFFSET, pickLocalHit = new Vector3f());
+        return this;
     }
 
     /**
-     *
+     * Disposes of internal physics.
      */
     protected abstract void dispose();
 
@@ -204,19 +263,25 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     @SideOnly(Side.CLIENT)
     public abstract void interpolate();
 
+
     public PhysicsWorld getPhysicsWorld() {
         return physicsWorld.get();
     }
 
-    /**
-     * @return
-     */
-    protected boolean doesPhysicsObjectExist() {
+    protected boolean isPhysicsValid() {
         return false;
     }
 
+    /**
+     * Create's and assigns physics.
+     * @param physicsWorld
+     */
     protected abstract void createPhysicsObject(PhysicsWorld physicsWorld);
 
+    /**
+     * Updates the state of the physics based off the entity data.
+     * @param physicsWorld
+     */
     protected abstract void updatePhysicsObject(PhysicsWorld physicsWorld);
 
     /**
@@ -266,7 +331,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     }
 
     @Override
-    public void entityInit() {
+    public final void entityInit() {
         this.dataManager.register(PICK_OFFSET, pickLocalHit = new Vector3f());
         this.dataManager.register(PICKER_ID, Integer.valueOf(-1));
 
@@ -346,12 +411,15 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
                 }
             }
         }
+        onCommonUpdate();
     }
 
     /**
      * @return
      */
     public abstract AxisAlignedBB getRenderBoundingBox();
+
+    public static final Predicate<Entity> NOT_PHYSICS = entity -> !(entity instanceof EntityPhysicsBase);
 
     @Override
     public void writeSpawnData(ByteBuf buffer) {

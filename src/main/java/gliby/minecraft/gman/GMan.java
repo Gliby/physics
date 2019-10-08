@@ -58,7 +58,7 @@ public class GMan {
         return GSON;
     }
 
-    public static boolean isDevelopment() {
+    public static boolean isNotDevelopment() {
         boolean development = (Boolean) (Launch.blackboard.get("fml.deobfuscatedEnvironment"));
         return !development || GMAN_DEBUG;
     }
@@ -72,7 +72,7 @@ public class GMan {
         final Gson gson = GMan.getGSON();
         try {
             Reader reader = new InputStreamReader(new URL(builder.toString()).openStream());
-            if (isDevelopment()) {
+            if (isNotDevelopment()) {
                 ModContainer modContainer = Loader.instance().activeModContainer();
                 final ModInfo externalInfo = gson.fromJson(reader, ModInfo.class);
                 modInfo.donateURL = externalInfo.donateURL;

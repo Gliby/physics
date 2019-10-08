@@ -45,7 +45,7 @@ public class RenderPhysicsBlock extends RenderPhysics {
         EntityPhysicsBlock entity = (EntityPhysicsBlock) castEntity;
         IBlockState state = entity.getBlockState();
         if (state.getRenderType() != EnumBlockRenderType.INVISIBLE) {
-            Vector3f worldTranslation = VecUtility.getWorldTranslation(mc, deltaTime);
+            Vector3f worldTranslation = VecUtility.getCameraTranslation(mc, deltaTime);
             BlockRendererDispatcher blockrendererdispatcher = mc.getBlockRendererDispatcher();
             IBakedModel ibakedmodel = blockrendererdispatcher.getModelForState(state);
 
@@ -54,7 +54,10 @@ public class RenderPhysicsBlock extends RenderPhysics {
             GlStateManager.pushMatrix();
             World world = castEntity.getEntityWorld();
             // Apply world translation with bullet pivot offset.
-            GlStateManager.translate(-worldTranslation.x + 0.5f, -worldTranslation.y + 0.5f, -worldTranslation.z + 0.5f);
+            GlStateManager.translate(-worldTranslation.x, -worldTranslation.y, -worldTranslation.z);
+//            renderOffsetAABB(castEntity.getCollisionBoundingBox(), 0, 0,0);
+
+            GlStateManager.translate(0.5f, 0.5f, 0.5f);
 
             // render debug direction
 //            GlStateManager.pushMatrix();
@@ -104,7 +107,7 @@ public class RenderPhysicsBlock extends RenderPhysics {
     @Override
     public Vector3f getRenderHitPoint(EntityPhysicsBase entity, float partialTick) {
         EntityPhysicsBlock entityBlock = (EntityPhysicsBlock) entity;
-        Vector3f worldTranslation = VecUtility.getWorldTranslation(Minecraft.getMinecraft(), partialTick);
+        Vector3f worldTranslation = VecUtility.getCameraTranslation(Minecraft.getMinecraft(), partialTick);
         Vector3f hitPoint = new Vector3f(entityBlock.getRenderPosition());
         hitPoint.add(entity.getPickLocalHit());
         hitPoint.add(new Vector3f(0.5f, 0.5f, 0.5f));
