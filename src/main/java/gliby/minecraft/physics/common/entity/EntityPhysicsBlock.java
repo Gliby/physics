@@ -323,7 +323,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
      */
     @Override
     public boolean canBePushed() {
-        return true;
+        return false;
     }
 
     @Override

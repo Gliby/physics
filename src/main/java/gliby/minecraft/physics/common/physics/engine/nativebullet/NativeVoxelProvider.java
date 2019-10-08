@@ -24,7 +24,7 @@ class NativeVoxelProvider extends btVoxelContentProvider {
     // TODO (0.6.0) add is block loaded check to avoid loading distant chunks.
     @Override
     public btVoxelInfo getVoxel(int x, int y, int z) {
-        final BlockPos.PooledMutableBlockPos blockPosition = BlockPos.PooledMutableBlockPos.retain(x, y, z);
+        BlockPos.PooledMutableBlockPos blockPosition = BlockPos.PooledMutableBlockPos.retain(x, y, z);
         final IBlockState state = world.getBlockState(blockPosition);
         info.setBlocking(state.getBlock().getMaterial(state).isSolid());
         info.setCollisionShape((btCollisionShape) physicsWorld.getBlockCache()
