@@ -111,9 +111,9 @@ public class Physics {
         settings = new SettingsHandler(dir, new File(dir, "Settings.ini"));
 
         // Use Java Physics by default if we are a client.
-        boolean useJavaPhysicsByDefault = FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
+//        boolean useJavaPhysicsByDefault = FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
 
-        settings.registerBoolean("PhysicsEngine", "UseJavaPhysics", useJavaPhysicsByDefault, Setting.Side.BOTH);
+        settings.registerBoolean("PhysicsEngine", "UseJavaPhysics", false, Setting.Side.BOTH);
 
         settings.registerInteger("PhysicsEngine", "TickRate", 20, Setting.Side.BOTH);
         settings.registerFloat("PhysicsEngine", "GravityForce", -9.8f, Setting.Side.BOTH);
