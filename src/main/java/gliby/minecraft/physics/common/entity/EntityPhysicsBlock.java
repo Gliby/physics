@@ -272,7 +272,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         transform.origin.set(VecUtility.toVector3f(getPositionVector()));
         transform.setRotation(this.physicsRotation);
         rigidBody = physicsWorld.createRigidBody(this, transform, Math.abs(mass), collisionShape);
-        rigidBody.getProperties().put(EnumRigidBodyProperty.BLOCKSTATE.getName(), blockState);
+        getRigidBody().getProperties().put(EnumRigidBodyProperty.BLOCKSTATE.getName(), blockState);
 
         for (int i = 0; i < getMechanics().size(); i++) {
             RigidBodyMechanic mechanic = getMechanics().get(i);
@@ -286,12 +286,12 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
                     CollisionFilterGroups.ALL_FILTER);
 
         if (mass < 0)
-            rigidBody.setGravity(new Vector3f());
-        rigidBody.setFriction(friction);
+            getRigidBody().setGravity(new Vector3f());
+        getRigidBody().setFriction(friction);
         if (linearVelocity != null)
-            rigidBody.setLinearVelocity(linearVelocity);
+            getRigidBody().setLinearVelocity(linearVelocity);
         if (angularVelocity != null)
-            rigidBody.setAngularVelocity(angularVelocity);
+            getRigidBody().setAngularVelocity(angularVelocity);
     }
 
     @Override
@@ -300,11 +300,11 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         transform.setIdentity();
         transform.origin.set(VecUtility.toVector3f(getPositionVector()));
         transform.setRotation(this.physicsRotation);
-        rigidBody.setWorldTransform(transform);
+        getRigidBody().setWorldTransform(transform);
         // Used for specific block mechanics.
         rigidBody.getProperties().put(EnumRigidBodyProperty.BLOCKSTATE.getName(), blockState);
         if (mass < 0)
-            rigidBody.setGravity(new Vector3f());
+            getRigidBody().setGravity(new Vector3f());
         rigidBody.setFriction(friction);
         if (linearVelocity != null)
             rigidBody.setLinearVelocity(linearVelocity);
@@ -612,7 +612,15 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         } else {
             updatePhysicsObject(getPhysicsWorld());
         }
+
         super.readEntityFromNBT(tagCompound);
+
+        // overwrite newly read property from parent.
+        getRigidBody().getProperties().put(EnumRigidBodyProperty.BLOCKSTATE.getName(), blockState);
     }
 
+    @Override
+    public BlockPos getPosition() {
+        return getPhysicsBlockPos();
+    }
 }

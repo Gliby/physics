@@ -3,6 +3,7 @@
   "friction": 1.9999999,
   "mechanics": [
     "EnvironmentGravity",
-    "EnvironmentResponse"
+    "EnvironmentResponse",
+    "ActivateRedstone"
   ]
 }

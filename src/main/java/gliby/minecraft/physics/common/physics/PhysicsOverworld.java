@@ -4,6 +4,7 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.entity.mechanics.ActivateRedstoneMechanic;
+import gliby.minecraft.physics.common.entity.mechanics.BlockInheritanceMechanic;
 import gliby.minecraft.physics.common.entity.mechanics.EnvironmentResponseMechanic;
 import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
 import gliby.minecraft.physics.common.physics.engine.javabullet.JavaPhysicsWorld;
@@ -51,7 +52,7 @@ public class PhysicsOverworld {
 
         // TODO (0.6.0) feature: get these rigidbody mechanics working properly
         getRigidBodyMechanicsMap().put("ActivateRedstone", new ActivateRedstoneMechanic());
-//        getMechanicsMap().put("BlockInheritance", new BlockInheritanceMechanic());
+        getRigidBodyMechanicsMap().put("BlockInheritance", new BlockInheritanceMechanic().setCommon(true));
         //getMechanicsMap().put("ClientBlockInheritance", new ClientBlockInheritanceMechanic().setCommon(true));
         MinecraftForge.EVENT_BUS.register(this);
     }
@@ -63,6 +64,7 @@ public class PhysicsOverworld {
         PhysicsWorld physicsWorld = getPhysicsWorldMap().get(access);
         if (physicsWorld == null) {
             final Vector3f gravity = new Vector3f(0, physics.getSettings().getFloatSetting("PhysicsEngine.GravityForce").getFloatValue(), 0);
+            // TODO (0.6.0) add world border support
             physicsWorld = createPhysicsWorld(
                     !physics.getSettings().getBooleanSetting("PhysicsEngine.UseJavaPhysics").getBooleanValue(),
                     new IPhysicsWorldConfiguration() {

@@ -11,6 +11,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.fml.relauncher.Side;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public abstract class RigidBodyMechanic {
         return this;
     }
 
-    public abstract void update(IRigidBody rigidBody, PhysicsWorld physicsWorld, Entity entity, Side side);
+    public abstract void update(IRigidBody rigidBody, @Nullable  PhysicsWorld physicsWorld, Entity entity, Side side);
 
     public List<BlockStateAndLocation> getBlockLocationWithingAxisAlignedBB(IBlockAccess world, AxisAlignedBB BB) {
         List<BlockStateAndLocation> bb = new ArrayList<BlockStateAndLocation>();

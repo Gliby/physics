@@ -107,6 +107,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
     /**
      * Was spawned in by game events?
+     *
      * @return
      */
     public boolean isGameSpawned() {
@@ -115,6 +116,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
     /**
      * Set game spawned flag.
+     *
      * @param gameSpawned
      * @return
      */
@@ -125,6 +127,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
     /**
      * Get relative pick offset.
+     *
      * @return
      */
     public Vector3f getPickLocalHit() {
@@ -133,6 +136,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
     /**
      * Get's current RigidBody mechanics.
+     *
      * @return
      */
     public List<RigidBodyMechanic> getMechanics() {
@@ -141,6 +145,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
     /**
      * Sets RigidBody's mechanics.
+     *
      * @param mechanics
      */
     public void setMechanics(List<RigidBodyMechanic> mechanics) {
@@ -149,6 +154,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
     /**
      * Get's current picker entity.
+     *
      * @return
      */
     @Nullable
@@ -160,6 +166,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
     /**
      * Set's the current picker entity.
+     *
      * @param pickerEntity
      */
     public void setPickerEntity(@Nullable EntityPlayer pickerEntity) {
@@ -169,6 +176,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     /**
      * Returns whether the RigidBody is currently active, e.g moving/rotation.
      * Used to determine if we should update the network state.
+     *
      * @return
      */
     public abstract boolean isDirty();
@@ -194,9 +202,6 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     @Override
     public void setDead() {
         spawnSmallExplosionParticles();
-        for (int i = 0; i < getMechanics().size(); i++) {
-            getMechanics().get(i).dispose();
-        }
         getMechanics().clear();
 
         if (!world.isRemote) {
@@ -265,7 +270,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
 
     public PhysicsWorld getPhysicsWorld() {
-        return physicsWorld.get();
+        return physicsWorld != null  ? physicsWorld.get() : null;
     }
 
     protected boolean isPhysicsValid() {
@@ -274,12 +279,14 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
     /**
      * Create's and assigns physics.
+     *
      * @param physicsWorld
      */
     protected abstract void createPhysicsObject(PhysicsWorld physicsWorld);
 
     /**
      * Updates the state of the physics based off the entity data.
+     *
      * @param physicsWorld
      */
     protected abstract void updatePhysicsObject(PhysicsWorld physicsWorld);
@@ -346,6 +353,20 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     @Override
     public final void onUpdate() {
         super.onUpdate();
+
+        // Update mechanics.
+        for (int i = 0; i < getMechanics().size(); i++) {
+            RigidBodyMechanic mechanic = getMechanics().get(i);
+            if (mechanic.isEnabled()) {
+
+                if (!mechanic.isCommon() && this.world.isRemote)
+                    continue;
+
+                mechanic.update(getRigidBody(), getPhysicsWorld(), this, world.isRemote ? Side.CLIENT : Side.SERVER);
+            }
+        }
+
+
         if (this.world.isRemote) {
             int pickerId = this.getDataManager().get(PICKER_ID).intValue();
             if (pickerId != -1) {
@@ -398,12 +419,6 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
                 if (((float) (ticksExisted - lastTickActive) / (float) TICKS_PER_SECOND + 1) > Physics.getInstance().getSettings()
                         .getFloatSetting(deathKey).getFloatValue()) {
                     this.setDead();
-                }
-                // Update mechanics.
-                for (int i = 0; i < getMechanics().size(); i++) {
-                    RigidBodyMechanic mechanic = getMechanics().get(i);
-                    if (mechanic.isEnabled())
-                        mechanic.update(getRigidBody(), getPhysicsWorld(), this, world.isRemote ? Side.CLIENT : Side.SERVER);
                 }
 
                 if (rigidBody.getProperties().containsKey(EnumRigidBodyProperty.DEAD.getName())) {
@@ -465,6 +480,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
 
     /**
      * Sets entity velocity. (motionX, motionY, motionZ)
+     *
      * @param x
      * @param y
      * @param z
