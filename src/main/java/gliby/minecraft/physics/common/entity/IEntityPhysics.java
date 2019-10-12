@@ -9,7 +9,7 @@ import net.minecraft.entity.Entity;
 
 public interface IEntityPhysics {
 
-    Predicate NOT_PHYSICS_OBJECT = new Predicate() {
+    Predicate NOT_BLACKLISTED = new Predicate() {
         public boolean apply(Entity entityIn) {
             ObjectSetting setting = Physics.getInstance().getSettings()
                     .getObjectSetting("PhysicsEntities.EntityColliderBlacklist");

@@ -8,7 +8,6 @@ import gliby.minecraft.physics.common.entity.IEntityPhysics;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IGhostObject;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
-import javafx.scene.chart.Axis;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.server.MinecraftServer;
@@ -60,7 +59,7 @@ public class EntityCollisionResponseMechanic extends PhysicsMechanic {
 
             MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
             intersectingEntites = world.getEntitiesWithinAABB(Entity.class, axisAlignedBB,
-                    IEntityPhysics.NOT_PHYSICS_OBJECT);
+                    IEntityPhysics.NOT_BLACKLISTED);
 
 
             for (Entity entity : intersectingEntites) {

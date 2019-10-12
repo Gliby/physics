@@ -70,18 +70,32 @@ public abstract class PhysicsWorld {
 
     }
 
-    protected ICollisionShape createBlockShape(final World worldObj, final BlockPos blockPos, final IBlockState blockState) {
+    /**
+     * Generates block collision shape.
+     * @param world
+     * @param blockPos
+     * @param blockState
+     * @return
+     */
+    protected ICollisionShape generateBlockShape(final World world, final BlockPos blockPos, final IBlockState blockState) {
         if (!blockState.getBlock().isNormalCube(blockState)) {
             final List<AxisAlignedBB> collisionBBs = new ArrayList<AxisAlignedBB>();
-            blockState.getBlock().addCollisionBoxToList(blockState, worldObj, blockPos, WorldUtility.MAX_BB,
-                    collisionBBs, null, true);
-            return buildCollisionShape(collisionBBs, new Vector3f(blockPos.getX(), blockPos.getY(), blockPos.getZ()));
-        }
-        AxisAlignedBB bb = blockState.getBlock().getBoundingBox(blockState, worldObj, blockPos);
 
-        final Vector3f blockPosition = new Vector3f((float) bb.maxX, (float) bb.maxY, (float) bb.maxZ);
-        blockPosition.scale(0.5f);
-        return createBoxShape(blockPosition);
+            blockState.getBlock().addCollisionBoxToList(blockState, world, blockPos, WorldUtility.MAX_BB,
+                    collisionBBs, null, true);
+
+            if (collisionBBs.size() > 0)
+                return buildCollisionShape(collisionBBs, new Vector3f(blockPos.getX(), blockPos.getY(), blockPos.getZ()));
+        }
+
+        AxisAlignedBB bb = blockState.getBlock().getBoundingBox(blockState, world, blockPos);
+
+        if (bb != null) {
+            Vector3f blockPosition = new Vector3f((float) bb.maxX, (float) bb.maxY, (float) bb.maxZ);
+            blockPosition.scale(0.5f);
+            return createBoxShape(blockPosition);
+        } else return getDefaultShape();
+
     }
 
     public void dispose() {
@@ -284,6 +298,9 @@ public abstract class PhysicsWorld {
         }
     }
 
+    /**
+     * Manages Block collision shapes.
+     */
     public class BlockShapeCache {
 
         protected PhysicsWorld physicsWorld;
@@ -295,10 +312,17 @@ public abstract class PhysicsWorld {
             this.cache = new HashMap<IBlockState, ICollisionShape>();
         }
 
+        /**
+         * Tries to get block collision state, if not available generates and caches.
+         * @param world
+         * @param pos
+         * @param state
+         * @return
+         */
         public ICollisionShape getShape(World world, BlockPos pos, IBlockState state) {
             ICollisionShape shape;
             if ((shape = cache.get(state)) == null) {
-                shape = physicsWorld.createBlockShape(world, pos, state);
+                shape = physicsWorld.generateBlockShape(world, pos, state);
                 cache.put(state, shape);
             }
             return shape;
@@ -310,6 +334,7 @@ public abstract class PhysicsWorld {
             for (ICollisionShape shape : cache.values()) {
                 shape.dispose();
             }
+
             cache.clear();
             physicsWorld = null;
         }

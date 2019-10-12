@@ -26,8 +26,7 @@ import java.util.List;
  *
  */
 
-// IVector and
-// IQuaternion, IMatrix, replace with custom vector stuff or MC Vec3.
+// TODO (0.6.0) FIXME: blocks falling through ground after exiting and then re-entering world. Most likely related to disposal.
 public class NativePhysicsWorld extends PhysicsWorld {
 
     static {
