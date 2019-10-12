@@ -35,7 +35,7 @@ public class EnvironmentResponseMechanic extends RigidBodyMechanic {
 
         if (entity.isInWater()) {
 
-            List<BlockStateAndLocation> blocks = getLiquidsInBB(entity.world, entity.getCollisionBoundingBox());
+            List<BlockStateAndLocation> blocks = getLiquidsInBB(entity.world, entity.getEntityBoundingBox());
             for (int i = 0; i < blocks.size(); i++) {
                 BlockStateAndLocation block = blocks.get(i);
                 Material liquidMaterial = block.getBlockState().getBlock().getMaterial(block.getBlockState());

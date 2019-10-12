@@ -81,7 +81,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     /**
      * RigidBody collision status.
      */
-    protected boolean collisionEnabled = true;
+    protected boolean physicsCollisionEnabled = true;
 
     /**
      * Entity Collision.
@@ -126,7 +126,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         this.mass = metadataExists ? metadata.mass : 10;
         this.friction = metadataExists ? metadata.friction : 0.5f;
         this.defaultCollisionShape = metadataExists && metadata.defaultCollisionShape;
-        this.collisionEnabled = !metadataExists || metadata.collisionEnabled;
+        this.physicsCollisionEnabled = !metadataExists || metadata.collisionEnabled;
 
         if (this.defaultCollisionShape)
             this.collisionShape = physicsWorld.getDefaultShape();
@@ -155,8 +155,8 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
      * Is physics collision enabled? (Not related to entity collision)
      * @return
      */
-    public boolean isCollisionEnabled() {
-        return collisionEnabled;
+    public boolean isPhysicsCollisionEnabled() {
+        return physicsCollisionEnabled;
     }
 
     public EntityPhysicsBlock setEntityCollisionEnabled(boolean entityCollisionEnabled) {
@@ -279,7 +279,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
             mechanic.onCreatePhysics(rigidBody);
         }
 
-        if (collisionEnabled)
+        if (physicsCollisionEnabled)
             physicsWorld.addRigidBody(rigidBody);
         else
             physicsWorld.addRigidBody(rigidBody, CollisionFilterGroups.CHARACTER_FILTER,
@@ -316,7 +316,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
     @Override
     public boolean canBeCollidedWith() {
-        return !isDead && entityCollisionEnabled;
+        return !isDead && entityCollisionEnabled && physicsCollisionEnabled;
     }
 
     /**
@@ -447,7 +447,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     @Nullable
     @Override
     public AxisAlignedBB getCollisionBoundingBox() {
-        return super.getEntityBoundingBox().offset(width/2, 0.0f, width/2);
+        return canBeCollidedWith() ? super.getEntityBoundingBox().offset(width/2, 0.0f, width/2) : VecUtility.ZERO_BB;
     }
 
     /**
@@ -455,8 +455,8 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
      */
     @Override
     public AxisAlignedBB getEntityBoundingBox() {
-        return collisionEnabled || entityCollisionEnabled ? new AxisAlignedBB(0, 0, 0, width, height, width).offset(
-                posX, posY, posZ) : VecUtility.ZERO_BB;
+        return new AxisAlignedBB(0, 0, 0, width, height, width).offset(
+                posX, posY, posZ);
     }
 
     @Override
@@ -498,7 +498,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     @Override
     public void writeSpawnData(ByteBuf buffer) {
         super.writeSpawnData(buffer);
-        buffer.writeBoolean(collisionEnabled);
+        buffer.writeBoolean(physicsCollisionEnabled);
         buffer.writeBoolean(entityCollisionEnabled);
 
         buffer.writeFloat(physicsRotation.x);
@@ -511,7 +511,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     @Override
     public void readSpawnData(ByteBuf buffer) {
         super.readSpawnData(buffer);
-        this.collisionEnabled = buffer.readBoolean();
+        this.physicsCollisionEnabled = buffer.readBoolean();
         this.entityCollisionEnabled = buffer.readBoolean();
         this.physicsRotation = new Quat4f(buffer.readFloat(), buffer.readFloat(), buffer.readFloat(), buffer.readFloat());
         this.blockState = BlockStateToMetadata.deserializeBlockState(buffer);
@@ -542,8 +542,8 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
         if (defaultCollisionShape)
             tagCompound.setBoolean("DefaultCollisionShape", defaultCollisionShape);
-        if (!collisionEnabled)
-            tagCompound.setBoolean("CollisionEnabled", collisionEnabled);
+        if (!physicsCollisionEnabled)
+            tagCompound.setBoolean("CollisionEnabled", physicsCollisionEnabled);
         tagCompound.setBoolean("EntityCollisionEnabled", entityCollisionEnabled);
 
 
@@ -577,8 +577,8 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         this.mass = (float) (tagCompound.hasKey("Mass") ? tagCompound.getFloat("Mass") : 1.0);
         this.friction = (float) (tagCompound.hasKey("Friction") ? tagCompound.getFloat("Friction") : 0.5);
         this.defaultCollisionShape = tagCompound.hasKey("DefaultCollisionShape") && tagCompound.getBoolean("DefaultCollisionShape");
-        this.collisionEnabled = tagCompound.hasKey("CollisionEnabled") ? tagCompound.getBoolean("CollisionEnabled")
-                : collisionEnabled;
+        this.physicsCollisionEnabled = tagCompound.hasKey("CollisionEnabled") ? tagCompound.getBoolean("CollisionEnabled")
+                : physicsCollisionEnabled;
         this.entityCollisionEnabled = tagCompound.hasKey("EntityCollisionEnabled") ? tagCompound.getBoolean("EntityCollisionEnabled") : entityCollisionEnabled;
 
         if (tagCompound.hasKey("CollisionShape")) {

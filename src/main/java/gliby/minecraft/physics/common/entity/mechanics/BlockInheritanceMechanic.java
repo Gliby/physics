@@ -32,11 +32,12 @@ public class BlockInheritanceMechanic extends RigidBodyMechanic {
             blockState = (IBlockState) rigidBody.getProperties().get(EnumRigidBodyProperty.BLOCKSTATE.getName());
 
         // Matches blocks actual tick rate.
-        boolean shouldTick = entity.ticksExisted % blockState.getBlock().tickRate(entity.getEntityWorld()) == 0;
+//        boolean shouldTick = entity.ticksExisted % blockState.getBlock().tickRate(entity.getEntityWorld()) == 0;
+        boolean shouldTick = true;
 
         if (blockState != null && shouldTick) {
             List<Entity> entitesWithin = entity.getEntityWorld().getEntitiesWithinAABB(Entity.class,
-                    entity.getCollisionBoundingBox().grow(0.1f), IEntityPhysics.NOT_BLACKLISTED);
+                    entity.getEntityBoundingBox().grow(0.1f), IEntityPhysics.NOT_BLACKLISTED);
             BlockPos pos = entity.getPosition();
             for (int i = 0; i < entitesWithin.size(); i++) {
                 Entity collidedEntity = entitesWithin.get(i);
