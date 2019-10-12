@@ -34,7 +34,7 @@ public class BlockInheritanceMechanic extends RigidBodyMechanic {
         if (blockState != null) {
             List<Entity> entitesWithin = entity.getEntityWorld().getEntitiesWithinAABB(Entity.class,
                     entity.getCollisionBoundingBox().grow(0.1f), IEntityPhysics.NOT_PHYSICS_OBJECT);
-            BlockPos.PooledMutableBlockPos pos = BlockPos.PooledMutableBlockPos.retain(entity.getPosition());
+            BlockPos pos = entity.getPosition();
             for (int i = 0; i < entitesWithin.size(); i++) {
                 Entity collidedEntity = entitesWithin.get(i);
                 Block block = blockState.getBlock();
@@ -46,7 +46,6 @@ public class BlockInheritanceMechanic extends RigidBodyMechanic {
 
                 }
             }
-            pos.release();
         }
     }
 
