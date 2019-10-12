@@ -1,6 +1,7 @@
 package gliby.minecraft.physics.common.entity;
 
 import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.physics.bullet.collision.CollisionJNI;
 import com.bulletphysicsx.collision.broadphase.CollisionFilterGroups;
 import com.bulletphysicsx.linearmath.QuaternionUtil;
 import com.bulletphysicsx.linearmath.Transform;
