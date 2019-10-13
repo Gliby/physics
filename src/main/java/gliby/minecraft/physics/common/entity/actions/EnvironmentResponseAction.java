@@ -111,7 +111,6 @@ public class EnvironmentResponseAction extends RigidBodyAction {
                 }
 
             }
-            System.out.println("tick");
         }
     }
 
