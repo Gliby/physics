@@ -1,6 +1,7 @@
 package gliby.minecraft.physics.common.physics.engine;
 
 import com.bulletphysicsx.linearmath.Transform;
+import net.minecraft.util.math.Vec3d;
 
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
@@ -97,6 +98,13 @@ public interface IRigidBody extends ICollisionObject {
      * @param force
      */
     void applyCentralForce(Vector3f force);
+
+    /**
+     *
+     * @param force
+     * @param relativePosition
+     */
+    void applyForce(Vector3f force, Vector3f relativePosition);
 
     /**
      * @param gravity

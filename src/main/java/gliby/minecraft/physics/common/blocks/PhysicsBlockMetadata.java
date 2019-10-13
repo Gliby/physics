@@ -1,6 +1,6 @@
 package gliby.minecraft.physics.common.blocks;
 
-import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
+import gliby.minecraft.physics.common.entity.actions.RigidBodyAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,16 +32,16 @@ public class PhysicsBlockMetadata {
     public boolean defaultCollisionShape;
 
     /**
-     * Bouncy-ness.
+     * Bounciness.
      */
     // @SerializedName("restitution")
     public float restitution;
 
     /**
-     * RigidBodyMechanics!
+     * RigidBodyActions!
      */
-    // @SerializedName("mechanics")
-    public List<RigidBodyMechanic> mechanics = new ArrayList<RigidBodyMechanic>();
+    // @SerializedName("actions")
+    public List<RigidBodyAction> actions = new ArrayList<RigidBodyAction>();
 
     /**
      * Disables collision with player, used for stuff like web, and flowers.

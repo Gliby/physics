@@ -1,7 +1,7 @@
 {
   "mass": 10.0,
   "friction": 0.099999905,
-  "mechanics": [
+  "actions": [
     "EnvironmentGravity",
     "EnvironmentResponse",
 	"BlockInheritance",

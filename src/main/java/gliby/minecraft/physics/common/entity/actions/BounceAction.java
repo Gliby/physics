@@ -1,4 +1,4 @@
-package gliby.minecraft.physics.common.entity.mechanics;
+package gliby.minecraft.physics.common.entity.actions;
 
 import gliby.minecraft.physics.common.entity.EnumRigidBodyProperty;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
@@ -15,7 +15,7 @@ import javax.vecmath.Vector3f;
 /**
  * Used for slime blocks.
  */
-public class BounceMechanic extends RigidBodyMechanic {
+public class BounceAction extends RigidBodyAction {
     /*
      * (non-Javadoc)
      *

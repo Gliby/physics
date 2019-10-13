@@ -1,4 +1,4 @@
-package gliby.minecraft.physics.common.entity.mechanics;
+package gliby.minecraft.physics.common.entity.actions;
 
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
@@ -8,7 +8,7 @@ import net.minecraftforge.fml.relauncher.Side;
 /**
  *
  */
-public class EnvironmentGravityMechanic extends RigidBodyMechanic {
+public class BuoyancyAction extends RigidBodyAction {
 
     @Override
     public void update(IRigidBody rigidBody, PhysicsWorld physicsWorld, Entity entity, Side side) {

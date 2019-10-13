@@ -1,20 +1,12 @@
-package gliby.minecraft.physics.common.entity.mechanics;
+package gliby.minecraft.physics.common.entity.actions;
 
-import gliby.minecraft.physics.common.entity.EntityPhysicsBlock;
-import gliby.minecraft.physics.common.entity.IEntityPhysics;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fml.relauncher.Side;
 
-import java.util.List;
-
 // Slated to be removed.
-public class ClientBlockInheritanceMechanic extends RigidBodyMechanic {
+public class ClientBlockInheritanceAction extends RigidBodyAction {
 
     @SuppressWarnings("unchecked")
     @Override

@@ -135,13 +135,6 @@ def getModName() {
     return ""
 }
 
-
-// Gets IDEA 14 to import resources, but pretty much breaks everything else.
-def IDEAtradeoff = false;
-if (IDEAtradeoff) {
-    logger.info("IDEA trade-off active. Building is broken. Disable in build.gradle")
-    sourceSets {
-        main { output.resourcesDir = output.classesDir }
-    }
-    idea { module { inheritOutputDirs = true } }
-}
+// For users using IntelliJ IDEA
+// Quoting Tamaized#7311
+// "Forge has an issue with a default setting that came with 2019.2. go to Settings -> Build, Execution, Deployment -> Build Tools -> Gradle: and change build and run to use Intellij not Gradle. This fixes your resources."

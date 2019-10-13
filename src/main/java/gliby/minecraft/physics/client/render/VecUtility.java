@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.bulletphysicsx.linearmath.Transform;
+import javafx.scene.chart.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -59,6 +60,33 @@ public class VecUtility {
 
     public static Vec3d toVec3(Vector3 vec3) {
         return new Vec3d(vec3.x, vec3.y, vec3.z);
+    }
+
+    public static float getVolumeOfBoundingBox(AxisAlignedBB bb) {
+        double width = bb.maxX - bb.minX;
+        double height = bb.maxY - bb.minY;
+        double length = bb.maxZ - bb.minZ;
+
+        return (float) (width * height * length);
+    }
+
+    public static float getAreaOfBoundingBoxBottomFace(AxisAlignedBB bb) {
+        double width = bb.maxX - bb.minX;
+        double length = bb.maxZ - bb.minZ;
+        return (float) (width * length);
+    }
+
+    public static Vec3d[] getCorners(AxisAlignedBB boundingBox) {
+        return new Vec3d[]{
+                new Vec3d(boundingBox.minX, boundingBox.maxY, boundingBox.minZ),
+                new Vec3d(boundingBox.maxX, boundingBox.maxY, boundingBox.minZ),
+                new Vec3d(boundingBox.maxX, boundingBox.minY, boundingBox.minZ),
+                new Vec3d(boundingBox.minX, boundingBox.minY, boundingBox.minZ),
+                new Vec3d(boundingBox.minX, boundingBox.minY, boundingBox.maxZ),
+                new Vec3d(boundingBox.maxX, boundingBox.minY, boundingBox.maxZ),
+                new Vec3d(boundingBox.maxX, boundingBox.maxY, boundingBox.maxZ),
+                new Vec3d(boundingBox.minX, boundingBox.maxY, boundingBox.maxZ),
+        };
     }
 
     public static Vec3d fromColor(int color) {

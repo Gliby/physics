@@ -1,7 +1,6 @@
 package gliby.minecraft.physics.common.entity;
 
 import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.physics.bullet.collision.CollisionJNI;
 import com.bulletphysicsx.collision.broadphase.CollisionFilterGroups;
 import com.bulletphysicsx.linearmath.QuaternionUtil;
 import com.bulletphysicsx.linearmath.Transform;
@@ -12,7 +11,7 @@ import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.client.render.RenderHandler;
 import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.blocks.PhysicsBlockMetadata;
-import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
+import gliby.minecraft.physics.common.entity.actions.RigidBodyAction;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
@@ -109,6 +108,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         }
     }
 
+    // TODO (0.6.0) use no gravity flag that is built into the entity.
     public EntityPhysicsBlock(World world, PhysicsWorld physicsWorld, IBlockState blockState, double x, double y,
                               double z) {
         super(world, physicsWorld);
@@ -144,8 +144,8 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         this.prevPosZ = z;
 
         if (metadata != null) {
-            if (metadata.mechanics != null)
-                this.mechanics.addAll(metadata.mechanics);
+            if (metadata.actions != null)
+                this.actions.addAll(metadata.actions);
         }
 
         createPhysicsObject(physicsWorld);
@@ -275,8 +275,8 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         rigidBody = physicsWorld.createRigidBody(this, transform, Math.abs(mass), collisionShape);
         getRigidBody().getProperties().put(EnumRigidBodyProperty.BLOCKSTATE.getName(), blockState);
 
-        for (int i = 0; i < getMechanics().size(); i++) {
-            RigidBodyMechanic mechanic = getMechanics().get(i);
+        for (int i = 0; i < getActions().size(); i++) {
+            RigidBodyAction mechanic = getActions().get(i);
             mechanic.onCreatePhysics(rigidBody);
         }
 

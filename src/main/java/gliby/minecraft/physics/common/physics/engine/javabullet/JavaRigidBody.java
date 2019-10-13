@@ -24,11 +24,11 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
 
     private Map<String, Object> properties;
 
-    public JavaRigidBody(PhysicsWorld physicsWorld, RigidBody body, Entity owner) {
+    public JavaRigidBody(PhysicsWorld physicsWorld, RigidBody body, ICollisionShape shape, Entity owner) {
         super(physicsWorld, owner, body);
         this.rigidBody = new SoftReference<RigidBody>(body);
         this.owner = new SoftReference<Entity>(owner);
-        this.collisionShape = new JavaCollisionShape(physicsWorld, body.getCollisionShape());
+        this.collisionShape = shape;
         this.properties = new HashMap<String, Object>();
     }
 
@@ -131,6 +131,11 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
     @Override
     public void applyCentralForce(final Vector3f force) {
         rigidBody.get().applyCentralForce(force);
+    }
+
+    @Override
+    public void applyForce(Vector3f force, Vector3f relativePosition) {
+        rigidBody.get().applyForce(force, relativePosition);
     }
 
     @Override

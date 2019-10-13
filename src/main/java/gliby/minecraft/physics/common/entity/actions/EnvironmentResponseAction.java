@@ -1,4 +1,4 @@
-package gliby.minecraft.physics.common.entity.mechanics;
+package gliby.minecraft.physics.common.entity.actions;
 
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
@@ -23,7 +23,7 @@ import java.util.List;
  * Block Mechanic responsible for water flow, lava death, etc.
  */
 // TODO (0.7.0) Add buoyancy https://pybullet.org/Bullet/phpBB3/viewtopic.php?t=11905 (might have to convert global mechanics into Bullet Action Interface, to apply under substep)
-public class EnvironmentResponseMechanic extends RigidBodyMechanic {
+public class EnvironmentResponseAction extends RigidBodyAction {
 
 
     @Override
@@ -33,7 +33,68 @@ public class EnvironmentResponseMechanic extends RigidBodyMechanic {
         }
 
 
+
         if (entity.isInWater()) {
+
+//            // TODO (0.7.0) Buoyancy (bugged: spins like crazy)
+//
+//            // Get RigidBody AABB
+//            Vector3f min = new Vector3f(), max = new Vector3f();
+//            rigidBody.getAabb(min, max);
+//
+//            // Convert AABB to Minecraft's ABBB
+//            AxisAlignedBB bb = new AxisAlignedBB(VecUtility.toVec3(min), VecUtility.toVec3(max));
+//            // Offset by physics space
+//            bb.offset(0.5f, 0.5f, 0.5f);
+//            // get corners of bb
+//            Vec3d[] corners = VecUtility.getCorners(bb);
+//
+//            // Calculate submerged corners.
+//
+//            float totalDepth = 0;
+//            List<DepthPoint> submergedPoints = new ArrayList<DepthPoint>();
+//            BlockPos.PooledMutableBlockPos cornerBlock = BlockPos.PooledMutableBlockPos.retain();
+//            for (Vec3d corner : corners) {
+//                cornerBlock.setPos(corner.x, corner.y, corner.z);
+//                final BlockPos highestWaterBlock = entity.getEntityWorld().getTopSolidOrLiquidBlock(cornerBlock);
+//                final int waterHeight = highestWaterBlock.getY();
+//                if (corner.y <= waterHeight)  {
+//                    float depth = (float) (waterHeight - corner.y);
+//                    totalDepth += depth;
+//                    submergedPoints.add(new DepthPoint(corner, depth));
+//                }
+//            }
+//            cornerBlock.release();
+//
+//            // Caulculate displacement
+//            float avgDepth = totalDepth / submergedPoints.size();
+//            float bottomMostAreaOfBox = VecUtility.getAreaOfBoundingBoxBottomFace(bb);
+//
+//            float volumeOfBox = VecUtility.getVolumeOfBoundingBox(bb);
+//
+//
+//            float displacedVolumeOfBox = FastMath.min(bottomMostAreaOfBox * avgDepth, volumeOfBox);
+//            float displacedVolume = displacedVolumeOfBox * (rigidBody.getCollisionShape().getVolume() / volumeOfBox);
+//
+//
+//            float waterDensity = 1.0f;
+//            float accelerationOfGravity = physicsWorld.getPhysicsConfiguration().getRegularGravity().y;
+//            float totalForce = displacedVolume * waterDensity * accelerationOfGravity;
+//
+//            Vec3d position = VecUtility.toVec3(rigidBody.getPosition());
+//
+//            for (DepthPoint depthPoint : submergedPoints) {
+//                Vec3d relativePosition = depthPoint.point.subtract(position);
+////                System.out.println("depth: "+ depthPoint.depth);
+////                System.out.println("totalDepth: "+ totalDepth);
+////                System.out.println("totalForce: "+ totalForce);
+//
+//                float force = (totalForce * depthPoint.depth / totalDepth);
+//                Vector3f upForce = new Vector3f(0, 1, 0);
+//                upForce.scale(force);
+////                System.out.println("buoyancy: " + force);
+//                rigidBody.applyForce(upForce, VecUtility.toVector3f(relativePosition));
+//            }
 
             List<BlockStateAndLocation> blocks = getLiquidsInBB(entity.world, entity.getEntityBoundingBox());
             for (int i = 0; i < blocks.size(); i++) {
@@ -50,7 +111,18 @@ public class EnvironmentResponseMechanic extends RigidBodyMechanic {
                 }
 
             }
+            System.out.println("tick");
         }
+    }
+
+    public class DepthPoint {
+        public DepthPoint(Vec3d point, float depth) {
+            this.point = point;
+            this.depth = depth;
+        }
+
+        Vec3d point;
+        float depth;
     }
 
 

@@ -1,4 +1,4 @@
-package gliby.minecraft.physics.common.entity.mechanics;
+package gliby.minecraft.physics.common.entity.actions;
 
 import gliby.minecraft.physics.common.entity.EntityPhysicsBlock;
 import gliby.minecraft.physics.common.entity.EnumRigidBodyProperty;
@@ -19,7 +19,7 @@ import java.util.List;
  * For example the Cactus Block deals damage when you collide with it,
  * let's try to inherit that mechanic from the game and apply to our Physics Blocks.
  */
-public class BlockInheritanceMechanic extends RigidBodyMechanic {
+public class BlockInheritanceAction extends RigidBodyAction {
 
     @SuppressWarnings("unchecked")
     @Override

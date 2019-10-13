@@ -3,7 +3,7 @@
   "friction": 1.9999999,
   "shouldSpawnInExplosion": false,
   "collisionEnabled": false,
-  "mechanics": [
+  "actions": [
     "EnvironmentGravity",
     "EnvironmentResponse",
     "BlockInheritance",

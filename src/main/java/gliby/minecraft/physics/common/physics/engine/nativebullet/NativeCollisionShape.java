@@ -21,12 +21,15 @@ import java.util.List;
 class NativeCollisionShape implements ICollisionShape {
     private static final int BOX_SHAPE = 0;
 
+
+    protected float volume;
     protected SoftReference<PhysicsWorld> physicsWorld;
     private SoftReference<btCollisionShape> shape;
 
-    NativeCollisionShape(PhysicsWorld physicsWorld, btCollisionShape shape) {
+    NativeCollisionShape(PhysicsWorld physicsWorld, btCollisionShape shape, float volume) {
         this.physicsWorld = new SoftReference<PhysicsWorld>(physicsWorld);
         this.shape = new SoftReference<btCollisionShape>(shape);
+        this.volume = volume;
     }
 
     @Override
@@ -85,7 +88,7 @@ class NativeCollisionShape implements ICollisionShape {
 
                 @Override
                 public ICollisionShape getCollisionShape() {
-                    return new NativeCollisionShape(physicsWorld.get(), compoundShape.getChildShape(index));
+                    return new NativeCollisionShape(physicsWorld.get(), compoundShape.getChildShape(index), 0);
                 }
 
             });
@@ -102,6 +105,11 @@ class NativeCollisionShape implements ICollisionShape {
     @Override
     public void setLocalScaling(final Vector3f localScaling) {
         shape.get().setLocalScaling(VecUtility.toVector3(localScaling));
+    }
+
+    @Override
+    public float getVolume() {
+        return volume;
     }
 
     @Override

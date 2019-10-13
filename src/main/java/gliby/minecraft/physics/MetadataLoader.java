@@ -3,11 +3,10 @@ package gliby.minecraft.physics;
 import com.google.gson.JsonSyntaxException;
 import gliby.minecraft.physics.common.blocks.BlockManager;
 import gliby.minecraft.physics.common.blocks.PhysicsBlockMetadata;
-import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
+import gliby.minecraft.physics.common.entity.actions.RigidBodyAction;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;
 import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 
@@ -139,12 +138,12 @@ public abstract class MetadataLoader {
             if (json.containsKey("collisionEnabled")) {
                 metadata.collisionEnabled = (Boolean) json.get("collisionEnabled");
             }
-            if (json.containsKey("mechanics")) {
-                ArrayList<String> mechanicNames = (ArrayList<String>) json.get("mechanics");
-                for (int i = 0; i < mechanicNames.size(); i++) {
-                    RigidBodyMechanic mechanic = overworld.getMechanicFromName(mechanicNames.get(i));
+            if (json.containsKey("actions")) {
+                ArrayList<String> actionNames = (ArrayList<String>) json.get("actions");
+                for (int i = 0; i < actionNames.size(); i++) {
+                    RigidBodyAction mechanic = overworld.getActionByName(actionNames.get(i));
                     if (mechanic != null)
-                        metadata.mechanics.add(mechanic);
+                        metadata.actions.add(mechanic);
 
                 }
             }

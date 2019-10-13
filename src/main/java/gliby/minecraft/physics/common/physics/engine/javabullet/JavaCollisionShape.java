@@ -22,10 +22,12 @@ public class JavaCollisionShape implements ICollisionShape {
 
     protected SoftReference<PhysicsWorld> physicsWorld;
     private SoftReference<CollisionShape> shape;
+    protected float volume;
 
-    JavaCollisionShape(PhysicsWorld physicsWorld, CollisionShape shape) {
+    JavaCollisionShape(PhysicsWorld physicsWorld, CollisionShape shape, float volume) {
         this.physicsWorld = new SoftReference<PhysicsWorld>(physicsWorld);
         this.shape = new SoftReference<CollisionShape>(shape);
+        this.volume = volume;
     }
 
     @Override
@@ -72,7 +74,7 @@ public class JavaCollisionShape implements ICollisionShape {
 
                 @Override
                 public ICollisionShape getCollisionShape() {
-                    return new JavaCollisionShape(physicsWorld.get(), child.childShape);
+                    return new JavaCollisionShape(physicsWorld.get(), child.childShape, 0);
                 }
 
             });
@@ -88,6 +90,11 @@ public class JavaCollisionShape implements ICollisionShape {
     @Override
     public void setLocalScaling(final Vector3f localScaling) {
         shape.get().setLocalScaling(localScaling);
+    }
+
+    @Override
+    public float getVolume() {
+        return volume;
     }
 
     @Override

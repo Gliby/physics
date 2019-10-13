@@ -16,6 +16,7 @@ import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 import javax.vecmath.Vector3f;
@@ -96,7 +97,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
         btRigidBody body = new btRigidBody(constructionInfo);
 
-        return new NativeRigidBody(this, body, owner);
+        return new NativeRigidBody(this, body, shape, owner);
     }
 
     @Override
@@ -108,13 +109,13 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
         btRigidBody body = new btRigidBody(constructionInfo);
 
-        return new NativeRigidBody(this, body, owner);
+        return new NativeRigidBody(this, body, shape, owner);
     }
 
     @Override
     public ICollisionShape createBoxShape(Vector3f extents) {
         btBoxShape nativeBox = new btBoxShape(VecUtility.toVector3(extents));
-        return new NativeCollisionShape(this, nativeBox);
+        return new NativeCollisionShape(this, nativeBox, (extents.x * extents.y * extents.z));
     }
 
     @Override
@@ -311,7 +312,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
     @Override
     public ICollisionShape createSphereShape(float radius) {
         btSphereShape nativeSphere;
-        return new NativeCollisionShape(this, nativeSphere = new btSphereShape(radius));
+        return new NativeCollisionShape(this, nativeSphere = new btSphereShape(radius), (float) (4/3 * Math.PI * (radius * radius * radius)));
     }
 
     @Override
@@ -329,6 +330,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
     public ICollisionShape buildCollisionShape(List<AxisAlignedBB> bbs, Vector3f offset) {
         btCompoundShape compoundShape = new btCompoundShape();
+        float totalVolume = 0;
         for (AxisAlignedBB bb : bbs) {
             AxisAlignedBB relativeBB = new AxisAlignedBB((bb.minX - offset.x) * 0.5f,
                     (bb.minY - offset.y) * 0.5f, (bb.minZ - offset.z) * 0.5f, (bb.maxX - offset.x) * 0.5f,
@@ -342,8 +344,9 @@ public class NativePhysicsWorld extends PhysicsWorld {
                     (float) relativeBB.minY + (float) relativeBB.maxY - 0.5f,
                     (float) relativeBB.minZ + (float) relativeBB.maxZ - 0.5f);
             compoundShape.addChildShape(VecUtility.toMatrix4(transform), new btBoxShape(VecUtility.toVector3(extents)));
+            totalVolume += VecUtility.getVolumeOfBoundingBox(bb);
         }
-        return new NativeCollisionShape(this, compoundShape);
+        return new NativeCollisionShape(this, compoundShape, totalVolume);
 
     }
 

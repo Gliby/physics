@@ -2,7 +2,7 @@
   "mass": 10.0,
   "friction": 1.9999999,
   "collisionEnabled": false,
-  "mechanics": [
+  "actions": [
     "EnvironmentGravity",
     "EnvironmentResponse"
   ]

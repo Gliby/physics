@@ -25,11 +25,11 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
     private ICollisionShape collisionShape;
     private Map<String, Object> properties;
 
-    public NativeRigidBody(PhysicsWorld physicsWorld, btRigidBody rigidBody, Entity entity) {
+    public NativeRigidBody(PhysicsWorld physicsWorld, btRigidBody rigidBody, ICollisionShape collisionShape, Entity entity) {
         super(physicsWorld, entity, rigidBody);
         this.physicsWorld = new SoftReference<NativePhysicsWorld>((NativePhysicsWorld) physicsWorld);
         this.rigidBody = new SoftReference<btRigidBody>(rigidBody);
-        this.collisionShape = new NativeCollisionShape(physicsWorld, rigidBody.getCollisionShape());
+        this.collisionShape = collisionShape;
         this.properties = new HashMap<String, Object>();
     }
 
@@ -147,6 +147,11 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
     public void applyCentralForce(final Vector3f force) {
         rigidBody.get().applyCentralForce(VecUtility.toVector3(force));
 
+    }
+
+    @Override
+    public void applyForce(Vector3f force, Vector3f relativePosition) {
+        rigidBody.get().applyForce(VecUtility.toVector3(force), VecUtility.toVector3(relativePosition));
     }
 
     @Override

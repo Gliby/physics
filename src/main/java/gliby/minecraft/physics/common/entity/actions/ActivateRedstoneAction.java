@@ -1,4 +1,4 @@
-package gliby.minecraft.physics.common.entity.mechanics;
+package gliby.minecraft.physics.common.entity.actions;
 
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
@@ -9,7 +9,7 @@ import net.minecraftforge.fml.relauncher.Side;
  * Used for Redstone related Blocks, like Redstone Block or Redstone Torch.
  */
 // TODO (0.6.0) reimplement with isBlockIndirectlyGettingPowered
-public class ActivateRedstoneMechanic extends RigidBodyMechanic {
+public class ActivateRedstoneAction extends RigidBodyAction {
 
     @Override
     public void update(IRigidBody rigidBody, PhysicsWorld physicsWorld, Entity entity, Side side) {

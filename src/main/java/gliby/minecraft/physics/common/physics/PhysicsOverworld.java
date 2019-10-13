@@ -3,17 +3,15 @@ package gliby.minecraft.physics.common.physics;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import gliby.minecraft.physics.Physics;
-import gliby.minecraft.physics.common.entity.mechanics.ActivateRedstoneMechanic;
-import gliby.minecraft.physics.common.entity.mechanics.BlockInheritanceMechanic;
-import gliby.minecraft.physics.common.entity.mechanics.EnvironmentResponseMechanic;
-import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
+import gliby.minecraft.physics.common.entity.actions.*;
+import gliby.minecraft.physics.common.entity.actions.ActivateRedstoneAction;
+import gliby.minecraft.physics.common.entity.actions.RigidBodyAction;
 import gliby.minecraft.physics.common.physics.engine.javabullet.JavaPhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.nativebullet.NativePhysicsWorld;
 import gliby.minecraft.physics.common.physics.mechanics.EntityCollisionResponseMechanic;
 import gliby.minecraft.physics.common.physics.mechanics.ToolMechanics;
 import gliby.minecraft.physics.common.physics.mechanics.gravitymagnets.GravityModifierMechanic;
 import gliby.minecraft.physics.common.physics.mechanics.physicsgun.PickUpMechanic;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -35,7 +33,7 @@ public class PhysicsOverworld {
 
     private static final AxisAlignedBB BLOCK_BREAK_BB = new AxisAlignedBB(-1.75, -1.75, -1.75, 1.75, 1.75, 1.75);
 
-    private final BiMap<String, RigidBodyMechanic> rigidBodyMechanics = HashBiMap.create();
+    private final BiMap<String, RigidBodyAction> rigidBodyActions = HashBiMap.create();
 
     protected Physics physics;
 
@@ -46,13 +44,12 @@ public class PhysicsOverworld {
 
         // Registers available mechanics.
         // TODO (0.6.0) finish: global mechanics
-//        getRigidBodyMechanicsMap().put("EnvironmentGravity", new EnvironmentGravityMechanic());
-        getRigidBodyMechanicsMap().put("EnvironmentResponse", new EnvironmentResponseMechanic());
+        getRigidBodyMechanicsMap().put("EnvironmentResponse", new EnvironmentResponseAction());
 //        getRigidBodyMechanicsMap().put("Bounce", new BounceMechanic());
 
         // TODO (0.6.0) feature: get these rigidbody mechanics working properly
-        getRigidBodyMechanicsMap().put("ActivateRedstone", new ActivateRedstoneMechanic());
-        getRigidBodyMechanicsMap().put("BlockInheritance", new BlockInheritanceMechanic().setCommon(true));
+        getRigidBodyMechanicsMap().put("ActivateRedstone", new ActivateRedstoneAction());
+        getRigidBodyMechanicsMap().put("BlockInheritance", new BlockInheritanceAction().setCommon(true));
         //getMechanicsMap().put("ClientBlockInheritance", new ClientBlockInheritanceMechanic().setCommon(true));
         MinecraftForge.EVENT_BUS.register(this);
     }
@@ -137,16 +134,16 @@ public class PhysicsOverworld {
     /**
      * @return the mechanicsMap
      */
-    public BiMap<String, RigidBodyMechanic> getRigidBodyMechanicsMap() {
-        return rigidBodyMechanics;
+    public BiMap<String, RigidBodyAction> getRigidBodyMechanicsMap() {
+        return rigidBodyActions;
     }
 
     /**
      * @param string
      * @return
      */
-    public RigidBodyMechanic getMechanicFromName(final String string) {
-        final RigidBodyMechanic mechanic = rigidBodyMechanics.get(string);
+    public RigidBodyAction getActionByName(final String string) {
+        final RigidBodyAction mechanic = rigidBodyActions.get(string);
         if (mechanic == null) {
             Physics.getLogger().debug("Mechanic: " + string + " doesn't exists, or is misspelled.");
         }

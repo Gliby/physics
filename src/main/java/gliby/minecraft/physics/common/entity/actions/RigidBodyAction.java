@@ -1,4 +1,4 @@
-package gliby.minecraft.physics.common.entity.mechanics;
+package gliby.minecraft.physics.common.entity.actions;
 
 import com.google.gson.annotations.Expose;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Per RigidBody mechanic, acts like an extension.
  */
-public abstract class RigidBodyMechanic {
+public abstract class RigidBodyAction {
 
     @Expose
     private boolean enabled = true;
@@ -33,7 +33,7 @@ public abstract class RigidBodyMechanic {
     /**
      * @param enabled
      */
-    public RigidBodyMechanic setEnabled(boolean enabled) {
+    public RigidBodyAction setEnabled(boolean enabled) {
         this.enabled = enabled;
         return this;
     }
@@ -78,7 +78,7 @@ public abstract class RigidBodyMechanic {
         return common;
     }
 
-    public RigidBodyMechanic setCommon(boolean common) {
+    public RigidBodyAction setCommon(boolean common) {
         this.common = common;
         return this;
     }
@@ -111,4 +111,6 @@ public abstract class RigidBodyMechanic {
         }
 
     }
+
+
 }

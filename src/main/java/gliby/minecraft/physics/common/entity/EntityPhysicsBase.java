@@ -6,7 +6,7 @@ import com.google.gson.GsonBuilder;
 import gliby.minecraft.gman.GMan;
 import gliby.minecraft.gman.networking.GDataSerializers;
 import gliby.minecraft.physics.Physics;
-import gliby.minecraft.physics.common.entity.mechanics.RigidBodyMechanic;
+import gliby.minecraft.physics.common.entity.actions.RigidBodyAction;
 import gliby.minecraft.physics.common.game.items.ItemPhysicsGun;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
@@ -60,7 +60,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     /**
      * Per-entity RigidBody mechanics.
      */
-    protected List<RigidBodyMechanic> mechanics = new ArrayList<RigidBodyMechanic>();
+    protected List<RigidBodyAction> actions = new ArrayList<RigidBodyAction>();
 
     /**
      * Weak ref to current picker entity.
@@ -139,17 +139,17 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
      *
      * @return
      */
-    public List<RigidBodyMechanic> getMechanics() {
-        return mechanics;
+    public List<RigidBodyAction> getActions() {
+        return actions;
     }
 
     /**
      * Sets RigidBody's mechanics.
      *
-     * @param mechanics
+     * @param actions
      */
-    public void setMechanics(List<RigidBodyMechanic> mechanics) {
-        this.mechanics = mechanics;
+    public void setActions(List<RigidBodyAction> actions) {
+        this.actions = actions;
     }
 
     /**
@@ -202,7 +202,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
     @Override
     public void setDead() {
         spawnSmallExplosionParticles();
-        getMechanics().clear();
+        getActions().clear();
 
         if (!world.isRemote) {
             wakeUp();
@@ -301,7 +301,7 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
         if (!world.isRemote) {
             setGameSpawned(tagCompound.getBoolean("GameSpawned"));
 
-            getMechanics().clear();
+            getActions().clear();
             PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
 
             if (tagCompound.hasKey("Properties")) {
@@ -309,13 +309,13 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
                         .putAll(inclusiveGSON.fromJson(tagCompound.getString("Properties"), HashMap.class));
             }
 
-            ArrayList<String> mechanicsByNames = GMan.getGSON().fromJson(tagCompound.getString("Mechanics"), ArrayList.class);
+            ArrayList<String> mechanicsByNames = GMan.getGSON().fromJson(tagCompound.getString("Actions"), ArrayList.class);
             if (mechanicsByNames != null) {
                 for (int i = 0; i < mechanicsByNames.size(); i++) {
                     String mechanicString = mechanicsByNames.get(i);
-                    RigidBodyMechanic mechanic = overworld.getMechanicFromName(mechanicString);
+                    RigidBodyAction mechanic = overworld.getActionByName(mechanicString);
                     if (mechanic != null)
-                        getMechanics().add(overworld.getMechanicFromName(mechanicString));
+                        getActions().add(overworld.getActionByName(mechanicString));
                 }
             }
 
@@ -326,15 +326,15 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
         tagCompound.setBoolean("GameSpawned", isGameSpawned());
 
         ArrayList<String> mechanicsByNames = new ArrayList<String>();
-        for (int i = 0; i < getMechanics().size(); i++) {
+        for (int i = 0; i < getActions().size(); i++) {
             mechanicsByNames
-                    .add(Physics.getInstance().getPhysicsOverworld().getRigidBodyMechanicsMap().inverse().get(getMechanics().get(i)));
+                    .add(Physics.getInstance().getPhysicsOverworld().getRigidBodyMechanicsMap().inverse().get(getActions().get(i)));
         }
 
         String gson = inclusiveGSON.toJson(this.getRigidBody().getProperties());
         tagCompound.setString("Properties", gson);
 
-        tagCompound.setString("Mechanics", GMan.getGSON().toJson(mechanicsByNames));
+        tagCompound.setString("Actions", GMan.getGSON().toJson(mechanicsByNames));
     }
 
     @Override
@@ -355,8 +355,8 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
         super.onUpdate();
 
         // Update mechanics.
-        for (int i = 0; i < getMechanics().size(); i++) {
-            RigidBodyMechanic mechanic = getMechanics().get(i);
+        for (int i = 0; i < getActions().size(); i++) {
+            RigidBodyAction mechanic = getActions().get(i);
             if (mechanic.isEnabled()) {
 
                 if (!mechanic.isCommon() && this.world.isRemote)
@@ -442,8 +442,8 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
         PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
 
         List<String> savedMechanics = new ArrayList<String>();
-        for (int i = 0; i < getMechanics().size(); i++) {
-            RigidBodyMechanic mechanic = getMechanics().get(i);
+        for (int i = 0; i < getActions().size(); i++) {
+            RigidBodyAction mechanic = getActions().get(i);
             String mechanicName = overworld.getRigidBodyMechanicsMap().inverse().get(mechanic);
             if (mechanic.isCommon() && !mechanicName.isEmpty()) {
                 savedMechanics.add(mechanicName);
@@ -468,8 +468,8 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
         PhysicsOverworld overworld = Physics.getInstance().getPhysicsOverworld();
         for (int i = 0; i < size; i++) {
             String mechanicName = ByteBufUtils.readUTF8String(buffer);
-            RigidBodyMechanic mechanic = overworld.getMechanicFromName(mechanicName);
-            getMechanics().add(mechanic);
+            RigidBodyAction mechanic = overworld.getActionByName(mechanicName);
+            getActions().add(mechanic);
         }
 
         this.setPickerEntity((EntityPlayer) this.world.getEntityByID(buffer.readInt()));

@@ -23,16 +23,16 @@ public class DefaultBlockGenerator implements IBlockGenerator {
             writable.addProperty("shouldSpawnInExplosion", false);
         }
 
-        JsonArray mechanics = new JsonArray();
-        mechanics.add(new JsonPrimitive("EnvironmentGravity"));
-        mechanics.add(new JsonPrimitive("EnvironmentResponse"));
+        JsonArray actions = new JsonArray();
+        actions.add(new JsonPrimitive("EnvironmentGravity"));
+        actions.add(new JsonPrimitive("EnvironmentResponse"));
         /*
          * hasMethod(block.getClass(), "onEntityCollidedWithBlock")) {
-         * System.out.println( "Has special method!"); mechanics.add(new
-         * JsonPrimitive("BlockInheritance")); mechanics.add(new
+         * System.out.println( "Has special method!"); actions.add(new
+         * JsonPrimitive("BlockInheritance")); actions.add(new
          * JsonPrimitive("ClientBlockInheritance")); }
          *
-         * writable.add("mechanics", mechanics); String fileName =
+         * writable.add("actions", actions); String fileName =
          */
 
         return writable;

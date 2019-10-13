@@ -10,8 +10,9 @@ import java.util.List;
  */
 public interface ICollisionShape {
 
-    PhysicsWorld getPhysicsWorld();
+    float getVolume();
 
+    PhysicsWorld getPhysicsWorld();
 
     /**
      * @return

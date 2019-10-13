@@ -14,6 +14,7 @@ import com.bulletphysicsx.linearmath.DefaultMotionState;
 import com.bulletphysicsx.linearmath.Transform;
 import gliby.minecraft.gman.GMan;
 import gliby.minecraft.physics.Physics;
+import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.physics.IPhysicsWorldConfiguration;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
@@ -155,14 +156,14 @@ public class JavaPhysicsWorld extends PhysicsWorld {
         final RigidBodyConstructionInfo constructionInfo = new RigidBodyConstructionInfo(mass, motionState,
                 (CollisionShape) shape.getCollisionShape(), localInertia);
         final RigidBody body = new RigidBody(constructionInfo);
-        return new JavaRigidBody(this, body, owner);
+        return new JavaRigidBody(this, body, shape, owner);
 
     }
 
     @Override
     public ICollisionShape createBoxShape(final Vector3f extents) {
         return new gliby.minecraft.physics.common.physics.engine.javabullet.JavaCollisionShape(this,
-                new BoxShape(extents));
+                new BoxShape(extents), extents.x * extents.y * extents.z);
     }
 
     @Override
@@ -235,11 +236,13 @@ public class JavaPhysicsWorld extends PhysicsWorld {
             }
         }
 
+        float sumVolume =0;
         for (int i = 0; i < collisionParts.size(); i++) {
             final CollisionPart part = (CollisionPart) collisionParts.get(i);
             shape.addChildShape(part.transform, new BoxShape(part.extent));
+            sumVolume += part.extent.x * part.extent.y * part.extent.z;
         }
-        return new JavaCollisionShape(this, shape);
+        return new JavaCollisionShape(this, shape, sumVolume);
     }
 
 
@@ -279,7 +282,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
 
     @Override
     public ICollisionShape createSphereShape(final float radius) {
-        return new JavaCollisionShape(this, new SphereShape(radius));
+        return new JavaCollisionShape(this, new SphereShape(radius), (float) (4/3 * Math.PI * (radius * radius * radius)));
     }
 
     @Override
@@ -294,7 +297,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
         final RigidBodyConstructionInfo constructionInfo = new RigidBodyConstructionInfo(mass, motionState,
                 (CollisionShape) shape.getCollisionShape());
         final RigidBody body = new RigidBody(constructionInfo);
-        return new JavaRigidBody(this, body, owner);
+        return new JavaRigidBody(this, body, shape,  owner);
     }
 
     @Override
@@ -307,6 +310,7 @@ public class JavaPhysicsWorld extends PhysicsWorld {
     @Override
     public ICollisionShape buildCollisionShape(final List<AxisAlignedBB> bbs, final Vector3f offset) {
         final CompoundShape compoundShape = new CompoundShape();
+        float totalVolume = 0;
         for (final AxisAlignedBB bb : bbs) {
             final AxisAlignedBB relativeBB = new AxisAlignedBB((bb.minX - offset.getX()) * 0.5f,
                     (bb.minY - offset.getY()) * 0.5f, (bb.minZ - offset.getZ()) * 0.5f,
@@ -320,9 +324,10 @@ public class JavaPhysicsWorld extends PhysicsWorld {
             transform.origin.set((float) relativeBB.minX + (float) relativeBB.maxX - 0.5f,
                     (float) relativeBB.minY + (float) relativeBB.maxY - 0.5f,
                     (float) relativeBB.minZ + (float) relativeBB.maxZ - 0.5f);
+            totalVolume += VecUtility.getVolumeOfBoundingBox(bb);
             compoundShape.addChildShape(transform, new BoxShape(extents));
         }
-        return new JavaCollisionShape(this, compoundShape);
+        return new JavaCollisionShape(this, compoundShape, totalVolume);
     }
 
     @Override
