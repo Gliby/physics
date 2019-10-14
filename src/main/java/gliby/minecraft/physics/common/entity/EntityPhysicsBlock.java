@@ -277,7 +277,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
         for (int i = 0; i < getActions().size(); i++) {
             RigidBodyAction mechanic = getActions().get(i);
-            mechanic.onCreatePhysics(rigidBody);
+            mechanic.onCreatePhysics(physicsWorld, rigidBody);
         }
 
         if (physicsCollisionEnabled)

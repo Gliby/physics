@@ -101,14 +101,18 @@ public abstract class RawItemRenderer implements IBakedModel {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferBuilder = tessellator.getBuffer();
 
-        if (side != null || !bufferBuilder.isDrawing) {
+        if (side != null) {
             return DUMMY_LIST;
         }
 
-        // finish drawing, if we are.
-        boolean isDrawing = bufferBuilder.isDrawing;
-        if (isDrawing)
+
+        boolean wasDrawing = bufferBuilder.isDrawing;
+
+        // finish drawing
+        if (wasDrawing)
             tessellator.draw();
+
+        // finish drawing, if we are.
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(0.5f, 0.5f, 0.5f);
@@ -136,8 +140,8 @@ public abstract class RawItemRenderer implements IBakedModel {
         // Method that this gets called is expecting that we are still using
         // startDrawingQuads.
 
-        if (isDrawing) //restart the drawing of the tessellator
-        {
+        // resume drawing
+        if (wasDrawing) {
             BufferBuilder bufferbuilder = tessellator.getBuffer();
             bufferbuilder.begin(7, DefaultVertexFormats.ITEM);
         }

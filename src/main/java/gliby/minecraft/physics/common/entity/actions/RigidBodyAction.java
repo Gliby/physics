@@ -1,5 +1,6 @@
 package gliby.minecraft.physics.common.entity.actions;
 
+import com.badlogic.gdx.physics.bullet.dynamics.btActionInterface;
 import com.google.gson.annotations.Expose;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
@@ -26,6 +27,9 @@ public abstract class RigidBodyAction {
     @Expose
     private boolean common;
 
+//    @Expose
+//    private boolean shoudSubstep;
+
     public boolean isEnabled() {
         return enabled;
     }
@@ -38,7 +42,11 @@ public abstract class RigidBodyAction {
         return this;
     }
 
-    public abstract void update(IRigidBody rigidBody, @Nullable  PhysicsWorld physicsWorld, Entity entity, Side side);
+//    public void setShoudSubstep(boolean shoudSubstep) {
+//        this.shoudSubstep = shoudSubstep;
+//    }
+
+    public abstract void update(IRigidBody rigidBody, @Nullable PhysicsWorld physicsWorld, Entity entity, Side side);
 
     public List<BlockStateAndLocation> getBlockLocationWithingAxisAlignedBB(IBlockAccess world, AxisAlignedBB BB) {
         List<BlockStateAndLocation> bb = new ArrayList<BlockStateAndLocation>();
@@ -50,20 +58,20 @@ public abstract class RigidBodyAction {
         int j1 = MathHelper.floor(BB.maxZ);
 
         BlockPos.PooledMutableBlockPos pos = BlockPos.PooledMutableBlockPos.retain();
-		try {
-			for (int k1 = i; k1 <= j; ++k1) {
-				for (int l1 = k; l1 <= l; ++l1) {
-					for (int i2 = i1; i2 <= j1; ++i2) {
-						pos.setPos(k1, l1, i2);
-						IBlockState state = world.getBlockState(pos);
-						if (!state.getBlock().isAir(state, world, pos))
-							bb.add(new BlockStateAndLocation(state, new BlockPos(pos)));
-					}
-				}
-			}
-		} finally {
-			pos.release();
-		}
+        try {
+            for (int k1 = i; k1 <= j; ++k1) {
+                for (int l1 = k; l1 <= l; ++l1) {
+                    for (int i2 = i1; i2 <= j1; ++i2) {
+                        pos.setPos(k1, l1, i2);
+                        IBlockState state = world.getBlockState(pos);
+                        if (!state.getBlock().isAir(state, world, pos))
+                            bb.add(new BlockStateAndLocation(state, new BlockPos(pos)));
+                    }
+                }
+            }
+        } finally {
+            pos.release();
+        }
         return bb;
     }
 
@@ -71,8 +79,12 @@ public abstract class RigidBodyAction {
         enabled = false;
     }
 
-    public void onCreatePhysics(IRigidBody body) {
+    public void onCreatePhysics(PhysicsWorld world, IRigidBody body) {
     }
+
+//    public boolean shouldSubstep() {
+//        return shoudSubstep;
+//    }
 
     public boolean isCommon() {
         return common;

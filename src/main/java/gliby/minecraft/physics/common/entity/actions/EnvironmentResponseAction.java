@@ -1,6 +1,7 @@
 package gliby.minecraft.physics.common.entity.actions;
 
 import gliby.minecraft.physics.Physics;
+import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import net.minecraft.block.BlockDynamicLiquid;
@@ -14,6 +15,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
+import org.apache.commons.math3.util.FastMath;
+import org.lwjgl.Sys;
 
 import javax.vecmath.Vector3f;
 import java.util.ArrayList;
@@ -33,69 +36,73 @@ public class EnvironmentResponseAction extends RigidBodyAction {
         }
 
 
-
         if (entity.isInWater()) {
 
 //            // TODO (0.7.0) Buoyancy (bugged: spins like crazy)
 //
-//            // Get RigidBody AABB
-//            Vector3f min = new Vector3f(), max = new Vector3f();
-//            rigidBody.getAabb(min, max);
+////            // Get RigidBody AABB
+//            if (rigidBody.isActive()) {
+//                Vector3f min = new Vector3f(), max = new Vector3f();
+//                rigidBody.getAabb(min, max);
 //
-//            // Convert AABB to Minecraft's ABBB
-//            AxisAlignedBB bb = new AxisAlignedBB(VecUtility.toVec3(min), VecUtility.toVec3(max));
-//            // Offset by physics space
-//            bb.offset(0.5f, 0.5f, 0.5f);
-//            // get corners of bb
-//            Vec3d[] corners = VecUtility.getCorners(bb);
+//                // Convert AABB to Minecraft's ABBB
+//                AxisAlignedBB bb = new AxisAlignedBB(VecUtility.toVec3(min), VecUtility.toVec3(max));
+//                // Offset by physics space
+//                bb.offset(0.5f, 0.5f, 0.5f);
+//                // get corners of bb
+//                Vec3d[] corners = VecUtility.getCorners(bb);
 //
-//            // Calculate submerged corners.
+//                // Calculate submerged corners.
 //
-//            float totalDepth = 0;
-//            List<DepthPoint> submergedPoints = new ArrayList<DepthPoint>();
-//            BlockPos.PooledMutableBlockPos cornerBlock = BlockPos.PooledMutableBlockPos.retain();
-//            for (Vec3d corner : corners) {
-//                cornerBlock.setPos(corner.x, corner.y, corner.z);
-//                final BlockPos highestWaterBlock = entity.getEntityWorld().getTopSolidOrLiquidBlock(cornerBlock);
-//                final int waterHeight = highestWaterBlock.getY();
-//                if (corner.y <= waterHeight)  {
-//                    float depth = (float) (waterHeight - corner.y);
-//                    totalDepth += depth;
-//                    submergedPoints.add(new DepthPoint(corner, depth));
+//                float totalDepth = 0;
+//                List<DepthPoint> submergedPoints = new ArrayList<DepthPoint>();
+//                BlockPos.PooledMutableBlockPos cornerBlock = BlockPos.PooledMutableBlockPos.retain();
+//                for (Vec3d corner : corners) {
+//                    cornerBlock.setPos(corner.x, corner.y, corner.z);
+//                    final BlockPos highestWaterBlock = entity.getEntityWorld().getTopSolidOrLiquidBlock(cornerBlock);
+//                    final int waterHeight = highestWaterBlock.getY();
+//                    if (corner.y <= waterHeight) {
+//                        float depth = (float) (waterHeight - corner.y);
+//                        totalDepth += depth;
+//                        submergedPoints.add(new DepthPoint(corner, depth));
+//                    }
 //                }
-//            }
-//            cornerBlock.release();
+//                cornerBlock.release();
 //
-//            // Caulculate displacement
-//            float avgDepth = totalDepth / submergedPoints.size();
-//            float bottomMostAreaOfBox = VecUtility.getAreaOfBoundingBoxBottomFace(bb);
+//                // Caulculate displacement
+//                float avgDepth = totalDepth / submergedPoints.size();
+//                float bottomMostAreaOfBox = VecUtility.getAreaOfBoundingBoxBottomFace(bb);
 //
-//            float volumeOfBox = VecUtility.getVolumeOfBoundingBox(bb);
-//
-//
-//            float displacedVolumeOfBox = FastMath.min(bottomMostAreaOfBox * avgDepth, volumeOfBox);
-//            float displacedVolume = displacedVolumeOfBox * (rigidBody.getCollisionShape().getVolume() / volumeOfBox);
+//                float volumeOfBox = VecUtility.getVolumeOfBoundingBox(bb);
 //
 //
-//            float waterDensity = 1.0f;
-//            float accelerationOfGravity = physicsWorld.getPhysicsConfiguration().getRegularGravity().y;
-//            float totalForce = displacedVolume * waterDensity * accelerationOfGravity;
+//                float displacedVolumeOfBox = FastMath.min(bottomMostAreaOfBox * avgDepth, volumeOfBox);
+//                float displacedVolume = displacedVolumeOfBox * (rigidBody.getCollisionShape().getVolume() / volumeOfBox);
 //
-//            Vec3d position = VecUtility.toVec3(rigidBody.getPosition());
 //
-//            for (DepthPoint depthPoint : submergedPoints) {
-//                Vec3d relativePosition = depthPoint.point.subtract(position);
+//                float waterDensity = 1f;
+////                float accelerationOfGravity = -physicsWorld.getPhysicsConfiguration().getRegularGravity().y;
+//                float accelerationOfGravity = 9.8f;
+//                float totalForce = displacedVolume * waterDensity * accelerationOfGravity;
+//
+//                Vec3d position = VecUtility.toVec3(rigidBody.getPosition());
+//
+//                for (DepthPoint depthPoint : submergedPoints) {
+//                    Vec3d relativePosition = depthPoint.point.subtract(position);
 ////                System.out.println("depth: "+ depthPoint.depth);
 ////                System.out.println("totalDepth: "+ totalDepth);
 ////                System.out.println("totalForce: "+ totalForce);
 //
-//                float force = (totalForce * depthPoint.depth / totalDepth);
-//                Vector3f upForce = new Vector3f(0, 1, 0);
-//                upForce.scale(force);
+//                    float force = (totalForce * depthPoint.depth / totalDepth);
+//                    Vector3f upForce = new Vector3f(0, 1, 0);
+//                    upForce.scale(force);
+//                    System.out.println(force);
 ////                System.out.println("buoyancy: " + force);
-//                rigidBody.applyForce(upForce, VecUtility.toVector3f(relativePosition));
+//                    rigidBody.applyForce(upForce, VecUtility.toVector3f(relativePosition));
+//                }
 //            }
 
+            // move rigidbody in liquid flow direction.
             List<BlockStateAndLocation> blocks = getLiquidsInBB(entity.world, entity.getEntityBoundingBox());
             for (int i = 0; i < blocks.size(); i++) {
                 BlockStateAndLocation block = blocks.get(i);
@@ -135,20 +142,20 @@ public class EnvironmentResponseAction extends RigidBodyAction {
         int minZ = MathHelper.floor(bb.minZ);
 
         BlockPos.PooledMutableBlockPos blockPosition = BlockPos.PooledMutableBlockPos.retain();
-		try {
-			for (int x = minX; x <= maxX; ++x) {
-				for (int y = minY; y <= maxY; ++y) {
-					for (int z = minZ; z <= maxZ; ++z) {
-						blockPosition.setPos(x, y, z);
-						IBlockState blockState = world.getBlockState(blockPosition);
-						if (blockState.getBlock().getMaterial(blockState).isLiquid())
-							blockImportations.add(new BlockStateAndLocation(blockState, new BlockPos(blockPosition)));
-					}
-				}
-			}
-		} finally {
-			blockPosition.release();
-		}
+        try {
+            for (int x = minX; x <= maxX; ++x) {
+                for (int y = minY; y <= maxY; ++y) {
+                    for (int z = minZ; z <= maxZ; ++z) {
+                        blockPosition.setPos(x, y, z);
+                        IBlockState blockState = world.getBlockState(blockPosition);
+                        if (blockState.getBlock().getMaterial(blockState).isLiquid())
+                            blockImportations.add(new BlockStateAndLocation(blockState, new BlockPos(blockPosition)));
+                    }
+                }
+            }
+        } finally {
+            blockPosition.release();
+        }
         return blockImportations;
     }
 }
