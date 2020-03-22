@@ -13,6 +13,8 @@ import gliby.minecraft.physics.common.game.GameManager;
 import gliby.minecraft.physics.common.packets.PacketReceiveTools;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Config;
+import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -145,6 +147,7 @@ public class Physics {
                 });
             }
             PhysicsConfig.MISCELLANEOUS.lastVersion = VERSION;
+            ConfigManager.sync(ID, Config.Type.INSTANCE);
         } else {
             getLogger().info("Development environment detected.");
         }
