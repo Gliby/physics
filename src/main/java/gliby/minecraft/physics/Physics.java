@@ -63,10 +63,9 @@ public class Physics {
      */
     private GameManager gameManager;
     private GMan gman;
-    private PhysicsOverworld physicsOverworld;
-    private static PhysicsConfig physicsConfig;
     private BlockManager blockManager;
     private MobModelManager mobModelManager;
+    private PhysicsOverworld physicsOverworld;
 
     static {
         GDataSerializers.register();
@@ -93,19 +92,20 @@ public class Physics {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        physicsConfig = new PhysicsConfig(event.getModConfigurationDirectory());
-
-        MinecraftForge.EVENT_BUS.register(this);
         instance = this;
+        MinecraftForge.EVENT_BUS.register(this);
         File dir = new File(event.getModConfigurationDirectory(), ID);
         if (!dir.exists())
             dir.mkdir();
+
+        PhysicsConfig.setModDirectory(dir);
+
 
         gman = GMan.create(getLogger(), new ModInfo(ID, event.getModMetadata().updateUrl), MinecraftForge.MC_VERSION,
                 VERSION);
 
         if (GMan.isNotDevelopment()) {
-            final String lastVersion = physicsConfig.getMiscellaneous().getLastVersion();
+            final String lastVersion = PhysicsConfig.MISCELLANEOUS.lastVersion;
             final boolean modUpdated = !lastVersion.equals(VERSION);
             if (modUpdated) {
                 getLogger().info("Version change detected, gathering change logs!");
@@ -144,7 +144,7 @@ public class Physics {
                     }
                 });
             }
-            physicsConfig.getMiscellaneous().setLastVersion(VERSION);
+            PhysicsConfig.MISCELLANEOUS.lastVersion = VERSION;
         } else {
             getLogger().info("Development environment detected.");
         }
@@ -204,10 +204,6 @@ public class Physics {
     @SideOnly(Side.CLIENT)
     public PhysicsClient getClientProxy() {
         return (PhysicsClient) proxy;
-    }
-
-    public static PhysicsConfig getConfig() {
-        return physicsConfig;
     }
 
     public BlockManager getBlockManager() {

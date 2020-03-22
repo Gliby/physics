@@ -5,328 +5,136 @@ import gliby.minecraft.physics.common.entity.EntityPhysicsBlock;
 import gliby.minecraft.physics.common.entity.EntityToolGunBeam;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraftforge.common.config.Config;
+import net.minecraftforge.common.config.ConfigManager;
+import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.File;
 
-@Config(modid = Physics.ID)
+@Config(modid = Physics.ID, type = Config.Type.INSTANCE)
 @Config.LangKey("gphysics.config.title")
 public class PhysicsConfig {
 
-    File modDir;
+    @Mod.EventBusSubscriber(modid = Physics.ID)
+    private static class EventHandler {
 
-    PhysicsConfig(File modDir) {
-        this.modDir = modDir;
+        @SubscribeEvent
+        public static void onConfigChanged(final ConfigChangedEvent.OnConfigChangedEvent event) {
+            if (event.getModID().equals(Physics.ID)) {
+                ConfigManager.sync(Physics.ID, Config.Type.INSTANCE);
+            }
+        }
     }
 
-    // @todo: lombok this
-    public PhysicsEngineConfig getPhysicsEngineConfig() {
-        return physicsEngineConfig;
+    static File modDir;
+
+    public static File getModDirectory() {
+        return modDir;
     }
 
-    public void setPhysicsEngineConfig(PhysicsEngineConfig physicsEngineConfig) {
-        this.physicsEngineConfig = physicsEngineConfig;
+    public static void setModDirectory(File inModDir) {
+        modDir = inModDir;
     }
 
-    public PhysicsEntities getPhysicsEntities() {
-        return physicsEntities;
-    }
+    public static PhysicsEngine PHYSICS_ENGINE = new PhysicsEngine();
 
-    public void setPhysicsEntities(PhysicsEntities physicsEntities) {
-        this.physicsEntities = physicsEntities;
-    }
+    public static PhysicsEntities PHYSICS_ENTITIES = new PhysicsEntities();
 
-    public Game getGame() {
-        return game;
-    }
+    public static Game GAME = new Game();
 
-    public void setGame(Game game) {
-        this.game = game;
-    }
+    public static Tools TOOLS = new Tools();
 
-    public Tools getTools() {
-        return tools;
-    }
+    public static Miscellaneous MISCELLANEOUS = new Miscellaneous();
 
-    public void setTools(Tools tools) {
-        this.tools = tools;
-    }
-
-    public Miscellaneous getMiscellaneous() {
-        return miscellaneous;
-    }
-
-    public void setMiscellaneous(Miscellaneous miscellaneous) {
-        this.miscellaneous = miscellaneous;
-    }
-
-    protected PhysicsEngineConfig physicsEngineConfig = new PhysicsEngineConfig();
-
-    protected PhysicsEntities physicsEntities = new PhysicsEntities();
-
-    protected Game game = new Game();
-
-    protected Tools tools = new Tools();
-
-    protected Miscellaneous miscellaneous = new Miscellaneous();
-
-    public Render getRender() {
-        return render;
-    }
-
-    public void setRender(Render render) {
-        this.render = render;
-    }
-
-    protected Render render = new Render();
+    public static Render RENDER = new Render();
 
     public File getDirectory() {
         return modDir;
     }
 
-    public static class PhysicsEngineConfig {
+    public static class PhysicsEngine {
+        @Config.RequiresWorldRestart
         @Config.Comment("Use slower, less buggy Java physics implementation.")
-        protected boolean useJavaPhysics = false;
+        public boolean useJavaPhysics = false;
 
+        @Config.RequiresWorldRestart
         @Config.Comment("How many ticks per second should the physics engine update?.")
-        protected int ticksPerSecond = 20;
+        public int ticksPerSecond = 20;
 
+        @Config.RequiresWorldRestart
         @Config.Comment("Strength of default gravity in the Y axis.")
-        protected float gravityForce = -9.8f;
-
-        public boolean isUseJavaPhysics() {
-            return useJavaPhysics;
-        }
-
-        public void setUseJavaPhysics(boolean useJavaPhysics) {
-            this.useJavaPhysics = useJavaPhysics;
-        }
-
-        public int getTicksPerSecond() {
-            return ticksPerSecond;
-        }
-
-        public void setTicksPerSecond(int ticksPerSecond) {
-            this.ticksPerSecond = ticksPerSecond;
-        }
-
-        public float getGravityForce() {
-            return gravityForce;
-        }
-
-        public void setGravityForce(float gravityForce) {
-            this.gravityForce = gravityForce;
-        }
+        public float gravityForce = -9.8f;
     }
 
     public static class PhysicsEntities {
+
         @Config.Comment("Should entities have collision colliders in the world? Enables entity physics interaction.")
-        protected boolean entityCollider = false;
+        public boolean entityColliders = false;
 
         @Config.Comment("How long (seconds) dirty entity colliders last.")
-        protected float entityColliderCleanupTime = 1.0f;
+        public float entityColliderCleanupTime = 1.0f;
 
         @Config.Comment("How long (seconds) do player spawned physics entities last before re-aligning.")
-        protected float playerSpawnedExpiryTime = 30.0f;
+        public float playerSpawnedExpiryTime = 30.0f;
 
         @Config.Comment("How long (seconds) do game spawned (falling blocks) physics entities last before re-aligning.")
-        protected float gameSpawnedExpiryTime = 15.0f;
+        public float gameSpawnedExpiryTime = 15.0f;
 
         @Config.Comment("Entities classes that are blacklisted from collider creation.")
-        protected String[] entityColliderBlacklist = {EntityPhysicsBlock.class.getName(), EntityPhysicsBase.class.getName(), EntityToolGunBeam.class.getName(), EntityItem.class.getName()};
+        public String[] entityColliderBlacklist = {EntityPhysicsBlock.class.getName(), EntityPhysicsBase.class.getName(), EntityToolGunBeam.class.getName(), EntityItem.class.getName()};
 
-        public boolean isEntityCollider() {
-            return entityCollider;
-        }
-
-        public void setEntityCollider(boolean entityCollider) {
-            this.entityCollider = entityCollider;
-        }
-
-        public float getEntityColliderCleanupTime() {
-            return entityColliderCleanupTime;
-        }
-
-        public void setEntityColliderCleanupTime(float entityColliderCleanupTime) {
-            this.entityColliderCleanupTime = entityColliderCleanupTime;
-        }
-
-        public float getPlayerSpawnedExpiryTime() {
-            return playerSpawnedExpiryTime;
-        }
-
-        public void setPlayerSpawnedExpiryTime(float playerSpawnedExpiryTime) {
-            this.playerSpawnedExpiryTime = playerSpawnedExpiryTime;
-        }
-
-        public float getGameSpawnedExpiryTime() {
-            return gameSpawnedExpiryTime;
-        }
-
-        public void setGameSpawnedExpiryTime(float gameSpawnedExpiryTime) {
-            this.gameSpawnedExpiryTime = gameSpawnedExpiryTime;
-        }
-
-        public String[] getEntityColliderBlacklist() {
-            return entityColliderBlacklist;
-        }
-
-        public void setEntityColliderBlacklist(String[] entityColliderBlacklist) {
-            this.entityColliderBlacklist = entityColliderBlacklist;
-        }
     }
 
     public static class Game {
         @Config.Comment("Water flow force multiplier.")
-        protected float waterForceMultiplier = 1.0f;
+        public float waterForceMultiplier = 1.0f;
 
         @Config.Comment("Projectile (e.g., arrows) impact force.")
-        protected float projectileImpulseForce = 30.0f;
+        public float projectileImpulseForce = 30.0f;
 
         @Config.Comment("How far (in blocks) do explosions affect physics.")
-        protected float explosionImpulseRadius = 32.0f;
+        public float explosionImpulseRadius = 32.0f;
 
         @Config.Comment("Explosion physics force.")
-        protected float explosionImpulseForce = 500.0f;
+        public float explosionImpulseForce = 500.0f;
 
         @Config.Comment("Should replace all nearby falling blocks with physics blocks?")
-        protected boolean replaceFallingBlocks = true;
+        public boolean replaceFallingBlocks = true;
 
         @Config.Comment("How close (in blocks) do players have to be for falling physics blocks.")
-        protected float fallingBlockSpawnDistance = 32.0f;
-
-        public float getWaterForceMultiplier() {
-            return waterForceMultiplier;
-        }
-
-        public void setWaterForceMultiplier(float waterForceMultiplier) {
-            this.waterForceMultiplier = waterForceMultiplier;
-        }
-
-        public float getProjectileImpulseForce() {
-            return projectileImpulseForce;
-        }
-
-        public void setProjectileImpulseForce(float projectileImpulseForce) {
-            this.projectileImpulseForce = projectileImpulseForce;
-        }
-
-        public float getExplosionImpulseRadius() {
-            return explosionImpulseRadius;
-        }
-
-        public void setExplosionImpulseRadius(float explosionImpulseRadius) {
-            this.explosionImpulseRadius = explosionImpulseRadius;
-        }
-
-        public float getExplosionImpulseForce() {
-            return explosionImpulseForce;
-        }
-
-        public void setExplosionImpulseForce(float explosionImpulseForce) {
-            this.explosionImpulseForce = explosionImpulseForce;
-        }
-
-        public boolean isReplaceFallingBlocks() {
-            return replaceFallingBlocks;
-        }
-
-        public void setReplaceFallingBlocks(boolean replaceFallingBlocks) {
-            this.replaceFallingBlocks = replaceFallingBlocks;
-        }
-
-        public float getFallingBlockSpawnDistance() {
-            return fallingBlockSpawnDistance;
-        }
-
-        public void setFallingBlockSpawnDistance(float fallingBlockSpawnDistance) {
-            this.fallingBlockSpawnDistance = fallingBlockSpawnDistance;
-        }
+        public float fallingBlockSpawnDistance = 32.0f;
     }
 
     public static class Tools {
         @Config.Comment("Attract Tool radius (in blocks).")
-        protected float attractRadius = 16.0f;
+        public float attractRadius = 16.0f;
 
         @Config.Comment("Attract Tool attract force.")
-        protected float attractForce = 10.0f;
+        public float attractForce = 10.0f;
 
         @Config.Comment("Gravitizer Tool radius (in blocks).")
-        protected float gravitizerRadius = 16.0f;
+        public float gravitizerRadius = 16.0f;
 
         @Config.Comment("Gravitizer Tool gravity force.")
-        protected float gravitizerForce = 10.0f;
+        public float gravitizerForce = 10.0f;
 
-        public float getAttractRadius() {
-            return attractRadius;
-        }
-
-        public void setAttractRadius(float attractRadius) {
-            this.attractRadius = attractRadius;
-        }
-
-        public float getAttractForce() {
-            return attractForce;
-        }
-
-        public void setAttractForce(float attractForce) {
-            this.attractForce = attractForce;
-        }
-
-        public float getGravitizerRadius() {
-            return gravitizerRadius;
-        }
-
-        public void setGravitizerRadius(float gravitizerRadius) {
-            this.gravitizerRadius = gravitizerRadius;
-        }
-
-        public float getGravitizerForce() {
-            return gravitizerForce;
-        }
-
-        public void setGravitizerForce(float gravitizerForce) {
-            this.gravitizerForce = gravitizerForce;
-        }
     }
 
 
     public static class Miscellaneous {
 
         @Config.Comment("Disables minecraft anti-flight kick.")
-        protected boolean disableAllowFlight = true;
+        public boolean disableAllowFlight = true;
 
         @Config.Comment("Gravitizer Tool gravity force.")
-        protected String LastVersion = "" + Physics.VERSION;
-
-        public boolean isDisableAllowFlight() {
-            return disableAllowFlight;
-        }
-
-        public void setDisableAllowFlight(boolean disableAllowFlight) {
-            this.disableAllowFlight = disableAllowFlight;
-        }
-
-        public String getLastVersion() {
-            return LastVersion;
-        }
-
-        public void setLastVersion(String lastVersion) {
-            LastVersion = lastVersion;
-        }
+        public String lastVersion = "" + Physics.VERSION;
     }
 
     public static class Render {
 
-        public float getBlockInterpolation() {
-            return blockInterpolation;
-        }
-
-        public void setBlockInterpolation(float blockInterpolation) {
-            this.blockInterpolation = blockInterpolation;
-        }
-
         @Config.Comment("How much to interpolate render transform to block transform per render tick.")
-        protected float blockInterpolation = 0.15f;
+        public float blockInterpolation = 0.15f;
     }
 
 }

@@ -3,6 +3,7 @@ package gliby.minecraft.physics.common.physics;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import gliby.minecraft.physics.Physics;
+import gliby.minecraft.physics.PhysicsConfig;
 import gliby.minecraft.physics.common.entity.actions.*;
 import gliby.minecraft.physics.common.entity.actions.ActivateRedstoneAction;
 import gliby.minecraft.physics.common.entity.actions.RigidBodyAction;
@@ -60,10 +61,10 @@ public class PhysicsOverworld {
     public PhysicsWorld getPhysicsByWorld(final World access) {
         PhysicsWorld physicsWorld = getPhysicsWorldMap().get(access);
         if (physicsWorld == null) {
-            final Vector3f gravity = new Vector3f(0, Physics.getConfig().getPhysicsEngineConfig().getGravityForce(), 0);
+            final Vector3f gravity = new Vector3f(0, PhysicsConfig.PHYSICS_ENGINE.gravityForce, 0);
             // TODO (0.6.0) add world border support
             physicsWorld = createPhysicsWorld(
-                    !Physics.getConfig().getPhysicsEngineConfig().isUseJavaPhysics(),
+                    !PhysicsConfig.PHYSICS_ENGINE.useJavaPhysics,
                     new IPhysicsWorldConfiguration() {
 
                         @Override
@@ -78,7 +79,7 @@ public class PhysicsOverworld {
 
                         @Override
                         public final int getTicksPerSecond() {
-                            return Physics.getConfig().getPhysicsEngineConfig().getTicksPerSecond();
+                            return PhysicsConfig.PHYSICS_ENGINE.ticksPerSecond;
                         }
 
                         @Override
@@ -89,7 +90,7 @@ public class PhysicsOverworld {
             physicsWorld.getMechanics().put("PickUp", new PickUpMechanic(physicsWorld, 20));
             physicsWorld.getMechanics().put("GravityMagnet", new GravityModifierMechanic(physicsWorld, 20));
             physicsWorld.getMechanics().put("ToolMan", new ToolMechanics(physics.getGameManager().getToolGunRegistry(), physicsWorld, 20));
-            if (Physics.getConfig().getPhysicsEntities().isEntityCollider())
+            if (PhysicsConfig.PHYSICS_ENTITIES.entityColliders)
                 physicsWorld.getMechanics().put("EntityCollision", new EntityCollisionResponseMechanic(access, physicsWorld, 20));
 
             physicsWorld.create();

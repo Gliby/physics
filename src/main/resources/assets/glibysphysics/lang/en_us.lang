@@ -20,3 +20,5 @@ gui.creator.unfinished=Unfinished
 gui.creator.works=Works
 
 gui.creator.mobgenerator.generate=Generate Mobs
+
+gphysics.config.title=Gliby's Phusics Configuration

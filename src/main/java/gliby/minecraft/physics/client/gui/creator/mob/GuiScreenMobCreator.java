@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import gliby.minecraft.gman.ModelUtility;
 import gliby.minecraft.physics.Physics;
+import gliby.minecraft.physics.PhysicsConfig;
 import gliby.minecraft.physics.client.gui.creator.GuiScreenCreator;
 import gliby.minecraft.physics.common.entity.models.MobModel;
 import gliby.minecraft.physics.common.entity.models.MobModel.ModelCubeGroup;
@@ -133,7 +134,7 @@ public class GuiScreenMobCreator extends GuiScreenCreator {
 
             @Override
             public void run() {
-                File dir = new File(Physics.getInstance().getConfig().getDirectory(), "custom");
+                File dir = new File(PhysicsConfig.getModDirectory(), "custom");
                 if (!dir.exists())
                     dir.mkdir();
                 Path path = Paths.get(dir.toPath().toString() + "/mobs.zip");

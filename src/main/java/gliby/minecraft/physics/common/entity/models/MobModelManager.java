@@ -1,6 +1,7 @@
 package gliby.minecraft.physics.common.entity.models;
 
 import gliby.minecraft.physics.Physics;
+import gliby.minecraft.physics.PhysicsConfig;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +26,7 @@ public class MobModelManager {
             public void run() {
                 File tempFile = null;
                 ZipFile tempZip = null;
-                if ((tempFile = new File(physics.getConfig().getDirectory(), "/custom/mobs.zip")).exists()) {
+                if ((tempFile = new File(PhysicsConfig.getModDirectory(), "/custom/mobs.zip")).exists()) {
                     try {
                         Physics.getLogger().info("Mob models found under configuration directory.");
                         tempZip = new ZipFile(tempFile);

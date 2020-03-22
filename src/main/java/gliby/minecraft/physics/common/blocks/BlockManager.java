@@ -5,6 +5,7 @@ import gliby.minecraft.gman.GMan;
 import gliby.minecraft.gman.io.MinecraftResourceLoader;
 import gliby.minecraft.physics.MetadataLoader;
 import gliby.minecraft.physics.Physics;
+import gliby.minecraft.physics.PhysicsConfig;
 import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -33,7 +34,7 @@ public class BlockManager {
         defaultGenerator = new DefaultBlockGenerator();
         File tempFile;
         ZipFile tempZip = null;
-        if ((tempFile = new File(physics.getConfig().getDirectory(), "/custom/blocks.zip")).exists()) {
+        if ((tempFile = new File(PhysicsConfig.getModDirectory(), "/custom/blocks.zip")).exists()) {
             try {
                 Physics.getLogger().info("Blocks found under configuration directory.");
                 tempZip = new ZipFile(tempFile);

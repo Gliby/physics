@@ -7,6 +7,7 @@ import com.bulletphysicsx.linearmath.Transform;
 import gliby.minecraft.gman.BlockStateToMetadata;
 import gliby.minecraft.gman.networking.GDataSerializers;
 import gliby.minecraft.physics.Physics;
+import gliby.minecraft.physics.PhysicsConfig;
 import gliby.minecraft.physics.client.render.RenderHandler;
 import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.blocks.PhysicsBlockMetadata;
@@ -259,7 +260,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
     @Override
     public void interpolate() {
-        final float interp = Physics.getConfig().getRender().getBlockInterpolation();
+        final float interp = PhysicsConfig.RENDER.blockInterpolation;
         this.renderPosition.interpolate(VecUtility.toVector3f(getPositionVector()), interp);
         this.renderRotation.interpolate(physicsRotation, interp);
     }

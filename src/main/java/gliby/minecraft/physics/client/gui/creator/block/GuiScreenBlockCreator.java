@@ -4,6 +4,7 @@ import com.google.common.collect.EvictingQueue;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import gliby.minecraft.physics.Physics;
+import gliby.minecraft.physics.PhysicsConfig;
 import gliby.minecraft.physics.client.gui.creator.GuiScreenCreator;
 import gliby.minecraft.physics.common.blocks.IBlockGenerator;
 import net.minecraft.block.Block;
@@ -124,7 +125,7 @@ public class GuiScreenBlockCreator extends GuiScreenCreator implements GuiYesNoC
             @Override
             public void run() {
                 Iterator<Block> itr = ForgeRegistries.BLOCKS.iterator();
-                File dir = new File(Physics.getConfig().getDirectory(), "custom");
+                File dir = new File(PhysicsConfig.getModDirectory(), "custom");
                 if (!dir.exists())
                     dir.mkdir();
 

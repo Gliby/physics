@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import gliby.minecraft.gman.GMan;
 import gliby.minecraft.gman.networking.GDataSerializers;
 import gliby.minecraft.physics.Physics;
+import gliby.minecraft.physics.PhysicsConfig;
 import gliby.minecraft.physics.common.entity.actions.RigidBodyAction;
 import gliby.minecraft.physics.common.game.items.ItemPhysicsGun;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;
@@ -414,8 +415,8 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
                     lastTickActive = ticksExisted;
 
 
-                float deathTime = gameSpawned ? Physics.getConfig().getPhysicsEntities().getGameSpawnedExpiryTime() :
-                        Physics.getConfig().getPhysicsEntities().getPlayerSpawnedExpiryTime();
+                float deathTime = gameSpawned ? PhysicsConfig.PHYSICS_ENTITIES.gameSpawnedExpiryTime :
+                        PhysicsConfig.PHYSICS_ENTITIES.playerSpawnedExpiryTime;
 
                 if (((float) (ticksExisted - lastTickActive) / (float) TICKS_PER_SECOND + 1) > deathTime) {
                     this.setDead();

@@ -1,7 +1,7 @@
 package gliby.minecraft.physics.common.game.items.toolgun.actions;
 
 import gliby.minecraft.gman.EntityUtility;
-import gliby.minecraft.physics.Physics;
+import gliby.minecraft.physics.PhysicsConfig;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.mechanics.gravitymagnets.GravityModifierMechanic;
 import gliby.minecraft.physics.common.physics.mechanics.gravitymagnets.GravityModifierMechanic.GravityMagnet;
@@ -32,8 +32,8 @@ public class ToolGunChangeGravityAction implements IToolGunAction {
             otherLookAt.normalize();
             magnetOwners.put(player.getEntityId(),
                     mechanic.addGravityMagnet(new GravityMagnet(lookAt, otherLookAt,
-                            Physics.getConfig().getTools().getGravitizerRadius(),
-                            Physics.getConfig().getTools().getGravitizerForce())));
+                            PhysicsConfig.TOOLS.gravitizerRadius,
+                            PhysicsConfig.TOOLS.gravitizerForce)));
         }
         return true;
     }

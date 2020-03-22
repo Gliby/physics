@@ -1,6 +1,7 @@
 package gliby.minecraft.physics.common.game.events;
 
 import gliby.minecraft.physics.Physics;
+import gliby.minecraft.physics.PhysicsConfig;
 import gliby.minecraft.physics.common.blocks.PhysicsBlockMetadata;
 import gliby.minecraft.physics.common.entity.EntityPhysicsBlock;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;
@@ -40,9 +41,9 @@ public class GameEventHandler {
         World world = event.getWorld();
 
         if (event.getEntity() instanceof EntityFallingBlock) {
-            boolean replaceFallingBlocks = Physics.getConfig().getGame().isReplaceFallingBlocks();
+            boolean replaceFallingBlocks = PhysicsConfig.GAME.replaceFallingBlocks;
             if (replaceFallingBlocks) {
-                float fallingBlockDistance =  Physics.getConfig().getGame().getFallingBlockSpawnDistance();
+                float fallingBlockDistance = PhysicsConfig.GAME.fallingBlockSpawnDistance;
                 final EntityFallingBlock entityFallingBlock = (EntityFallingBlock) event.getEntity();
                 final BlockPos blockPos = entityFallingBlock.getPosition();
 
@@ -115,9 +116,9 @@ public class GameEventHandler {
                     }
                 }
 
-                float explosionRadius = physics.getConfig().getGame().getExplosionImpulseRadius();
+                float explosionRadius = PhysicsConfig.GAME.explosionImpulseRadius;
 
-                float force = physics.getConfig().getGame().getExplosionImpulseForce();
+                float force = PhysicsConfig.GAME.explosionImpulseForce;
                 for (int i = 0; i < affectedEntities.size(); i++) {
                     IRigidBody body = affectedEntities.get(i).getRigidBody();
                     Vector3f centerOfMass = body.getCenterOfMassPosition();

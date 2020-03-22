@@ -3,7 +3,7 @@ package gliby.minecraft.physics.common.physics.mechanics;
 import com.bulletphysicsx.collision.broadphase.CollisionFilterGroups;
 import com.bulletphysicsx.collision.dispatch.CollisionFlags;
 import com.bulletphysicsx.linearmath.Transform;
-import gliby.minecraft.physics.Physics;
+import gliby.minecraft.physics.PhysicsConfig;
 import gliby.minecraft.physics.common.entity.IEntityPhysics;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IGhostObject;
@@ -77,7 +77,7 @@ public class EntityCollisionResponseMechanic extends PhysicsMechanic {
                     direction.setZ((float) (entity.motionZ));
                     boolean moving = direction.length() > 0;
                     if (moving) {
-                        direction.scale(Physics.getConfig().getGame().getProjectileImpulseForce());
+                        direction.scale(PhysicsConfig.GAME.projectileImpulseForce);
                         rigidBody.applyCentralImpulse(direction);
                         rigidBody.activate();
                     }
@@ -117,7 +117,7 @@ public class EntityCollisionResponseMechanic extends PhysicsMechanic {
             Map.Entry<Integer, Long> entry = iterator.next();
             int entityId = entry.getKey();
             long timeAdded = entry.getValue();
-            if ((System.currentTimeMillis() - timeAdded) / 1000.0f > Physics.getConfig().getPhysicsEntities().getEntityColliderCleanupTime()) {
+            if ((System.currentTimeMillis() - timeAdded) / 1000.0f > PhysicsConfig.PHYSICS_ENTITIES.entityColliderCleanupTime) {
                 physicsWorld.removeCollisionObject(ghostObjects.get(entityId));
                 ghostObjects.remove(entityId);
                 iterator.remove();
