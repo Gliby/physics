@@ -1,25 +1,17 @@
 package gliby.minecraft.physics;
 
-import com.badlogic.gdx.Game;
 import com.google.common.base.Predicate;
 import gliby.minecraft.gman.GMan;
 import gliby.minecraft.gman.ModInfo;
 import gliby.minecraft.gman.networking.GDataSerializers;
-import gliby.minecraft.gman.settings.Setting;
-import gliby.minecraft.gman.settings.SettingsHandler;
-import gliby.minecraft.gman.settings.StringSetting;
 import gliby.minecraft.physics.client.PhysicsClient;
 import gliby.minecraft.physics.common.IPhysicsProxy;
 import gliby.minecraft.physics.common.PhysicsServer;
 import gliby.minecraft.physics.common.blocks.BlockManager;
-import gliby.minecraft.physics.common.entity.EntityPhysicsBase;
-import gliby.minecraft.physics.common.entity.EntityPhysicsBlock;
-import gliby.minecraft.physics.common.entity.EntityToolGunBeam;
 import gliby.minecraft.physics.common.entity.models.MobModelManager;
 import gliby.minecraft.physics.common.game.GameManager;
 import gliby.minecraft.physics.common.packets.PacketReceiveTools;
 import gliby.minecraft.physics.common.physics.PhysicsOverworld;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -72,7 +64,7 @@ public class Physics {
     private GameManager gameManager;
     private GMan gman;
     private PhysicsOverworld physicsOverworld;
-    private SettingsHandler settings;
+    private static PhysicsConfig physicsConfig;
     private BlockManager blockManager;
     private MobModelManager mobModelManager;
 
@@ -101,6 +93,7 @@ public class Physics {
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        physicsConfig = new PhysicsConfig(event.getModConfigurationDirectory());
 
         MinecraftForge.EVENT_BUS.register(this);
         instance = this;
@@ -108,51 +101,11 @@ public class Physics {
         if (!dir.exists())
             dir.mkdir();
 
-        settings = new SettingsHandler(dir, new File(dir, "Settings.ini"));
-
-        // Use Java Physics by default if we are a client.
-//        boolean useJavaPhysicsByDefault = FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
-
-        settings.registerBoolean("PhysicsEngine", "UseJavaPhysics", false, Setting.Side.BOTH);
-
-        settings.registerInteger("PhysicsEngine", "TickRate", 20, Setting.Side.BOTH);
-        settings.registerFloat("PhysicsEngine", "GravityForce", -9.8f, Setting.Side.BOTH);
-
-        settings.registerBoolean("PhysicsEntities", "EntityCollisionResponse", false, Setting.Side.BOTH).
-                setComment("Control physics block related properties.");
-
-        settings.registerFloat("PhysicsEntities", "PlayerSpawnedDeathTime", 30.0f, Setting.Side.BOTH);
-        settings.registerFloat("PhysicsEntities", "GameSpawnedDeathTime", 15.0f, Setting.Side.BOTH);
-        settings.registerFloat("PhysicsEntities", "EntityColliderCleanupTime", 1.0f, Setting.Side.BOTH);
-        settings.registerObject("PhysicsEntities", "EntityColliderBlacklist", new
-                String[]{EntityPhysicsBlock.class.getName(), EntityPhysicsBase.class.getName(), EntityToolGunBeam.class.getName(), EntityItem.class.getName()}, Setting.Side.BOTH);
-
-        settings.registerFloat("Game", "WaterForceMultiplier", 1.0f, Setting.Side.BOTH);
-        settings.registerFloat("Game", "ProjectileImpulseForce", 30, Setting.Side.BOTH);
-        settings.registerFloat("Game", "ExplosionImpulseRadius", 16, Setting.Side.BOTH);
-        settings.registerFloat("Game", "ExplosionImpulseForce", 1000, Setting.Side.BOTH);
-        settings.registerBoolean("Game", "ReplaceFallingBlocks", true, Setting.Side.BOTH);
-        // Aggressive distance culling.
-        settings.registerInteger("Game", "FallingBlockSpawnDistance", 32, Setting.Side.BOTH)
-                .setComment("Controls game related events like Explosions or Falling Blocks.");
-
-
-        settings.registerInteger("Tools", "AttractRadius", 16, Setting.Side.BOTH);
-        settings.registerInteger("Tools", "GravitizerRadius", 16, Setting.Side.BOTH);
-        settings.registerInteger("Tools", "GravitizerForce", 10, Setting.Side.BOTH);
-        settings.registerInteger("Tools", "AttractForce", 10, Setting.Side.BOTH).setComment("Controls properties relating to the Tooling Master 3000.");
-
-        settings.registerString("Miscellaneous", "LastVersion", VERSION, Setting.Side.BOTH);
-        settings.registerBoolean("Miscellaneous", "DisableAllowFlight", true, Setting.Side.BOTH);
-        settings.registerFloat("Render", "BlockInterpolation", 0.15f, Setting.Side.CLIENT);
-
-        settings.load();
         gman = GMan.create(getLogger(), new ModInfo(ID, event.getModMetadata().updateUrl), MinecraftForge.MC_VERSION,
                 VERSION);
 
         if (GMan.isNotDevelopment()) {
-            StringSetting lastVersionSetting = settings.getStringSetting("Miscellaneous.LastVersion");
-            final String lastVersion = settings.getStringSetting("Miscellaneous.LastVersion").getString();
+            final String lastVersion = physicsConfig.getMiscellaneous().getLastVersion();
             final boolean modUpdated = !lastVersion.equals(VERSION);
             if (modUpdated) {
                 getLogger().info("Version change detected, gathering change logs!");
@@ -191,12 +144,11 @@ public class Physics {
                     }
                 });
             }
-            lastVersionSetting.setString(VERSION);
+            physicsConfig.getMiscellaneous().setLastVersion(VERSION);
         } else {
             getLogger().info("Development environment detected.");
         }
 
-        settings.save();
         gameManager = new GameManager(this);
         MinecraftForge.EVENT_BUS.register(gameManager);
 
@@ -254,8 +206,8 @@ public class Physics {
         return (PhysicsClient) proxy;
     }
 
-    public SettingsHandler getSettings() {
-        return settings;
+    public static PhysicsConfig getConfig() {
+        return physicsConfig;
     }
 
     public BlockManager getBlockManager() {

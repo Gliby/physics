@@ -60,10 +60,10 @@ public class PhysicsOverworld {
     public PhysicsWorld getPhysicsByWorld(final World access) {
         PhysicsWorld physicsWorld = getPhysicsWorldMap().get(access);
         if (physicsWorld == null) {
-            final Vector3f gravity = new Vector3f(0, physics.getSettings().getFloatSetting("PhysicsEngine.GravityForce").getFloatValue(), 0);
+            final Vector3f gravity = new Vector3f(0, Physics.getConfig().getPhysicsEngineConfig().getGravityForce(), 0);
             // TODO (0.6.0) add world border support
             physicsWorld = createPhysicsWorld(
-                    !physics.getSettings().getBooleanSetting("PhysicsEngine.UseJavaPhysics").getBooleanValue(),
+                    !Physics.getConfig().getPhysicsEngineConfig().isUseJavaPhysics(),
                     new IPhysicsWorldConfiguration() {
 
                         @Override
@@ -78,7 +78,7 @@ public class PhysicsOverworld {
 
                         @Override
                         public final int getTicksPerSecond() {
-                            return physics.getSettings().getIntegerSetting("PhysicsEngine.TickRate").getIntValue();
+                            return Physics.getConfig().getPhysicsEngineConfig().getTicksPerSecond();
                         }
 
                         @Override
@@ -89,7 +89,7 @@ public class PhysicsOverworld {
             physicsWorld.getMechanics().put("PickUp", new PickUpMechanic(physicsWorld, 20));
             physicsWorld.getMechanics().put("GravityMagnet", new GravityModifierMechanic(physicsWorld, 20));
             physicsWorld.getMechanics().put("ToolMan", new ToolMechanics(physics.getGameManager().getToolGunRegistry(), physicsWorld, 20));
-            if (physics.getSettings().getBooleanSetting("PhysicsEntities.EntityCollisionResponse").getBooleanValue())
+            if (Physics.getConfig().getPhysicsEntities().isEntityCollider())
                 physicsWorld.getMechanics().put("EntityCollision", new EntityCollisionResponseMechanic(access, physicsWorld, 20));
 
             physicsWorld.create();

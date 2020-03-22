@@ -40,9 +40,9 @@ public class GameEventHandler {
         World world = event.getWorld();
 
         if (event.getEntity() instanceof EntityFallingBlock) {
-            boolean replaceFallingBlocks = physics.getSettings().getBooleanSetting("Game.ReplaceFallingBlocks").getBooleanValue();
+            boolean replaceFallingBlocks = Physics.getConfig().getGame().isReplaceFallingBlocks();
             if (replaceFallingBlocks) {
-                int fallingBlockDistance = physics.getSettings().getIntegerSetting("Game.FallingBlockSpawnDistance").getIntValue();
+                float fallingBlockDistance =  Physics.getConfig().getGame().getFallingBlockSpawnDistance();
                 final EntityFallingBlock entityFallingBlock = (EntityFallingBlock) event.getEntity();
                 final BlockPos blockPos = entityFallingBlock.getPosition();
 
@@ -114,10 +114,10 @@ public class GameEventHandler {
                         affectedEntities.add(analog);
                     }
                 }
-                float explosionRadius = physics.getSettings().getFloatSetting("Game.ExplosionImpulseRadius")
-                        .getFloatValue();
-                float force = Physics.getInstance().getSettings().getFloatSetting("Game.ExplosionImpulseForce")
-                        .getFloatValue();
+
+                float explosionRadius = physics.getConfig().getGame().getExplosionImpulseRadius();
+
+                float force = physics.getConfig().getGame().getExplosionImpulseForce();
                 for (int i = 0; i < affectedEntities.size(); i++) {
                     IRigidBody body = affectedEntities.get(i).getRigidBody();
                     Vector3f centerOfMass = body.getCenterOfMassPosition();

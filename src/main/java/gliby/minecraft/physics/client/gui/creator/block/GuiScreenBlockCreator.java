@@ -124,7 +124,7 @@ public class GuiScreenBlockCreator extends GuiScreenCreator implements GuiYesNoC
             @Override
             public void run() {
                 Iterator<Block> itr = ForgeRegistries.BLOCKS.iterator();
-                File dir = new File(Physics.getInstance().getSettings().getDirectory(), "custom");
+                File dir = new File(Physics.getConfig().getDirectory(), "custom");
                 if (!dir.exists())
                     dir.mkdir();
 

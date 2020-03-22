@@ -32,8 +32,8 @@ public class ToolGunChangeGravityAction implements IToolGunAction {
             otherLookAt.normalize();
             magnetOwners.put(player.getEntityId(),
                     mechanic.addGravityMagnet(new GravityMagnet(lookAt, otherLookAt,
-                            Physics.getInstance().getSettings().getIntegerSetting("Tools.GravitizerRadius").getIntValue(),
-                            Physics.getInstance().getSettings().getIntegerSetting("Tools.GravitizerForce").getIntValue())));
+                            Physics.getConfig().getTools().getGravitizerRadius(),
+                            Physics.getConfig().getTools().getGravitizerForce())));
         }
         return true;
     }

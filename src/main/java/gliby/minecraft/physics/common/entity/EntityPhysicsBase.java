@@ -414,10 +414,10 @@ public abstract class EntityPhysicsBase extends Entity implements IEntityAdditio
                     lastTickActive = ticksExisted;
 
 
-                String deathKey = gameSpawned ? "PhysicsEntities.GameSpawnedDeathTime" : "PhysicsEntities.PlayerSpawnedDeathTime";
+                float deathTime = gameSpawned ? Physics.getConfig().getPhysicsEntities().getGameSpawnedExpiryTime() :
+                        Physics.getConfig().getPhysicsEntities().getPlayerSpawnedExpiryTime();
 
-                if (((float) (ticksExisted - lastTickActive) / (float) TICKS_PER_SECOND + 1) > Physics.getInstance().getSettings()
-                        .getFloatSetting(deathKey).getFloatValue()) {
+                if (((float) (ticksExisted - lastTickActive) / (float) TICKS_PER_SECOND + 1) > deathTime) {
                     this.setDead();
                 }
 

@@ -133,7 +133,7 @@ public class GuiScreenMobCreator extends GuiScreenCreator {
 
             @Override
             public void run() {
-                File dir = new File(Physics.getInstance().getSettings().getDirectory(), "custom");
+                File dir = new File(Physics.getInstance().getConfig().getDirectory(), "custom");
                 if (!dir.exists())
                     dir.mkdir();
                 Path path = Paths.get(dir.toPath().toString() + "/mobs.zip");

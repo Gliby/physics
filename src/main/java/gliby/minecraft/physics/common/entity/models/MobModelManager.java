@@ -25,7 +25,7 @@ public class MobModelManager {
             public void run() {
                 File tempFile = null;
                 ZipFile tempZip = null;
-                if ((tempFile = new File(physics.getSettings().getDirectory(), "/custom/mobs.zip")).exists()) {
+                if ((tempFile = new File(physics.getConfig().getDirectory(), "/custom/mobs.zip")).exists()) {
                     try {
                         Physics.getLogger().info("Mob models found under configuration directory.");
                         tempZip = new ZipFile(tempFile);

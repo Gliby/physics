@@ -77,8 +77,7 @@ public class EntityCollisionResponseMechanic extends PhysicsMechanic {
                     direction.setZ((float) (entity.motionZ));
                     boolean moving = direction.length() > 0;
                     if (moving) {
-                        direction.scale(Physics.getInstance().getSettings().getFloatSetting("Game.ProjectileImpulseForce")
-                                .getFloatValue());
+                        direction.scale(Physics.getConfig().getGame().getProjectileImpulseForce());
                         rigidBody.applyCentralImpulse(direction);
                         rigidBody.activate();
                     }
@@ -118,8 +117,7 @@ public class EntityCollisionResponseMechanic extends PhysicsMechanic {
             Map.Entry<Integer, Long> entry = iterator.next();
             int entityId = entry.getKey();
             long timeAdded = entry.getValue();
-            if ((System.currentTimeMillis() - timeAdded) / 1000.0f > Physics.getInstance().getSettings()
-                    .getFloatSetting("PhysicsEntities.EntityColliderCleanupTime").getFloatValue()) {
+            if ((System.currentTimeMillis() - timeAdded) / 1000.0f > Physics.getConfig().getPhysicsEntities().getEntityColliderCleanupTime()) {
                 physicsWorld.removeCollisionObject(ghostObjects.get(entityId));
                 ghostObjects.remove(entityId);
                 iterator.remove();

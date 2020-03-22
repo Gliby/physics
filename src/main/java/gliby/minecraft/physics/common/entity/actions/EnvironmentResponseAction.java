@@ -1,7 +1,6 @@
 package gliby.minecraft.physics.common.entity.actions;
 
 import gliby.minecraft.physics.Physics;
-import gliby.minecraft.physics.client.render.VecUtility;
 import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import net.minecraft.block.BlockDynamicLiquid;
@@ -15,8 +14,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
-import org.apache.commons.math3.util.FastMath;
-import org.lwjgl.Sys;
 
 import javax.vecmath.Vector3f;
 import java.util.ArrayList;
@@ -110,7 +107,8 @@ public class EnvironmentResponseAction extends RigidBodyAction {
                 BlockDynamicLiquid liquidBlock = BlockLiquid.getFlowingBlock(liquidMaterial);
                 Vec3d flow = liquidBlock.getFlow(entity.world, block.getBlockPosition(), block.getBlockState());
                 Vector3f impulse = new Vector3f((float) flow.x, (float) flow.y, (float) flow.z);
-                float waterForceMultiplier = Physics.getInstance().getSettings().getFloatSetting("Game.WaterForceMultiplier").getFloatValue();
+
+                float waterForceMultiplier = Physics.getConfig().getGame().getWaterForceMultiplier();
                 if (impulse.lengthSquared() > 0) {
                     impulse.scale(waterForceMultiplier);
                     rigidBody.applyCentralImpulse(impulse);

@@ -31,7 +31,11 @@ public class ToolGunAttractAction implements IToolGunAction {
                 mechanic.removeGravityMagnet(gravityMagnet);
                 attractionHandlers.remove(player.getEntityId());
             }
-            attractionHandlers.put(player.getEntityId(), mechanic.addGravityMagnet(new GravityMagnet(lookAt, Physics.getInstance().getSettings().getIntegerSetting("Tools.AttractRadius").getIntValue(), Physics.getInstance().getSettings().getIntegerSetting("Tools.AttractForce").getIntValue())));
+            attractionHandlers.put(player.getEntityId(),
+                    mechanic.addGravityMagnet(
+                            new GravityMagnet(lookAt,
+                                    Physics.getConfig().getTools().getAttractRadius(),
+                                    Physics.getConfig().getTools().getAttractForce())));
         }
         return true;
     }

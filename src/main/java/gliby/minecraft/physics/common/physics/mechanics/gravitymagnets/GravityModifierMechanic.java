@@ -97,7 +97,7 @@ public class GravityModifierMechanic extends PhysicsMechanic {
         private boolean onlyChangeDirection;
         private Vector3f gravityDirection;
         private Vector3f position;
-        private int attractionDistance;
+        private float attractionDistance;
         private float attractionPower;
 
         /**
@@ -105,13 +105,13 @@ public class GravityModifierMechanic extends PhysicsMechanic {
          * @param attractionDistance
          * @param attractionPower
          */
-        public GravityMagnet(Vector3f position, int attractionDistance, float attractionPower) {
+        public GravityMagnet(Vector3f position, float attractionDistance, float attractionPower) {
             this.position = position;
             this.attractionDistance = attractionDistance;
             this.attractionPower = attractionPower;
         }
 
-        public GravityMagnet(Vector3f position, Vector3f gravity, int attractionDistance, float attractionPower) {
+        public GravityMagnet(Vector3f position, Vector3f gravity, float attractionDistance, float attractionPower) {
             this.position = position;
             this.gravityDirection = gravity;
             this.attractionDistance = attractionDistance;
@@ -150,7 +150,7 @@ public class GravityModifierMechanic extends PhysicsMechanic {
         /**
          * @return the attractionDistance
          */
-        public int getAttractionDistance() {
+        public float getAttractionDistance() {
             return attractionDistance;
         }
 

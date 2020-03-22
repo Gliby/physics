@@ -1,6 +1,5 @@
 package gliby.minecraft.physics.common;
 
-import gliby.minecraft.gman.settings.BooleanSetting;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.common.game.events.GameEventHandler;
 import gliby.minecraft.physics.common.packets.PacketReceiveTools;
@@ -53,11 +52,9 @@ public class PhysicsServer implements IPhysicsProxy {
     }
 
     public final void serverStarted(FMLServerStartedEvent event) {
-        BooleanSetting setting;
-        if ((setting = Physics.getInstance().getSettings().getBooleanSetting("Miscellaneous.DisableAllowFlight"))
-                .getBooleanValue()) {
+        if (Physics.getConfig().getMiscellaneous().isDisableAllowFlight()) {
             Physics.getLogger()
-                    .warn("Configuration Setting: " + setting + " has disabled server.properties allow-flight.");
+                    .warn("Configuration Setting: " + "'DisableAllowFlight'" + " has disabled server.properties allow-flight.");
             FMLCommonHandler.instance().getMinecraftServerInstance()
                     .setAllowFlight(true);
         }
