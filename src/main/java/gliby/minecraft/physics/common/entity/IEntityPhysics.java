@@ -9,22 +9,27 @@ public interface IEntityPhysics {
 
     Predicate NOT_BLACKLISTED = new Predicate() {
         public boolean apply(Entity entityIn) {
-            final String[] classes =  PhysicsConfig.PHYSICS_ENTITIES.entityColliderBlacklist;
+            final String[] classes = PhysicsConfig.PHYSICS_ENTITIES.entityColliderBlacklist;
 
-            for (int i = 0; i < classes.length; i++) {
-                Class clazz = Physics.entityBlacklistClassCache[i];
-                if (clazz == null) {
+            if (classes.length > Physics.entityBlacklistClassCache.length) {
+                Physics.entityBlacklistClassCache = new Class[classes.length];
+                // cache classes from config
+                for (int i = 0; i < classes.length; i++) {
                     try {
-                        clazz = Physics.entityBlacklistClassCache[i] = Class.forName(classes[i]);
+                        Physics.entityBlacklistClassCache[i] = Class.forName(classes[i]);
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
                 }
+            }
 
-                if (clazz.isInstance(entityIn)) {
+            for (int i = 0; i < Physics.entityBlacklistClassCache.length;  i++){
+                Class clazz = Physics.entityBlacklistClassCache[i];
+                if (clazz != null && clazz.isInstance(entityIn)) {
                     return false;
                 }
             }
+
 
             return true;
         }

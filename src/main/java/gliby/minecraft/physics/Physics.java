@@ -53,7 +53,7 @@ public class Physics {
     /**
      * Cache that contains classes generated from configuration.
      */
-    public static Class[] entityBlacklistClassCache;
+    public static Class[] entityBlacklistClassCache = new Class[0];
     @Instance
     private static Physics instance;
     @SidedProxy(serverSide = "gliby.minecraft.physics.common.PhysicsServer", clientSide = "gliby.minecraft.physics.client.PhysicsClient")
