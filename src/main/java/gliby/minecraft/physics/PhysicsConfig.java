@@ -124,9 +124,7 @@ public class PhysicsConfig {
 
     }
 
-
     public static class Miscellaneous {
-
         @Config.Comment("Disables minecraft anti-flight kick.")
         public boolean disableAllowFlight = true;
 
