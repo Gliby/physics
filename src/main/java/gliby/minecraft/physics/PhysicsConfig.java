@@ -130,7 +130,6 @@ public class PhysicsConfig {
         @Config.Comment("Disables minecraft anti-flight kick.")
         public boolean disableAllowFlight = true;
 
-        @Config.Comment("Gravitizer Tool gravity force.")
         public String lastVersion = "" + Physics.VERSION;
     }
 
