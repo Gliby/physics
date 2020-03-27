@@ -52,7 +52,12 @@ public class PhysicsServer implements IPhysicsProxy {
         }
     }
 
-    public final void serverStarted(FMLServerStartedEvent event) {
+    public final void serverStopping(FMLServerStoppingEvent event) {
+        Physics physics = Physics.getInstance();
+        physics.getGameManager().onServerStopping();
+    }
+
+        public final void serverStarted(FMLServerStartedEvent event) {
         if (PhysicsConfig.MISCELLANEOUS.disableAllowFlight) {
             Physics.getLogger()
                     .warn("Configuration Setting: " + "'DisableAllowFlight'" + " has disabled server.properties allow-flight.");

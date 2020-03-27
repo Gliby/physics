@@ -3,12 +3,12 @@ package gliby.minecraft.physics.common.game;
 import com.google.common.collect.ImmutableSet;
 import gliby.minecraft.gman.RawItem;
 import gliby.minecraft.physics.Physics;
+import gliby.minecraft.physics.PhysicsConfig;
 import gliby.minecraft.physics.common.entity.EntityPhysicsBlock;
 import gliby.minecraft.physics.common.entity.EntityToolGunBeam;
 import gliby.minecraft.physics.common.game.items.ItemPhysicsGun;
 import gliby.minecraft.physics.common.game.items.toolgun.ItemToolGun;
 import gliby.minecraft.physics.common.game.items.toolgun.actions.*;
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -18,6 +18,7 @@ import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityEntryBuilder;
 import net.minecraftforge.registries.IForgeRegistry;
 
+import java.util.LinkedList;
 import java.util.Set;
 
 public class GameManager {
@@ -88,5 +89,38 @@ public class GameManager {
     public ToolGunActionRegistry getToolGunRegistry() {
         return toolGunRegistry;
     }
+
+
+    public static LinkedList<EntityPhysicsBlock> getActiveBlocks() {
+        return activeBlocks;
+    }
+
+    /**
+     * Queue used for block culling.
+     */
+    protected static LinkedList<EntityPhysicsBlock> activeBlocks = new LinkedList<EntityPhysicsBlock>();
+
+    public void onServerStopping() {
+        getActiveBlocks().clear();
+    }
+
+    public void onPhysicsBlockDied(EntityPhysicsBlock physicsBlock) {
+        if (PhysicsConfig.GAME.maxPhysicsBlocks > 0) {
+            getActiveBlocks().remove(physicsBlock);
+        }
+    }
+
+    public void onPhysicsBlockCreated(EntityPhysicsBlock physicsBlock) {
+        if (PhysicsConfig.GAME.maxPhysicsBlocks > 0) {
+            getActiveBlocks().push(physicsBlock);
+            while (getActiveBlocks().size() > PhysicsConfig.GAME.maxPhysicsBlocks) {
+                EntityPhysicsBlock block = getActiveBlocks().pollLast();
+                if (block != null) {
+                    block.setDead();
+                }
+            }
+        }
+    }
+
 
 }

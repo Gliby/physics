@@ -186,6 +186,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
     @Override
     public void onServerInit() {
+        Physics.getInstance().getGameManager().onPhysicsBlockCreated(this);
     }
 
 
@@ -370,10 +371,15 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         return direction;
     }
 
+    @Override
+    public void setDead() {
+        Physics.getInstance().getGameManager().onPhysicsBlockDied(this);
+        super.setDead();
+    }
 
     @Override
     protected void dispose() {
-        align();
+        createBlock();
 
         if (isPhysicsValid()) {
             getPhysicsWorld().removeRigidBody(this.rigidBody);
@@ -383,7 +389,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     }
 
     // Replace physics block back to world.
-    protected void align() {
+    protected void createBlock() {
         if (rigidBody != null && rigidBody.isValid()) {
             // Calculate blockpos
             BlockPos pos = getPhysicsBlockPos();
@@ -551,12 +557,14 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         tagCompound.removeTag("Rotation");
         tagCompound.setTag("Rotation", newFloatNBTList(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.w));
 
-        Vector3f linearVelocity = rigidBody.getLinearVelocity();
-        tagCompound.setTag("LinearVelocity",
-                newFloatNBTList(linearVelocity.x, linearVelocity.y, linearVelocity.z));
-        Vector3f angularVelocity = rigidBody.getAngularVelocity();
-        tagCompound.setTag("AngularVelocity",
-                newFloatNBTList(angularVelocity.x, angularVelocity.y, angularVelocity.z));
+        if (rigidBody != null) {
+            Vector3f linearVelocity = rigidBody.getLinearVelocity();
+            tagCompound.setTag("LinearVelocity",
+                    newFloatNBTList(linearVelocity.x, linearVelocity.y, linearVelocity.z));
+            Vector3f angularVelocity = rigidBody.getAngularVelocity();
+            tagCompound.setTag("AngularVelocity",
+                    newFloatNBTList(angularVelocity.x, angularVelocity.y, angularVelocity.z));
+        }
 
         super.writeEntityToNBT(tagCompound);
     }
@@ -623,4 +631,5 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     public BlockPos getPosition() {
         return getPhysicsBlockPos();
     }
+
 }

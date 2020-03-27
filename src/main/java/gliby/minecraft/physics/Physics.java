@@ -33,11 +33,8 @@ import java.util.ArrayList;
 import java.util.Map;
 // Gliby's Physics Central Roadmap
 // TODO: (0.7.0) Add cosmetic physics.
-// TODO: (0.6.0) Add EntityPhysicsBase buffer culling, meaning if we are over our allowed Physics Entity limit, we force the the oldest entity to re-align.
 // TODO  (0.6.0) look into NativeBullet by the Terasology, might solve memory leaks in the native PhysicsWorld and improve simulation perf.
 // TODO  (0.6.0) FIXME: something is leaking memory every time we create/destroy a PhysicsWorld.
-// TODO (0.6.0) Replace Settings with Forge's configuration
-// TODO (0.6.0) Start using BlockPos.PooledMutableBlockPos
 // TODO (0.6.0) Start using world.isAreaLoaded()
 
 @Mod(modid = Physics.ID, name = Physics.NAME, acceptedMinecraftVersions = Physics.MC_VERSION, guiFactory = "gliby.minecraft.physics.client.gui.options.GuiFactory")
@@ -194,6 +191,11 @@ public class Physics {
     @EventHandler
     public void serverStarted(FMLServerStartedEvent event) {
         proxy.serverStarted(event);
+    }
+
+    @EventHandler
+    public void serverStopping(FMLServerStoppingEvent event) {
+        proxy.serverStopping(event);
     }
 
     public IPhysicsProxy getProxy() {

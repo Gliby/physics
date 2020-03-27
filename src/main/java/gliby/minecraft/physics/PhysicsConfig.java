@@ -104,6 +104,9 @@ public class PhysicsConfig {
 
         @Config.Comment("How close (in blocks) do players have to be for falling physics blocks.")
         public float fallingBlockSpawnDistance = 32.0f;
+
+        @Config.Comment("Limits physics blocks, old blocks get re-aligned. -1 disables limit.")
+        public float maxPhysicsBlocks = 512;
     }
 
     public static class Tools {
