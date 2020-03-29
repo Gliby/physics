@@ -135,32 +135,58 @@ public class VecUtility {
         return mat4;
     }
 
-   static Matrix4f cachedMatrix4f = new Matrix4f();
+    static Matrix4f MAT4 = new Matrix4f();
+
+    public static Matrix4f toMatrix4fRef(org.terasology.math.geom.Matrix4f matrix4) {
+        MAT4.m00 = matrix4.m00;
+        MAT4.m01 = matrix4.m01;
+        MAT4.m02 = matrix4.m02;
+        MAT4.m03 = matrix4.m03;
+
+
+        MAT4.m10 = matrix4.m10;
+        MAT4.m11 = matrix4.m11;
+        MAT4.m12 = matrix4.m12;
+        MAT4.m13 = matrix4.m13;
+
+        MAT4.m20 = matrix4.m20;
+        MAT4.m21 = matrix4.m21;
+        MAT4.m22 = matrix4.m22;
+        MAT4.m23 = matrix4.m23;
+
+        MAT4.m30 = matrix4.m30;
+        MAT4.m31 = matrix4.m31;
+        MAT4.m32 = matrix4.m32;
+        MAT4.m33 = matrix4.m33;
+
+        return MAT4;
+    }
+
 
 
     public static org.terasology.math.geom.Matrix4f toMatrix4fTera(Transform transform) {
-        transform.getMatrix(cachedMatrix4f);
+        transform.getMatrix(MAT4);
         org.terasology.math.geom.Matrix4f mat4 = new org.terasology.math.geom.Matrix4f();
-        mat4.m00 = cachedMatrix4f.m00;
-        mat4.m01 = cachedMatrix4f.m01;
-        mat4.m02 = cachedMatrix4f.m02;
-        mat4.m03 = cachedMatrix4f.m03;
+        mat4.m00 = MAT4.m00;
+        mat4.m01 = MAT4.m01;
+        mat4.m02 = MAT4.m02;
+        mat4.m03 = MAT4.m03;
 
 
-        mat4.m10 = cachedMatrix4f.m10;
-        mat4.m11 = cachedMatrix4f.m11;
-        mat4.m12 = cachedMatrix4f.m12;
-        mat4.m13 = cachedMatrix4f.m13;
+        mat4.m10 = MAT4.m10;
+        mat4.m11 = MAT4.m11;
+        mat4.m12 = MAT4.m12;
+        mat4.m13 = MAT4.m13;
 
-        mat4.m20 = cachedMatrix4f.m20;
-        mat4.m21 = cachedMatrix4f.m21;
-        mat4.m22 = cachedMatrix4f.m22;
-        mat4.m23 = cachedMatrix4f.m23;
+        mat4.m20 = MAT4.m20;
+        mat4.m21 = MAT4.m21;
+        mat4.m22 = MAT4.m22;
+        mat4.m23 = MAT4.m23;
 
-        mat4.m30 = cachedMatrix4f.m30;
-        mat4.m31 = cachedMatrix4f.m31;
-        mat4.m32 = cachedMatrix4f.m32;
-        mat4.m33 = cachedMatrix4f.m33;
+        mat4.m30 = MAT4.m30;
+        mat4.m31 = MAT4.m31;
+        mat4.m32 = MAT4.m32;
+        mat4.m33 = MAT4.m33;
         return mat4;
     }
 
@@ -175,6 +201,13 @@ public class VecUtility {
 
     public static Transform toTransform(org.terasology.math.geom.Matrix4f mat4) {
         return new Transform(toMatrix4f(mat4));
+    }
+
+    static Transform transform = new Transform();
+
+    public static Transform toTransformRef(org.terasology.math.geom.Matrix4f mat4) {
+        transform.set(toMatrix4fRef(mat4));
+        return transform;
     }
 
     public static Quat4f toQuat4f(org.terasology.math.geom.Quat4f orientation) {

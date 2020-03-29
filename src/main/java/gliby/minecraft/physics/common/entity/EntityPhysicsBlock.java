@@ -67,11 +67,11 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
     /**
      * Reference to block's built rigid body.
      */
-    protected IRigidBody rigidBody;
+    protected WeakReference<IRigidBody> weakRigidBody;
     /**
      * Reference to rigid bodies -> collision shape.
      */
-    protected ICollisionShape collisionShape;
+    protected WeakReference<ICollisionShape> weakCollisionShape;
     /**
      * If true, physics block will not use generated collision shape, but rather a
      * simple box shape.
@@ -129,9 +129,9 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         this.physicsCollisionEnabled = !metadataExists || metadata.collisionEnabled;
 
         if (this.defaultCollisionShape)
-            this.collisionShape = physicsWorld.getDefaultShape();
+            this.weakCollisionShape = new WeakReference(physicsWorld.getDefaultShape());
         else {
-            this.collisionShape = physicsWorld.getBlockCache().getShape(world, new BlockPos(x, y, z), getBlockState());
+            this.weakCollisionShape = new WeakReference(physicsWorld.getBlockCache().getShape(world, new BlockPos(x, y, z), getBlockState()));
         }
 
         setLocationAndAngles(x, y, z, 0, 0);
@@ -218,11 +218,12 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
     @Override
     public void onServerUpdate() {
-        if (rigidBody != null && rigidBody.isValid()) {
+        IRigidBody body = weakRigidBody != null ? weakRigidBody.get() : null;
+        if (body != null && body.isValid()) {
             // tell the entity tracker to update us if we are dirty.
             isAirBorne = isDirty();
             // Update position from given rigid body.
-            final Transform transform = rigidBody.getWorldTransform();
+            final Transform transform = body.getWorldTransformRef();
             final Vector3f newPosition = transform.origin;
             setPositionAndUpdate(newPosition.getX(), newPosition.getY(),
                     newPosition.getZ());
@@ -268,31 +269,36 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
     @Override
     protected void createPhysicsObject(PhysicsWorld physicsWorld) {
-        Transform transform = new Transform();
-        transform.setIdentity();
-        transform.origin.set(VecUtility.toVector3f(getPositionVector()));
-        transform.setRotation(this.physicsRotation);
-        rigidBody = physicsWorld.createRigidBody(this, transform, Math.abs(mass), collisionShape);
-        getRigidBody().getProperties().put(EnumRigidBodyProperty.BLOCKSTATE.getName(), blockState);
+        ICollisionShape shape = weakCollisionShape != null ? weakCollisionShape.get() : null;
+        if (shape != null) {
+            Transform transform = new Transform();
+            transform.setIdentity();
+            transform.origin.set(VecUtility.toVector3f(getPositionVector()));
+            transform.setRotation(this.physicsRotation);
 
-        for (int i = 0; i < getActions().size(); i++) {
-            RigidBodyAction mechanic = getActions().get(i);
-            mechanic.onCreatePhysics(physicsWorld, rigidBody);
+            IRigidBody body = physicsWorld.createRigidBody(this, transform, Math.abs(mass), shape);
+            weakRigidBody = new WeakReference(body);
+            getRigidBody().getProperties().put(EnumRigidBodyProperty.BLOCKSTATE.getName(), blockState);
+
+            for (int i = 0; i < getActions().size(); i++) {
+                RigidBodyAction mechanic = getActions().get(i);
+                mechanic.onCreatePhysics(physicsWorld, body);
+            }
+
+            if (physicsCollisionEnabled)
+                physicsWorld.addRigidBody(body);
+            else
+                physicsWorld.addRigidBody(body, CollisionFilterGroups.CHARACTER_FILTER,
+                        CollisionFilterGroups.ALL_FILTER);
+
+            if (mass < 0)
+                getRigidBody().setGravity(new Vector3f());
+            getRigidBody().setFriction(friction);
+            if (linearVelocity != null)
+                getRigidBody().setLinearVelocity(linearVelocity);
+            if (angularVelocity != null)
+                getRigidBody().setAngularVelocity(angularVelocity);
         }
-
-        if (physicsCollisionEnabled)
-            physicsWorld.addRigidBody(rigidBody);
-        else
-            physicsWorld.addRigidBody(rigidBody, CollisionFilterGroups.CHARACTER_FILTER,
-                    CollisionFilterGroups.ALL_FILTER);
-
-        if (mass < 0)
-            getRigidBody().setGravity(new Vector3f());
-        getRigidBody().setFriction(friction);
-        if (linearVelocity != null)
-            getRigidBody().setLinearVelocity(linearVelocity);
-        if (angularVelocity != null)
-            getRigidBody().setAngularVelocity(angularVelocity);
     }
 
     @Override
@@ -302,6 +308,8 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         transform.origin.set(VecUtility.toVector3f(getPositionVector()));
         transform.setRotation(this.physicsRotation);
         getRigidBody().setWorldTransform(transform);
+
+        IRigidBody rigidBody = getRigidBody();
         // Used for specific block mechanics.
         rigidBody.getProperties().put(EnumRigidBodyProperty.BLOCKSTATE.getName(), blockState);
         if (mass < 0)
@@ -348,21 +356,26 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
     @Override
     public boolean isDirty() {
-        return rigidBody.isActive();
+        return getRigidBody().isActive();
     }
 
     @Override
     protected boolean isPhysicsValid() {
-        return rigidBody != null && rigidBody.isValid();
+        return getRigidBody() != null;
+    }
+
+    public WeakReference<IRigidBody> getWeakRigidBody() {
+        return weakRigidBody;
     }
 
     /**
      * @return
      */
+    @Nullable
+    @Override
     public IRigidBody getRigidBody() {
-        return rigidBody;
+        return weakRigidBody != null ? weakRigidBody.get() : null;
     }
-
 
     // Returns the direction of the block based on the RigidBody.
     public Vector3f getDirection(Vector3f base) {
@@ -382,15 +395,18 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         createBlock();
 
         if (isPhysicsValid()) {
-            getPhysicsWorld().removeRigidBody(this.rigidBody);
-            this.rigidBody = null;
-            this.collisionShape = null;
+            getPhysicsWorld().removeRigidBody(getRigidBody());
+            weakCollisionShape.clear();
+
+            this.weakRigidBody = null;
+            this.weakCollisionShape = null;
         }
     }
 
     // Replace physics block back to world.
     protected void createBlock() {
-        if (rigidBody != null && rigidBody.isValid()) {
+        IRigidBody rigidBody = getRigidBody();
+        if (rigidBody != null) {
             // Calculate blockpos
             BlockPos pos = getPhysicsBlockPos();
 
@@ -557,6 +573,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
         tagCompound.removeTag("Rotation");
         tagCompound.setTag("Rotation", newFloatNBTList(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.w));
 
+        IRigidBody rigidBody = getRigidBody();
         if (rigidBody != null) {
             Vector3f linearVelocity = rigidBody.getLinearVelocity();
             tagCompound.setTag("LinearVelocity",
@@ -591,10 +608,10 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
 
         if (tagCompound.hasKey("CollisionShape")) {
             BlockPos.PooledMutableBlockPos blockPos = BlockPos.PooledMutableBlockPos.retain((int) posX, (int) posY, (int) posZ);
-            this.collisionShape = getPhysicsWorld().getBlockCache().getShape(world, blockPos, blockState);
+            this.weakCollisionShape = new WeakReference(getPhysicsWorld().getBlockCache().getShape(world, blockPos, blockState));
             blockPos.release();
         } else
-            this.collisionShape = getPhysicsWorld().getDefaultShape();
+            this.weakCollisionShape = new WeakReference(getPhysicsWorld().getDefaultShape());
 
 //        this.physicsPosition.set((float) posX, (float) posY, (float) posZ);
         if (tagCompound.hasKey("Rotation")) {

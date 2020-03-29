@@ -393,16 +393,14 @@ public class NativePhysicsWorld extends PhysicsWorld {
         if (base != null && !base.isDisposed()) base.dispose();
     }
 
-
-    // TODO (0.6.0) FIXME: after disposal renewal doesn't work for voxel block provider.
     @Override
     public void dispose() {
-        rigidBodies.clear();
 
-        for (IRigidBody body : rigidBodies) {
-            btRigidBody rigidBody = (btRigidBody) body.getBody();
-            safeDispose(rigidBody);
-        }
+//        for (IRigidBody body : rigidBodies) {
+//            body.dispose();
+//        }
+
+        rigidBodies.clear();
 
         safeDispose(dynamicsWorld);
         safeDispose(broadphase);

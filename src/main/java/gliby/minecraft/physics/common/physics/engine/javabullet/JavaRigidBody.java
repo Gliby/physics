@@ -78,11 +78,19 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
         return rigidBody.get().getWorldTransform(new Transform());
     }
 
+    static Transform worldTransformRef = new Transform();
+
     @Override
-    public Matrix4f getWorldMatrix() {
-        Matrix4f mat4 = new Matrix4f();
-        getWorldTransform().getMatrix(mat4);
-        return mat4;
+    public Transform getWorldTransformRef() {
+        return rigidBody.get().getWorldTransform(worldTransformRef);
+    }
+
+    static Matrix4f MAT4 = new Matrix4f();
+
+    @Override
+    public Matrix4f getWorldMatrixRef() {
+        getWorldTransformRef().getMatrix(MAT4);
+        return MAT4;
     }
 
     @Override

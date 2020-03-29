@@ -43,7 +43,9 @@ public interface IRigidBody extends ICollisionObject {
 
     Transform getWorldTransform();
 
-    Matrix4f getWorldMatrix();
+    Transform getWorldTransformRef();
+
+    Matrix4f getWorldMatrixRef();
 
     /**
      * @param transform
