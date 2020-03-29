@@ -1,6 +1,5 @@
 package gliby.minecraft.physics.common.physics.engine.nativebullet;
 
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btCompoundShape;
@@ -59,7 +58,7 @@ class NativeCollisionShape implements ICollisionShape {
          *
          * @Override public void run() {
          */
-        shape.get().calculateLocalInertia(mass, (Vector3) localInertia);
+        shape.get().calculateLocalInertia(mass, (org.terasology.math.geom.Vector3f) localInertia);
 
         /*
          * System.out.println("calculated inertia"); } });
@@ -104,7 +103,7 @@ class NativeCollisionShape implements ICollisionShape {
 
     @Override
     public void setLocalScaling(final Vector3f localScaling) {
-        shape.get().setLocalScaling(VecUtility.toVector3(localScaling));
+        shape.get().setLocalScaling(VecUtility.toVector3fTera(localScaling));
     }
 
     @Override

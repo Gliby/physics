@@ -2,7 +2,7 @@ buildscript {
     repositories {
         jcenter()
         maven { url = "http://files.minecraftforge.net/maven" }
-        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url = "https://plugins.gradle.org/m2/" }
     }
 
     dependencies {
@@ -10,13 +10,24 @@ buildscript {
         classpath 'com.wynprice.cursemaven:CurseMaven:1.2.3'
         classpath "com.github.jengelman.gradle.plugins:shadow:1.2.3"
         classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.4.0"
+        classpath "org.jfrog.buildinfo:build-info-extractor-gradle:4.15.1"
     }
 }
 
+apply plugin: "com.jfrog.artifactory"
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: "com.wynprice.cursemaven"
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: "com.matthewprenger.cursegradle"
+
+repositories {
+    maven { url = "http://artifactory.terasology.org/artifactory/virtual-repo-live" }
+}
+
+artifactory {
+  contextUrl = 'http://artifactory.terasology.org/artifactory/libs-snapshot-local' 
+}
+
 
 version = mod_version
 group = "gliby.minecraft.physics"
@@ -39,9 +50,13 @@ minecraft {
 dependencies {
     compileOnly curse.resolve("dynamic-lights", "2563244")
     compile group: 'org.apache.commons', name: 'commons-math3', version: '3.0'
-    compile files('lib/gdx-bullet.jar')
-    compile files('lib/gdx-bullet-natives.jar')
-    compile files('lib/gdx.jar')
+    // compile files('lib/gdx-bullet.jar')
+    // compile files('lib/gdx-bullet-natives.jar')
+    // compile files('lib/gdx.jar')
+    compile(group: 'org.terasology', name: 'TeraMath', version: '1.5.1-20181008.021553-1')
+    compile(group: 'org.terasology', name: 'native-bullet', version: '0.2.13-20200106.050344-1')
+    compile("com.google.guava:guava:28.2-jre")
+
 }
 
 processResources {

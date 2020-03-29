@@ -42,7 +42,7 @@ class NativePairCachingGhostObject implements IGhostObject {
 
     @Override
     public void setWorldTransform(final Transform entityTransform) {
-        ghostObject.get().setWorldTransform(VecUtility.toMatrix4(entityTransform));
+        ghostObject.get().setWorldTransform(VecUtility.toMatrix4fTera(entityTransform));
 
     }
 
@@ -58,7 +58,7 @@ class NativePairCachingGhostObject implements IGhostObject {
 
     @Override
     public void setInterpolationWorldTransform(final Transform entityTransform) {
-        ghostObject.get().setInterpolationWorldTransform(VecUtility.toMatrix4(entityTransform));
+        ghostObject.get().setInterpolationWorldTransform(VecUtility.toMatrix4fTera(entityTransform));
     }
 
     @Override

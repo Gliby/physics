@@ -37,7 +37,7 @@ class NativeCollisionObject implements ICollisionObject {
 
     @Override
     public void setWorldTransform(final Transform transform) {
-        collisionObject.get().setWorldTransform(VecUtility.toMatrix4(transform));
+        collisionObject.get().setWorldTransform(VecUtility.toMatrix4fTera(transform));
 
     }
 
@@ -55,7 +55,7 @@ class NativeCollisionObject implements ICollisionObject {
 
     @Override
     public void setInterpolationWorldTransform(final Transform transform) {
-        collisionObject.get().setInterpolationWorldTransform(VecUtility.toMatrix4(transform));
+        collisionObject.get().setInterpolationWorldTransform(VecUtility.toMatrix4fTera(transform));
 
     }
 

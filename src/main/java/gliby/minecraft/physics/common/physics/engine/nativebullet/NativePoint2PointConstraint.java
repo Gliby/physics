@@ -33,7 +33,7 @@ class NativePoint2PointConstraint implements IConstraintPoint2Point {
 
     @Override
     public void setPivotB(final Vector3f newPos) {
-        constraint.get().setPivotB(VecUtility.toVector3(newPos));
+        constraint.get().setPivotB(VecUtility.toVector3fTera(newPos));
     }
 
     @Override

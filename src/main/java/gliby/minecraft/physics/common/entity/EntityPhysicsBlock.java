@@ -1,6 +1,5 @@
 package gliby.minecraft.physics.common.entity;
 
-import com.badlogic.gdx.math.Quaternion;
 import com.bulletphysicsx.collision.broadphase.CollisionFilterGroups;
 import com.bulletphysicsx.linearmath.QuaternionUtil;
 import com.bulletphysicsx.linearmath.Transform;
@@ -415,7 +414,7 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
             // Create fake player, used for block placement emulation.
             FakePlayer fakePlayer = FakePlayerFactory.getMinecraft((WorldServer) world);
             // Create LibGDX quat, useful for getting euler angles.
-            Quaternion eulerQuat = new Quaternion(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.w);
+//            Quat4f eulerQuat = new Quat4f(physicsRotation.x, physicsRotation.y, physicsRotation.z, physicsRotation.w);
             // Set new orientation of player.
 //            fakePlayer.setPositionAndRotation(fakePlayer.posX, fakePlayer.posX, fakePlayer. posZ, eulerQuat.getYaw(), eulerQuat.getPitch());
 

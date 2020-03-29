@@ -1,7 +1,5 @@
 package gliby.minecraft.physics.common.physics.engine.nativebullet;
 
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.bulletphysicsx.linearmath.Transform;
 import gliby.minecraft.physics.client.render.VecUtility;
@@ -9,6 +7,7 @@ import gliby.minecraft.physics.common.physics.PhysicsWorld;
 import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import net.minecraft.entity.Entity;
+import org.terasology.math.geom.Matrix4f;
 
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
@@ -56,7 +55,7 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 
     @Override
     public void setAngularVelocity(Vector3f angularVelocity) {
-        rigidBody.get().setAngularVelocity(VecUtility.toVector3(angularVelocity));
+        rigidBody.get().setAngularVelocity(VecUtility.toVector3fTera(angularVelocity));
 
     }
 
@@ -68,7 +67,7 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 
     @Override
     public void setLinearVelocity(final Vector3f linearVelocity) {
-        rigidBody.get().setLinearVelocity(VecUtility.toVector3(linearVelocity));
+        rigidBody.get().setLinearVelocity(VecUtility.toVector3fTera(linearVelocity));
 
     }
 
@@ -79,7 +78,7 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 
     @Override
     public void setWorldTransform(final Transform transform) {
-        Matrix4 mat4 = VecUtility.toMatrix4(transform);
+        Matrix4f mat4 = VecUtility.toMatrix4fTera(transform);
         rigidBody.get().setWorldTransform(mat4);
 
     }
@@ -91,7 +90,7 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 
     @Override
     public void setGravity(final Vector3f acceleration) {
-        rigidBody.get().setGravity(VecUtility.toVector3(acceleration));
+        rigidBody.get().setGravity(VecUtility.toVector3fTera(acceleration));
 
     }
 
@@ -103,7 +102,7 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 
     @Override
     public void applyCentralImpulse(final Vector3f direction) {
-        rigidBody.get().applyCentralImpulse(VecUtility.toVector3(direction));
+        rigidBody.get().applyCentralImpulse(VecUtility.toVector3fTera(direction));
 
     }
 
@@ -126,7 +125,7 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 
     @Override
     public void getAabb(Vector3f aabbMin, Vector3f aabbMax) {
-        Vector3 min = new Vector3(), max = new Vector3();
+        org.terasology.math.geom.Vector3f min = new org.terasology.math.geom.Vector3f (), max = new org.terasology.math.geom.Vector3f ();
         rigidBody.get().getAabb(min, max);
         aabbMin.set(VecUtility.toVector3f(min));
         aabbMin.set(VecUtility.toVector3f(max));
@@ -145,13 +144,13 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 
     @Override
     public void applyCentralForce(final Vector3f force) {
-        rigidBody.get().applyCentralForce(VecUtility.toVector3(force));
+        rigidBody.get().applyCentralForce(VecUtility.toVector3fTera(force));
 
     }
 
     @Override
     public void applyForce(Vector3f force, Vector3f relativePosition) {
-        rigidBody.get().applyForce(VecUtility.toVector3(force), VecUtility.toVector3(relativePosition));
+        rigidBody.get().applyForce(VecUtility.toVector3fTera(force), VecUtility.toVector3fTera(relativePosition));
     }
 
     @Override
@@ -172,18 +171,18 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
 
     @Override
     public Vector3f getPosition() {
-        return VecUtility.toVector3f(rigidBody.get().getWorldTransform().getTranslation(new Vector3()));
+        return VecUtility.toVector3f(rigidBody.get().getWorldTransform().getTranslation());
     }
 
     @Override
     public void applyTorque(final Vector3f vector) {
-        rigidBody.get().applyTorque(VecUtility.toVector3(vector));
+        rigidBody.get().applyTorque(VecUtility.toVector3fTera(vector));
 
     }
 
     @Override
     public void applyTorqueImpulse(final Vector3f vector) {
-        rigidBody.get().applyTorqueImpulse(VecUtility.toVector3(vector));
+        rigidBody.get().applyTorqueImpulse(VecUtility.toVector3fTera(vector));
     }
 
     @Override

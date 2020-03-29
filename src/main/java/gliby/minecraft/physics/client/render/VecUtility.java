@@ -1,10 +1,6 @@
 package gliby.minecraft.physics.client.render;
 
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Vector3;
 import com.bulletphysicsx.linearmath.Transform;
-import javafx.scene.chart.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -42,23 +38,23 @@ public class VecUtility {
         return new Vector3f((float) vec3.x, (float) vec3.y, (float) vec3.z);
     }
 
-    public static Vector3f toVector3f(Vector3 vec3) {
+    public static Vector3f toVector3f(org.terasology.math.geom.Vector3f vec3) {
         return new Vector3f(vec3.x, vec3.y, vec3.z);
     }
 
-    public static Vector3 toVector3(Vec3d vec3) {
-        return new Vector3((float) vec3.x, (float) vec3.y, (float) vec3.z);
+    public static org.terasology.math.geom.Vector3f toVector3fTera(Vec3d vec3) {
+        return new org.terasology.math.geom.Vector3f((float) vec3.x, (float) vec3.y, (float) vec3.z);
     }
 
-    public static Vector3 toVector3(Vector3f vec3) {
-        return new Vector3(vec3.x, vec3.y, vec3.z);
+    public static org.terasology.math.geom.Vector3f toVector3fTera(Vector3f vec3) {
+        return new org.terasology.math.geom.Vector3f(vec3.x, vec3.y, vec3.z);
     }
 
     public static Vec3d toVec3(Vector3f vec3) {
         return new Vec3d(vec3.x, vec3.y, vec3.z);
     }
 
-    public static Vec3d toVec3(Vector3 vec3) {
+    public static Vec3d toVec3(org.terasology.math.geom.Vector3f vec3) {
         return new Vec3d(vec3.x, vec3.y, vec3.z);
     }
 
@@ -112,23 +108,59 @@ public class VecUtility {
     }
 
 
-    public static Matrix4f toMatrix4f(Matrix4 matrix4) {
-        Quaternion rotation = new Quaternion();
-        matrix4.getRotation(rotation);
+    public static Matrix4f toMatrix4f(org.terasology.math.geom.Matrix4f matrix4) {
+        Matrix4f mat4 = new Matrix4f();
 
-        Vector3 position = new Vector3();
-        matrix4.getTranslation(position);
-        Matrix4f mat4 = new Matrix4f(toQuat4f(rotation), toVector3f(position), 1);
+        mat4.m00 = matrix4.m00;
+        mat4.m01 = matrix4.m01;
+        mat4.m02 = matrix4.m02;
+        mat4.m03 = matrix4.m03;
+
+
+        mat4.m10 = matrix4.m10;
+        mat4.m11 = matrix4.m11;
+        mat4.m12 = matrix4.m12;
+        mat4.m13 = matrix4.m13;
+
+        mat4.m20 = matrix4.m20;
+        mat4.m21 = matrix4.m21;
+        mat4.m22 = matrix4.m22;
+        mat4.m23 = matrix4.m23;
+
+        mat4.m30 = matrix4.m30;
+        mat4.m31 = matrix4.m31;
+        mat4.m32 = matrix4.m32;
+        mat4.m33 = matrix4.m33;
 
         return mat4;
     }
 
-    public static Matrix4 toMatrix4(Transform transform) {
-        Matrix4 mat4 = new Matrix4();
-        mat4.idt();
+   static Matrix4f cachedMatrix4f = new Matrix4f();
 
-        Quat4f rotation = new Quat4f();
-        mat4.set(toVector3(transform.origin), toQuaternion(transform.getRotation(rotation)));
+
+    public static org.terasology.math.geom.Matrix4f toMatrix4fTera(Transform transform) {
+        transform.getMatrix(cachedMatrix4f);
+        org.terasology.math.geom.Matrix4f mat4 = new org.terasology.math.geom.Matrix4f();
+        mat4.m00 = cachedMatrix4f.m00;
+        mat4.m01 = cachedMatrix4f.m01;
+        mat4.m02 = cachedMatrix4f.m02;
+        mat4.m03 = cachedMatrix4f.m03;
+
+
+        mat4.m10 = cachedMatrix4f.m10;
+        mat4.m11 = cachedMatrix4f.m11;
+        mat4.m12 = cachedMatrix4f.m12;
+        mat4.m13 = cachedMatrix4f.m13;
+
+        mat4.m20 = cachedMatrix4f.m20;
+        mat4.m21 = cachedMatrix4f.m21;
+        mat4.m22 = cachedMatrix4f.m22;
+        mat4.m23 = cachedMatrix4f.m23;
+
+        mat4.m30 = cachedMatrix4f.m30;
+        mat4.m31 = cachedMatrix4f.m31;
+        mat4.m32 = cachedMatrix4f.m32;
+        mat4.m33 = cachedMatrix4f.m33;
         return mat4;
     }
 
@@ -141,15 +173,15 @@ public class VecUtility {
         return result;
     }
 
-    public static Transform toTransform(Matrix4 mat4) {
+    public static Transform toTransform(org.terasology.math.geom.Matrix4f mat4) {
         return new Transform(toMatrix4f(mat4));
     }
 
-    public static Quat4f toQuat4f(Quaternion orientation) {
+    public static Quat4f toQuat4f(org.terasology.math.geom.Quat4f orientation) {
         return new Quat4f(orientation.x, orientation.y, orientation.z, orientation.w);
     }
 
-    public static Quaternion toQuaternion(Quat4f orientation) {
-        return new Quaternion(orientation.x, orientation.y, orientation.z, orientation.w);
+    public static org.terasology.math.geom.Quat4f toTeraQuaternion(Quat4f orientation) {
+        return new org.terasology.math.geom.Quat4f(orientation.x, orientation.y, orientation.z, orientation.w);
     }
 }
