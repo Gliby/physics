@@ -59,7 +59,6 @@ dependencies {
     compile(group: 'org.terasology', name: 'native-bullet', version: '0.2.13-20200106.050344-1') {
         exclude group: 'com.google.guava', module: 'guava'
     }
-    compile files('lib/nativebullet-natives.jar')
 
 }
 
