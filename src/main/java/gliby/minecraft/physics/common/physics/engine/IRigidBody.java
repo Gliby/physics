@@ -1,8 +1,8 @@
 package gliby.minecraft.physics.common.physics.engine;
 
 import com.bulletphysicsx.linearmath.Transform;
-import net.minecraft.util.math.Vec3d;
 
+import javax.vecmath.Matrix4f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 import java.util.Map;
@@ -42,6 +42,8 @@ public interface IRigidBody extends ICollisionObject {
     Vector3f getCenterOfMassPosition();
 
     Transform getWorldTransform();
+
+    Matrix4f getWorldMatrix();
 
     /**
      * @param transform

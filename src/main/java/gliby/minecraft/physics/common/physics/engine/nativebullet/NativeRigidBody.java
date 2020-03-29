@@ -77,6 +77,11 @@ class NativeRigidBody extends NativeCollisionObject implements IRigidBody {
     }
 
     @Override
+    public javax.vecmath.Matrix4f getWorldMatrix() {
+        return VecUtility.toMatrix4f(rigidBody.get().getWorldTransform());
+    }
+
+    @Override
     public void setWorldTransform(final Transform transform) {
         Matrix4f mat4 = VecUtility.toMatrix4fTera(transform);
         rigidBody.get().setWorldTransform(mat4);

@@ -5,7 +5,9 @@ import com.badlogic.gdx.physics.bullet.BulletBase;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.dynamics.*;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstructionInfo;
+import com.badlogic.gdx.physics.bullet.linearmath.LinearMath;
 import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
+import com.badlogic.gdx.utils.BulletRuntimeException;
 import com.bulletphysicsx.linearmath.Transform;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.client.render.VecUtility;
@@ -29,7 +31,47 @@ import java.util.List;
 public class NativePhysicsWorld extends PhysicsWorld {
 
     static {
-        Bullet.init();
+        load();
+    }
+
+    public static void load() {
+        boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
+        boolean isMacOS = System.getProperty("os.name").toLowerCase().contains("mac");
+
+        // Generate library name.
+        StringBuilder builder = new StringBuilder(isWindows ? "libbullet-" : "bullet-");
+
+        if (isWindows) {
+            // Windows
+            builder.append("windows-");
+        }
+        else if(isMacOS){
+            // osx
+            builder.append("darwin-");
+        }
+        else {
+            // Assume Linux
+            builder.append("linux-");
+        }
+
+        if (System.getProperty("os.arch").endsWith("64")) {
+            // Assume x86_64
+            builder.append("amd64");
+        } else {
+            // Assume x86_32
+            builder.append("i686");
+        }
+
+
+        String path = builder.toString();
+
+        System.loadLibrary(path);
+
+        final int version = LinearMath.btGetVersion();
+        if (version != Bullet.VERSION)
+            throw new BulletRuntimeException("Bullet binaries version (" + version + ") does not match source version (" + Bullet.VERSION
+                    + ")");
+
     }
 
     private btDiscreteDynamicsWorld dynamicsWorld;
@@ -64,7 +106,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
         dynamicsWorld.setGravity(VecUtility.toVector3fTera(getPhysicsConfiguration().getRegularGravity()));
 
         voxelShape = new btVoxelShape(
-                voxelProvider = new NativeVoxelProvider(voxelInfo = new btVoxelInfo(), getPhysicsConfiguration().getWorld(), this),
+                voxelProvider = new NativeVoxelProvider(getPhysicsConfiguration().getWorld(), this),
                 new org.terasology.math.geom.Vector3f(-Integer.MAX_VALUE, -Integer.MAX_VALUE, -Integer.MAX_VALUE),
                 new org.terasology.math.geom.Vector3f(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE));
         voxelBody = new btCollisionObject();

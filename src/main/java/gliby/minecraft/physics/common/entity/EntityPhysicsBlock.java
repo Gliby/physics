@@ -222,8 +222,8 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
             // tell the entity tracker to update us if we are dirty.
             isAirBorne = isDirty();
             // Update position from given rigid body.
-            final Vector3f newPosition = rigidBody.getPosition();
-
+            final Transform transform = rigidBody.getWorldTransform();
+            final Vector3f newPosition = transform.origin;
             setPositionAndUpdate(newPosition.getX(), newPosition.getY(),
                     newPosition.getZ());
 
@@ -232,10 +232,11 @@ public class EntityPhysicsBlock extends EntityPhysicsBase implements IEntityAddi
             setEntityVelocity(velocity.getX(), velocity.getY(), velocity.getZ());
 
             // Update rotation from given rigid body.
-            final Quat4f newQuat = rigidBody.getRotation();
+            final Quat4f newQuat = new Quat4f();
+            transform.getRotation(newQuat);
             physicsRotation.set(newQuat.getX(), newQuat.getY(), newQuat.getZ(),
                     newQuat.getW());
-            // Set location and angles, so client could have proper bounding
+//            // Set location and angles, so client could have proper bounding
             // boxes.
             // Check if rigidBody is active, and if the last written postion
             // and rotation has changed.

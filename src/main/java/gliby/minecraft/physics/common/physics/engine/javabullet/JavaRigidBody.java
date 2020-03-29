@@ -7,6 +7,7 @@ import gliby.minecraft.physics.common.physics.engine.ICollisionShape;
 import gliby.minecraft.physics.common.physics.engine.IRigidBody;
 import net.minecraft.entity.Entity;
 
+import javax.vecmath.Matrix4f;
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 import java.lang.ref.SoftReference;
@@ -75,6 +76,13 @@ class JavaRigidBody extends JavaCollisionObject implements IRigidBody {
     @Override
     public Transform getWorldTransform() {
         return rigidBody.get().getWorldTransform(new Transform());
+    }
+
+    @Override
+    public Matrix4f getWorldMatrix() {
+        Matrix4f mat4 = new Matrix4f();
+        getWorldTransform().getMatrix(mat4);
+        return mat4;
     }
 
     @Override
