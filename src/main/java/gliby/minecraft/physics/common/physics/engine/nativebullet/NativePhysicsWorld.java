@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstruct
 import com.badlogic.gdx.physics.bullet.linearmath.LinearMath;
 import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
 import com.badlogic.gdx.utils.BulletRuntimeException;
+import com.badlogic.gdx.utils.SharedLibraryLoader;
 import com.bulletphysicsx.linearmath.Transform;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.client.render.VecUtility;
@@ -64,7 +65,8 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
         String path = builder.toString();
 
-        System.loadLibrary(path);
+        new SharedLibraryLoader().load(path);
+//        System.loadLibrary(path);
 
         final int version = LinearMath.btGetVersion();
         if (version != Bullet.VERSION)
@@ -396,6 +398,12 @@ public class NativePhysicsWorld extends PhysicsWorld {
     @Override
     public void dispose() {
         rigidBodies.clear();
+
+        for (IRigidBody body : rigidBodies) {
+            btRigidBody rigidBody = (btRigidBody) body.getBody();
+            safeDispose(rigidBody);
+        }
+
         safeDispose(dynamicsWorld);
         safeDispose(broadphase);
         safeDispose(sequentialSolver);
@@ -405,6 +413,7 @@ public class NativePhysicsWorld extends PhysicsWorld {
         safeDispose(voxelBody);
         safeDispose(voxelShape);
         safeDispose(voxelProvider);
+
 
         dynamicsWorld = null;
         broadphase = null;
