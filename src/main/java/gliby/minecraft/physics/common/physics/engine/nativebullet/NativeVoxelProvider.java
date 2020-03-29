@@ -26,29 +26,31 @@ class NativeVoxelProvider extends btVoxelContentProvider {
     @Override
     public void getVoxel(int x, int y, int z, btVoxelInfo info) {
         BlockPos.PooledMutableBlockPos blockPosition = BlockPos.PooledMutableBlockPos.retain(x, y, z);
-        final IBlockState state = world.getBlockState(blockPosition);
-        // Get Block Metadata
+        if(world.isAreaLoaded(blockPosition, 1)) {
 
-        float friction = 1 - state.getBlock().slipperiness;
-        Physics physics = Physics.getInstance();
-        BlockManager blockManager = physics.getBlockManager();
-        final PhysicsBlockMetadata metadata = blockManager.getPhysicsBlockMetadata().get(blockManager.getBlockIdentity(state.getBlock()));
+            final IBlockState state = world.getBlockState(blockPosition);
+            // Get Block Metadata
 
-        if (metadata != null) {
-            friction = metadata.friction;
-        }
+            float friction = 1 - state.getBlock().slipperiness;
+            Physics physics = Physics.getInstance();
+            BlockManager blockManager = physics.getBlockManager();
+            final PhysicsBlockMetadata metadata = blockManager.getPhysicsBlockMetadata().get(blockManager.getBlockIdentity(state.getBlock()));
 
-        info.setBlocking(state.getMaterial().isSolid());
-        if (info.getBlocking()) {
+            if (metadata != null) {
+                friction = metadata.friction;
+            }
+
+            info.setBlocking(state.getMaterial().isSolid());
+            if (info.getBlocking()) {
 //            info.setFriction(MathHelper.clamp(friction, 0.01f, 100));
-            // when friction is 0, all rigidbodies pass through the terrain.
-            info.setFriction(MathHelper.clamp(friction, 0.3f, 1.0f));
-            info.setCollisionShape((btCollisionShape) physicsWorld.getBlockCache()
-                    .getShape(world, blockPosition, state).getCollisionShape());
+                // when friction is 0, all rigidbodies pass through the terrain.
+                info.setFriction(MathHelper.clamp(friction, 0.3f, 1.0f));
+                info.setCollisionShape((btCollisionShape) physicsWorld.getBlockCache()
+                        .getShape(world, blockPosition, state).getCollisionShape());
+            }
+
+            blockPosition.release();
         }
-
-        blockPosition.release();
-
     }
 
     //    @Override
