@@ -50,9 +50,7 @@ minecraft {
 dependencies {
     compileOnly curse.resolve("dynamic-lights", "2563244")
     compile group: 'org.apache.commons', name: 'commons-math3', version: '3.0'
-    // compile files('lib/gdx-bullet.jar')
-    // compile files('lib/gdx-bullet-natives.jar')
-    // compile files('lib/gdx.jar')
+
     compile(group: 'org.terasology', name: 'TeraMath', version: '1.5.1-20181008.021553-1') {
         exclude group: 'com.google.guava', module: 'guava'
     }

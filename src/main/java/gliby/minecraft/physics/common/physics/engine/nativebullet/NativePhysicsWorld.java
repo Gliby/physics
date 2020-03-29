@@ -27,7 +27,6 @@ import java.util.List;
  *
  */
 
-// TODO (0.6.0) FIXME: blocks falling through ground after exiting and then re-entering world. Most likely related to disposal.
 public class NativePhysicsWorld extends PhysicsWorld {
 
     static {
@@ -84,7 +83,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
     private btCollisionObject voxelBody;
     private btVoxelInfo voxelInfo;
     private NativeVoxelProvider voxelProvider;
-
     private btSequentialImpulseConstraintSolver sequentialSolver;
 
     public NativePhysicsWorld(Physics physics, PhysicsOverworld physicsOverworld,
@@ -96,7 +94,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
     @Override
     public void create() {
         rigidBodies = new ArrayList<IRigidBody>();
-
         broadphase = new btDbvtBroadphase();
         collisionConfiguration = new btDefaultCollisionConfiguration();
         collisionDispatcher = new btCollisionDispatcher(collisionConfiguration);
