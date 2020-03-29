@@ -32,7 +32,7 @@ public abstract class PhysicsWorld {
     /**
      * frames per second
      */
-    int fps;
+    int tps;
     /**
      * last fps time
      */
@@ -123,7 +123,8 @@ public abstract class PhysicsWorld {
             final PhysicsMechanic mechanic = ((Map.Entry<String, PhysicsMechanic>) it.next()).getValue();
             mechanic.update();
         }
-        updateFPS();
+
+        finishTick();
     }
 
     /**
@@ -153,17 +154,17 @@ public abstract class PhysicsWorld {
     /**
      * Calculate the FPS and set it in the title bar
      */
-    public void updateFPS() {
+    public void finishTick() {
         if (getTime() - lastFPS > 1000) {
-            fps = 0;
             lastFPS += 1000;
         }
-        fps++;
     }
 
+    protected float lastDelta;
+
     public int getMaxSubstep() {
-        final float delta = getDelta();
-        return MathHelper.clamp(Math.round(delta / 10), 1, 100);
+        lastDelta = getDelta();
+        return MathHelper.clamp(Math.round(lastDelta / 10), 1, 100);
     }
 
 

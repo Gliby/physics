@@ -81,7 +81,7 @@ public class PhysicsConfig {
         @Config.Comment("How long (seconds) do game spawned (falling blocks) physics entities last before re-aligning.")
         public float gameSpawnedExpiryTime = 15.0f;
 
-        @Config.Comment("Entities classes that are blacklisted from collider creation.")
+        @Config.Comment("Entity classes that are blacklisted from collider creation.")
         public String[] entityColliderBlacklist = {EntityPhysicsBlock.class.getName(), EntityPhysicsBase.class.getName(), EntityToolGunBeam.class.getName(), EntityItem.class.getName()};
 
     }
@@ -129,6 +129,9 @@ public class PhysicsConfig {
         public boolean disableAllowFlight = true;
 
         public String lastVersion = "" + Physics.VERSION;
+
+        @Config.Comment("Enables debug functions.")
+        public boolean enableDebug = false;
     }
 
     public static class Render {

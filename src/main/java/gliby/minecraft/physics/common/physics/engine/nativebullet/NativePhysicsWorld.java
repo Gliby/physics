@@ -395,13 +395,6 @@ public class NativePhysicsWorld extends PhysicsWorld {
 
     @Override
     public void dispose() {
-
-//        for (IRigidBody body : rigidBodies) {
-//            body.dispose();
-//        }
-
-        rigidBodies.clear();
-
         safeDispose(dynamicsWorld);
         safeDispose(broadphase);
         safeDispose(sequentialSolver);
@@ -423,8 +416,14 @@ public class NativePhysicsWorld extends PhysicsWorld {
         voxelShape = null;
         voxelBody = null;
         voxelInfo = null;
+
         super.dispose();
 
+        for (IRigidBody body : rigidBodies) {
+            body.dispose();
+        }
+
+        rigidBodies.clear();
 
     }
 }
