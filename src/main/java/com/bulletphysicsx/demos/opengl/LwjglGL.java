@@ -23,7 +23,6 @@
 
 package com.bulletphysicsx.demos.opengl;
 
-import com.bulletphysicsx.demos.opengl.FontRender.GLFont;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.Cylinder;
@@ -53,12 +52,12 @@ public class LwjglGL implements IGL {
     private static SphereKey sphereKey = new SphereKey();
     private static Map<CylinderKey, Integer> cylinderDisplayLists = new HashMap<CylinderKey, Integer>();
     private static CylinderKey cylinderKey = new CylinderKey();
-    private GLFont font;
+    private FontRender.GLFont font;
 
     public void init() {
         try {
             //font = FontRender.createFont("Dialog", 11, false, true);
-            font = new GLFont(IGL.class.getResourceAsStream("DejaVu_Sans_11.fnt"));
+            font = new FontRender.GLFont(IGL.class.getResourceAsStream("DejaVu_Sans_11.fnt"));
         } catch (IOException e) {
             e.printStackTrace();
         }

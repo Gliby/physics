@@ -30,8 +30,6 @@ package com.bulletphysicsx.extras.gimpact;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
-import org.apache.commons.math3.util.FastMath;
-
 import com.bulletphysicsx.BulletGlobals;
 import com.bulletphysicsx.linearmath.VectorUtil;
 

@@ -49,8 +49,6 @@ import java.awt.event.KeyEvent;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import static com.bulletphysicsx.demos.opengl.IGL.GL_LIGHTING;
-
 /**
  * @author jezek2
  */
@@ -483,7 +481,7 @@ public class ForkLiftDemo extends DemoApplication {
 
         if ((getDebugMode() & DebugDrawModes.NO_HELP_TEXT) == 0) {
             setOrthographicProjection();
-            gl.glDisable(GL_LIGHTING);
+            gl.glDisable(IGL.GL_LIGHTING);
             gl.glColor3f(0, 0, 0);
 
             drawString("SHIFT+Cursor Left/Right - rotate lift", 350, 20, TEXT_COLOR);
@@ -491,7 +489,7 @@ public class ForkLiftDemo extends DemoApplication {
             drawString("F5 - toggle camera mode", 350, 60, TEXT_COLOR);
 
             resetPerspectiveProjection();
-            gl.glEnable(GL_LIGHTING);
+            gl.glEnable(IGL.GL_LIGHTING);
         }
     }
 

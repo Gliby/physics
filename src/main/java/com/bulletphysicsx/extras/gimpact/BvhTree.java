@@ -27,7 +27,6 @@
 
 package com.bulletphysicsx.extras.gimpact;
 
-import com.bulletphysicsx.extras.gimpact.BoxCollision.AABB;
 import com.bulletphysicsx.linearmath.VectorUtil;
 
 import javax.vecmath.Vector3f;
@@ -163,8 +162,8 @@ class BvhTree {
 
         //calc this node bounding box
 
-        AABB node_bound = new AABB();
-        AABB tmpAABB = new AABB();
+        BoxCollision.AABB node_bound = new BoxCollision.AABB();
+        BoxCollision.AABB tmpAABB = new BoxCollision.AABB();
 
         node_bound.invalidate();
 
@@ -213,11 +212,11 @@ class BvhTree {
         return node_array.getDataIndex(nodeindex);
     }
 
-    public void getNodeBound(int nodeindex, AABB bound) {
+    public void getNodeBound(int nodeindex, BoxCollision.AABB bound) {
         node_array.getBound(nodeindex, bound);
     }
 
-    public void setNodeBound(int nodeindex, AABB bound) {
+    public void setNodeBound(int nodeindex, BoxCollision.AABB bound) {
         node_array.setBound(nodeindex, bound);
     }
 

@@ -8,7 +8,7 @@ import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstruct
 import com.badlogic.gdx.physics.bullet.linearmath.LinearMath;
 import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
 import com.badlogic.gdx.utils.BulletRuntimeException;
-import com.badlogic.gdx.utils.SharedLibraryLoader;
+import com.badlogicfork.gdx.utils.SharedLibraryLoader;
 import com.bulletphysicsx.linearmath.Transform;
 import gliby.minecraft.physics.Physics;
 import gliby.minecraft.physics.client.render.VecUtility;

@@ -27,8 +27,6 @@ package com.bulletphysicsx.linearmath.convexhull;
 
 import javax.vecmath.Vector3f;
 
-import org.apache.commons.math3.util.FastMath;
-
 import com.bulletphysicsx.BulletGlobals;
 import com.bulletphysicsx.collision.shapes.ShapeHull;
 import com.bulletphysicsx.linearmath.MiscUtil;

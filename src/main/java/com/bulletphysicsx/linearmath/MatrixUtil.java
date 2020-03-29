@@ -30,7 +30,6 @@ import javax.vecmath.Vector3f;
 import org.apache.commons.math3.util.FastMath;
 
 import com.bulletphysicsx.BulletGlobals;
-import com.bulletphysicsx.util.ArrayPool;
 
 /**
  * Utility functions for matrices.

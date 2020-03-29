@@ -27,8 +27,6 @@
 
 package com.bulletphysicsx.extras.gimpact;
 
-import com.bulletphysicsx.extras.gimpact.BoxCollision.AABB;
-
 import javax.vecmath.Vector3f;
 
 /**
@@ -86,7 +84,7 @@ class BvhDataArray {
         data[idx2] = d;
     }
 
-    public AABB getBound(int idx, AABB out) {
+    public BoxCollision.AABB getBound(int idx, BoxCollision.AABB out) {
         int pos = idx * 6;
         out.min.set(bound[pos + 0], bound[pos + 1], bound[pos + 2]);
         out.max.set(bound[pos + 3], bound[pos + 4], bound[pos + 5]);
@@ -105,7 +103,7 @@ class BvhDataArray {
         return out;
     }
 
-    public void setBound(int idx, AABB aabb) {
+    public void setBound(int idx, BoxCollision.AABB aabb) {
         int pos = idx * 6;
         bound[pos + 0] = aabb.min.x;
         bound[pos + 1] = aabb.min.y;

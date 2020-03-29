@@ -24,16 +24,12 @@
 package com.bulletphysicsx.demos.concaveconvexcast;
 
 import com.bulletphysicsx.collision.dispatch.CollisionWorld;
-import com.bulletphysicsx.collision.dispatch.CollisionWorld.ClosestConvexResultCallback;
 import com.bulletphysicsx.collision.shapes.BoxShape;
 import com.bulletphysicsx.demos.opengl.IGL;
 import com.bulletphysicsx.linearmath.*;
 
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
-
-import static com.bulletphysicsx.demos.opengl.IGL.GL_LIGHTING;
-import static com.bulletphysicsx.demos.opengl.IGL.GL_LINES;
 
 /**
  * Scrolls back and forth over terrain.
@@ -175,7 +171,7 @@ public class ConvexcastBatch {
         //#endif //USE_BT_CLOCK
 
         for (int i = 0; i < NUMRAYS_IN_BAR; i++) {
-            ClosestConvexResultCallback cb = new ClosestConvexResultCallback(source[i], dest[i]);
+            CollisionWorld.ClosestConvexResultCallback cb = new CollisionWorld.ClosestConvexResultCallback(source[i], dest[i]);
 
             Quat4f qFrom = new Quat4f();
             Quat4f qTo = new Quat4f();
@@ -234,9 +230,9 @@ public class ConvexcastBatch {
     }
 
     public void draw(IGL gl) {
-        gl.glDisable(GL_LIGHTING);
+        gl.glDisable(IGL.GL_LIGHTING);
         gl.glColor3f(0f, 1f, 0f);
-        gl.glBegin(GL_LINES);
+        gl.glBegin(IGL.GL_LINES);
         for (int i = 0; i < NUMRAYS_IN_BAR; i++) {
             gl.glVertex3f(source[i].x, source[i].y, source[i].z);
             gl.glVertex3f(hit_com[i].x, hit_com[i].y, hit_com[i].z);
@@ -271,7 +267,7 @@ public class ConvexcastBatch {
             TransformUtil.integrateTransform(from, linVel, angVel, hit_fraction[i], T);
             drawCube(gl, T);
         }
-        gl.glEnable(GL_LIGHTING);
+        gl.glEnable(IGL.GL_LIGHTING);
     }
 
 }

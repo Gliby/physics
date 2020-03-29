@@ -30,12 +30,12 @@ package com.bulletphysicsx.extras.gimpact;
 import javax.vecmath.Vector3f;
 
 import com.bulletphysicsx.collision.broadphase.BroadphaseNativeType;
-import com.bulletphysicsx.collision.dispatch.CollisionWorld.RayResultCallback;
 import com.bulletphysicsx.collision.shapes.CollisionShape;
 import com.bulletphysicsx.collision.shapes.ConcaveShape;
 import com.bulletphysicsx.collision.shapes.TriangleCallback;
 import com.bulletphysicsx.extras.gimpact.BoxCollision.AABB;
 import com.bulletphysicsx.linearmath.Transform;
+import com.bulletphysicsx.collision.dispatch.CollisionWorld;
 
 /**
  * Base class for gimpact shapes.
@@ -240,7 +240,7 @@ public abstract class GImpactShapeInterface extends ConcaveShape {
     /**
      * Virtual method for ray collision.
      */
-    public void rayTest(Vector3f rayFrom, Vector3f rayTo, RayResultCallback resultCallback) {
+    public void rayTest(Vector3f rayFrom, Vector3f rayTo, CollisionWorld.RayResultCallback resultCallback) {
     }
 
     /**

@@ -16,10 +16,6 @@
 
 package com.bulletphysicsx.collision.shapes.voxel;
 
-import javax.vecmath.Vector3f;
-
-import com.bulletphysicsx.collision.shapes.CollisionShape;
-
 /**
  * The collision data for a single Voxel.
  *

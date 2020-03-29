@@ -23,8 +23,6 @@
 
 package com.bulletphysicsx.linearmath;
 
-import org.apache.commons.math3.util.FastMath;
-
 import com.bulletphysicsx.BulletGlobals;
 
 /**

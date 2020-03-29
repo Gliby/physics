@@ -54,6 +54,7 @@ dependencies {
     compile(group: 'org.terasology', name: 'TeraMath', version: '1.5.1-20181008.021553-1') {
         exclude group: 'com.google.guava', module: 'guava'
     }
+
     compile(group: 'org.terasology', name: 'native-bullet', version: '0.2.13-20200106.050344-1') {
         exclude group: 'com.google.guava', module: 'guava'
     }
@@ -91,6 +92,7 @@ jar {
 shadowJar {
     classifier = ''
     relocate 'org.apache.commons.math3', "${project.group}.shadow.org.apache.commons.math3"
+    relocate 'org.slf4j', "${project.group}.shadow.org.slf4j"
 }
 
 reobf {

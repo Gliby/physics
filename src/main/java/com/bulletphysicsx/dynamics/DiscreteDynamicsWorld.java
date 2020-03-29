@@ -1096,7 +1096,7 @@ public class DiscreteDynamicsWorld extends DynamicsWorld {
 //		}
 //	}
 
-    private static class ClosestNotMeConvexResultCallback extends ClosestConvexResultCallback {
+    private static class ClosestNotMeConvexResultCallback extends CollisionWorld.ClosestConvexResultCallback {
         private CollisionObject me;
         private float allowedPenetration = 0f;
         private OverlappingPairCache pairCache;
@@ -1110,7 +1110,7 @@ public class DiscreteDynamicsWorld extends DynamicsWorld {
         }
 
         @Override
-        public float addSingleResult(LocalConvexResult convexResult, boolean normalInWorldSpace) {
+        public float addSingleResult(CollisionWorld.LocalConvexResult convexResult, boolean normalInWorldSpace) {
             if (convexResult.hitCollisionObject == me) {
                 return 1f;
             }

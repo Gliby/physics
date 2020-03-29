@@ -25,7 +25,6 @@ package com.bulletphysicsx.collision.narrowphase;
 
 import javax.vecmath.Vector3f;
 
-import com.bulletphysicsx.collision.narrowphase.ConvexCast.CastResult;
 import com.bulletphysicsx.collision.shapes.ConvexShape;
 import com.bulletphysicsx.collision.shapes.TriangleCallback;
 import com.bulletphysicsx.collision.shapes.TriangleShape;
@@ -69,7 +68,7 @@ public abstract class TriangleConvexcastCallback extends TriangleCallback {
         //btContinuousConvexCollision convexCaster(m_convexShape,&triangleShape,&simplexSolver,&gjkEpaPenetrationSolver);
         //#endif //#USE_SUBSIMPLEX_CONVEX_CAST
 
-        CastResult castResult = new CastResult();
+        ConvexCast.CastResult castResult = new ConvexCast.CastResult();
         castResult.fraction = 1f;
         if (convexCaster.calcTimeOfImpact(convexShapeFrom, convexShapeTo, triangleToWorld, triangleToWorld, castResult)) {
             // add hit

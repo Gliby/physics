@@ -55,9 +55,6 @@ import java.nio.ByteOrder;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import static com.bulletphysicsx.demos.opengl.IGL.GL_COLOR_BUFFER_BIT;
-import static com.bulletphysicsx.demos.opengl.IGL.GL_DEPTH_BUFFER_BIT;
-
 // JAVA TODO: update for 2.70b1
 
 /**
@@ -323,7 +320,7 @@ public class ConcaveDemo extends DemoApplication {
 
     @Override
     public void clientMoveAndDisplay() {
-        gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        gl.glClear(IGL.GL_COLOR_BUFFER_BIT | IGL.GL_DEPTH_BUFFER_BIT);
 
         float dt = getDeltaTimeMicroseconds() * 0.000001f;
 
@@ -356,7 +353,7 @@ public class ConcaveDemo extends DemoApplication {
 
     @Override
     public void displayCallback() {
-        gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        gl.glClear(IGL.GL_COLOR_BUFFER_BIT | IGL.GL_DEPTH_BUFFER_BIT);
 
         renderme();
 

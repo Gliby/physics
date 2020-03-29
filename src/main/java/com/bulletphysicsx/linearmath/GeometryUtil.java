@@ -26,8 +26,6 @@ package com.bulletphysicsx.linearmath;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
 
-import org.apache.commons.math3.util.FastMath;
-
 import com.bulletphysicsx.util.ObjectArrayList;
 
 /**

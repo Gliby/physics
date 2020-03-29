@@ -25,9 +25,9 @@ package com.bulletphysicsx.dynamics.vehicle;
 
 import javax.vecmath.Vector3f;
 
-import com.bulletphysicsx.collision.dispatch.CollisionWorld.ClosestRayResultCallback;
 import com.bulletphysicsx.dynamics.DynamicsWorld;
 import com.bulletphysicsx.dynamics.RigidBody;
+import com.bulletphysicsx.collision.dispatch.CollisionWorld;
 
 /**
  * Default implementation of {@link VehicleRaycaster}.
@@ -45,7 +45,7 @@ public class DefaultVehicleRaycaster extends VehicleRaycaster {
     public Object castRay(Vector3f from, Vector3f to, VehicleRaycasterResult result) {
         //RayResultCallback& resultCallback;
 
-        ClosestRayResultCallback rayCallback = new ClosestRayResultCallback(from, to);
+        CollisionWorld.ClosestRayResultCallback rayCallback = new CollisionWorld.ClosestRayResultCallback(from, to);
 
         dynamicsWorld.rayTest(from, to, rayCallback);
 

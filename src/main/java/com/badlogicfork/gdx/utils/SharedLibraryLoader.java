@@ -14,7 +14,9 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.badlogic.gdx.utils;
+package com.badlogicfork.gdx.utils;
+
+import com.badlogic.gdx.utils.BulletRuntimeException;
 
 import javax.annotation.Nullable;
 import java.io.*;

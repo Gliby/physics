@@ -46,9 +46,6 @@ import org.lwjgl.LWJGLException;
 
 import javax.vecmath.Vector3f;
 
-import static com.bulletphysicsx.demos.opengl.IGL.GL_COLOR_BUFFER_BIT;
-import static com.bulletphysicsx.demos.opengl.IGL.GL_DEPTH_BUFFER_BIT;
-
 /**
  * @author jezek2
  */
@@ -118,7 +115,7 @@ public class GenericJointDemo extends DemoApplication {
 
     @Override
     public void clientMoveAndDisplay() {
-        gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        gl.glClear(IGL.GL_COLOR_BUFFER_BIT | IGL.GL_DEPTH_BUFFER_BIT);
 
         // simple dynamics world doesn't handle fixed-time-stepping
         float ms = getDeltaTimeMicroseconds();
@@ -141,7 +138,7 @@ public class GenericJointDemo extends DemoApplication {
 
     @Override
     public void displayCallback() {
-        gl.glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        gl.glClear(IGL.GL_COLOR_BUFFER_BIT | IGL.GL_DEPTH_BUFFER_BIT);
 
         if (dynamicsWorld != null) {
             dynamicsWorld.debugDrawWorld();
